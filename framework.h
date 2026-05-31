@@ -566,7 +566,8 @@ public:
 
     V& operator[](const K& key)
     {
-        auto [value, _] = Emplace(key, V{});
+        auto [value, wasInserted] = Emplace(key, V{});
+        (void)wasInserted;
         return *value;
     }
 
@@ -630,13 +631,8 @@ private:
         newCapacity = MathUtil::NextPowerOfTwo(MathUtil::Max<std::size_t>(8, newCapacity));
 
         Vector<Bucket> previous = std::move(buckets_);
-        buckets_.Clear();
         buckets_.Reserve(newCapacity);
-
-        for (std::size_t i = 0; i < newCapacity; ++i)
-        {
-            buckets_.EmplaceBack();
-        }
+        buckets_.Resize(newCapacity);
 
         std::size_t previousSize = size_;
         size_ = 0;
