@@ -684,7 +684,7 @@ class HashSet
 public:
     bool Insert(const K& key)
     {
-        return map_.Insert(key, 0u);
+        return map_.Insert(key, kDummyValue);
     }
 
     bool Remove(const K& key)
@@ -713,6 +713,7 @@ public:
     }
 
 private:
+    static constexpr std::uint8_t kDummyValue = 0u;
     HashMap<K, std::uint8_t, Hasher, KeyEqual> map_;
 };
 } // namespace KE
