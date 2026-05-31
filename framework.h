@@ -486,13 +486,12 @@ public:
     {
         EnsureCapacity();
 
-        const K& lookupKey = key;
-        if (V* existing = Find(lookupKey))
+        K insertKey = key;
+        if (V* existing = Find(insertKey))
         {
             return { existing, false };
         }
 
-        K insertKey = std::forward<KeyArg>(key);
         V insertValue = std::forward<ValueArg>(value);
         std::size_t hash = hasher_(insertKey);
         std::size_t index = hash & Mask();
@@ -645,10 +644,7 @@ private:
             }
         }
 
-        if (previousSize > 0)
-        {
-            assert(size_ == previousSize);
-        }
+        assert(size_ == previousSize);
     }
 
     void RemoveAt(std::size_t index)
