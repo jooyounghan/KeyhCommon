@@ -19,7 +19,8 @@ public:
     {
     public:
         using iterator_category = std::forward_iterator_tag;
-        using value_type = std::pair<const K&, V&>;
+        using value_type = std::pair<K, V>;
+        using reference = std::pair<const K&, V&>;
         using difference_type = std::ptrdiff_t;
 
         iterator() = default;
@@ -29,7 +30,7 @@ public:
             SkipUnoccupied();
         }
 
-        value_type operator*() const
+        reference operator*() const
         {
             Bucket& bucket = map_->buckets_[index_];
             return { bucket.key, bucket.value };
@@ -68,7 +69,8 @@ public:
     {
     public:
         using iterator_category = std::forward_iterator_tag;
-        using value_type = std::pair<const K&, const V&>;
+        using value_type = std::pair<K, V>;
+        using reference = std::pair<const K&, const V&>;
         using difference_type = std::ptrdiff_t;
 
         const_iterator() = default;
@@ -78,7 +80,7 @@ public:
             SkipUnoccupied();
         }
 
-        value_type operator*() const
+        reference operator*() const
         {
             const Bucket& bucket = map_->buckets_[index_];
             return { bucket.key, bucket.value };
@@ -148,12 +150,12 @@ public:
     {
         EnsureCapacity();
 
-        K insertKey = std::forward<KeyArg>(key);
-        if (V* existing = Find(insertKey))
+        if (V* existing = Find(key))
         {
             return { existing, false };
         }
 
+        K insertKey = std::forward<KeyArg>(key);
         V insertValue = std::forward<ValueArg>(value);
         std::size_t hash = hasher_(insertKey);
         std::size_t index = hash & Mask();
