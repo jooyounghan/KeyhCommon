@@ -12,7 +12,7 @@
 #include <type_traits>
 #include <utility>
 
-namespace KE
+namespace keyh
 {
 class MathUtil
 {
@@ -709,4 +709,4 @@ private:
     static constexpr std::uint8_t kDummyValue = 0;
     HashMap<K, std::uint8_t, Hasher, KeyEqual> map_;
 };
-} // namespace KE
+} // namespace keyh
