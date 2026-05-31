@@ -67,3 +67,16 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Visual Studio Tools for CMake / Visual Studio items
+.vs/
+*.sln.docstates
+*.suo
+*.user
+*.userosscache
+*.slnx
+*.vsidx
+*.db
+*.db-shm
+*.db-wal
+*.ipch
