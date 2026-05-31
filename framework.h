@@ -52,6 +52,7 @@ public:
 
     static constexpr std::size_t AlignUp(std::size_t value, std::size_t alignment) noexcept
     {
+        assert(alignment != 0 && IsPowerOfTwo(alignment));
         return (value + alignment - 1) & ~(alignment - 1);
     }
 };
@@ -485,6 +486,12 @@ public:
     {
         EnsureCapacity();
 
+        const K& lookupKey = key;
+        if (V* existing = Find(lookupKey))
+        {
+            return { existing, false };
+        }
+
         K insertKey = std::forward<KeyArg>(key);
         V insertValue = std::forward<ValueArg>(value);
         std::size_t hash = hasher_(insertKey);
@@ -503,11 +510,6 @@ public:
                 bucket.value = std::move(insertValue);
                 ++size_;
                 return { &bucket.value, true };
-            }
-
-            if (bucket.hash == hash && equal_(bucket.key, insertKey))
-            {
-                return { &bucket.value, false };
             }
 
             if (bucket.distance < distance)
@@ -564,8 +566,7 @@ public:
 
     V& operator[](const K& key)
     {
-        auto [value, inserted] = Emplace(key, V{});
-        (void)inserted;
+        auto [value, _] = Emplace(key, V{});
         return *value;
     }
 
@@ -713,7 +714,7 @@ public:
     }
 
 private:
-    static constexpr std::uint8_t kDummyValue = 0u;
+    static constexpr std::uint8_t kDummyValue = 0;
     HashMap<K, std::uint8_t, Hasher, KeyEqual> map_;
 };
 } // namespace KE
