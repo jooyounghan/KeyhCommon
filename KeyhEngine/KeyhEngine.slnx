@@ -1,7 +1,13 @@
 <Solution>
   <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DevRelease" />
+    <BuildType Name="Release" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
   <Project Path="CommonBase/CommonBase.vcxproj" />
+  <Project Path="Test/Test.vcxproj">
+    <BuildType Solution="DevRelease|*" Project="Release" />
+  </Project>
 </Solution>
