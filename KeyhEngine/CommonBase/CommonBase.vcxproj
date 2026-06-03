@@ -244,9 +244,13 @@
     <ClInclude Include="ClassCommon.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="Delegate.hpp" />
+    <ClInclude Include="Deque.h" />
+    <ClInclude Include="Deque.hpp" />
     <ClInclude Include="FlyweightString.h" />
     <ClInclude Include="HashMap.h" />
+    <ClInclude Include="HashMap.hpp" />
     <ClInclude Include="HashSet.h" />
+    <ClInclude Include="HashSet.hpp" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="MathUtil.hpp" />
@@ -254,15 +258,19 @@
     <ClInclude Include="MemoryUtil.hpp" />
     <ClInclude Include="CommonBasePch.h" />
     <ClInclude Include="ScalarVectorTypes.h" />
+    <ClInclude Include="StaticArray.h" />
+    <ClInclude Include="StaticArray.hpp" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
     <ClInclude Include="TypeCommon.h" />
     <ClInclude Include="TypeCommon.hpp" />
     <ClInclude Include="Vector.h" />
+    <ClInclude Include="Vector.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssertUtil.cpp" />
     <ClCompile Include="Delegate.cpp" />
+    <ClCompile Include="Deque.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="HashMap.cpp" />
     <ClCompile Include="HashSet.cpp" />
@@ -278,6 +286,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ScalarVectorTypes.cpp" />
+    <ClCompile Include="StaticArray.cpp" />
     <ClCompile Include="StaticString.cpp" />
     <ClCompile Include="StringView.cpp" />
     <ClCompile Include="TypeCommon.cpp" />

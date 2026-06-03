@@ -48,6 +48,10 @@ namespace keyh
 
 		template<typename T>
 		static void safeRelease(T*& ptr) noexcept;
+
+	public:
+		template <typename T>
+		static void swap(T& a, T& b) noexcept;
 	};
 }
 #include "MemoryUtil.hpp"
