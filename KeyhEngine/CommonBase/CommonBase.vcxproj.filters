@@ -37,6 +37,18 @@
     <Filter Include="헤더 파일\Wrapper">
       <UniqueIdentifier>{52b52c70-c63c-41e1-badd-e02aa530ab5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Type">
+      <UniqueIdentifier>{6739a882-e7f4-4332-a5d3-00d23f519987}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Type">
+      <UniqueIdentifier>{83642ff4-c1f7-4df2-876d-42e09d53405e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Loader">
+      <UniqueIdentifier>{88eeb83f-c135-436c-b5ce-dbc7663fce69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Loader">
+      <UniqueIdentifier>{d159f91c-20f5-45f5-ba1e-fa5e2c78f69b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -78,6 +90,27 @@
     <ClInclude Include="AssertUtil.hpp">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="StringView.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticString.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="HashMap.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="HashSet.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyweightString.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="ScalarVectorTypes.h">
+      <Filter>헤더 파일\Type</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -100,6 +133,27 @@
     </ClCompile>
     <ClCompile Include="AssertUtil.cpp">
       <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="StringView.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticString.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="HashMap.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="HashSet.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyweightString.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="ScalarVectorTypes.cpp">
+      <Filter>소스 파일\Type</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
