@@ -72,6 +72,12 @@
     <ClInclude Include="Delegate.hpp">
       <Filter>헤더 파일\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="AssertUtil.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="AssertUtil.hpp">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -91,6 +97,9 @@
     </ClCompile>
     <ClCompile Include="Delegate.cpp">
       <Filter>소스 파일\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="AssertUtil.cpp">
+      <Filter>소스 파일\Util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

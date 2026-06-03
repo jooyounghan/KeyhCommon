@@ -34,9 +34,9 @@ namespace keyh
 
     public:
         template <typename TargetClass>
-        void bind(TargetClass* instance, ReturnType(TargetClass::* method)(Args...));
+        Delegate& bind(TargetClass* instance, ReturnType(TargetClass::* method)(Args...));
         template <typename F>
-        void bind(F&& callable);
+        Delegate& bind(F&& callable);
 
     public:
         inline ReturnType invoke(Args... args) const { return _stubFunc(_instancePtr, _methodStorage, std::forward<Args>(args)...); }

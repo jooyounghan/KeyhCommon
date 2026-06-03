@@ -42,7 +42,7 @@ namespace keyh
 
     DELEGATE_TEMPLATE_TYPE
     template<typename TargetClass>
-    void DELEGATE_CLASS::bind(TargetClass* instance, ReturnType(TargetClass::* method)(Args...))
+    DELEGATE_CLASS& DELEGATE_CLASS::bind(TargetClass* instance, ReturnType(TargetClass::* method)(Args...))
     {
         using MemberPtrType = ReturnType(TargetClass::*)(Args...);
 
@@ -55,11 +55,12 @@ namespace keyh
             TargetClass* typedInstance = static_cast<TargetClass*>(instance);
             return (typedInstance->*restoredMethod)(std::forward<Args>(args)...);
         };
+        return *this;
     }
 
     DELEGATE_TEMPLATE_TYPE
     template<typename F>
-    void DELEGATE_CLASS::bind(F&& callable)
+    DELEGATE_CLASS& DELEGATE_CLASS::bind(F&& callable)
     {
         using RawF = std::decay_t<F>;
         using FuncPtrType = ReturnType(*)(Args...);
@@ -88,6 +89,7 @@ namespace keyh
                 _aligned_free(instance);
             };
         }
+        return *this;
     }
 }
 
