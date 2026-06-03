@@ -13,45 +13,84 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Util">
+      <UniqueIdentifier>{68861641-ad69-4d05-a08c-cd78b301965e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Common">
+      <UniqueIdentifier>{9c892674-2737-4adc-b67e-910372857c36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Container">
+      <UniqueIdentifier>{74d7bc0d-6d47-4fc0-bd5b-2c35e0fb1f52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Common">
+      <UniqueIdentifier>{8415682c-7f21-461f-9bf3-94ea109dbefb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Util">
+      <UniqueIdentifier>{8881d813-e720-47eb-b3f7-6908a6fd48e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Container">
+      <UniqueIdentifier>{772194c3-5983-4086-9890-492c6db7133c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Wrapper">
+      <UniqueIdentifier>{7c0d15f9-1b58-44c6-b058-c20001aef0be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Wrapper">
+      <UniqueIdentifier>{52b52c70-c63c-41e1-badd-e02aa530ab5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HashMap.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="HashSet.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MathUtil.h">
+    <ClInclude Include="CommonBasePch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="MemoryUtil.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="OwnedVector.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="MathUtil.h">
+      <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="ClassCommon.h">
+      <Filter>헤더 파일\Common</Filter>
     </ClInclude>
-    <ClInclude Include="StaticArray.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="MacroCommon.h">
+      <Filter>헤더 파일\Common</Filter>
     </ClInclude>
-    <ClInclude Include="StaticVector.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="TypeCommon.h">
+      <Filter>헤더 파일\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Vector.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="MemoryUtil.hpp">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="MathUtil.hpp">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeCommon.hpp">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate.h">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate.hpp">
+      <Filter>헤더 파일\Wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommonBase.cpp">
+    <ClCompile Include="CommonBasePch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="TypeCommon.cpp">
+      <Filter>소스 파일\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="MacroCommon.cpp">
+      <Filter>소스 파일\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="MathUtil.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoryUtil.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Delegate.cpp">
+      <Filter>소스 파일\Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

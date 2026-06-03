@@ -1,4 +1,6 @@
 #pragma once
+#include "TypeCommon.h"
+
 namespace keyh
 {
 	struct MemoryUtil

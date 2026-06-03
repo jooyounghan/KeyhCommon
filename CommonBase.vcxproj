@@ -239,21 +239,20 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AssertManager.h" />
     <ClInclude Include="ClassCommon.h" />
+    <ClInclude Include="Delegate.h" />
+    <ClInclude Include="Delegate.hpp" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="MathUtil.hpp" />
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
     <ClInclude Include="CommonBasePch.h" />
-    <ClInclude Include="TaskAction.h" />
-    <ClInclude Include="TaskAction.hpp" />
     <ClInclude Include="TypeCommon.h" />
     <ClInclude Include="TypeCommon.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AssertManager.cpp" />
+    <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="MemoryUtil.cpp" />
@@ -265,7 +264,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TaskAction.cpp" />
     <ClCompile Include="TypeCommon.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

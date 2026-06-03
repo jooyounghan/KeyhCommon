@@ -1,0 +1,95 @@
+#define DELEGATE_TEMPLATE_TYPE template<typename ReturnType, typename ...Args>
+#define DELEGATE_CLASS Delegate<ReturnType(Args...)>
+
+namespace keyh
+{
+    DELEGATE_TEMPLATE_TYPE
+    DELEGATE_CLASS::Delegate(DELEGATE_CLASS&& other) noexcept
+        : _instancePtr(other._instancePtr)
+        , _stubFunc(other._stubFunc)
+    {
+        std::memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
+        other.reset();
+    }
+
+    DELEGATE_TEMPLATE_TYPE
+    DELEGATE_CLASS& DELEGATE_CLASS::operator=(DELEGATE_CLASS&& other) noexcept
+    {
+        if (this != &other)
+        {
+            _instancePtr = other._instancePtr;
+            std::memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
+            _stubFunc = other._stubFunc;
+
+            other.reset();
+        }
+        return *this;
+    }
+
+    DELEGATE_TEMPLATE_TYPE
+    void DELEGATE_CLASS::reset()
+    {
+        if (_destructFunc != nullptr)
+        {
+            _destructFunc(_instancePtr);
+            _destructFunc = nullptr;
+        }
+
+        _instancePtr = nullptr;
+        std::memset(_methodStorage, 0, sizeof(_methodStorage));
+        _stubFunc = nullptr;
+    }
+
+    DELEGATE_TEMPLATE_TYPE
+    template<typename TargetClass>
+    void DELEGATE_CLASS::bind(TargetClass* instance, ReturnType(TargetClass::* method)(Args...))
+    {
+        using MemberPtrType = ReturnType(TargetClass::*)(Args...);
+
+        _instancePtr = instance;
+        std::memcpy(_methodStorage, &method, sizeof(MemberPtrType));
+
+        _stubFunc = [](void* instance, const uint8* methodStorage, Args&&... args) -> ReturnType {
+            const MemberPtrType& restoredMethod = *reinterpret_cast<const MemberPtrType*>(methodStorage);
+
+            TargetClass* typedInstance = static_cast<TargetClass*>(instance);
+            return (typedInstance->*restoredMethod)(std::forward<Args>(args)...);
+        };
+    }
+
+    DELEGATE_TEMPLATE_TYPE
+    template<typename F>
+    void DELEGATE_CLASS::bind(F&& callable)
+    {
+        using RawF = std::decay_t<F>;
+        using FuncPtrType = ReturnType(*)(Args...);
+
+        if constexpr (std::is_convertible_v<RawF, FuncPtrType>)
+        {
+            FuncPtrType funcPtr = static_cast<FuncPtrType>(callable);
+            std::memcpy(_methodStorage, &funcPtr, sizeof(FuncPtrType));
+
+            _stubFunc = [](void*, const uint8* methodStorage, Args&&... args) -> ReturnType {
+                const FuncPtrType& restoredFunc = *reinterpret_cast<const FuncPtrType*>(methodStorage);
+                return restoredFunc(std::forward<Args>(args)...);
+            };
+        }
+        else
+        {
+            _instancePtr = _aligned_malloc(sizeof(RawF), 16);
+            new (_instancePtr) RawF(std::forward<F>(callable));
+
+            _stubFunc = [](void* inst, const uint8*, Args&&... args) -> ReturnType {
+                return (*reinterpret_cast<RawF*>(inst))(std::forward<Args>(args)...);
+            };
+
+            _destructFunc = [](void* instance) {
+                static_cast<RawF*>(instance)->~RawF();
+                _aligned_free(instance);
+            };
+        }
+    }
+}
+
+#undef DELEGATE_TEMPLATE_TYPE
+#undef DELEGATE_CLASS
