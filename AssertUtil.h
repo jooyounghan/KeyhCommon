@@ -14,7 +14,7 @@ namespace keyh
 #else
 #define KEYH_ASSERT_DEV(condition, message)				__noop
 #define KEYH_ASSERT_DEV_ARGS(condition, format, ...)	__noop
-#endif // KE_DEV
+#endif // KEYH_DEV
 
 #define KEYH_ASSERT_DEBUG_ARGS(condition, format, ...) AssertUtil::check(condition, format, ##__VA_ARGS__)
 
