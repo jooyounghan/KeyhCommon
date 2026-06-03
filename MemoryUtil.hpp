@@ -1,3 +1,4 @@
+#include "MemoryUtil.h"
 namespace keyh
 {
     template<typename T>
@@ -154,5 +155,13 @@ namespace keyh
             delete ptr;
             ptr = nullptr;
         }
+    }
+
+    template<typename T>
+    void keyh::MemoryUtil::swap(T& a, T& b) noexcept
+    {
+		T temp = std::move(a);
+		a = std::move(b);
+		b = std::move(temp);
     }
 }

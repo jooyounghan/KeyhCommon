@@ -111,6 +111,27 @@
     <ClInclude Include="ScalarVectorTypes.h">
       <Filter>헤더 파일\Type</Filter>
     </ClInclude>
+    <ClInclude Include="Vector.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="HashMap.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="HashSet.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Deque.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Deque.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -154,6 +175,12 @@
     </ClCompile>
     <ClCompile Include="ScalarVectorTypes.cpp">
       <Filter>소스 파일\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticArray.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Deque.cpp">
+      <Filter>소스 파일\Container</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
