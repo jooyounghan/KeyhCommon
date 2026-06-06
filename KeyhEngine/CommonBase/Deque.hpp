@@ -1,3 +1,4 @@
+#include "Deque.h"
 namespace keyh
 {
 	template<typename T>
@@ -194,6 +195,34 @@ namespace keyh
 		_bottom = getIndex(_bottom, -1, _capacity);
 		static_cast<T*>(_data)[_bottom].~T();
 		_isEmpty = (_top == _bottom);
+	}
+
+	template<typename T>
+	T& Deque<T>::front() 
+	{ 
+		KEYH_ASSERT(size() > 0, "Deque is empty");
+		return static_cast<T*>(_data)[_top]; 
+	}
+
+	template<typename T>
+	const T& Deque<T>::front() const 
+	{ 
+		KEYH_ASSERT(size() > 0, "Deque is empty");
+		return static_cast<const T*>(_data)[_top]; 
+	}
+
+	template<typename T>
+	T& Deque<T>::back() 
+	{ 
+		KEYH_ASSERT(size() > 0, "Deque is empty");
+		return static_cast<T*>(_data)[getIndex(_bottom, -1, _capacity)]; 
+	}
+
+	template<typename T>
+	const T& Deque<T>::back() const 
+	{ 
+		KEYH_ASSERT(size() > 0, "Deque is empty");
+		return static_cast<const T*>(_data)[getIndex(_bottom, -1, _capacity)]; 
 	}
 
 	template<typename T>

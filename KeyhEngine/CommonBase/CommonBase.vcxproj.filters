@@ -132,6 +132,18 @@
     <ClInclude Include="Deque.hpp">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -180,6 +192,12 @@
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
     <ClCompile Include="Deque.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Stack.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Queue.cpp">
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
   </ItemGroup>
