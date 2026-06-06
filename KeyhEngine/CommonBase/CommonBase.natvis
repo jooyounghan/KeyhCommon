@@ -33,4 +33,18 @@
 		</Expand>
 	</Type>
 
+	<Type Name="keyh::Stack&lt;*&gt;">
+		<DisplayString>{_deque}</DisplayString>
+		<Expand>
+			<ExpandedItem>_deque</ExpandedItem>
+		</Expand>
+	</Type>
+
+	<Type Name="keyh::Queue&lt;*&gt;">
+		<DisplayString>{_deque}</DisplayString>
+		<Expand>
+			<ExpandedItem>_deque</ExpandedItem>
+		</Expand>
+	</Type>
+
 </AutoVisualizer>
