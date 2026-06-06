@@ -1,4 +1,3 @@
-#include "MemoryUtil.h"
 namespace keyh
 {
     template<typename T>

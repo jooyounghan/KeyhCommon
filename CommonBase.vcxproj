@@ -292,6 +292,9 @@
     <ClCompile Include="TypeCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="CommonBase.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

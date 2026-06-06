@@ -183,4 +183,9 @@
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="CommonBase.natvis">
+      <Filter>리소스 파일</Filter>
+    </Natvis>
+  </ItemGroup>
 </Project>

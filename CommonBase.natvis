@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+	<Type Name="keyh::Vector&lt;*&gt;">
+		<DisplayString>{{ size={_size} }}</DisplayString>
+		<Expand>
+			<Item Name="[size]">_size</Item>
+			<Item Name="[capacity]">_capacity</Item>
+			<IndexListItems>
+				<Size>_size</Size>
+				<ValueNode>*((($T1*)_data) + $i)</ValueNode>
+			</IndexListItems>
+		</Expand>
+	</Type>
+
+	<Type Name="keyh::Deque&lt;*&gt;">
+		<DisplayString Condition="_isEmpty">{{ size=0 }}</DisplayString>
+		<DisplayString Condition="!_isEmpty &amp;&amp; _top == _bottom">{{ size={_capacity} }}</DisplayString>
+		<DisplayString Condition="!_isEmpty &amp;&amp; _top &gt; _bottom">{{ size={_bottom + _capacity - _top} }}</DisplayString>
+		<DisplayString Condition="!_isEmpty &amp;&amp; _top &lt; _bottom">{{ size={_bottom - _top} }}</DisplayString>
+		<Expand>
+			<Item Name="[size]" Condition="_isEmpty">0</Item>
+			<Item Name="[size]" Condition="!_isEmpty &amp;&amp; _top == _bottom">_capacity</Item>
+			<Item Name="[size]" Condition="!_isEmpty &amp;&amp; _top &gt; _bottom">_bottom + _capacity - _top</Item>
+			<Item Name="[size]" Condition="!_isEmpty &amp;&amp; _top &lt; _bottom">_bottom - _top</Item>
+			<Item Name="[capacity]">_capacity</Item>
+			<Item Name="[top]">_top</Item>
+			<Item Name="[bottom]">_bottom</Item>
+			<IndexListItems Condition="!_isEmpty">
+				<Size>_top &gt;= _bottom ? (_top == _bottom ? _capacity : _bottom + _capacity - _top) : (_bottom - _top)</Size>
+				<ValueNode>*((($T1*)_data) + ((_top + $i) &amp; (_capacity - 1)))</ValueNode>
+			</IndexListItems>
+		</Expand>
+	</Type>
+
+</AutoVisualizer>
