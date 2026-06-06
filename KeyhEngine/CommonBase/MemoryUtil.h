@@ -5,6 +5,10 @@ namespace keyh
 {
 	struct MemoryUtil
 	{
+		constexpr static size_t kCapacityGrowthFactor = 2;
+		static_assert(kCapacityGrowthFactor > 1, "Capacity growth factor must be greater than 1 to ensure growth.");
+		static_assert((kCapacityGrowthFactor& (kCapacityGrowthFactor - 1)) == 0, "Capacity growth factor must be a power of 2 for optimal performance.");
+
 		constexpr static size_t kPageThresholdSize = 4096;
 		constexpr static size_t kCachelineAlignSize = (sizeof(void*) == 8) ? 64 : 32;
 

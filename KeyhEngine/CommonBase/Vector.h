@@ -1,5 +1,6 @@
 #pragma once
 #include "MemoryUtil.h"
+#include "AssertUtil.h"
 
 namespace keyh
 {
@@ -39,6 +40,9 @@ namespace keyh
 	public:
 		T& operator[](size_t index);
 		const T& operator[](size_t index) const;
+
+	public:
+		void erase(size_t index, bool keepOrder = true);
 
 	public:
 		void resize(size_t newSize);
