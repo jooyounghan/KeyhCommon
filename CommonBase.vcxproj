@@ -257,7 +257,11 @@
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
     <ClInclude Include="CommonBasePch.h" />
+    <ClInclude Include="Queue.h" />
+    <ClInclude Include="Queue.hpp" />
     <ClInclude Include="ScalarVectorTypes.h" />
+    <ClInclude Include="Stack.h" />
+    <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticArray.hpp" />
     <ClInclude Include="StaticString.h" />
@@ -285,7 +289,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Queue.cpp" />
     <ClCompile Include="ScalarVectorTypes.cpp" />
+    <ClCompile Include="Stack.cpp" />
     <ClCompile Include="StaticArray.cpp" />
     <ClCompile Include="StaticString.cpp" />
     <ClCompile Include="StringView.cpp" />

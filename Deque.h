@@ -93,6 +93,12 @@ namespace keyh
 		inline ConstIterator end() const { return ConstIterator(_data, _top, size(), _capacity); }
 
 	public:
+		T& front();
+		const T& front() const;
+		T& back();
+		const T& back() const;
+
+	public:
 		T& operator[](size_t index);
 		const T& operator[](size_t index) const;
 
