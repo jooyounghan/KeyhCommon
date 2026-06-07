@@ -1,7 +1,5 @@
 #pragma once
-#include "TypeCommon.h"
-#include "ClassCommon.h"
-#include "HashUtil.h"
+#include "HashContainerCommon.h"
 
 namespace keyh
 {

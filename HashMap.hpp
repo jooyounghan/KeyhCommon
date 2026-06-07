@@ -6,7 +6,7 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::~HashMap()
 	{
-	
+		clear();
 	}
 	
 	HASHMAP_TEMPLATE_TYPE
@@ -18,6 +18,7 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS& HASHMAP_CLASS::operator=(HashMap && other) noexcept
 	{
+		return *this;
 	}
 
 	HASHMAP_TEMPLATE_TYPE
@@ -58,3 +59,6 @@ namespace keyh
 	
 	}
 }
+
+#undef HASHMAP_TEMPLATE_TYPE
+#undef HASHMAP_CLASS

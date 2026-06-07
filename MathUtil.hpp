@@ -48,7 +48,14 @@ namespace keyh
 
     constexpr size_t MathUtil::nextPrime(size_t n)
     {
-        while (!isPrime(++n)) {}
-        return n;
+        size_t limit = (n == 0) ? 2 : n * 2;
+        for (size_t candidate = n + 1; candidate <= limit; ++candidate)
+        {
+            if (isPrime(candidate))
+            {
+                return candidate;
+            }
+        }
+        return n + 1;
     }
 }
