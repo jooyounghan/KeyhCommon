@@ -108,7 +108,6 @@ namespace keyh
 	public:
 		void resize(size_t newSize);
 		void reserve(size_t newCapacity);
-		void shrinkToFit();
 		void clear();
 
 	public:

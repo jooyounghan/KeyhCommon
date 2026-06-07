@@ -1,6 +1,23 @@
 #pragma once
 #include "Delegate.h"
 
+#if defined(__clang__)
+#define FUNC_NAME __PRETTY_FUNCTION__
+#elif defined(__GNUC__)
+#define FUNC_NAME __PRETTY_FUNCTION__
+#elif defined(_MSC_VER)
+#define FUNC_NAME __FUNCSIG__
+#else
+#define FUNC_NAME __func__
+#endif
+
+#define STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(ClassName)	\
+	static_assert(false,								\
+		#ClassName										\
+		" does not support for this template type."		\
+		" Triggered in: " FUNC_NAME						\
+	)
+
 namespace keyh
 {
 	DECLARE_DELEGATE(AssertDelegate, bool, const char*);
@@ -15,8 +32,6 @@ namespace keyh
 #define KEYH_ASSERT_DEV(condition, message)				__noop
 #define KEYH_ASSERT_DEV_ARGS(condition, format, ...)	__noop
 #endif // KEYH_DEV
-
-#define KEYH_ASSERT_DEBUG_ARGS(condition, format, ...) AssertUtil::check(condition, format, ##__VA_ARGS__)
 
 	struct AssertUtil
 	{

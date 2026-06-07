@@ -334,25 +334,6 @@ namespace keyh
 	}
 
 	template<typename T>
-	void Deque<T>::shrinkToFit()
-	{
-		const size_t count = size();
-		void* newData = operator new(count * sizeof(T));
-		for (size_t i = 0; i < count; ++i)
-		{
-			const size_t index = getIndex(_top, i, _capacity);
-			new (static_cast<T*>(newData) + i) T(std::move(static_cast<T*>(_data)[index]));
-			static_cast<T*>(_data)[index].~T();
-		}
-		operator delete(_data);
-		_data = newData;
-		_capacity = count;
-		_top = 0;
-		_bottom = count;
-		_isEmpty = (count == 0);
-	}
-
-	template<typename T>
 	void Deque<T>::clear()
 	{
 		const size_t count = size();

@@ -251,6 +251,8 @@
     <ClInclude Include="HashMap.hpp" />
     <ClInclude Include="HashSet.h" />
     <ClInclude Include="HashSet.hpp" />
+    <ClInclude Include="HashUtil.h" />
+    <ClInclude Include="HashUtil.hpp" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="MathUtil.hpp" />
@@ -278,6 +280,7 @@
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="HashMap.cpp" />
     <ClCompile Include="HashSet.cpp" />
+    <ClCompile Include="HashUtil.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="MemoryUtil.cpp" />
