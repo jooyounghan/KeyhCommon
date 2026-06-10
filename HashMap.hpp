@@ -37,37 +37,13 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(const Key& key, const Value& value, bool replace)
 	{
-		rehashIfNeeded();
-
-		size_t hash = _hasher(key);
-		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
-
-		Bucket& bucket = _buckets[index];
-		if (bucket->isEmpty())
-		{
-			bucket->_keyStorage = key;
-			bucket->_valueStorage = value;
-		}
-
-
+		return insertImpl(replace, key, value);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace)
 	{
-		rehashIfNeeded();
-
-		size_t hash = _hasher(key);
-		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
-
-		Bucket& bucket = _buckets[index];
-		if (bucket.isEmpty())
-		{
-			new (&bucket._keyStorage) Key(keyh::move(key));
-			new (&bucket._valueStorage) Value(keyh::move(value));
-		}
-
-		return InsertResult{ bucket.value(), InsertStatus::Inserted };
+		return insertImpl(replace, move(key), move(value));
 	}
 
 	HASHMAP_TEMPLATE_TYPE
@@ -99,7 +75,6 @@ namespace keyh
 	{
 
 	}
-
 }
 
 #undef HASHMAP_TEMPLATE_TYPE

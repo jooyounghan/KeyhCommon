@@ -15,7 +15,7 @@ namespace keyh
 		using Base::_capacity;
 		using Base::_capacityLevel;
 		using Base::_size;
-		using Base::rehashIfNeeded;
+		using Base::insertImpl;
 
 	private:
 		struct Bucket
@@ -83,7 +83,25 @@ namespace keyh
 		bool			remove(const Key& key);
 		void			clear();
 
-	protected:
+	private:
+		void constructBucket(Bucket& bucket, const Key& key, const Value& value)
+		{
+			new (&bucket._keyStorage) Key(key);
+			new (&bucket._valueStorage) Value(value);
+		}
+
+		void constructBucket(Bucket& bucket, Key&& key, Value&& value)
+		{
+			new (&bucket._keyStorage) Key(move(key));
+			new (&bucket._valueStorage) Value(smove(value));
+		}
+
+		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status)
+		{
+			return InsertResult{ bucket.value(), status };
+		}
+
+	private:
 		void rehash(size_t newCapacity);
 	};
 }
