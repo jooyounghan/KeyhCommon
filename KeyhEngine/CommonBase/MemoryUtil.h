@@ -1,5 +1,5 @@
 #pragma once
-#include "TypeCommon.h"
+#include "CommonCore.h"
 
 namespace keyh
 {
@@ -16,7 +16,7 @@ namespace keyh
 		static constexpr T* addressOf(T& arg) noexcept;
 
 		template<typename T>
-		static constexpr T align(T input, std::type_identity_t<T> alignedValue) noexcept;
+		static constexpr T align(T input, TypeIdentity<T> alignedValue) noexcept;
 
 		template<typename T>
 		static constexpr bool hasSingleBit(T value) noexcept;

@@ -1,10 +1,10 @@
 #pragma once
-#include "HashContainerCommon.h"
+#include "HashContainerBase.h"
 
 namespace keyh
 {
 	template<typename Key, typename Hasher = Hash<Key>>
-	class HashSet
+	class HashSet : public HashContainerBase<HashSet<Key, Hasher>>
 	{
 	private:
 		struct Bucket
@@ -30,8 +30,6 @@ namespace keyh
 
 	private:
 		Bucket* _buckets = nullptr;
-		size_t	_capacity = 0;
-		size_t	_size = 0;
 		Hasher	_hasher;
 
 	private:

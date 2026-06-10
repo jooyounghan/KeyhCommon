@@ -1,7 +1,6 @@
 #define HASHMAP_TEMPLATE_TYPE template<typename Key, typename Value, typename Hasher>
 #define HASHMAP_CLASS HashMap<Key, Value, Hasher>
-#define GET_CAPACITY_TABLE(table) constexpr const StaticArray<int32, HashContainer::kHashContainerCapacityTableSize>& table = HashContainer::getHashContainerCapacityTable();
-#define GET_CAPACITY_TABLE_SIZE() HashContainer::kHashContainerCapacityTableSize
+
 namespace keyh
 {
 	HASHMAP_TEMPLATE_TYPE
@@ -38,16 +37,10 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(const Key& key, const Value& value, bool replace)
 	{
-		if (HashContainer::kMaxLoadFactor * _capacity <= _size)
-		{
-			GET_CAPACITY_TABLE(capacityTable);
-			_capacityLevel = _capacity == 0 ? 0 : _capacityLevel + 1;
-			_capacity = capacityTable[_capacityLevel];
-			rehash(_capacity);
-		}
+		rehashIfNeeded();
 
 		size_t hash = _hasher(key);
-		size_t index = HashContainer::getFastRangeIndex(hash, _capacity);
+		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
 
 		Bucket& bucket = _buckets[index];
 		if (bucket->isEmpty())
@@ -62,16 +55,10 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace)
 	{
-		if (HashContainer::kMaxLoadFactor * _capacity <= _size)
-		{
-			GET_CAPACITY_TABLE(capacityTable);
-			_capacityLevel = _capacity == 0 ? 0 : _capacityLevel + 1;
-			_capacity = capacityTable[_capacityLevel];
-			rehash(_capacity);
-		}
+		rehashIfNeeded();
 
 		size_t hash = _hasher(key);
-		size_t index = HashContainer::getFastRangeIndex(hash, _capacity);
+		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
 
 		Bucket& bucket = _buckets[index];
 		if (bucket.isEmpty())
@@ -108,23 +95,6 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::reserve(size_t newCapacity)
-	{
-		GET_CAPACITY_TABLE(capacityTable);	
-		constexpr size_t capacityTableSize = GET_CAPACITY_TABLE_SIZE();
-		for (size_t i = 0; i < capacityTableSize; ++i)
-		{
-			if (newCapacity <= capacityTable[i])
-			{
-				_capacityLevel = static_cast<uint8>(i);
-				break;
-			}
-		}
-		_capacity = newCapacity;
-		rehash(newCapacity);
-	}
-
-	HASHMAP_TEMPLATE_TYPE
 	void HASHMAP_CLASS::rehash(size_t newCapacity)
 	{
 
@@ -134,4 +104,3 @@ namespace keyh
 
 #undef HASHMAP_TEMPLATE_TYPE
 #undef HASHMAP_CLASS
-#undef GET_CAPACITY_TABLE

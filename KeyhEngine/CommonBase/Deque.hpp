@@ -139,7 +139,7 @@ namespace keyh
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
 		_top = getIndex(_top, -1, _capacity);
-		new (static_cast<T*>(_data) + _top) T(std::forward<Args>(args)...);
+		new (static_cast<T*>(_data) + _top) T(forward<Args>(args)...);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[_top];
 	}
@@ -178,7 +178,7 @@ namespace keyh
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
 		size_t insertIndex = _bottom;
-		new (static_cast<T*>(_data) + insertIndex) T(std::forward<Args>(args)...);
+		new (static_cast<T*>(_data) + insertIndex) T(forward<Args>(args)...);
 		_bottom = getIndex(_bottom, 1, _capacity);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[insertIndex];

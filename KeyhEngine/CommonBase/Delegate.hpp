@@ -53,7 +53,7 @@ namespace keyh
             const MemberPtrType& restoredMethod = *reinterpret_cast<const MemberPtrType*>(methodStorage);
 
             TargetClass* typedInstance = static_cast<TargetClass*>(instance);
-            return (typedInstance->*restoredMethod)(std::forward<Args>(args)...);
+            return (typedInstance->*restoredMethod)(forward<Args>(args)...);
         };
         return *this;
     }
@@ -62,26 +62,26 @@ namespace keyh
     template<typename F>
     DELEGATE_CLASS& DELEGATE_CLASS::bind(F&& callable)
     {
-        using RawF = std::decay_t<F>;
+        using RawF = Decay<F>;
         using FuncPtrType = ReturnType(*)(Args...);
 
-        if constexpr (std::is_convertible_v<RawF, FuncPtrType>)
+        if constexpr (IsConvertible<RawF, FuncPtrType>)
         {
             FuncPtrType funcPtr = static_cast<FuncPtrType>(callable);
             std::memcpy(_methodStorage, &funcPtr, sizeof(FuncPtrType));
 
             _stubFunc = [](void*, const uint8* methodStorage, Args&&... args) -> ReturnType {
                 const FuncPtrType& restoredFunc = *reinterpret_cast<const FuncPtrType*>(methodStorage);
-                return restoredFunc(std::forward<Args>(args)...);
+                return restoredFunc(forward<Args>(args)...);
             };
         }
         else
         {
             _instancePtr = _aligned_malloc(sizeof(RawF), 16);
-            new (_instancePtr) RawF(std::forward<F>(callable));
+            new (_instancePtr) RawF(forward<F>(callable));
 
             _stubFunc = [](void* inst, const uint8*, Args&&... args) -> ReturnType {
-                return (*reinterpret_cast<RawF*>(inst))(std::forward<Args>(args)...);
+                return (*reinterpret_cast<RawF*>(inst))(forward<Args>(args)...);
             };
 
             _destructFunc = [](void* instance) {

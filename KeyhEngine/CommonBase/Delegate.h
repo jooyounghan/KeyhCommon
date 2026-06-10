@@ -1,6 +1,5 @@
 #pragma once
-#include "TypeCommon.h"
-#include "ClassCommon.h"
+#include "CommonCore.h"
 
 namespace keyh
 {
@@ -39,8 +38,8 @@ namespace keyh
         Delegate& bind(F&& callable);
 
     public:
-        inline ReturnType invoke(Args... args) const { return _stubFunc(_instancePtr, _methodStorage, std::forward<Args>(args)...); }
-        inline ReturnType operator()(Args... args) const { return invoke(std::forward<Args>(args)...); }
+        inline ReturnType invoke(Args... args) const { return _stubFunc(_instancePtr, _methodStorage, forward<Args>(args)...); }
+        inline ReturnType operator()(Args... args) const { return invoke(forward<Args>(args)...); }
         inline bool isValid() const { return _stubFunc != nullptr; }
 
     public:

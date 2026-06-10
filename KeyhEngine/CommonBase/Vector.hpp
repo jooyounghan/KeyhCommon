@@ -85,7 +85,7 @@ namespace keyh
 	T& Vector<T>::emplace_back(Args&&... args)
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
-		new (static_cast<T*>(_data) + _size) T(std::forward<Args>(args)...);
+		new (static_cast<T*>(_data) + _size) T(forward<Args>(args)...);
 		++_size;
 		return static_cast<T*>(_data)[_size - 1];
 	}

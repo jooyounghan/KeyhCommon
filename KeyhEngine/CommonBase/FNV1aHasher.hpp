@@ -1,9 +1,9 @@
 namespace keyh
 {
 	template<typename Key>
-	size_t DefaultHasher::hash(const Key& key) noexcept
+	size_t FNV1aHasher::hash(const Key& key) noexcept
 	{
-		size_t hash = DefaultHasher::kInitialHashValue;
+		size_t hash = FNV1aHasher::kInitialHashValue;
 		const byte* data = reinterpret_cast<const byte*>(MemoryUtil::addressOf(const_cast<Key&>(key)));
 
 		const size_t kSizeOfSizeT = sizeof(size_t);
@@ -16,7 +16,7 @@ namespace keyh
 			std::memcpy(&blockValue, data, kSizeOfSizeT);
 
 			hash ^= blockValue;
-			hash *= DefaultHasher::kHashPrime;
+			hash *= FNV1aHasher::kHashPrime;
 
 			data += kSizeOfSizeT;
 		}
@@ -24,15 +24,15 @@ namespace keyh
 		for (size_t i = 0; i < remainder; ++i)
 		{
 			hash ^= static_cast<size_t>(static_cast<unsigned char>(data[i]));
-			hash *= DefaultHasher::kHashPrime;
+			hash *= FNV1aHasher::kHashPrime;
 		}
 
 		return hash;
 	}
 
 	template<typename T>
-	size_t Hash<T>::operator()(const T& value) const noexcept
+	size_t FNV1aHash<T>::operator()(const T& value) const noexcept
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(Hash<T>);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(FNV1aHash<T>);
 	}
 }
