@@ -123,9 +123,6 @@
     <ClInclude Include="StaticArray.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
-    <ClInclude Include="StaticArray.hpp">
-      <Filter>헤더 파일\Container</Filter>
-    </ClInclude>
     <ClInclude Include="Deque.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
@@ -151,6 +148,9 @@
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="HashContainerCommon.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeTraitCommon.h">
       <Filter>헤더 파일\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -212,8 +212,11 @@
     <ClCompile Include="HashUtil.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
+    <ClCompile Include="TypeTraitCommon.cpp">
+      <Filter>소스 파일\Common</Filter>
+    </ClCompile>
     <ClCompile Include="HashContainerCommon.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

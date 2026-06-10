@@ -77,7 +77,7 @@ namespace keyh
 	template<typename T>
 	T& Vector<T>::push_back(T&& value)
 	{
-		return emplace_back(std::move(value));
+		return emplace_back(move(value));
 	}
 
 	template<typename T>
@@ -128,7 +128,7 @@ namespace keyh
 		{
 			for (size_t i = index; i < _size - 1; ++i)
 			{
-				new (static_cast<T*>(_data) + i) T(std::move(static_cast<T*>(_data)[i + 1]));
+				new (static_cast<T*>(_data) + i) T(move(static_cast<T*>(_data)[i + 1]));
 				static_cast<T*>(_data)[i + 1].~T();
 			}
 		}
@@ -136,7 +136,7 @@ namespace keyh
 		{
 			if (index != _size - 1)
 			{
-				new (static_cast<T*>(_data) + index) T(std::move(static_cast<T*>(_data)[_size - 1]));
+				new (static_cast<T*>(_data) + index) T(move(static_cast<T*>(_data)[_size - 1]));
 				static_cast<T*>(_data)[_size - 1].~T();
 			}
 		}
@@ -175,7 +175,7 @@ namespace keyh
 			void* newData = operator new(newCapacity * sizeof(T));
 			for (size_t i = 0; i < _size; ++i)
 			{
-				new (static_cast<T*>(newData) + i) T(std::move(static_cast<T*>(_data)[i]));
+				new (static_cast<T*>(newData) + i) T(move(static_cast<T*>(_data)[i]));
 				static_cast<T*>(_data)[i].~T();
 			}
 			operator delete(_data);
@@ -190,7 +190,7 @@ namespace keyh
 		void* newData = operator new(_size * sizeof(T));
 		for (size_t i = 0; i < _size; ++i)
 		{
-			new (static_cast<T*>(newData) + i) T(std::move(static_cast<T*>(_data)[i]));
+			new (static_cast<T*>(newData) + i) T(move(static_cast<T*>(_data)[i]));
 			static_cast<T*>(_data)[i].~T();
 		}
 		operator delete(_data);

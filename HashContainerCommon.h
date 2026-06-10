@@ -15,6 +15,21 @@ namespace keyh
 		constexpr static size_t kHashContainerCapacityTableSize = 25;
 
 	public:
+		FORCE_INLINE static size_t getFastRangeIndex(size_t hash, size_t capacity)
+		{
+#if defined(_MSC_VER) && defined(_WIN64)
+			unsigned __int64 highResult = 0;
+			_umul128(hash, capacity, &highResult);
+			return (size_t)highResult;
+#elif defined(__SIZEOF_INT128__)
+			unsigned __int128 product = (unsigned __int128)hash * capacity;
+			return (size_t)(product >> 64);
+#else
+			return hash % capacity;
+#endif
+		}
+
+	public:
 		static constexpr const StaticArray<int32, kHashContainerCapacityTableSize>& getHashContainerCapacityTable()
 		{
 			return _capacityTable;
