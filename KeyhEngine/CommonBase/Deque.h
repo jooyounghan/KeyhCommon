@@ -1,6 +1,7 @@
 #pragma once
 #include "MemoryUtil.h"
 #include "AssertUtil.h"
+
 namespace keyh
 {
 	template<typename T>

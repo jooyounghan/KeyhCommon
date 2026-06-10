@@ -11,3 +11,11 @@
 #define REMOVE_COPY_AND_MOVE(ClassName) \
 	REMOVE_COPY(ClassName) \
 	REMOVE_MOVE(ClassName)
+
+#if defined(_MSC_VER)
+#define FORCE_INLINE __forceinline
+#elif defined(__GNUC__) || defined(__clang__)
+#define FORCE_INLINE inline __attribute__((always_inline))
+#else
+#define FORCE_INLINE inline
+#endif

@@ -1,4 +1,3 @@
-#include "Deque.h"
 namespace keyh
 {
 	template<typename T>
@@ -131,7 +130,7 @@ namespace keyh
 	template<typename T>
 	T& Deque<T>::push_front(T&& value)
 	{
-		return emplace_front(std::move(value));
+		return emplace_front(move(value));
 	}
 
 	template<typename T>
@@ -170,7 +169,7 @@ namespace keyh
 	template<typename T>
 	T& Deque<T>::push_back(T&& value)
 	{
-		return emplace_back(std::move(value));
+		return emplace_back(move(value));
 	}
 
 	template<typename T>
@@ -258,7 +257,7 @@ namespace keyh
 				{
 					size_t fromIndex = getIndex(_top, i - 1, _capacity);
 					size_t toIndex = getIndex(_top, i, _capacity);
-					new (static_cast<T*>(_data) + toIndex) T(std::move(static_cast<T*>(_data)[fromIndex]));
+					new (static_cast<T*>(_data) + toIndex) T(move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
 				_top = getIndex(_top, 1, _capacity);
@@ -269,7 +268,7 @@ namespace keyh
 				{
 					size_t fromIndex = getIndex(_top, i + 1, _capacity);
 					size_t toIndex = getIndex(_top, i, _capacity);
-					new (static_cast<T*>(_data) + toIndex) T(std::move(static_cast<T*>(_data)[fromIndex]));
+					new (static_cast<T*>(_data) + toIndex) T(move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
 				_bottom = getIndex(_bottom, -1, _capacity);
@@ -281,7 +280,7 @@ namespace keyh
 			{
 				size_t targetIndex = getIndex(_top, index, _capacity);
 				size_t lastIndex = getIndex(_top, count - 1, _capacity);
-				new (static_cast<T*>(_data) + targetIndex) T(std::move(static_cast<T*>(_data)[lastIndex]));
+				new (static_cast<T*>(_data) + targetIndex) T(move(static_cast<T*>(_data)[lastIndex]));
 			}
 			pop_back();
 		}
@@ -322,7 +321,7 @@ namespace keyh
 		for (size_t i = 0; i < count; ++i)
 		{
 			const size_t index = getIndex(_top, i, _capacity);
-			new (static_cast<T*>(newData) + i) T(std::move(static_cast<T*>(_data)[index]));
+			new (static_cast<T*>(newData) + i) T(move(static_cast<T*>(_data)[index]));
 			static_cast<T*>(_data)[index].~T();
 		}
 		operator delete(_data);

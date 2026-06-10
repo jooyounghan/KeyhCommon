@@ -17,5 +17,29 @@ namespace keyh
 		template<typename T>
 		static constexpr void requireIntegral() noexcept;
 	};
+
+	template <typename T>
+	struct RemoveReference
+	{
+		using type = T;
+	};
+
+	template <typename T>
+	struct RemoveReference<T&>
+	{
+		using type = T;
+	};
+
+	template <typename T>
+	struct RemoveReference<T&&>
+	{
+		using type = T;
+	};
+
+	template <typename T>
+	constexpr typename RemoveReference<T>::type&& move(T&& arg) noexcept
+	{
+		return static_cast<typename RemoveReference<T>::type&&>(arg);
+	}
 }
 #include "TypeCommon.hpp"

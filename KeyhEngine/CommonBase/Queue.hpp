@@ -9,7 +9,7 @@ namespace keyh
 	template<typename T>
 	void Queue<T>::push(T&& value)
 	{
-		_deque.push_back(std::move(value));
+		_deque.push_back(move(value));
 	}
 
 	template<typename T>

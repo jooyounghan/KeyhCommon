@@ -266,11 +266,11 @@
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
-    <ClInclude Include="StaticArray.hpp" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
     <ClInclude Include="TypeCommon.h" />
     <ClInclude Include="TypeCommon.hpp" />
+    <ClInclude Include="TypeTraitCommon.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector.hpp" />
   </ItemGroup>
@@ -301,6 +301,7 @@
     <ClCompile Include="StaticString.cpp" />
     <ClCompile Include="StringView.cpp" />
     <ClCompile Include="TypeCommon.cpp" />
+    <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>

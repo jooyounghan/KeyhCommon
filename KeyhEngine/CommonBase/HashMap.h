@@ -36,6 +36,7 @@ namespace keyh
 		size_t	_capacity = 0;
 		size_t	_size = 0;
 		Hasher	_hasher;
+		uint8	_capacityLevel = 0;
 
 	private:
 		enum class InsertStatus
@@ -46,11 +47,10 @@ namespace keyh
 			Error
 		};
 
-		template<typename Key, typename Value>
-		struct InsertResult
+		struct InsertResultValue
 		{
 		public:
-			InsertResult(Value& value, InsertStatus success)
+			InsertResultValue(Value& value, InsertStatus success)
 				: _value(value), _success(success) {}
 
 		public:
@@ -65,13 +65,21 @@ namespace keyh
 			bool isError() const noexcept { return _success == InsertStatus::Error; }
 		};
 
+		using InsertResult = InsertResultValue;
+
 	public:
-		InsertResult<Key, Value>	insert(const Key& key, const Value& value, bool replace = false);
-		InsertResult<Key, Value>	insert(Key&& key, Value&& value, bool replace = false);
-		Value*						find(const Key& key);
-		const Value*				find(const Key& key) const;
-		bool						remove(const Key& key);
-		void						clear();
+		InsertResult	insert(const Key& key, const Value& value, bool replace = false);
+		InsertResult	insert(Key&& key, Value&& value, bool replace = false);
+		Value*			find(const Key& key);
+		const Value*	find(const Key& key) const;
+		bool			remove(const Key& key);
+		void			clear();
+
+	public:
+		void reserve(size_t newCapacity);
+
+	private:
+		void rehash(size_t newCapacity);
 	};
 }
 #include "HashMap.hpp"

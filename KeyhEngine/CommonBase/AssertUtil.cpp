@@ -1,9 +1,10 @@
 #include "CommonBasePch.h"
 #include "AssertUtil.h"
+#include "TypeCommon.h"
 
 namespace keyh
 {
-	AssertDelegate AssertUtil::gAssertHandler = std::move(AssertDelegate().bind([](const char*) { return true; }));
+	AssertDelegate AssertUtil::gAssertHandler = move(AssertDelegate().bind([](const char*) { return true; }));
 
 	void AssertUtil::check(bool condition, const char* message) noexcept
 	{
