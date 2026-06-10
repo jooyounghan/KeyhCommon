@@ -6,6 +6,26 @@
 namespace keyh
 {
 	template<typename Derived>
+	template<typename Key, typename ...Args>
+	auto HashContainerBase<Derived>::insertImpl(bool replace, Key&& key, Args && ...args)
+	{
+		rehashIfNeeded();
+
+		Derived* self = static_cast<Derived*>(this);
+		size_t hash = self->_hasher(key);
+		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
+
+		auto& bucket = self->_buckets[index];
+		if (bucket.isEmpty())
+		{
+			self->constructBucket(bucket, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
+			++_size;
+		}
+
+		return self->makeInsertResult(bucket, InsertStatus::Inserted);
+	}
+
+	template<typename Derived>
 	void HashContainerBase<Derived>::rehashIfNeeded()
 	{
 		if (HashUtil::kMaxLoadFactor * _capacity <= _size)
