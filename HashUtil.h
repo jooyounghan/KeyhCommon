@@ -1,39 +1,51 @@
 #pragma once
-#include "AssertUtil.h"
-#include "MemoryUtil.h"
-
-#define DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hasher, Raw) template<> size_t Hasher<Raw>::operator()(const Raw& value) const noexcept
-#define DECLARE_TEMPLATED_HASH_SPECIALIZATION(Hasher,Class, ...) template<> size_t Hasher<Class<__VA_ARGS__>>::operator()(const Class<__VA_ARGS__>& value) const noexcept
+#include "CommonCore.h"
+#include "MathUtil.h"
+#include "StaticArray.h"
 
 namespace keyh
 {
-	struct DefaultHasher
+	struct HashUtil
 	{
-		constexpr static size_t kInitialHashValue = 14695981039346656037ULL;
-		constexpr static size_t kHashPrime = 1099511628211ULL;
+		constexpr static size_t kInitialCapacity = 7;
+		constexpr static float kMaxLoadFactor = 0.75f;
+		constexpr static int32 kEmptyPsl = -1;
+		constexpr static size_t kHashUtilCapacityTableSize = 25;
 
-		static size_t hash(const char* str, size_t length) noexcept;
+	public:
+		FORCE_INLINE static size_t getFastRangeIndex(size_t hash, size_t capacity)
+		{
+#if defined(_MSC_VER) && defined(_WIN64)
+			unsigned __int64 highResult = 0;
+			_umul128(hash, capacity, &highResult);
+			return (size_t)highResult;
+#elif defined(__SIZEOF_INT128__)
+			unsigned __int128 product = (unsigned __int128)hash * capacity;
+			return (size_t)(product >> 64);
+#else
+			return hash % capacity;
+#endif
+		}
 
-		template<typename Key>
-		static size_t hash(const Key& key) noexcept;
+	public:
+		static constexpr const StaticArray<int32, kHashUtilCapacityTableSize>& getHashUtilCapacityTable()
+		{
+			return _capacityTable;
+		}
+
+	private:
+		static constexpr StaticArray<int32, kHashUtilCapacityTableSize> createHashUtilCapacityTable() noexcept
+		{
+			StaticArray<int32, kHashUtilCapacityTableSize> table{};
+			for (size_t i = 0; i < kHashUtilCapacityTableSize; ++i)
+			{
+				table[i] = static_cast<int32>(MathUtil::nextPrime(kInitialCapacity * (1ULL << i)));
+			}
+			return table;
+		}
+
+		static const StaticArray<int32, kHashUtilCapacityTableSize> _capacityTable;
 	};
 
-	template<typename T>
-	struct Hash
-	{
-		size_t operator()(const T& value) const noexcept;
-	};
-
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, bool);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, uint64);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, uint32);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, uint16);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, uint8);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, int64);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, int32);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, int16);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, int8);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, double);
-    DECLARE_RAW_VALUE_HASH_SPECIALIZATION(Hash, float);
+	inline constexpr StaticArray<int32, HashUtil::kHashUtilCapacityTableSize> HashUtil::_capacityTable = HashUtil::createHashUtilCapacityTable();
 }
-#include "HashUtil.hpp"

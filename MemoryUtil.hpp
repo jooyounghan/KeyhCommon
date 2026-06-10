@@ -11,23 +11,23 @@ namespace keyh
     }
 
     template<typename T>
-    constexpr T MemoryUtil::align(T input, std::type_identity_t<T> alignedValue) noexcept
+    constexpr T MemoryUtil::align(T input, TypeIdentity<T> alignedValue) noexcept
     {
-        TypeCommon::requireIntegral<T>();
+        TypeTrait::requireIntegral<T>();
         return (input + (alignedValue - 1)) & ~(alignedValue - 1);
     }
 
     template<typename T>
     constexpr bool MemoryUtil::hasSingleBit(T value) noexcept
     {
-        TypeCommon::requireIntegral<T>();
+        TypeTrait::requireIntegral<T>();
         return (value & (value - 1)) == 0;
     }
 
     template<typename T>
     constexpr T MemoryUtil::bitCeil(T value) noexcept
     {
-        TypeCommon::requireIntegral<T>();
+        TypeTrait::requireIntegral<T>();
         T power = 1;
         while (power < value) power <<= 1;
         return power;

@@ -1,11 +1,22 @@
 #pragma once
-#include "HashContainerCommon.h"
+#include "HashCore.h"
+#include "HashContainerBase.h"
 
 namespace keyh
 {
-	template<typename Key, typename Value, typename Hasher = Hash<Key>>
-	class HashMap
+	template<typename Key, typename Value, typename Hasher = FNV1aHash<Key>>
+	class HashMap : public HashContainerBase<HashMap<Key, Value, Hasher>>
 	{
+	private:
+		using Base = HashContainerBase<HashMap<Key, Value, Hasher>>;
+		friend class Base;
+		
+	protected:
+		using Base::_capacity;
+		using Base::_capacityLevel;
+		using Base::_size;
+		using Base::rehashIfNeeded;
+
 	private:
 		struct Bucket
 		{
@@ -33,10 +44,7 @@ namespace keyh
 
 	private:
 		Bucket* _buckets = nullptr;
-		size_t	_capacity = 0;
-		size_t	_size = 0;
 		Hasher	_hasher;
-		uint8	_capacityLevel = 0;
 
 	private:
 		enum class InsertStatus
@@ -75,10 +83,7 @@ namespace keyh
 		bool			remove(const Key& key);
 		void			clear();
 
-	public:
-		void reserve(size_t newCapacity);
-
-	private:
+	protected:
 		void rehash(size_t newCapacity);
 	};
 }

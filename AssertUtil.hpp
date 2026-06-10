@@ -6,7 +6,7 @@ namespace keyh
 		if (condition == false)
 		{
 			char messageBuffer[2048];
-			int result = snprintf(messageBuffer, sizeof(messageBuffer), format, std::forward<Args>(args)...);
+			int result = snprintf(messageBuffer, sizeof(messageBuffer), format, forward<Args>(args)...);
 
 			if (result < 0)
 			{

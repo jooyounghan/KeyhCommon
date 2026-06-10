@@ -242,18 +242,22 @@
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
     <ClInclude Include="ClassCommon.h" />
+    <ClInclude Include="CommonCore.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="Delegate.hpp" />
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Deque.hpp" />
     <ClInclude Include="FlyweightString.h" />
-    <ClInclude Include="HashContainerCommon.h" />
+    <ClInclude Include="FNV1aHasher.h" />
+    <ClInclude Include="FNV1aHasher.hpp" />
+    <ClInclude Include="HashContainerBase.h" />
+    <ClInclude Include="HashContainerBase.hpp" />
+    <ClInclude Include="HashCore.h" />
     <ClInclude Include="HashMap.h" />
     <ClInclude Include="HashMap.hpp" />
     <ClInclude Include="HashSet.h" />
     <ClInclude Include="HashSet.hpp" />
     <ClInclude Include="HashUtil.h" />
-    <ClInclude Include="HashUtil.hpp" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="MathUtil.hpp" />
@@ -269,8 +273,8 @@
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
     <ClInclude Include="TypeCommon.h" />
-    <ClInclude Include="TypeCommon.hpp" />
     <ClInclude Include="TypeTraitCommon.h" />
+    <ClInclude Include="TypeTraitCommon.hpp" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector.hpp" />
   </ItemGroup>
@@ -279,7 +283,8 @@
     <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="Deque.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
-    <ClCompile Include="HashContainerCommon.cpp" />
+    <ClCompile Include="FNV1aHasher.cpp" />
+    <ClCompile Include="HashContainerBase.cpp" />
     <ClCompile Include="HashMap.cpp" />
     <ClCompile Include="HashSet.cpp" />
     <ClCompile Include="HashUtil.cpp" />
