@@ -1,7 +1,7 @@
 #pragma once
 
-namespace keyh {
-
+namespace keyh 
+{
 	struct TypeTrait
 	{
 		template<typename T>

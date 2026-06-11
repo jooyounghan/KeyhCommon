@@ -51,14 +51,17 @@ namespace keyh
 		, _capacity(other._capacity)
 		, _isEmpty(other._isEmpty)
 	{
-		if (_capacity > 0)
+		if (_capacity == 0)
 		{
-			_data = operator new(_capacity * sizeof(T));
-			for (size_t i = 0; i < size(); ++i)
-			{
-				const size_t index = getIndex(_top, i, _capacity);
-				new (static_cast<T*>(_data) + index) T(static_cast<T*>(other._data)[index]);
-			}
+			_data = nullptr;
+			return;
+		}
+
+		_data = operator new(_capacity * sizeof(T));
+		for (size_t i = 0; i < size(); ++i)
+		{
+			const size_t index = getIndex(_top, i, _capacity);
+			new (static_cast<T*>(_data) + index) T(static_cast<T*>(other._data)[index]);
 		}
 	}
 
@@ -114,7 +117,8 @@ namespace keyh
 	}
 
 #define ADJUST_CAPACITY_IF_NEEDED()	\
-	if (size() >= _capacity) { reserve(_capacity == 0 ? 2 : _capacity * MemoryUtil::kCapacityGrowthFactor); }
+	if (size() >= _capacity) \
+		reserve(_capacity == 0 ? 2 : _capacity * MemoryUtil::kCapacityGrowthFactor);
 
 	template<typename T>
 	T& Deque<T>::push_front(const T& value)
@@ -130,7 +134,7 @@ namespace keyh
 	template<typename T>
 	T& Deque<T>::push_front(T&& value)
 	{
-		return emplace_front(move(value));
+		return emplace_front(keyh::move(value));
 	}
 
 	template<typename T>
@@ -139,7 +143,7 @@ namespace keyh
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
 		_top = getIndex(_top, -1, _capacity);
-		new (static_cast<T*>(_data) + _top) T(forward<Args>(args)...);
+		new (static_cast<T*>(_data) + _top) T(keyh::forward<Args>(args)...);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[_top];
 	}
@@ -169,7 +173,7 @@ namespace keyh
 	template<typename T>
 	T& Deque<T>::push_back(T&& value)
 	{
-		return emplace_back(move(value));
+		return emplace_back(keyh::move(value));
 	}
 
 	template<typename T>
@@ -178,7 +182,7 @@ namespace keyh
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
 		size_t insertIndex = _bottom;
-		new (static_cast<T*>(_data) + insertIndex) T(forward<Args>(args)...);
+		new (static_cast<T*>(_data) + insertIndex) T(keyh::forward<Args>(args)...);
 		_bottom = getIndex(_bottom, 1, _capacity);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[insertIndex];
@@ -191,6 +195,7 @@ namespace keyh
 	{
 		if (_isEmpty)
 			return;
+
 		_bottom = getIndex(_bottom, -1, _capacity);
 		static_cast<T*>(_data)[_bottom].~T();
 		_isEmpty = (_top == _bottom);
@@ -257,7 +262,7 @@ namespace keyh
 				{
 					size_t fromIndex = getIndex(_top, i - 1, _capacity);
 					size_t toIndex = getIndex(_top, i, _capacity);
-					new (static_cast<T*>(_data) + toIndex) T(move(static_cast<T*>(_data)[fromIndex]));
+					new (static_cast<T*>(_data) + toIndex) T(keyh::move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
 				_top = getIndex(_top, 1, _capacity);
@@ -268,7 +273,7 @@ namespace keyh
 				{
 					size_t fromIndex = getIndex(_top, i + 1, _capacity);
 					size_t toIndex = getIndex(_top, i, _capacity);
-					new (static_cast<T*>(_data) + toIndex) T(move(static_cast<T*>(_data)[fromIndex]));
+					new (static_cast<T*>(_data) + toIndex) T(keyh::move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
 				_bottom = getIndex(_bottom, -1, _capacity);
@@ -280,7 +285,7 @@ namespace keyh
 			{
 				size_t targetIndex = getIndex(_top, index, _capacity);
 				size_t lastIndex = getIndex(_top, count - 1, _capacity);
-				new (static_cast<T*>(_data) + targetIndex) T(move(static_cast<T*>(_data)[lastIndex]));
+				new (static_cast<T*>(_data) + targetIndex) T(keyh::move(static_cast<T*>(_data)[lastIndex]));
 			}
 			pop_back();
 		}
@@ -321,7 +326,7 @@ namespace keyh
 		for (size_t i = 0; i < count; ++i)
 		{
 			const size_t index = getIndex(_top, i, _capacity);
-			new (static_cast<T*>(newData) + i) T(move(static_cast<T*>(_data)[index]));
+			new (static_cast<T*>(newData) + i) T(keyh::move(static_cast<T*>(_data)[index]));
 			static_cast<T*>(_data)[index].~T();
 		}
 		operator delete(_data);
