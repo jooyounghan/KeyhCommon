@@ -16,6 +16,10 @@ namespace keyh
 		using Base::_capacityLevel;
 		using Base::_size;
 		using Base::insertImpl;
+		using typename Base::InsertStatus;
+
+	public:
+		using Base::clear;
 
 	private:
 		struct Bucket
@@ -47,14 +51,6 @@ namespace keyh
 		Hasher	_hasher;
 
 	private:
-		enum class InsertStatus
-		{
-			Inserted,
-			Replaced,
-			AlreadyExists,
-			Error
-		};
-
 		struct InsertResultValue
 		{
 		public:
@@ -81,28 +77,11 @@ namespace keyh
 		Value*			find(const Key& key);
 		const Value*	find(const Key& key) const;
 		bool			remove(const Key& key);
-		void			clear();
 
 	private:
-		void constructBucket(Bucket& bucket, const Key& key, const Value& value)
-		{
-			new (&bucket._keyStorage) Key(key);
-			new (&bucket._valueStorage) Value(value);
-		}
-
-		void constructBucket(Bucket& bucket, Key&& key, Value&& value)
-		{
-			new (&bucket._keyStorage) Key(move(key));
-			new (&bucket._valueStorage) Value(smove(value));
-		}
-
-		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status)
-		{
-			return InsertResult{ bucket.value(), status };
-		}
-
-	private:
-		void rehash(size_t newCapacity);
+		void constructBucket(Bucket& bucket, int32 psl, const Key& key, const Value& value);
+		void constructBucket(Bucket& bucket, int32 psl, Key&& key, Value&& value);
+		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status);
 	};
 }
 #include "HashMap.hpp"

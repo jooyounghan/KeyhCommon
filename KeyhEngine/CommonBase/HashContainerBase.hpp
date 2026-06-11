@@ -15,10 +15,12 @@ namespace keyh
 		size_t hash = self->_hasher(key);
 		size_t index = HashUtil::getFastRangeIndex(hash, _capacity);
 
+		int32 psl = 0;
+
 		auto& bucket = self->_buckets[index];
 		if (bucket.isEmpty())
 		{
-			self->constructBucket(bucket, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
+			self->constructBucket(bucket, psl, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
 			++_size;
 		}
 
@@ -31,9 +33,32 @@ namespace keyh
 		if (HashUtil::kMaxLoadFactor * _capacity <= _size)
 		{
 			GET_CAPACITY_TABLE(capacityTable);
-			_capacity = _capacity == 0 ? HashUtil::kInitialCapacity : capacityTable[_capacityLevel++];
-			static_cast<Derived*>(this)->rehash(_capacity);
+			size_t newCapacity = _capacity == 0 ? HashUtil::kInitialCapacity : capacityTable[_capacityLevel++];
+			rehash(newCapacity);
 		}
+	}
+
+	template<typename Derived>
+	void HashContainerBase<Derived>::rehash(size_t newCapacity)
+	{
+		using Bucket = typename Derived::Bucket;
+
+		Derived* self = static_cast<Derived*>(this);
+		Bucket* oldBuckets = self->_buckets;
+		size_t oldCapacity = _capacity;
+		self->_buckets = new Bucket[newCapacity]();
+		_capacity = newCapacity;
+		_size = 0;
+		for (size_t i = 0; i < oldCapacity; ++i)
+		{
+			auto& bucket = oldBuckets[i];
+			if (bucket.isEmpty())
+				continue;
+
+			self->insertImpl(false, keyh::move(bucket.key()), keyh::move(bucket.value()));
+			bucket.~Bucket();
+		}
+		delete[] oldBuckets;
 	}
 
 	template<typename Derived>
@@ -48,8 +73,26 @@ namespace keyh
 				break;
 			}
 		}
-		_capacity = newCapacity;
-		static_cast<Derived*>(this)->rehash(_capacity);
+		rehash(newCapacity);
+	}
+
+	template<typename Derived>
+	void HashContainerBase<Derived>::clear()
+	{
+		Derived* self = static_cast<Derived*>(this);
+		for (size_t i = 0; i < _capacity; ++i)
+		{
+			auto& bucket = self->_buckets[i];
+			if (!bucket.isEmpty())
+			{
+				bucket.~Bucket();
+			}
+		}
+		delete[] self->_buckets;
+		self->_buckets = nullptr;
+		_capacity = 0;
+		_capacityLevel = 0;
+		_size = 0;
 	}
 }
 

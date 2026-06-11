@@ -1,11 +1,24 @@
 #pragma once
+#include "HashCore.h"
 #include "HashContainerBase.h"
 
 namespace keyh
 {
-	template<typename Key, typename Hasher = Hash<Key>>
+	template<typename Key, typename Hasher = FNV1aHash<Key>>
 	class HashSet : public HashContainerBase<HashSet<Key, Hasher>>
 	{
+	private:
+		using Base = HashContainerBase<HashSet<Key, Hasher>>;
+		friend class Base;
+
+	protected:
+		using Base::_capacity;
+		using Base::_capacityLevel;
+		using Base::_size;
+		using Base::insertImpl;
+		using Base::clear;
+		using typename Base::InsertStatus;
+
 	private:
 		struct Bucket
 		{
@@ -33,14 +46,6 @@ namespace keyh
 		Hasher	_hasher;
 
 	private:
-		enum class InsertStatus
-		{
-			Inserted,
-			Replaced,
-			AlreadyExists,
-			Error
-		};
-
 		struct InsertResult
 		{
 		public:
@@ -61,7 +66,11 @@ namespace keyh
 		InsertResult	insert(Key&& key, bool replace = false);
 		bool			contains(const Key& key) const;
 		bool			remove(const Key& key);
-		void			clear();
+
+	private:
+		void constructBucket(Bucket& bucket, int32 psl, const Key& key);
+		void constructBucket(Bucket& bucket, int32 psl, Key&& key);
+		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status);
 	};
 }
 #include "HashSet.hpp"

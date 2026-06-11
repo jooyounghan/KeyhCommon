@@ -159,8 +159,8 @@ namespace keyh
     template<typename T>
     void keyh::MemoryUtil::swap(T& a, T& b) noexcept
     {
-		T temp = move(a);
-		a = move(b);
-		b = move(temp);
+		T temp = keyh::move(a);
+		a = keyh::move(b);
+		b = keyh::move(temp);
     }
 }

@@ -1,21 +1,16 @@
 #define NOMINMAX
 
-#include <crtdbg.h>
 #include <iostream>
-#include <chrono>
-#include <vector>
-#include <functional>
-#include <cassert>
+#include <Windows.h>
 #include "Delegate.h"
 #include "AssertUtil.h"
-#include <Windows.h>
 #include "HashMap.h"
 
 using namespace keyh;
 
 int main()
 {
-	AssertUtil::gAssertHandler = std::move(AssertDelegate().bind([](const char* message) -> bool {
+	AssertUtil::gAssertHandler = keyh::move(AssertDelegate().bind([](const char* message) -> bool {
         int result = ::MessageBoxA(
             nullptr,
             message,
@@ -36,11 +31,15 @@ int main()
     
 	printf("This line will not be reached if the assertion fails and the user chooses to break into the debugger.\n");
 
-	HashMap<int, std::string> map;
-	map.insert(1, "one");
-    map.find(1);
-	map.remove(1);
-
+    while (true)
+    {
+	    HashMap<int, std::string> map;
+	    map.insert(1, "one");
+        map.find(1);
+	    map.remove(1);
+        map.reserve(100);
+        map.clear();
+    }
 	for (size_t i = 0; i < HashUtil::kHashUtilCapacityTableSize; ++i)
 	{
 		std::cout << "Capacity for size " << i << ": " << HashUtil::getHashUtilCapacityTable()[i] << " expected: " << MathUtil::nextPrime(HashUtil::kInitialCapacity * (1ULL << i)) << std::endl;

@@ -4,20 +4,20 @@
 
 namespace keyh
 {
-	AssertDelegate AssertUtil::gAssertHandler = move(AssertDelegate().bind([](const char*) { return true; }));
+	AssertDelegate AssertUtil::gAssertHandler = keyh::move(AssertDelegate().bind([](const char*) { return true; }));
 
 	void AssertUtil::check(bool condition, const char* message) noexcept
 	{
-		if (condition == false)
+		if (condition == true)
+			return;
+
+		if (gAssertHandler.isValid() && gAssertHandler(message))
 		{
-			if (gAssertHandler.isValid() && gAssertHandler(message))
-			{
-				__debugbreak();
-			}
-			else
-			{
-				std::abort();
-			}
+			__debugbreak();
+		}
+		else
+		{
+			std::abort();
 		}
 	}
 }

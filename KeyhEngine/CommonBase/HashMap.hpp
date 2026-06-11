@@ -43,7 +43,7 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace)
 	{
-		return insertImpl(replace, move(key), move(value));
+		return insertImpl(replace, keyh::move(key), keyh::move(value));
 	}
 
 	HASHMAP_TEMPLATE_TYPE
@@ -65,15 +65,25 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::clear()
+	void HASHMAP_CLASS::constructBucket(Bucket& bucket, int32 psl, const Key& key, const Value& value)
 	{
-	
+		new (&bucket._keyStorage) Key(key);
+		new (&bucket._valueStorage) Value(value);
+		bucket._psl = psl;
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::rehash(size_t newCapacity)
+	void HASHMAP_CLASS::constructBucket(Bucket& bucket, int32 psl, Key&& key, Value&& value)
 	{
+		new (&bucket._keyStorage) Key(keyh::move(key));
+		new (&bucket._valueStorage) Value(keyh::move(value));
+		bucket._psl = psl;
+	}
 
+	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket& bucket, InsertStatus status)
+	{
+		return InsertResult(bucket.value(), status);
 	}
 }
 

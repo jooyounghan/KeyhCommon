@@ -53,7 +53,7 @@ namespace keyh
             const MemberPtrType& restoredMethod = *reinterpret_cast<const MemberPtrType*>(methodStorage);
 
             TargetClass* typedInstance = static_cast<TargetClass*>(instance);
-            return (typedInstance->*restoredMethod)(forward<Args>(args)...);
+            return (typedInstance->*restoredMethod)(keyh::forward<Args>(args)...);
         };
         return *this;
     }
@@ -72,16 +72,16 @@ namespace keyh
 
             _stubFunc = [](void*, const uint8* methodStorage, Args&&... args) -> ReturnType {
                 const FuncPtrType& restoredFunc = *reinterpret_cast<const FuncPtrType*>(methodStorage);
-                return restoredFunc(forward<Args>(args)...);
+                return restoredFunc(keyh::forward<Args>(args)...);
             };
         }
         else
         {
             _instancePtr = _aligned_malloc(sizeof(RawF), 16);
-            new (_instancePtr) RawF(forward<F>(callable));
+            new (_instancePtr) RawF(keyh::forward<F>(callable));
 
             _stubFunc = [](void* inst, const uint8*, Args&&... args) -> ReturnType {
-                return (*reinterpret_cast<RawF*>(inst))(forward<Args>(args)...);
+                return (*reinterpret_cast<RawF*>(inst))(keyh::forward<Args>(args)...);
             };
 
             _destructFunc = [](void* instance) {
