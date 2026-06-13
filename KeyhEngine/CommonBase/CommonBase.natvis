@@ -47,4 +47,38 @@
 		</Expand>
 	</Type>
 
+	<Type Name="keyh::HashMap&lt;*&gt;">
+		<DisplayString>{{ size={_size} }}</DisplayString>
+		<Expand>
+			<Item Name="[size]">_size</Item>
+			<Item Name="[capacity]">_capacity</Item>
+			<CustomListItems MaxItemsPerView="512">
+				<Variable Name="i" InitialValue="0" />
+				<Loop Condition="i &lt; _capacity">
+					<If Condition="_buckets[i]._psl &gt;= 0">
+						<Item Name="[{*($T1*)_buckets[i]._keyStorage}]">*($T2*)_buckets[i]._valueStorage</Item>
+					</If>
+					<Exec>i++</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+
+	<Type Name="keyh::HashSet&lt;*&gt;">
+		<DisplayString>{{ size={_size} }}</DisplayString>
+		<Expand>
+			<Item Name="[size]">_size</Item>
+			<Item Name="[capacity]">_capacity</Item>
+			<CustomListItems MaxItemsPerView="512">
+				<Variable Name="i" InitialValue="0" />
+				<Loop Condition="i &lt; _capacity">
+					<If Condition="_buckets[i]._psl &gt;= 0">
+						<Item Name="[{*($T1*)_buckets[i]._keyStorage}]">*($T1*)_buckets[i]._keyStorage</Item>
+					</If>
+					<Exec>i++</Exec>
+				</Loop>
+			</CustomListItems>
+		</Expand>
+	</Type>
+
 </AutoVisualizer>
