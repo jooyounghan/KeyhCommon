@@ -13,7 +13,6 @@ namespace keyh
 
 	protected:
 		using Base::_capacity;
-		using Base::_capacityLevel;
 		using Base::_size;
 		using Base::insertImpl;
 		using Base::clear;
@@ -28,6 +27,12 @@ namespace keyh
 			bool isEmpty() const noexcept { return _psl < 0; }
 			Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
 			const Key& key() const noexcept { return *reinterpret_cast<const Key*>(_keyStorage); }
+
+			void constructBucket(int32 psl, const Key& key);
+			void constructBucket(int32 psl, Key&& key);
+			void changeBucketValue() { __noop; }
+
+			void swapBucket(Bucket* other);
 		};
 
 	public:
@@ -68,9 +73,7 @@ namespace keyh
 		bool			remove(const Key& key);
 
 	private:
-		void constructBucket(Bucket& bucket, int32 psl, const Key& key);
-		void constructBucket(Bucket& bucket, int32 psl, Key&& key);
-		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status);
+		InsertResult makeInsertResult(Bucket* bucket, InsertStatus status);
 	};
 }
 #include "HashSet.hpp"

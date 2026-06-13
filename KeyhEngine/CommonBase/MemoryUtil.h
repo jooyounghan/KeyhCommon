@@ -23,6 +23,8 @@ namespace keyh
 
 		template<typename T>
 		static constexpr T bitCeil(T value) noexcept;
+		
+		static size_t fastBitCeil(size_t value);
 
 		template <typename T1, typename... Types>
 		static constexpr size_t alignOf() noexcept;

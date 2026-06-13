@@ -4,6 +4,28 @@
 namespace keyh
 {
 	HASHSET_TEMPLATE_TYPE
+	void HASHSET_CLASS::Bucket::constructBucket(int32 psl, const Key& key)
+	{
+		new (&_keyStorage) Key(key);
+		_psl = psl;
+	}
+
+	HASHSET_TEMPLATE_TYPE
+	void HASHSET_CLASS::Bucket::constructBucket(int32 psl, Key&& key)
+	{
+		new (&_keyStorage) Key(keyh::move(key));
+		_psl = psl;
+	}
+
+	HASHSET_TEMPLATE_TYPE
+	void HASHSET_CLASS::Bucket::swapBucket(Bucket* other)
+	{
+		MemoryUtil::swap(_keyStorage, other->_keyStorage);
+		MemoryUtil::swap(_psl, other->_psl);
+	}
+
+
+	HASHSET_TEMPLATE_TYPE
 	HASHSET_CLASS::~HashSet()
 	{
 		clear();
@@ -44,22 +66,8 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
-		void HASHSET_CLASS::constructBucket(Bucket& bucket, int32 psl, const Key& key)
+		HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket* bucket, InsertStatus status)
 	{
-		new (&bucket._keyStorage) Key(key);
-		bucket._psl = psl;
-	}
-
-	HASHSET_TEMPLATE_TYPE
-		void HASHSET_CLASS::constructBucket(Bucket& bucket, int32 psl, Key&& key)
-	{
-		new (&bucket._keyStorage) Key(keyh::move(key));
-		bucket._psl = psl;
-	}
-
-	HASHSET_TEMPLATE_TYPE
-		HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket& bucket, InsertStatus status)
-	{
-		return InsertResult(bucket.value(), status);
+		return InsertResult(bucket->key(), status);
 	}
 }

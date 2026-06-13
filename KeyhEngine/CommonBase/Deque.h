@@ -1,6 +1,7 @@
 #pragma once
 #include "MemoryUtil.h"
 #include "AssertUtil.h"
+#include "CircularBufferUtil.h"
 
 namespace keyh
 {
@@ -14,8 +15,8 @@ namespace keyh
 			Iterator(void* data, size_t top, size_t offset, size_t capacity);
 
 		public:
-			inline T& operator*()				{ return static_cast<T*>(_data)[Deque<T>::getIndex(_top, _offset, _capacity)]; }
-			inline const T& operator*() const	{ return static_cast<const T*>(_data)[Deque<T>::getIndex(_top, _offset, _capacity)]; }
+			inline T& operator*()				{ return static_cast<T*>(_data)[CircularBufferUtil::getIndex(_top, _offset, _capacity)]; }
+			inline const T& operator*() const	{ return static_cast<const T*>(_data)[CircularBufferUtil::getIndex(_top, _offset, _capacity)]; }
 			inline bool operator==(const Iterator& other) const { return _offset == other._offset && _data == other._data; }
 			inline bool operator!=(const Iterator& other) const { return !(*this == other); }
 
@@ -36,7 +37,7 @@ namespace keyh
 			ConstIterator(const void* data, size_t top, size_t offset, size_t capacity);
 
 		public:
-			inline const T& operator*() const { return static_cast<const T*>(_data)[Deque<T>::getIndex(_top, _offset, _capacity)]; }
+			inline const T& operator*() const { return static_cast<const T*>(_data)[CircularBufferUtil::getIndex(_top, _offset, _capacity)]; }
 			inline bool operator==(const ConstIterator& other) const { return _offset == other._offset && _data == other._data; }
 			inline bool operator!=(const ConstIterator& other) const { return !(*this == other); }
 
@@ -69,9 +70,6 @@ namespace keyh
 		size_t	_capacity = 0;
 		bool	_isEmpty = true;
 		void* _data = nullptr;
-
-	private:
-		inline static size_t getIndex(size_t index, ptrdiff_t offset, size_t capacity) { return (index + offset) & (capacity - 1); }
 
 	public:
 		T& push_front(const T& value);

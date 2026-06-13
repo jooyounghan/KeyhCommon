@@ -1,8 +1,48 @@
 #define HASHMAP_TEMPLATE_TYPE template<typename Key, typename Value, typename Hasher>
 #define HASHMAP_CLASS HashMap<Key, Value, Hasher>
 
+#include <utility>
+
 namespace keyh
 {
+	HASHMAP_TEMPLATE_TYPE
+	void HASHMAP_CLASS::Bucket::constructBucket(int32 psl, const Key& key, const Value& value)
+	{
+		new (&_keyStorage) Key(key);
+		new (&_valueStorage) Value(value);
+		_psl = psl;
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	void HASHMAP_CLASS::Bucket::constructBucket(int32 psl, Key&& key, Value&& value)
+	{
+		new (&_keyStorage) Key(keyh::move(key));
+		new (&_valueStorage) Value(keyh::move(value));
+		_psl = psl;
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	void HASHMAP_CLASS::Bucket::changeBucketValue(const Value& value)
+	{
+		this->value().~Value();
+		new (&_valueStorage) Value(value);
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	void HASHMAP_CLASS::Bucket::changeBucketValue(Value&& value)
+	{
+		this->value().~Value();
+		new (&_valueStorage) Value(keyh::move(value));
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	void HASHMAP_CLASS::Bucket::swapBucket(Bucket* other)
+	{
+		std::swap(_keyStorage, other->_keyStorage);
+		std::swap(_valueStorage, other->_valueStorage);
+		std::swap(_psl, other->_psl);
+	}
+
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::~HashMap()
 	{
@@ -65,25 +105,9 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::constructBucket(Bucket& bucket, int32 psl, const Key& key, const Value& value)
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket* bucket, InsertStatus status)
 	{
-		new (&bucket._keyStorage) Key(key);
-		new (&bucket._valueStorage) Value(value);
-		bucket._psl = psl;
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::constructBucket(Bucket& bucket, int32 psl, Key&& key, Value&& value)
-	{
-		new (&bucket._keyStorage) Key(keyh::move(key));
-		new (&bucket._valueStorage) Value(keyh::move(value));
-		bucket._psl = psl;
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket& bucket, InsertStatus status)
-	{
-		return InsertResult(bucket.value(), status);
+		return InsertResult(bucket->value(), status);
 	}
 }
 
