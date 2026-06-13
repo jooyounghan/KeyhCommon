@@ -60,7 +60,7 @@ namespace keyh
 		_data = operator new(_capacity * sizeof(T));
 		for (size_t i = 0; i < size(); ++i)
 		{
-			const size_t index = getIndex(_top, i, _capacity);
+			const size_t index = CircularBufferUtil::getIndex(_top, i, _capacity);
 			new (static_cast<T*>(_data) + index) T(static_cast<T*>(other._data)[index]);
 		}
 	}
@@ -124,7 +124,7 @@ namespace keyh
 	T& Deque<T>::push_front(const T& value)
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
-		_top = getIndex(_top, -1, _capacity);
+		_top = CircularBufferUtil::getIndex(_top, -1, _capacity);
 		new (static_cast<T*>(_data) + _top) T(value);
 		_isEmpty = false;
 
@@ -142,7 +142,7 @@ namespace keyh
 	T& Deque<T>::emplace_front(Args&&... args)
 	{
 		ADJUST_CAPACITY_IF_NEEDED();
-		_top = getIndex(_top, -1, _capacity);
+		_top = CircularBufferUtil::getIndex(_top, -1, _capacity);
 		new (static_cast<T*>(_data) + _top) T(keyh::forward<Args>(args)...);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[_top];
@@ -155,7 +155,7 @@ namespace keyh
 			return;
 
 		static_cast<T*>(_data)[_top].~T();
-		_top = getIndex(_top, 1, _capacity);
+		_top = CircularBufferUtil::getIndex(_top, 1, _capacity);
 		_isEmpty = (_top == _bottom);
 	}
 
@@ -165,7 +165,7 @@ namespace keyh
 		ADJUST_CAPACITY_IF_NEEDED();
 		size_t insertIndex = _bottom;
 		new (static_cast<T*>(_data) + insertIndex) T(value);
-		_bottom = getIndex(_bottom, 1, _capacity);
+		_bottom = CircularBufferUtil::getIndex(_bottom, 1, _capacity);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[insertIndex];
 	}
@@ -183,7 +183,7 @@ namespace keyh
 		ADJUST_CAPACITY_IF_NEEDED();
 		size_t insertIndex = _bottom;
 		new (static_cast<T*>(_data) + insertIndex) T(keyh::forward<Args>(args)...);
-		_bottom = getIndex(_bottom, 1, _capacity);
+		_bottom = CircularBufferUtil::getIndex(_bottom, 1, _capacity);
 		_isEmpty = false;
 		return static_cast<T*>(_data)[insertIndex];
 	}
@@ -196,7 +196,7 @@ namespace keyh
 		if (_isEmpty)
 			return;
 
-		_bottom = getIndex(_bottom, -1, _capacity);
+		_bottom = CircularBufferUtil::getIndex(_bottom, -1, _capacity);
 		static_cast<T*>(_data)[_bottom].~T();
 		_isEmpty = (_top == _bottom);
 	}
@@ -219,28 +219,28 @@ namespace keyh
 	T& Deque<T>::back() 
 	{ 
 		KEYH_ASSERT(size() > 0, "Deque is empty");
-		return static_cast<T*>(_data)[getIndex(_bottom, -1, _capacity)]; 
+		return static_cast<T*>(_data)[CircularBufferUtil::getIndex(_bottom, -1, _capacity)]; 
 	}
 
 	template<typename T>
 	const T& Deque<T>::back() const 
 	{ 
 		KEYH_ASSERT(size() > 0, "Deque is empty");
-		return static_cast<const T*>(_data)[getIndex(_bottom, -1, _capacity)]; 
+		return static_cast<const T*>(_data)[CircularBufferUtil::getIndex(_bottom, -1, _capacity)]; 
 	}
 
 	template<typename T>
 	T& Deque<T>::operator[](size_t index)
 	{
 		KEYH_ASSERT(index < size(), "Index out of bounds");
-		return static_cast<T*>(_data)[getIndex(_top, index, _capacity)];
+		return static_cast<T*>(_data)[CircularBufferUtil::getIndex(_top, index, _capacity)];
 	}
 
 	template<typename T>
 	const T& Deque<T>::operator[](size_t index) const
 	{
 		KEYH_ASSERT(index < size(), "Index out of bounds");
-		return static_cast<const T*>(_data)[getIndex(_top, index, _capacity)];
+		return static_cast<const T*>(_data)[CircularBufferUtil::getIndex(_top, index, _capacity)];
 	}
 
 	template<typename T>
@@ -251,7 +251,7 @@ namespace keyh
 		if (index >= count)
 			return;
 
-		static_cast<T*>(_data)[getIndex(_top, index, _capacity)].~T();
+		static_cast<T*>(_data)[CircularBufferUtil::getIndex(_top, index, _capacity)].~T();
 
 		if (keepOrder)
 		{
@@ -260,31 +260,31 @@ namespace keyh
 			{
 				for (size_t i = index; i > 0; --i)
 				{
-					size_t fromIndex = getIndex(_top, i - 1, _capacity);
-					size_t toIndex = getIndex(_top, i, _capacity);
+					size_t fromIndex = CircularBufferUtil::getIndex(_top, i - 1, _capacity);
+					size_t toIndex = CircularBufferUtil::getIndex(_top, i, _capacity);
 					new (static_cast<T*>(_data) + toIndex) T(keyh::move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
-				_top = getIndex(_top, 1, _capacity);
+				_top = CircularBufferUtil::getIndex(_top, 1, _capacity);
 			}
 			else
 			{
 				for (size_t i = index; i < count - 1; ++i)
 				{
-					size_t fromIndex = getIndex(_top, i + 1, _capacity);
-					size_t toIndex = getIndex(_top, i, _capacity);
+					size_t fromIndex = CircularBufferUtil::getIndex(_top, i + 1, _capacity);
+					size_t toIndex = CircularBufferUtil::getIndex(_top, i, _capacity);
 					new (static_cast<T*>(_data) + toIndex) T(keyh::move(static_cast<T*>(_data)[fromIndex]));
 					static_cast<T*>(_data)[fromIndex].~T();
 				}
-				_bottom = getIndex(_bottom, -1, _capacity);
+				_bottom = CircularBufferUtil::getIndex(_bottom, -1, _capacity);
 			}
 		}
 		else
 		{
 			if (index != count - 1)
 			{
-				size_t targetIndex = getIndex(_top, index, _capacity);
-				size_t lastIndex = getIndex(_top, count - 1, _capacity);
+				size_t targetIndex = CircularBufferUtil::getIndex(_top, index, _capacity);
+				size_t lastIndex = CircularBufferUtil::getIndex(_top, count - 1, _capacity);
 				new (static_cast<T*>(_data) + targetIndex) T(keyh::move(static_cast<T*>(_data)[lastIndex]));
 			}
 			pop_back();
@@ -303,14 +303,14 @@ namespace keyh
 			}
 			for (size_t i = count; i < newSize; ++i)
 			{
-				new (static_cast<T*>(_data) + getIndex(_top, i, _capacity)) T();
+				new (static_cast<T*>(_data) + CircularBufferUtil::getIndex(_top, i, _capacity)) T();
 			}
 		}
 		else if (newSize < count)
 		{
 			for (size_t i = newSize; i < count; ++i)
 			{
-				static_cast<T*>(_data)[getIndex(_top, i, _capacity)].~T();
+				static_cast<T*>(_data)[CircularBufferUtil::getIndex(_top, i, _capacity)].~T();
 			}
 		}
 	}
@@ -321,11 +321,13 @@ namespace keyh
 		if (newCapacity <= _capacity)
 			return;
 
+		newCapacity = MemoryUtil::fastBitCeil(newCapacity);
+
 		void* newData = operator new(newCapacity * sizeof(T));
 		const size_t count = size();
 		for (size_t i = 0; i < count; ++i)
 		{
-			const size_t index = getIndex(_top, i, _capacity);
+			const size_t index = CircularBufferUtil::getIndex(_top, i, _capacity);
 			new (static_cast<T*>(newData) + i) T(keyh::move(static_cast<T*>(_data)[index]));
 			static_cast<T*>(_data)[index].~T();
 		}
@@ -343,7 +345,7 @@ namespace keyh
 		const size_t count = size();
 		for (size_t i = 0; i < count; ++i)
 		{
-			const size_t index = getIndex(_top, i, _capacity);
+			const size_t index = CircularBufferUtil::getIndex(_top, i, _capacity);
 			static_cast<T*>(_data)[index].~T();
 		}
 

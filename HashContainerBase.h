@@ -1,5 +1,7 @@
 #pragma once
 #include "HashUtil.h"
+#include "CircularBufferUtil.h"
+#include "AssertUtil.h"
 
 namespace keyh
 {
@@ -17,12 +19,15 @@ namespace keyh
 
 	protected:
 		size_t _capacity = 0;
-		size_t _capacityLevel = 0;
 		size_t _size = 0;
 
 	protected:
 		template <typename Key, typename... Args>
 		auto insertImpl(bool replace, Key&& key, Args&&... args);
+
+	protected:
+		template<typename Key>
+		void removeImpl(Key&& key);
 
 	protected:
 		void rehashIfNeeded();

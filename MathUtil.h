@@ -5,6 +5,7 @@ namespace keyh
 {
 	struct MathUtil
 	{
+#pragma region Operations
         template<typename T, typename Pred>
         static constexpr T max(T left, TypeIdentity<T> right, Pred pred) noexcept;
 
@@ -22,10 +23,15 @@ namespace keyh
 
         template<typename T>
         static constexpr T saturate(T input) noexcept;
+#pragma endregion
 
-        static constexpr bool isPrime(size_t n);
+#pragma region Prime Number
+        template<typename T>
+        static constexpr bool isPrime(T n);
 
-        static constexpr size_t nextPrime(size_t n);
+        template<typename T>
+        static constexpr T nextPrime(T n);
+#pragma endregion
 	};
 }
 #include "MathUtil.hpp"

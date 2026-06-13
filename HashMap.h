@@ -13,7 +13,6 @@ namespace keyh
 		
 	protected:
 		using Base::_capacity;
-		using Base::_capacityLevel;
 		using Base::_size;
 		using Base::insertImpl;
 		using typename Base::InsertStatus;
@@ -26,13 +25,20 @@ namespace keyh
 		{
 			alignas(Key)	uint8	_keyStorage[sizeof(Key)];
 			alignas(Value)	uint8	_valueStorage[sizeof(Value)];
-			int32					_psl;
+			int32					_psl = HashUtil::kEmptyPsl;
 
 			bool isEmpty() const noexcept { return _psl < 0; }
 			Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
 			const Key& key() const noexcept { return *reinterpret_cast<const Key*>(_keyStorage); }
 			Value& value() noexcept { return *reinterpret_cast<Value*>(_valueStorage); }
 			const Value& value() const noexcept { return *reinterpret_cast<const Value*>(_valueStorage); }
+
+			void constructBucket(int32 psl, const Key& key, const Value& value);
+			void constructBucket(int32 psl, Key&& key, Value&& value);
+			void changeBucketValue(const Value& value);
+			void changeBucketValue(Value&& value);
+
+			void swapBucket(Bucket* other);
 		};
 
 	public:
@@ -79,9 +85,7 @@ namespace keyh
 		bool			remove(const Key& key);
 
 	private:
-		void constructBucket(Bucket& bucket, int32 psl, const Key& key, const Value& value);
-		void constructBucket(Bucket& bucket, int32 psl, Key&& key, Value&& value);
-		InsertResult makeInsertResult(Bucket& bucket, InsertStatus status);
+		InsertResult makeInsertResult(Bucket* bucket, InsertStatus status);
 	};
 }
 #include "HashMap.hpp"

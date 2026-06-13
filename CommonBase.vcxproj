@@ -241,6 +241,7 @@
   <ItemGroup>
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
+    <ClInclude Include="CircularBufferUtil.h" />
     <ClInclude Include="ClassCommon.h" />
     <ClInclude Include="CommonCore.h" />
     <ClInclude Include="Delegate.h" />
@@ -280,6 +281,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssertUtil.cpp" />
+    <ClCompile Include="CircularBufferUtil.cpp" />
     <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="Deque.cpp" />
     <ClCompile Include="FlyweightString.cpp" />

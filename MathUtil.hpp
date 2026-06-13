@@ -36,20 +36,22 @@ namespace keyh
         return MathUtil::clamp(input, static_cast<T>(0), static_cast<T>(1));
     }
 
-    constexpr bool MathUtil::isPrime(size_t n)
+    template<typename T>
+    constexpr bool MathUtil::isPrime(T n)
     {
         if (n < 2) return false;
-        for (size_t i = 2; i * i <= n; ++i)
+        for (T i = 2; i * i <= n; ++i)
         {
             if (n % i == 0) return false;
         }
         return true;
     }
 
-    constexpr size_t MathUtil::nextPrime(size_t n)
+    template<typename T>
+    constexpr T MathUtil::nextPrime(T n)
     {
-        size_t limit = (n == 0) ? 2 : n * 2;
-        for (size_t candidate = n + 1; candidate <= limit; ++candidate)
+        T limit = (n == 0) ? 2 : n * 2;
+        for (T candidate = n + 1; candidate <= limit; ++candidate)
         {
             if (isPrime(candidate))
             {
