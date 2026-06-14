@@ -11,53 +11,56 @@ namespace keyh
 		size_t hash = self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
-		int32 psl = 0;
-		InsertStatus status = InsertStatus::Error;
 		typename Derived::Bucket* bucket = &self->_buckets[index];
-		if (bucket->isEmpty())
+		size_t currentIndex = index;
+		int32 searchPsl = 0;
+		do
 		{
-			// If the bucket is empty, insert the new key-value pair directly.
-			bucket->constructBucket(psl, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
-			status = InsertStatus::Inserted;
-		}
-		else
-		{
-			// If the bucket's key matches the new key, update the value if replace is true, otherwise do nothing.
+			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
+				break;
+
 			if (bucket->key() == key)
 			{
 				if (replace)
 				{
 					bucket->changeBucketValue(keyh::forward<Args>(args)...);
-					status = InsertStatus::Replaced;
+					return self->makeInsertResult(bucket, InsertStatus::Replaced);
 				}
-				else
-				{
-					status = InsertStatus::AlreadyExists;
-				}
+
+				return self->makeInsertResult(bucket, InsertStatus::AlreadyExists);
 			}
-			else
+
+			++searchPsl;
+			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
+			bucket = &self->_buckets[currentIndex];
+		} while (currentIndex != index);
+
+		int32 psl = 0;
+		InsertStatus status = InsertStatus::Error;
+		typename Derived::Bucket tempBucket;
+		tempBucket.constructBucket(psl, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
+		bucket = &self->_buckets[index];
+		currentIndex = index;
+		do
+		{
+			if (bucket->isEmpty())
 			{
-				typename Derived::Bucket tempBucket;
-				tempBucket.constructBucket(psl, keyh::forward<Key>(key), keyh::forward<Args>(args)...);
-				size_t currentIndex = index;
-				do
-				{
-					// If the bucket's PSL is less than the new key's PSL, swap the bucket with the new key-value pair and continue to insert the displaced bucket.
-					if (bucket->getPsl() < psl)
-					{
-						tempBucket.setPsl(psl);
-						psl = bucket->getPsl();
-						tempBucket.swapBucket(bucket);						
-					}
-					else
-					{
-						++psl;
-					}
-					currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
-					bucket = &self->_buckets[currentIndex];
-				} while (currentIndex != index);
+				tempBucket.setPsl(psl);
+				bucket->swapBucket(&tempBucket);
+				status = InsertStatus::Inserted;
+				break;
 			}
-		}
+			if (bucket->getPsl() < psl)
+			{
+				tempBucket.setPsl(psl);
+				tempBucket.swapBucket(bucket);
+				psl = tempBucket.getPsl();
+			}
+
+			++psl;
+			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
+			bucket = &self->_buckets[currentIndex];
+		} while (currentIndex != index);
 
 		if (status == InsertStatus::Inserted)
 			++_size;
@@ -76,46 +79,50 @@ namespace keyh
 		size_t hash = self->_hasher(otherBucket.key());
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
-		int32 psl = 0;
-		InsertStatus status = InsertStatus::Error;
 		typename Derived::Bucket* bucket = &self->_buckets[index];
-		if (bucket->isEmpty())
+		size_t currentIndex = index;
+		int32 searchPsl = 0;
+		do
 		{
-			// If the bucket is empty, insert the new key-value pair directly.
-			otherBucket.setPsl(psl);
-			bucket->swapBucket(&otherBucket);
-			status = InsertStatus::Inserted;
-		}
-		else
-		{
-			// If the bucket's key matches the new key, update the value if replace is true, otherwise do nothing.
+			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
+				break;
+
 			if (bucket->key() == otherBucket.key())
 			{
-				bucket->~Bucket();
+				otherBucket.setPsl(bucket->getPsl());
 				bucket->swapBucket(&otherBucket);
-				status = InsertStatus::Replaced;
+				return self->makeInsertResult(bucket, InsertStatus::Replaced);
 			}
-			else
+
+			++searchPsl;
+			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
+			bucket = &self->_buckets[currentIndex];
+		} while (currentIndex != index);
+
+		int32 psl = 0;
+		InsertStatus status = InsertStatus::Error;
+		bucket = &self->_buckets[index];
+		currentIndex = index;
+		do
+		{
+			if (bucket->isEmpty())
 			{
-				size_t currentIndex = index;
-				do
-				{
-					// If the bucket's PSL is less than the new key's PSL, swap the bucket with the new key-value pair and continue to insert the displaced bucket.
-					if (bucket->getPsl() < psl)
-					{
-						otherBucket.setPsl(psl);
-						psl = bucket->getPsl();
-						otherBucket.swapBucket(bucket);
-					}
-					else
-					{
-						++psl;
-					}
-					currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
-					bucket = &self->_buckets[currentIndex];
-				} while (currentIndex != index);
+				otherBucket.setPsl(psl);
+				bucket->swapBucket(&otherBucket);
+				status = InsertStatus::Inserted;
+				break;
 			}
-		}
+			if (bucket->getPsl() < psl)
+			{
+				otherBucket.setPsl(psl);
+				otherBucket.swapBucket(bucket);
+				psl = otherBucket.getPsl();
+			}
+
+			++psl;
+			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
+			bucket = &self->_buckets[currentIndex];
+		} while (currentIndex != index);
 
 		if (status == InsertStatus::Inserted)
 			++_size;
@@ -155,11 +162,13 @@ namespace keyh
 	template<typename Key>
 	bool HashContainerBase<Derived>::removeImpl(const Key& key)
 	{
+		using Bucket = typename Derived::Bucket;
+
 		Derived* self = static_cast<Derived*>(this);
 		size_t hash = self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
-		typename Derived::Bucket* bucket = &self->_buckets[index];
+		Bucket* bucket = &self->_buckets[index];
 		if (bucket->isEmpty())
 			return false;
 
@@ -171,7 +180,7 @@ namespace keyh
 				bucket->~Bucket();
 				--_size;
 				size_t nextIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
-				typename Derived::Bucket* nextBucket = &self->_buckets[nextIndex];
+				Bucket* nextBucket = &self->_buckets[nextIndex];
 				while (nextBucket->isEmpty() == false && nextBucket->getPsl() != 0)
 				{
 					nextBucket->swapBucket(bucket);
@@ -233,6 +242,8 @@ namespace keyh
 	template<typename Derived>
 	void HashContainerBase<Derived>::clear()
 	{
+		using Bucket = typename Derived::Bucket;
+
 		Derived* self = static_cast<Derived*>(this);
 		for (size_t i = 0; i < _capacity; ++i)
 		{
