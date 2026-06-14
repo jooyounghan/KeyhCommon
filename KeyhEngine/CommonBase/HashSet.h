@@ -17,12 +17,11 @@ namespace keyh
 		using Base::insertImpl;
 		using Base::findImpl;
 		using Base::removeImpl;
-		using typename Base::InsertStatus;
 
 	public:
 		using Base::clear;
 		using Bucket = HashBucket<Key>;
-		using InsertResult = HashInsertResult<void, InsertStatus>;
+		using InsertResult = HashInsertResult<void>;
 		using FindResult = HashFindResult<void>;
 
 	public:
@@ -47,7 +46,7 @@ namespace keyh
 		bool			remove(const Key& key);
 
 	private:
-		InsertResult makeInsertResult(Bucket* bucket, InsertStatus status);
+		InsertResult makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status);
 		FindResult makeFindResult(Bucket* bucket, bool found);
 	};
 }

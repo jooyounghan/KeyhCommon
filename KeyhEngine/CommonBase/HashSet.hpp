@@ -59,7 +59,7 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket* bucket, InsertStatus status)
+	HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status)
 	{
 		return InsertResult(status);
 	}

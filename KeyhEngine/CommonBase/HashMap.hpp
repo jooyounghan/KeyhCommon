@@ -61,7 +61,7 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket* bucket, InsertStatus status)
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status)
 	{
 		return InsertResult(bucket->value(), status);
 	}
