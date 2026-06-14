@@ -5,7 +5,7 @@
 #include "Delegate.h"
 #include "AssertUtil.h"
 #include "HashMap.h"
-
+#include "HashSet.h"
 using namespace keyh;
 
 int main()
@@ -45,12 +45,27 @@ int main()
 		map.insert(9, "nine");
 		map.insert(10, "ten");
 
-
-
         map.find(1);
 	    map.remove(1);
         map.reserve(100);
         map.clear();
+
+		HashSet<int> set;
+		set.insert(1);
+		set.insert(2);
+		set.insert(3);
+		set.insert(4);
+		set.insert(5);
+		set.insert(6);
+		set.insert(7);
+		set.insert(8);
+		set.insert(9);
+		set.insert(10);
+
+		set.contains(1);
+		set.remove(1);
+		set.reserve(100);
+		set.clear();
     }
     return 0;
 }

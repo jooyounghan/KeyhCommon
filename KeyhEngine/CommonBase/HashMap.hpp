@@ -6,6 +6,45 @@
 namespace keyh
 {
 	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::Bucket::~Bucket()
+	{
+		if (!isEmpty())
+		{
+			key().~Key();
+			value().~Value();
+			_psl = HashUtil::kEmptyPsl;
+		}
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::Bucket::Bucket(Bucket&& other)
+	{
+		if (other.isEmpty() == false)
+		{
+			_psl = other._psl;
+			other._psl = HashUtil::kEmptyPsl;
+
+			new (&_keyStorage) Key(keyh::move(other.key()));
+			new (&_valueStorage) Value(keyh::move(other.value()));
+		}
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::Bucket& HASHMAP_CLASS::Bucket::operator=(Bucket&& other)
+	{
+		if (this != &other && other.isEmpty() == false)
+		{
+			_psl = other._psl;
+			other._psl = HashUtil::kEmptyPsl;
+
+			new (&_keyStorage) Key(keyh::move(other.key()));
+			new (&_valueStorage) Value(keyh::move(other.value()));
+		}
+		return *this;
+	}
+
+
+	HASHMAP_TEMPLATE_TYPE
 	void HASHMAP_CLASS::Bucket::constructBucket(int32 psl, const Key& key, const Value& value)
 	{
 		new (&_keyStorage) Key(key);
@@ -38,9 +77,10 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	void HASHMAP_CLASS::Bucket::swapBucket(Bucket* other)
 	{
-		std::swap(_keyStorage, other->_keyStorage);
-		std::swap(_valueStorage, other->_valueStorage);
-		std::swap(_psl, other->_psl);
+		Bucket tempBucket;
+		tempBucket = keyh::move(*this);
+		*this = keyh::move(*other);
+		*other = keyh::move(tempBucket);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
@@ -87,27 +127,27 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	Value* HASHMAP_CLASS::find(const Key& key)
+	HASHMAP_CLASS::FindResult HASHMAP_CLASS::find(const Key& key)
 	{
-		return nullptr;
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	const Value* HASHMAP_CLASS::find(const Key& key) const
-	{
-		return nullptr;
+		return findImpl(key);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
 	bool HASHMAP_CLASS::remove(const Key& key)
 	{
-		return false;
+		return removeImpl(key);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::makeInsertResult(Bucket* bucket, InsertStatus status)
 	{
 		return InsertResult(bucket->value(), status);
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::FindResult HASHMAP_CLASS::makeFindResult(Bucket* bucket, bool found)
+	{
+		return FindResult(bucket ? &bucket->value() : nullptr, found);
 	}
 }
 
