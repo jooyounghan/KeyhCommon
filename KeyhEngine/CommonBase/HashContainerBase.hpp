@@ -52,9 +52,10 @@ namespace keyh
 			}
 			if (bucket->getPsl() < psl)
 			{
+				const int32 displacedPsl = bucket->getPsl();
 				tempBucket.setPsl(psl);
 				tempBucket.swapBucket(bucket);
-				psl = tempBucket.getPsl();
+				psl = displacedPsl;
 			}
 
 			++psl;
@@ -114,9 +115,10 @@ namespace keyh
 			}
 			if (bucket->getPsl() < psl)
 			{
+				const int32 displacedPsl = bucket->getPsl();
 				otherBucket.setPsl(psl);
 				otherBucket.swapBucket(bucket);
-				psl = otherBucket.getPsl();
+				psl = displacedPsl;
 			}
 
 			++psl;
