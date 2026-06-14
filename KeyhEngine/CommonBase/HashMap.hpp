@@ -13,10 +13,8 @@ namespace keyh
 	
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::HashMap(HashMap && other) noexcept
-		: _buckets(other._buckets)
+		: Base(other._capacity, other._size), _buckets(other._buckets)
 	{
-		_capacity = other._capacity;
-		_size = other._size;
 		other._buckets = nullptr;
 		other._capacity = 0;
 		other._size = 0;
