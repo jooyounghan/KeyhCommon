@@ -5,44 +5,44 @@
 
 namespace keyh
 {
-	template<typename InsertStatusT>
+	using InsertStatus = HashUtil::InsertStatus;
 	class HashInsertResultBase
 	{
 	protected:
-		explicit HashInsertResultBase(InsertStatusT status)
+		explicit HashInsertResultBase(InsertStatus status)
 			: _status(status) {}
 
 	private:
-		InsertStatusT _status;
+		InsertStatus _status;
 
 	public:
-		bool isSuccess() const noexcept { return _status == InsertStatusT::Inserted || _status == InsertStatusT::Replaced; }
-		bool isDenied() const noexcept { return _status == InsertStatusT::AlreadyExists; }
-		bool isError() const noexcept { return _status == InsertStatusT::Error; }
+		bool isSuccess() const noexcept { return _status == InsertStatus::Inserted || _status == InsertStatus::Replaced; }
+		bool isDenied() const noexcept { return _status == InsertStatus::AlreadyExists; }
+		bool isError() const noexcept { return _status == InsertStatus::Error; }
 	};
 
-	template<typename Value, typename InsertStatusT>
-	class HashInsertResult : public HashInsertResultBase<InsertStatusT>
+	template<typename Value>
+	class HashInsertResult : public HashInsertResultBase
 	{
 	private:
-		using Base = HashInsertResultBase<InsertStatusT>;
+		using Base = HashInsertResultBase;
 
 	public:
-		HashInsertResult(Value& value, InsertStatusT status)
+		HashInsertResult(Value& value, InsertStatus status)
 			: Base(status), _value(value) {}
 
 	public:
 		Value& _value;
 	};
 
-	template<typename InsertStatusT>
-	class HashInsertResult<void, InsertStatusT> : public HashInsertResultBase<InsertStatusT>
+	template<>
+	class HashInsertResult<void> : public HashInsertResultBase
 	{
 	private:
-		using Base = HashInsertResultBase<InsertStatusT>;
+		using Base = HashInsertResultBase;
 
 	public:
-		explicit HashInsertResult(InsertStatusT status)
+		explicit HashInsertResult(InsertStatus status)
 			: Base(status) {}
 	};
 
@@ -278,15 +278,6 @@ namespace keyh
 	template <typename Derived>
 	class HashContainerBase
 	{
-	protected:
-		enum class InsertStatus
-		{
-			Inserted,
-			Replaced,
-			AlreadyExists,
-			Error
-		};
-
 	protected:
 		size_t _capacity = 0;
 		size_t _size = 0;
