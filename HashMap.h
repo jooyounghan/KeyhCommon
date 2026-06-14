@@ -15,29 +15,49 @@ namespace keyh
 		using Base::_capacity;
 		using Base::_size;
 		using Base::insertImpl;
+		using Base::findImpl;
+		using Base::removeImpl;
 		using typename Base::InsertStatus;
 
 	public:
 		using Base::clear;
 
 	private:
-		struct Bucket
+		class Bucket
 		{
+		public:
+			Bucket() = default;
+			~Bucket();
+
+		public:
+			Bucket(const Bucket&) = delete;
+			Bucket& operator=(const Bucket&) = delete;
+			Bucket(Bucket&&);
+			Bucket& operator=(Bucket&&);
+
+		private:
 			alignas(Key)	uint8	_keyStorage[sizeof(Key)];
 			alignas(Value)	uint8	_valueStorage[sizeof(Value)];
 			int32					_psl = HashUtil::kEmptyPsl;
 
+		public:
 			bool isEmpty() const noexcept { return _psl < 0; }
+			inline int32 getPsl() const noexcept { return _psl; }
+			inline void setPsl(int32 psl) noexcept { _psl = psl; }
+
+		public:
 			Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
 			const Key& key() const noexcept { return *reinterpret_cast<const Key*>(_keyStorage); }
 			Value& value() noexcept { return *reinterpret_cast<Value*>(_valueStorage); }
 			const Value& value() const noexcept { return *reinterpret_cast<const Value*>(_valueStorage); }
 
+		public:
 			void constructBucket(int32 psl, const Key& key, const Value& value);
 			void constructBucket(int32 psl, Key&& key, Value&& value);
 			void changeBucketValue(const Value& value);
 			void changeBucketValue(Value&& value);
 
+		public:
 			void swapBucket(Bucket* other);
 		};
 
@@ -57,10 +77,10 @@ namespace keyh
 		Hasher	_hasher;
 
 	private:
-		struct InsertResultValue
+		class InsertResult
 		{
 		public:
-			InsertResultValue(Value& value, InsertStatus success)
+			InsertResult(Value& value, InsertStatus success)
 				: _value(value), _success(success) {}
 
 		public:
@@ -75,17 +95,31 @@ namespace keyh
 			bool isError() const noexcept { return _success == InsertStatus::Error; }
 		};
 
-		using InsertResult = InsertResultValue;
+		class FindResult
+		{
+		public:
+			FindResult(Value* value, bool found)
+				: _value(found ? value : nullptr), _found(found) {}
+
+		private:
+			Value* _value;
+			bool	_found;
+
+		public:
+			Value* value() noexcept { return _value; }
+			const Value* value() const noexcept { return _value; }
+			bool isFound() const noexcept { return _found; }
+		};
 
 	public:
 		InsertResult	insert(const Key& key, const Value& value, bool replace = false);
 		InsertResult	insert(Key&& key, Value&& value, bool replace = false);
-		Value*			find(const Key& key);
-		const Value*	find(const Key& key) const;
+		FindResult		find(const Key& key);
 		bool			remove(const Key& key);
 
 	private:
-		InsertResult makeInsertResult(Bucket* bucket, InsertStatus status);
+		InsertResult	makeInsertResult(Bucket* bucket, InsertStatus status);
+		FindResult		makeFindResult(Bucket* bucket, bool found);
 	};
 }
 #include "HashMap.hpp"

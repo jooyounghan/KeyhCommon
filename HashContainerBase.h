@@ -25,9 +25,17 @@ namespace keyh
 		template <typename Key, typename... Args>
 		auto insertImpl(bool replace, Key&& key, Args&&... args);
 
+	private:
+		template<typename BucketT>
+		auto insertBucket(BucketT&& bucket);
+
 	protected:
 		template<typename Key>
-		void removeImpl(Key&& key);
+		bool removeImpl(const Key& key);
+
+	protected:
+		template<typename Key>
+		auto findImpl(const Key& key);
 
 	protected:
 		void rehashIfNeeded();
