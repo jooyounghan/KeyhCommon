@@ -1,4 +1,5 @@
 #pragma once
+
 #include "HashUtil.h"
 #include "CircularBufferUtil.h"
 #include "AssertUtil.h"
@@ -6,6 +7,7 @@
 namespace keyh
 {
 	using InsertStatus = HashUtil::InsertStatus;
+
 	class HashInsertResultBase
 	{
 	protected:
@@ -77,12 +79,30 @@ namespace keyh
 		bool isFound() const noexcept { return _found; }
 	};
 
+	class HashBucketBase
+	{
+	protected:
+		HashBucketBase() = default;
+		~HashBucketBase() = default;
+
+	protected:
+		int32 _psl = HashUtil::kEmptyPsl;
+
+	public:
+		bool isEmpty() const noexcept { return _psl < 0; }
+		int32 getPsl() const noexcept { return _psl; }
+		void setPsl(int32 psl) noexcept { _psl = psl; }
+	};
+
 	template<typename Key, typename Value = void>
 	class HashBucket;
 
 	template<typename Key>
-	class HashBucket<Key, void>
+	class HashBucket<Key, void> : public HashBucketBase
 	{
+	private:
+		using Base = HashBucketBase;
+
 	public:
 		HashBucket() = default;
 		~HashBucket() { destroy(); }
@@ -106,12 +126,6 @@ namespace keyh
 
 	private:
 		alignas(Key)	uint8	_keyStorage[sizeof(Key)];
-		int32					_psl = HashUtil::kEmptyPsl;
-
-	public:
-		bool isEmpty() const noexcept { return _psl < 0; }
-		int32 getPsl() const noexcept { return _psl; }
-		void setPsl(int32 psl) noexcept { _psl = psl; }
 
 	public:
 		Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
@@ -170,8 +184,11 @@ namespace keyh
 	};
 
 	template<typename Key, typename Value>
-	class HashBucket
+	class HashBucket : public HashBucketBase
 	{
+	private:
+		using Base = HashBucketBase;
+
 	public:
 		HashBucket() = default;
 		~HashBucket() { destroy(); }
@@ -196,12 +213,6 @@ namespace keyh
 	private:
 		alignas(Key)	uint8	_keyStorage[sizeof(Key)];
 		alignas(Value)	uint8	_valueStorage[sizeof(Value)];
-		int32					_psl = HashUtil::kEmptyPsl;
-
-	public:
-		bool isEmpty() const noexcept { return _psl < 0; }
-		int32 getPsl() const noexcept { return _psl; }
-		void setPsl(int32 psl) noexcept { _psl = psl; }
 
 	public:
 		Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
@@ -312,4 +323,5 @@ namespace keyh
 		void clear();
 	};
 }
+
 #include "HashContainerBase.hpp"
