@@ -292,6 +292,11 @@ namespace keyh
 		size_t _size = 0;
 
 	protected:
+		HashContainerBase() = default;
+		HashContainerBase(size_t capacity, size_t size) noexcept
+			: _capacity(capacity), _size(size) {}
+
+	protected:
 		template <typename Key, typename... Args>
 		auto insertImpl(bool replace, Key&& key, Args&&... args);
 
