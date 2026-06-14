@@ -6,84 +6,6 @@
 namespace keyh
 {
 	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::Bucket::~Bucket()
-	{
-		if (!isEmpty())
-		{
-			key().~Key();
-			value().~Value();
-			_psl = HashUtil::kEmptyPsl;
-		}
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::Bucket::Bucket(Bucket&& other)
-	{
-		if (other.isEmpty() == false)
-		{
-			_psl = other._psl;
-			other._psl = HashUtil::kEmptyPsl;
-
-			new (&_keyStorage) Key(keyh::move(other.key()));
-			new (&_valueStorage) Value(keyh::move(other.value()));
-		}
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::Bucket& HASHMAP_CLASS::Bucket::operator=(Bucket&& other)
-	{
-		if (this != &other && other.isEmpty() == false)
-		{
-			_psl = other._psl;
-			other._psl = HashUtil::kEmptyPsl;
-
-			new (&_keyStorage) Key(keyh::move(other.key()));
-			new (&_valueStorage) Value(keyh::move(other.value()));
-		}
-		return *this;
-	}
-
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::Bucket::constructBucket(int32 psl, const Key& key, const Value& value)
-	{
-		new (&_keyStorage) Key(key);
-		new (&_valueStorage) Value(value);
-		_psl = psl;
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::Bucket::constructBucket(int32 psl, Key&& key, Value&& value)
-	{
-		new (&_keyStorage) Key(keyh::move(key));
-		new (&_valueStorage) Value(keyh::move(value));
-		_psl = psl;
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::Bucket::changeBucketValue(const Value& value)
-	{
-		this->value().~Value();
-		new (&_valueStorage) Value(value);
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::Bucket::changeBucketValue(Value&& value)
-	{
-		this->value().~Value();
-		new (&_valueStorage) Value(keyh::move(value));
-	}
-
-	HASHMAP_TEMPLATE_TYPE
-	void HASHMAP_CLASS::Bucket::swapBucket(Bucket* other)
-	{
-		Bucket tempBucket;
-		tempBucket = keyh::move(*this);
-		*this = keyh::move(*other);
-		*other = keyh::move(tempBucket);
-	}
-
-	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::~HashMap()
 	{
 		clear();
@@ -91,7 +13,7 @@ namespace keyh
 	
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::HashMap(HashMap && other) noexcept
-		: _buckets(other._buckets), _capacity(other._capacity), _size(other._size)
+		: Base(other._capacity, other._size), _buckets(other._buckets)
 	{
 		other._buckets = nullptr;
 		other._capacity = 0;

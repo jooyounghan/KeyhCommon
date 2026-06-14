@@ -9,7 +9,7 @@ namespace keyh
 	{
 	private:
 		using Base = HashContainerBase<HashSet<Key, Hasher>>;
-		friend class Base;
+		friend class HashContainerBase<HashSet<Key, Hasher>>;
 
 	protected:
 		using Base::_capacity;
@@ -21,41 +21,9 @@ namespace keyh
 
 	public:
 		using Base::clear;
-
-	private:
-		class Bucket
-		{
-		public:
-			Bucket() = default;
-			~Bucket();
-
-		public:
-			Bucket(const Bucket&) = delete;
-			Bucket& operator=(const Bucket&) = delete;
-			Bucket(Bucket&&);
-			Bucket& operator=(Bucket&&);
-
-		private:
-			alignas(Key)	uint8	_keyStorage[sizeof(Key)];
-			int32					_psl = HashUtil::kEmptyPsl;
-
-		public:
-			bool isEmpty() const noexcept { return _psl < 0; }
-			inline int32 getPsl() const noexcept { return _psl; }
-			inline void setPsl(int32 psl) noexcept { _psl = psl; }
-			
-		public:
-			Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }
-			const Key& key() const noexcept { return *reinterpret_cast<const Key*>(_keyStorage); }
-
-		public:
-			void constructBucket(int32 psl, const Key& key);
-			void constructBucket(int32 psl, Key&& key);
-			void changeBucketValue() { __noop; }
-
-		public:
-			void swapBucket(Bucket* other);
-		};
+		using Bucket = HashBucket<Key>;
+		using InsertResult = HashInsertResult<void, InsertStatus>;
+		using FindResult = HashFindResult<void>;
 
 	public:
 		HashSet() = default;
@@ -71,35 +39,6 @@ namespace keyh
 	private:
 		Bucket* _buckets = nullptr;
 		Hasher	_hasher;
-
-	private:
-		class InsertResult
-		{
-		public:
-			InsertResult(InsertStatus success)
-				: _success(success) {}
-
-		private:
-			InsertStatus	_success;
-
-		public:
-			bool isSuccess() const noexcept { return _success == InsertStatus::Inserted || _success == InsertStatus::Replaced; }
-			bool isDenied() const noexcept { return _success == InsertStatus::AlreadyExists; }
-			bool isError() const noexcept { return _success == InsertStatus::Error; }
-		};
-
-		class FindResult
-		{
-		public:
-			FindResult(bool found)
-				: _found(found) {}
-
-		private:
-			bool _found;
-
-		public:
-			bool isFound() const noexcept { return _found; }
-		};
 
 	public:
 		InsertResult	insert(const Key& key);
