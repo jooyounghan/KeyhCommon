@@ -9,7 +9,7 @@ namespace keyh
 	{
 	private:
 		using Base = HashContainerBase<HashMap<Key, Value, Hasher>>;
-		friend Base;
+		friend class HashContainerBase<HashMap<Key, Value, Hasher>>;
 		
 	protected:
 		using Base::_capacity;
