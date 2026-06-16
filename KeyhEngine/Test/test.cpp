@@ -103,9 +103,12 @@ static void test_HashMap_basic()
 }
 
 // ── HashMap: auto-rehash ──────────────────────────────────────────────────
-// kInitialCapacity=8, kMaxLoadFactor=0.75 → rehash triggers when
-// size reaches 6 (0.75*8=6).  Inserting 10 items exercises at least
-// one rehash; all items must still be findable afterwards.
+// kInitialCapacity=8, kMaxLoadFactor=0.75 (see HashUtil.h).
+// rehashIfNeeded() fires when kMaxLoadFactor * capacity <= size,
+// i.e. 0.75 * 8 = 6 <= 6 triggers rehash before the 7th insertion.
+// Inserting 10 items crosses that threshold; all items must still be
+// findable afterwards.  If those constants change, this test implicitly
+// adapts because correctness (find after insert) is what is asserted.
 static void test_HashMap_rehash()
 {
     printSection("HashMap – auto-rehash (load-factor triggered)");
