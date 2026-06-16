@@ -2,6 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <chrono>
+#include <random>
+#include <algorithm>
+#include <numeric>
+#include <unordered_map>
+#include <unordered_set>
+#include <set>
 #include <Windows.h>
 #include "HashMap.h"
 #include "HashSet.h"
@@ -12,6 +20,7 @@ using namespace keyh;
 // ─────────────────────────────────────────────
 static int g_pass = 0;
 static int g_fail = 0;
+static volatile size_t g_benchmarkSink = 0;
 
 #define CHECK(expr) \
     do { \
@@ -484,6 +493,248 @@ static void test_HashSet_string_key()
         CHECK(set.contains(std::to_string(i)));
 }
 
+struct BenchResult
+{
+    long long insertUs = 0;
+    long long findUs = 0;
+    long long eraseUs = 0;
+};
+
+static std::vector<int> makeBenchmarkKeys(size_t count)
+{
+    std::vector<int> keys(count);
+    std::iota(keys.begin(), keys.end(), 0);
+    std::mt19937 rng(123456789u);
+    std::shuffle(keys.begin(), keys.end(), rng);
+    return keys;
+}
+
+static BenchResult benchmark_keyh_hashmap(const std::vector<int>& keys)
+{
+    using Clock = std::chrono::steady_clock;
+    HashMap<int, int> map;
+    map.reserve(keys.size() * 2);
+
+    bool insertOk = true;
+    auto begin = Clock::now();
+    for (int key : keys)
+        insertOk = insertOk && map.insert(key, key).isSuccess();
+    auto end = Clock::now();
+    const auto insertUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(insertOk);
+
+    size_t hitCount = 0;
+    size_t checksum = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        auto found = map.find(key);
+        if (found.isFound())
+        {
+            ++hitCount;
+            checksum += static_cast<size_t>(*found.value());
+        }
+    }
+    end = Clock::now();
+    const auto findUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(hitCount == keys.size());
+
+    size_t removedCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        if (map.remove(key))
+            ++removedCount;
+    }
+    end = Clock::now();
+    const auto eraseUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(removedCount == keys.size());
+
+    g_benchmarkSink += checksum + hitCount + removedCount;
+
+    return BenchResult{ insertUs, findUs, eraseUs };
+}
+
+static BenchResult benchmark_std_unordered_map(const std::vector<int>& keys)
+{
+    using Clock = std::chrono::steady_clock;
+    std::unordered_map<int, int> map;
+    map.reserve(keys.size() * 2);
+
+    auto begin = Clock::now();
+    for (int key : keys)
+        map.emplace(key, key);
+    auto end = Clock::now();
+    const auto insertUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+
+    size_t hitCount = 0;
+    size_t checksum = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        auto it = map.find(key);
+        if (it != map.end())
+        {
+            ++hitCount;
+            checksum += static_cast<size_t>(it->second);
+        }
+    }
+    end = Clock::now();
+    const auto findUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(hitCount == keys.size());
+
+    size_t removedCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+        removedCount += map.erase(key);
+    end = Clock::now();
+    const auto eraseUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(removedCount == keys.size());
+
+    g_benchmarkSink += checksum + hitCount + removedCount;
+
+    return BenchResult{ insertUs, findUs, eraseUs };
+}
+
+static BenchResult benchmark_keyh_hashset(const std::vector<int>& keys)
+{
+    using Clock = std::chrono::steady_clock;
+    HashSet<int> set;
+    set.reserve(keys.size() * 2);
+
+    bool insertOk = true;
+    auto begin = Clock::now();
+    for (int key : keys)
+        insertOk = insertOk && set.insert(key).isSuccess();
+    auto end = Clock::now();
+    const auto insertUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(insertOk);
+
+    size_t hitCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        if (set.contains(key))
+            ++hitCount;
+    }
+    end = Clock::now();
+    const auto findUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(hitCount == keys.size());
+
+    size_t removedCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        if (set.remove(key))
+            ++removedCount;
+    }
+    end = Clock::now();
+    const auto eraseUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(removedCount == keys.size());
+
+    g_benchmarkSink += hitCount + removedCount;
+
+    return BenchResult{ insertUs, findUs, eraseUs };
+}
+
+static BenchResult benchmark_std_unordered_set(const std::vector<int>& keys)
+{
+    using Clock = std::chrono::steady_clock;
+    std::unordered_set<int> set;
+    set.reserve(keys.size() * 2);
+
+    auto begin = Clock::now();
+    for (int key : keys)
+        set.emplace(key);
+    auto end = Clock::now();
+    const auto insertUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+
+    size_t hitCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        if (set.find(key) != set.end())
+            ++hitCount;
+    }
+    end = Clock::now();
+    const auto findUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(hitCount == keys.size());
+
+    size_t removedCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+        removedCount += set.erase(key);
+    end = Clock::now();
+    const auto eraseUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(removedCount == keys.size());
+
+    g_benchmarkSink += hitCount + removedCount;
+
+    return BenchResult{ insertUs, findUs, eraseUs };
+}
+
+static BenchResult benchmark_std_set(const std::vector<int>& keys)
+{
+    using Clock = std::chrono::steady_clock;
+    std::set<int> set;
+
+    auto begin = Clock::now();
+    for (int key : keys)
+        set.emplace(key);
+    auto end = Clock::now();
+    const auto insertUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+
+    size_t hitCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+    {
+        if (set.find(key) != set.end())
+            ++hitCount;
+    }
+    end = Clock::now();
+    const auto findUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(hitCount == keys.size());
+
+    size_t removedCount = 0;
+    begin = Clock::now();
+    for (int key : keys)
+        removedCount += set.erase(key);
+    end = Clock::now();
+    const auto eraseUs = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+    CHECK(removedCount == keys.size());
+
+    g_benchmarkSink += hitCount + removedCount;
+
+    return BenchResult{ insertUs, findUs, eraseUs };
+}
+
+static void benchmark_containers_against_std()
+{
+    printSection("Performance benchmark: keyh vs std");
+
+    constexpr size_t kBenchmarkCount = 100000;
+    const std::vector<int> keys = makeBenchmarkKeys(kBenchmarkCount);
+
+    const BenchResult keyhMap = benchmark_keyh_hashmap(keys);
+    const BenchResult stdMap = benchmark_std_unordered_map(keys);
+    const BenchResult keyhSet = benchmark_keyh_hashset(keys);
+    const BenchResult stdUnorderedSet = benchmark_std_unordered_set(keys);
+    const BenchResult stdSet = benchmark_std_set(keys);
+
+    printf("Benchmark size: %zu keys\n", kBenchmarkCount);
+    printf("Unit: microseconds (lower is faster)\n");
+
+    printf("\n[Map] keyh::HashMap vs std::unordered_map\n");
+    printf("  keyh::HashMap       insert=%lld, find=%lld, erase=%lld\n", keyhMap.insertUs, keyhMap.findUs, keyhMap.eraseUs);
+    printf("  std::unordered_map  insert=%lld, find=%lld, erase=%lld\n", stdMap.insertUs, stdMap.findUs, stdMap.eraseUs);
+
+    printf("\n[Set] keyh::HashSet vs std::unordered_set vs std::set\n");
+    printf("  keyh::HashSet       insert=%lld, find=%lld, erase=%lld\n", keyhSet.insertUs, keyhSet.findUs, keyhSet.eraseUs);
+    printf("  std::unordered_set  insert=%lld, find=%lld, erase=%lld\n", stdUnorderedSet.insertUs, stdUnorderedSet.findUs, stdUnorderedSet.eraseUs);
+    printf("  std::set            insert=%lld, find=%lld, erase=%lld\n", stdSet.insertUs, stdSet.findUs, stdSet.eraseUs);
+    printf("\nBenchmark sink: %zu\n", static_cast<size_t>(g_benchmarkSink));
+}
+
 // ─────────────────────────────────────────────
 // main
 // ─────────────────────────────────────────────
@@ -505,6 +756,7 @@ int main()
 
     test_HashMap_string_key();
     test_HashSet_string_key();
+    benchmark_containers_against_std();
 
     printSummary();
     return g_fail == 0 ? 0 : 1;
