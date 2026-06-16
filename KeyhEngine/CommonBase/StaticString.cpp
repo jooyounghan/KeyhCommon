@@ -22,6 +22,7 @@ namespace keyh
 	template<typename T>
 	StaticString<T>& StaticString<T>::operator=(const StaticString & other)
 	{
+		return *this;
 	}
 	
 	template<typename T>
@@ -32,6 +33,7 @@ namespace keyh
 	template<typename T>
 	StaticString<T>& StaticString<T>::operator=(StaticString && other) noexcept
 	{
+		return *this;
 	}
 
 	template<typename T>
@@ -49,12 +51,15 @@ namespace keyh
 	template<typename T>
 	T& StaticString<T>::operator[](size_t index)
 	{
-
+		static T t;
+		return t;
 	}
 
 	template<typename T>
 	const T& StaticString<T>::operator[](size_t index) const
 	{
+		static T t;
+		return t;
 	}
 
 	template<typename T>

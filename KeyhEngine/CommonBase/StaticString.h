@@ -45,9 +45,9 @@ namespace keyh
 		StringInfo _stringInfo;
 
 	public:
-		inline const T* c_str() const { return _data; }
-		inline size_t size() const { return _size; }
-		inline bool empty() const { return _size == 0; }
+		inline const T* c_str() const { return _stringInfo._isSso ? _sso._buffer : _heap._data; }
+		inline size_t size() const { return _stringInfo._size; }
+		inline bool empty() const { return _stringInfo._size == 0; }
 
 	public:
 		bool operator==(const StaticString& other) const;
@@ -56,12 +56,12 @@ namespace keyh
 		const T& operator[](size_t index) const;
 
 	public:
-		inline T* begin() { return c_str(); }
-		inline const T* begin() const { return c_str(); }
-		inline T* end() { return c_str() + size(); }
-		inline const T* end() const { return c_str() + size(); }
-		inline const T* cbegin() const { return c_str(); }
-		inline const T* cend() const { return c_str() + size(); }
+		//inline T* begin() { return c_str(); }
+		//inline const T* begin() const { return c_str(); }
+		//inline T* end() { return c_str() + size(); }
+		//inline const T* end() const { return c_str() + size(); }
+		//inline const T* cbegin() const { return c_str(); }
+		//inline const T* cend() const { return c_str() + size(); }
 
 	public:
 		void clear();
