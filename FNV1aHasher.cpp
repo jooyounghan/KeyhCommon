@@ -53,4 +53,11 @@ DEFINE_RAW_VALUE_HASH_SPECIALIZATION(double);
 DEFINE_RAW_VALUE_HASH_SPECIALIZATION(float);
 
 #undef DEFINE_RAW_VALUE_HASH_SPECIALIZATION
+
+template<>
+size_t FNV1aHash<std::string>::operator()(const std::string& value) const noexcept
+{
+	return FNV1aHasher::hash(value.c_str(), value.size());
+}
+
 }
