@@ -2,6 +2,7 @@
 #include "CommonCore.h"
 #include "AssertUtil.h"
 #include "MemoryUtil.h"
+#include <string>
 
 #define DECLARE_FNV1A_HASH_SPECIALIZATION(Type) template<> size_t FNV1aHash<Type>::operator()(const Type& value) const noexcept
 #define DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(Class, ...) template<> size_t FNV1aHash<Class<__VA_ARGS__>>::operator()(const Class<__VA_ARGS__>& value) const noexcept
@@ -36,6 +37,7 @@ namespace keyh
 	DECLARE_FNV1A_HASH_SPECIALIZATION(int8);
 	DECLARE_FNV1A_HASH_SPECIALIZATION(double);
 	DECLARE_FNV1A_HASH_SPECIALIZATION(float);
+	DECLARE_FNV1A_HASH_SPECIALIZATION(std::string);
 }
 
 #include "FNV1aHasher.hpp"
