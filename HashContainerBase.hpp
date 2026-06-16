@@ -139,20 +139,26 @@ namespace keyh
 	auto HashContainerBase<Derived>::findImpl(const Key& key)
 	{
 		Derived* self = static_cast<Derived*>(this);
+		if (_capacity == 0)
+			return self->makeFindResult(nullptr, false);
+
 		size_t hash = self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		typename Derived::Bucket* bucket = &self->_buckets[index];
-		if (bucket->isEmpty())
-			return self->makeFindResult(nullptr, false);
-
 		size_t currentIndex = index;
+		int32 searchPsl = 0;
 		do
 		{
+			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
+				return self->makeFindResult(nullptr, false);
+
 			if (bucket->key() == key)
 			{
 				return self->makeFindResult(bucket, true);
 			}
+
+			++searchPsl;
 			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
 			bucket = &self->_buckets[currentIndex];
 		} while (currentIndex != index);
@@ -167,31 +173,41 @@ namespace keyh
 		using Bucket = typename Derived::Bucket;
 
 		Derived* self = static_cast<Derived*>(this);
+		if (_capacity == 0)
+			return false;
+
 		size_t hash = self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		Bucket* bucket = &self->_buckets[index];
-		if (bucket->isEmpty())
-			return false;
-
 		size_t currentIndex = index;
+		int32 searchPsl = 0;
 		do
 		{
+			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
+				return false;
+
 			if (bucket->key() == key)
 			{
-				bucket->~Bucket();
+				Bucket* holeBucket = bucket;
 				--_size;
+
 				size_t nextIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
 				Bucket* nextBucket = &self->_buckets[nextIndex];
-				while (nextBucket->isEmpty() == false && nextBucket->getPsl() != 0)
+				while (!nextBucket->isEmpty() && nextBucket->getPsl() > 0)
 				{
-					nextBucket->swapBucket(bucket);
-					bucket = nextBucket;
+					nextBucket->swapBucket(holeBucket);
+					holeBucket->setPsl(holeBucket->getPsl() - 1);
+					holeBucket = nextBucket;
 					nextIndex = CircularBufferUtil::getIndex(nextIndex, 1, _capacity);
 					nextBucket = &self->_buckets[nextIndex];
 				}
+
+				holeBucket->~Bucket();
 				return true;
 			}
+
+			++searchPsl;
 			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
 			bucket = &self->_buckets[currentIndex];
 		} while (currentIndex != index);
