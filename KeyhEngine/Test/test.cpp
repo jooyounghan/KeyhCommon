@@ -31,10 +31,15 @@ static void printSummary()
     std::printf("==============================\n");
 }
 
-static constexpr const char* kShortText = "hello";
-static constexpr const char* kLongText = "this string is longer than the sso buffer";
-static constexpr const wchar_t* kShortWideText = L"world";
-static constexpr const wchar_t* kLongWideText = L"this wide string is longer than the sso buffer";
+static constexpr char kShortText[] = "hello";
+static constexpr char kLongText[] = "this string is longer than the sso buffer";
+static constexpr wchar_t kShortWideText[] = L"world";
+static constexpr wchar_t kLongWideText[] = L"this wide string is longer than the sso buffer";
+
+static_assert((sizeof(kShortText) - 1) < StrUtil::ssoCapacity);
+static_assert((sizeof(kLongText) - 1) >= StrUtil::ssoCapacity);
+static_assert((sizeof(kShortWideText) / sizeof(wchar_t) - 1) < StrUtil::ssoCapacity);
+static_assert((sizeof(kLongWideText) / sizeof(wchar_t) - 1) >= StrUtil::ssoCapacity);
 
 static void test_StaticString_create_and_length()
 {
@@ -68,6 +73,7 @@ static void test_StaticString_copy()
     shortCopy[0] = 'H';
     CHECK(shortSource[0] == 'h');
     CHECK(shortCopy[0] == 'H');
+    CHECK(std::strcmp(shortCopy.c_str(), "Hello") == 0);
     CHECK(shortCopy != shortSource);
 
     StaticString<char> longSource(kLongText);
@@ -122,9 +128,9 @@ static void test_StaticString_index_access()
     StaticString<char> shortString(kShortText);
     CHECK(shortString[0] == 'h');
     CHECK(shortString[4] == 'o');
-    shortString[1] = 'a';
-    CHECK(shortString[1] == 'a');
-    CHECK(std::strcmp(shortString.c_str(), "hallo") == 0);
+    shortString[1] = 'u';
+    CHECK(shortString[1] == 'u');
+    CHECK(std::strcmp(shortString.c_str(), "hullo") == 0);
 
     const StaticString<char> longString(kLongText);
     CHECK(longString[0] == 't');
