@@ -1,3 +1,4 @@
+#include "Deque.h"
 namespace keyh
 {
 	template<typename T>
@@ -71,11 +72,7 @@ namespace keyh
 		if (this != &other)
 		{
 			Deque temp(other);
-			MemoryUtil::swap(_data, temp._data);
-			MemoryUtil::swap(_top, temp._top);
-			MemoryUtil::swap(_bottom, temp._bottom);
-			MemoryUtil::swap(_capacity, temp._capacity);
-			MemoryUtil::swap(_isEmpty, temp._isEmpty);
+			this->swap(temp);
 		}
 		return *this;
 	}
@@ -100,18 +97,8 @@ namespace keyh
 	{
 		if (this != &other)
 		{
-			clear();
-			_top = other._top;
-			_bottom = other._bottom;
-			_capacity = other._capacity;
-			_isEmpty = other._isEmpty;
-			_data = other._data;
-
-			other._top = 0;
-			other._bottom = 0;
-			other._capacity = 0;
-			other._isEmpty = true;
-			other._data = nullptr;
+			Deque temp(keyh::move(other));
+			this->swap(temp);
 		}
 		return *this;
 	}
@@ -355,5 +342,15 @@ namespace keyh
 		_top = 0;
 		_bottom = 0;
 		_isEmpty = true;
+	}
+
+	template<typename T>
+	void Deque<T>::swap(Deque& other) noexcept
+	{
+		MemoryUtil::swap(_data, other._data);
+		MemoryUtil::swap(_top, other._top);
+		MemoryUtil::swap(_bottom, other._bottom);
+		MemoryUtil::swap(_capacity, other._capacity);
+		MemoryUtil::swap(_isEmpty, other._isEmpty);
 	}
 }
