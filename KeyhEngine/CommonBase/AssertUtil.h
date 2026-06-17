@@ -1,4 +1,6 @@
 #pragma once
+#include <cstdlib>
+
 #include "Delegate.h"
 
 #if defined(__clang__)
