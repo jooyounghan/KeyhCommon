@@ -55,6 +55,12 @@
     <Filter Include="소스 파일\Hasher">
       <UniqueIdentifier>{10663187-a6a6-42a0-85da-7441fa3c6cf9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\String">
+      <UniqueIdentifier>{eec00f45-1eda-456f-8bac-c21bff4be0da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\String">
+      <UniqueIdentifier>{f3682e64-23fc-47a9-ba77-36d08059a4d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -94,12 +100,6 @@
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
-      <Filter>헤더 파일\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="StringView.h">
-      <Filter>헤더 파일\Container</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticString.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
     <ClInclude Include="HashMap.h">
@@ -159,9 +159,6 @@
     <ClInclude Include="HashContainerBase.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
-    <ClInclude Include="HashContainerBase.hpp">
-      <Filter>헤더 파일\Container</Filter>
-    </ClInclude>
     <ClInclude Include="FNV1aHasher.h">
       <Filter>헤더 파일\Hasher</Filter>
     </ClInclude>
@@ -172,6 +169,21 @@
       <Filter>헤더 파일\Hasher</Filter>
     </ClInclude>
     <ClInclude Include="CircularBufferUtil.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticString.h">
+      <Filter>헤더 파일\String</Filter>
+    </ClInclude>
+    <ClInclude Include="HashContainerBase.hpp">
+      <Filter>헤더 파일\String</Filter>
+    </ClInclude>
+    <ClInclude Include="StringView.h">
+      <Filter>헤더 파일\String</Filter>
+    </ClInclude>
+    <ClInclude Include="StrUtil.h">
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="StrUtil.hpp">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
   </ItemGroup>
@@ -200,19 +212,10 @@
     <ClCompile Include="Vector.cpp">
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
-    <ClCompile Include="StringView.cpp">
-      <Filter>소스 파일\Container</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticString.cpp">
-      <Filter>소스 파일\Container</Filter>
-    </ClCompile>
     <ClCompile Include="HashMap.cpp">
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
     <ClCompile Include="HashSet.cpp">
-      <Filter>소스 파일\Container</Filter>
-    </ClCompile>
-    <ClCompile Include="FlyweightString.cpp">
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
     <ClCompile Include="ScalarVectorTypes.cpp">
@@ -243,6 +246,18 @@
       <Filter>소스 파일\Hasher</Filter>
     </ClCompile>
     <ClCompile Include="CircularBufferUtil.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticString.cpp">
+      <Filter>소스 파일\String</Filter>
+    </ClCompile>
+    <ClCompile Include="StringView.cpp">
+      <Filter>소스 파일\String</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyweightString.cpp">
+      <Filter>소스 파일\String</Filter>
+    </ClCompile>
+    <ClCompile Include="StrUtil.cpp">
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
   </ItemGroup>

@@ -108,6 +108,7 @@ namespace keyh
 		void resize(size_t newSize);
 		void reserve(size_t newCapacity);
 		void clear();
+		void swap(Deque& other) noexcept;
 
 	public:
 		inline size_t size() const { return _isEmpty ? 0 : (_top >= _bottom ? _bottom + _capacity - _top : _bottom - _top); }

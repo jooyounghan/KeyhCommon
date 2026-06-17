@@ -138,6 +138,8 @@ namespace keyh
 	template<typename Key>
 	auto HashContainerBase<Derived>::findImpl(const Key& key)
 	{
+		using Bucket = typename Derived::Bucket;
+
 		Derived* self = static_cast<Derived*>(this);
 		if (_capacity == 0)
 			return self->makeFindResult(nullptr, false);
@@ -145,13 +147,13 @@ namespace keyh
 		size_t hash = self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
-		typename Derived::Bucket* bucket = &self->_buckets[index];
+		Bucket* bucket = &self->_buckets[index];
 		size_t currentIndex = index;
 		int32 searchPsl = 0;
 		do
 		{
 			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
-				return self->makeFindResult(nullptr, false);
+				break;
 
 			if (bucket->key() == key)
 			{
@@ -185,7 +187,7 @@ namespace keyh
 		do
 		{
 			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
-				return false;
+				break;
 
 			if (bucket->key() == key)
 			{

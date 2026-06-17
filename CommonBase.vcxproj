@@ -273,6 +273,8 @@
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
+    <ClInclude Include="StrUtil.h" />
+    <ClInclude Include="StrUtil.hpp" />
     <ClInclude Include="TypeCommon.h" />
     <ClInclude Include="TypeTraitCommon.h" />
     <ClInclude Include="TypeTraitCommon.hpp" />
@@ -307,6 +309,7 @@
     <ClCompile Include="StaticArray.cpp" />
     <ClCompile Include="StaticString.cpp" />
     <ClCompile Include="StringView.cpp" />
+    <ClCompile Include="StrUtil.cpp" />
     <ClCompile Include="TypeCommon.cpp" />
     <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />

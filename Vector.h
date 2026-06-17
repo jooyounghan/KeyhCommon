@@ -49,6 +49,7 @@ namespace keyh
 		void reserve(size_t newCapacity);
 		void shrinkToFit();
 		void clear();
+		void swap(Vector& other) noexcept;
 
 	public:
 		inline size_t size() const { return _size; }

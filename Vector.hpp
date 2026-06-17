@@ -28,9 +28,7 @@ namespace keyh
 		if (this != &other)
 		{
 			Vector temp(other);
-			MemoryUtil::swap(_data, temp._data);
-			MemoryUtil::swap(_size, temp._size);
-			MemoryUtil::swap(_capacity, temp._capacity);
+			this->swap(temp);
 		}
 		return *this;
 	}
@@ -51,13 +49,8 @@ namespace keyh
 	{
 		if (this != &other)
 		{
-			clear();
-			_data = other._data;
-			_size = other._size;
-			_capacity = other._capacity;
-			other._data = nullptr;
-			other._size = 0;
-			other._capacity = 0;
+			Vector temp(keyh::move(other));
+			this->swap(temp);
 		}
 		return *this;
 	}
@@ -209,5 +202,13 @@ namespace keyh
 		_data = nullptr;
 		_size = 0;
 		_capacity = 0;
+	}
+	
+	template<typename T>
+	void Vector<T>::swap(Vector& other) noexcept
+	{
+		MemoryUtil::swap(_data, other._data);
+		MemoryUtil::swap(_size, other._size);
+		MemoryUtil::swap(_capacity, other._capacity);
 	}
 }
