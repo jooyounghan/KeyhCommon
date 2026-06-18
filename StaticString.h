@@ -1,5 +1,4 @@
 #pragma once
-
 #include "StrUtil.h"
 
 namespace keyh

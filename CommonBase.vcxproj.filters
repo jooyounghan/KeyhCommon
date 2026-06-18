@@ -61,6 +61,12 @@
     <Filter Include="헤더 파일\String">
       <UniqueIdentifier>{f3682e64-23fc-47a9-ba77-36d08059a4d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Pointer">
+      <UniqueIdentifier>{0fc89942-a6b9-449e-a57d-0b1e6da9a2dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Pointer">
+      <UniqueIdentifier>{94aea5c2-2b18-4c41-81f1-0ddb3e52d252}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -186,6 +192,21 @@
     <ClInclude Include="StrUtil.hpp">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
+    <ClInclude Include="StringView.hpp">
+      <Filter>헤더 파일\String</Filter>
+    </ClInclude>
+    <ClInclude Include="Ptr.h">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="RefPtr.h">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="WeakPtr.h">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="Ptr.hpp">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -259,6 +280,15 @@
     </ClCompile>
     <ClCompile Include="StrUtil.cpp">
       <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Ptr.cpp">
+      <Filter>소스 파일\Pointer</Filter>
+    </ClCompile>
+    <ClCompile Include="RefPtr.cpp">
+      <Filter>소스 파일\Pointer</Filter>
+    </ClCompile>
+    <ClCompile Include="WeakPtr.cpp">
+      <Filter>소스 파일\Pointer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

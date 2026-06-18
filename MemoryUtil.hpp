@@ -11,7 +11,7 @@ namespace keyh
     }
 
     template<typename T>
-    constexpr T MemoryUtil::align(T input, TypeIdentity<T> alignedValue) noexcept
+    constexpr T MemoryUtil::align(T input, TypeIdentity_t<T> alignedValue) noexcept
     {
         TypeTrait::requireIntegral<T>();
         return (input + (alignedValue - 1)) & ~(alignedValue - 1);

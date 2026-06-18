@@ -16,7 +16,7 @@ namespace keyh
 		static constexpr T* addressOf(T& arg) noexcept;
 
 		template<typename T>
-		static constexpr T align(T input, TypeIdentity<T> alignedValue) noexcept;
+		static constexpr T align(T input, TypeIdentity_t<T> alignedValue) noexcept;
 
 		template<typename T>
 		static constexpr bool hasSingleBit(T value) noexcept;
