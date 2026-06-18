@@ -265,14 +265,18 @@
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
     <ClInclude Include="CommonBasePch.h" />
+    <ClInclude Include="Ptr.h" />
+    <ClInclude Include="Ptr.hpp" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Queue.hpp" />
+    <ClInclude Include="RefPtr.h" />
     <ClInclude Include="ScalarVectorTypes.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
+    <ClInclude Include="StringView.hpp" />
     <ClInclude Include="StrUtil.h" />
     <ClInclude Include="StrUtil.hpp" />
     <ClInclude Include="TypeCommon.h" />
@@ -280,6 +284,7 @@
     <ClInclude Include="TypeTraitCommon.hpp" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector.hpp" />
+    <ClInclude Include="WeakPtr.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssertUtil.cpp" />
@@ -303,7 +308,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Ptr.cpp" />
     <ClCompile Include="Queue.cpp" />
+    <ClCompile Include="RefPtr.cpp" />
     <ClCompile Include="ScalarVectorTypes.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="StaticArray.cpp" />
@@ -313,6 +320,7 @@
     <ClCompile Include="TypeCommon.cpp" />
     <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="WeakPtr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CommonBase.natvis" />

@@ -1,8 +1,15 @@
+#include "TypeTraitCommon.h"
 namespace keyh
 {
 	template<typename T>
 	constexpr void TypeTrait::requireIntegral() noexcept
 	{
-		static_assert(IsIntegral<T>, "T must be an integral type");
+		static_assert(IsIntegral_v<T>, "T must be an integral type");
+	}
+
+	template<typename Derived, typename Base>
+	constexpr void keyh::TypeTrait::requireDerivedFrom() noexcept
+	{
+		static_assert(IsDerivedFrom_v<Derived, Base>, "Derived must be derived from Base");
 	}
 }

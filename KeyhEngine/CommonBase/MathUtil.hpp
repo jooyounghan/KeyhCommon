@@ -1,31 +1,31 @@
 namespace keyh
 {
     template<typename T, typename Pred>
-    constexpr T MathUtil::max(T left, TypeIdentity<T> right, Pred pred) noexcept
+    constexpr T MathUtil::max(T left, TypeIdentity_t<T> right, Pred pred) noexcept
     {
         return pred(left, right) ? right : left;
     }
 
     template<typename T>
-    constexpr T MathUtil::max(T left, TypeIdentity<T> right) noexcept
+    constexpr T MathUtil::max(T left, TypeIdentity_t<T> right) noexcept
     {
         return left < right ? right : left;
     }
 
     template<typename T, typename Pred>
-    constexpr T MathUtil::min(T left, TypeIdentity<T> right, Pred pred) noexcept
+    constexpr T MathUtil::min(T left, TypeIdentity_t<T> right, Pred pred) noexcept
     {
         return pred(left, right) ? left : right;
     }
 
     template<typename T>
-    constexpr T MathUtil::min(T left, TypeIdentity<T> right) noexcept
+    constexpr T MathUtil::min(T left, TypeIdentity_t<T> right) noexcept
     {
         return left < right ? left : right;
     }
 
     template<typename T>
-    constexpr T MathUtil::clamp(T input, TypeIdentity<T> minLimit, TypeIdentity<T> maxLimit) noexcept
+    constexpr T MathUtil::clamp(T input, TypeIdentity_t<T> minLimit, TypeIdentity_t<T> maxLimit) noexcept
     {
         return MathUtil::max(MathUtil::min(input, maxLimit), minLimit);
     }

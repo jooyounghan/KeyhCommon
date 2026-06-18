@@ -62,10 +62,10 @@ namespace keyh
     template<typename F>
     DELEGATE_CLASS& DELEGATE_CLASS::bind(F&& callable)
     {
-        using RawF = Decay<F>;
+        using RawF = Decay_t<F>;
         using FuncPtrType = ReturnType(*)(Args...);
 
-        if constexpr (IsConvertible<RawF, FuncPtrType>)
+        if constexpr (IsConvertible_v<RawF, FuncPtrType>)
         {
             FuncPtrType funcPtr = static_cast<FuncPtrType>(callable);
             std::memcpy(_methodStorage, &funcPtr, sizeof(FuncPtrType));

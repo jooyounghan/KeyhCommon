@@ -88,11 +88,10 @@
 		<Expand>
 			<Item Name="[size]">_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
 			<Item Name="[is_sso]">(_stringInfo &amp; 0x8000000000000000ui64) != 0</Item>
-			<StringView Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,s</StringView>
-			<StringView Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,s</StringView>
+			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,s</Item>
+			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,s</Item>
 		</Expand>
 	</Type>
-
 	<Type Name="keyh::StaticString&lt;wchar_t&gt;">
 		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) == 0">{{ size=0, text="" }}</DisplayString>
 		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) != 0">{{ size={_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_ssoBuffer,su} }}</DisplayString>
@@ -100,8 +99,8 @@
 		<Expand>
 			<Item Name="[size]">_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
 			<Item Name="[is_sso]">(_stringInfo &amp; 0x8000000000000000ui64) != 0</Item>
-			<StringView Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,su</StringView>
-			<StringView Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,su</StringView>
+			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,su</Item>
+			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,su</Item>
 		</Expand>
 	</Type>
 

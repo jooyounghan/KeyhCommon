@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cwchar>
 #include "StaticString.h"
-
+#include "Ptr.h"
 using namespace keyh;
 
 static int g_pass = 0;
@@ -166,5 +166,8 @@ int main()
     test_StaticString_wchar();
 
     printSummary();
+
+	Ptr<int> t = makePtr<int>(42);
+
     return g_fail == 0 ? 0 : 1;
 }
