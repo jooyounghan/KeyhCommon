@@ -42,8 +42,14 @@ namespace keyh
 		RefPtr<T>& operator=(const RefPtr<U>& other);
 
 	public:
-		inline bool operator==(Nullptr_t) { return _ptr == nullptr; }
-		inline bool operator!=(Nullptr_t) { return _ptr != nullptr; }
+		inline bool operator==(Nullptr_t) const { return _ptr == nullptr; }
+		inline bool operator!=(Nullptr_t) const { return _ptr != nullptr; }
+		inline bool operator==(const RefPtr<T>& other) const { return _ptr == other._ptr; }
+		inline bool operator!=(const RefPtr<T>& other) const { return _ptr != other._ptr; }
+		template<typename U>
+		inline bool operator==(const RefPtr<U>& other) const { return _ptr == other._ptr; }
+		template<typename U>
+		inline bool operator!=(const RefPtr<U>& other) const { return _ptr != other._ptr; }
 
 	public:
 		inline T* get() const { return _ptr; }
@@ -51,6 +57,9 @@ namespace keyh
 
 	public:
 		void release();
+
+	private:
+		inline void assignFrom(T* ptr, RefControlBlock* block);
 
 	private:
 		T*					_ptr = nullptr;
