@@ -159,3 +159,20 @@ namespace keyh
 	using StaticStringA = StaticString<char>;
 	using StaticStringW = StaticString<wchar_t>;
 }
+
+#pragma region FNV1aHash Specializations
+namespace keyh
+{
+	template<>
+	size_t FNV1aHash<StaticString<char>>::operator()(const StaticString<char>& value) const noexcept
+	{
+		return FNV1aHasher::hash(value.c_str(), value.length());
+	}
+
+	template<>
+	size_t FNV1aHash<StaticString<wchar_t>>::operator()(const StaticString<wchar_t>& value) const noexcept
+	{
+		return FNV1aHasher::hash(value.c_str(), value.length());
+	}
+}
+#pragma endregion

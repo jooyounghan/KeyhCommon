@@ -249,6 +249,7 @@
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Deque.hpp" />
     <ClInclude Include="FlyweightString.h" />
+    <ClInclude Include="FlyweightString.hpp" />
     <ClInclude Include="FNV1aHasher.h" />
     <ClInclude Include="FNV1aHasher.hpp" />
     <ClInclude Include="HashContainerBase.h" />
@@ -278,7 +279,6 @@
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
-    <ClInclude Include="StringView.hpp" />
     <ClInclude Include="StrUtil.h" />
     <ClInclude Include="StrUtil.hpp" />
     <ClInclude Include="TypeCommon.h" />
