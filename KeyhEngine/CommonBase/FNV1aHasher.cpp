@@ -33,6 +33,38 @@ namespace keyh
 		return hashValue;
 	}
 
+	size_t FNV1aHasher::hash(const wchar_t* str, size_t length) noexcept
+	{
+		size_t hashValue = FNV1aHasher::kInitialHashValue;
+		const size_t kSizeOfSizeT = sizeof(size_t);
+		const size_t kSizeOfWChar = sizeof(wchar_t);
+
+		size_t totalBytes = length * kSizeOfWChar;
+		size_t blocks = totalBytes / kSizeOfSizeT;
+		size_t remainder = totalBytes % kSizeOfSizeT;
+
+		const char* ptr = reinterpret_cast<const char*>(str);
+
+		for (size_t i = 0; i < blocks; ++i)
+		{
+			size_t blockValue;
+			std::memcpy(&blockValue, ptr, kSizeOfSizeT);
+
+			hashValue ^= blockValue;
+			hashValue *= FNV1aHasher::kHashPrime;
+
+			ptr += kSizeOfSizeT;
+		}
+
+		for (size_t i = 0; i < remainder; ++i)
+		{
+			hashValue ^= static_cast<size_t>(static_cast<unsigned char>(ptr[i]));
+			hashValue *= FNV1aHasher::kHashPrime;
+		}
+
+		return hashValue;
+	}
+
 #define DEFINE_RAW_VALUE_HASH_SPECIALIZATION(Raw)					\
 template<>															\
 size_t FNV1aHash<Raw>::operator()(const Raw& value) const noexcept	\
@@ -53,11 +85,4 @@ DEFINE_RAW_VALUE_HASH_SPECIALIZATION(double);
 DEFINE_RAW_VALUE_HASH_SPECIALIZATION(float);
 
 #undef DEFINE_RAW_VALUE_HASH_SPECIALIZATION
-
-template<>
-size_t FNV1aHash<std::string>::operator()(const std::string& value) const noexcept
-{
-	return FNV1aHasher::hash(value.c_str(), value.size());
-}
-
 }

@@ -114,9 +114,6 @@
     <ClInclude Include="HashSet.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
-    <ClInclude Include="FlyweightString.h">
-      <Filter>헤더 파일\Container</Filter>
-    </ClInclude>
     <ClInclude Include="ScalarVectorTypes.h">
       <Filter>헤더 파일\Type</Filter>
     </ClInclude>
@@ -192,9 +189,6 @@
     <ClInclude Include="StrUtil.hpp">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
-    <ClInclude Include="StringView.hpp">
-      <Filter>헤더 파일\String</Filter>
-    </ClInclude>
     <ClInclude Include="Ptr.h">
       <Filter>헤더 파일\Pointer</Filter>
     </ClInclude>
@@ -215,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="WeakPtr.hpp">
       <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyweightString.h">
+      <Filter>헤더 파일\String</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyweightString.hpp">
+      <Filter>헤더 파일\String</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

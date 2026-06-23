@@ -57,3 +57,12 @@ namespace keyh
 		void clear();
 	};
 }
+
+#pragma region FNV1aHash Specializations
+#include "FNV1aHasher.h"
+namespace keyh
+{
+	DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(StaticString, char);
+	DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(StaticString, wchar_t);
+}
+#pragma endregion
