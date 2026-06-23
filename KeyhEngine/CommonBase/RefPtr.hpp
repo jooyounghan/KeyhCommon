@@ -16,6 +16,17 @@ namespace keyh
 	}
 
 	template<typename T>
+	inline void RefPtr<T>::assignFrom(T* ptr, RefControlBlock* block)
+	{
+		if (block != nullptr)
+		{
+			block->addRef();
+			_ptr = ptr;
+			_refControlBlock = block;
+		}
+	}
+
+	template<typename T>
 	RefPtr<T>::RefPtr(T* ptr)
 		: _ptr(ptr)
 	{
@@ -39,27 +50,16 @@ namespace keyh
 	template<typename T>
 	RefPtr<T>::RefPtr(const RefPtr<T>& other)
 	{
-		if (other != nullptr)
-		{
-			other._refControlBlock->addRef();
-			_refControlBlock = other._refControlBlock;
-			_ptr = other._ptr;
-		}
+		assignFrom(other._ptr, other._refControlBlock);
 	}
 
 	template<typename T>
-	RefPtr<T>& RefPtr<T>::operator=(const RefPtr<T>&other)
+	RefPtr<T>& RefPtr<T>::operator=(const RefPtr<T>& other)
 	{
 		if (*this != other)
 		{
 			release();
-
-			if (other != nullptr)
-			{
-				other._refControlBlock->addRef();
-				_refControlBlock = other._refControlBlock;
-				_ptr = other._ptr;
-			}
+			assignFrom(other._ptr, other._refControlBlock);
 		}
 		return *this;
 	}
@@ -76,12 +76,7 @@ namespace keyh
 	RefPtr<T>::RefPtr(const RefPtr<U>& other)
 	{
 		TypeTrait::requireDerivedFrom<U, T>();
-		if (other != nullptr)
-		{
-			other._refControlBlock->addRef();
-			_refControlBlock = other._refControlBlock;
-			_ptr = other._ptr;
-		}
+		assignFrom(other._ptr, other._refControlBlock);
 	}
 
 	template<typename T>
@@ -92,13 +87,7 @@ namespace keyh
 		if (*this != other)
 		{
 			release();
-
-			if (other != nullptr)
-			{
-				other._refControlBlock->addRef();
-				_refControlBlock = other._refControlBlock;
-				_ptr = other._ptr;
-			}
+			assignFrom(other._ptr, other._refControlBlock);
 		}
 		return *this;
 	}
@@ -106,12 +95,15 @@ namespace keyh
 	template<typename T>
 	void RefPtr<T>::release()
 	{
-		if (_refControlBlock != nullptr && _refControlBlock->release())
+		if (_refControlBlock != nullptr)
 		{
-			delete _ptr;
-			if (_refControlBlock->releaseWeak())
+			if (_refControlBlock->release())
 			{
-				delete _refControlBlock;
+				delete _ptr;
+				if (_refControlBlock->releaseWeak())
+				{
+					delete _refControlBlock;
+				}
 			}
 			_ptr = nullptr;
 			_refControlBlock = nullptr;

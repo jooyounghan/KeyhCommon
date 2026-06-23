@@ -2,14 +2,57 @@
 namespace keyh
 {
 	template<typename T>
+	inline void WeakPtr<T>::assignWeakFrom(T* ptr, RefControlBlock* block)
+	{
+		if (block != nullptr)
+		{
+			block->addWeakRef();
+			_ptr = ptr;
+			_refControlBlock = block;
+		}
+	}
+
+	template<typename T>
+	void WeakPtr<T>::releaseWeak()
+	{
+		if (_refControlBlock != nullptr)
+		{
+			if (_refControlBlock->releaseWeak())
+			{
+				delete _refControlBlock;
+			}
+			_ptr = nullptr;
+			_refControlBlock = nullptr;
+		}
+	}
+
+	template<typename T>
+	WeakPtr<T>::WeakPtr(const WeakPtr<T>& other)
+	{
+		assignWeakFrom(other._ptr, other._refControlBlock);
+	}
+
+	template<typename T>
+	WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<T>& other)
+	{
+		if (*this != other)
+		{
+			releaseWeak();
+			assignWeakFrom(other._ptr, other._refControlBlock);
+		}
+		return *this;
+	}
+
+	template<typename T>
+	WeakPtr<T>::~WeakPtr()
+	{
+		releaseWeak();
+	}
+
+	template<typename T>
 	WeakPtr<T>::WeakPtr(const RefPtr<T>& other)
 	{
-		if (other != nullptr)
-		{
-			other._refControlBlock->addWeakRef();
-			_refControlBlock = other._refControlBlock;
-			_ptr = other._ptr;
-		}
+		assignWeakFrom(other._ptr, other._refControlBlock);
 	}
 
 	template<typename T>
@@ -17,29 +60,17 @@ namespace keyh
 	{
 		if (*this != other)
 		{
-			if (_refControlBlock != nullptr && _refControlBlock->releaseWeak())
-			{
-				delete _refControlBlock;
-			}
-
-			if (other != nullptr)
-			{
-				other._refControlBlock->addWeakRef();
-				_refControlBlock = other._refControlBlock;
-				_ptr = other._ptr;
-			}
+			releaseWeak();
+			assignWeakFrom(other._ptr, other._refControlBlock);
 		}
+		return *this;
 	}
 
 	template<typename T>
 	WeakPtr<T>& WeakPtr<T>::operator=(Nullptr_t)
 	{
-		if (_refControlBlock != nullptr && _refControlBlock->releaseWeak())
-		{
-			delete _refControlBlock;
-		}
-		_refControlBlock = nullptr;
-		_ptr = nullptr;
+		releaseWeak();
+		return *this;
 	}
 
 	template<typename T>
@@ -47,12 +78,7 @@ namespace keyh
 	WeakPtr<T>::WeakPtr(const RefPtr<U>& other)
 	{
 		TypeTrait::requireDerivedFrom<U, T>();
-		if (other != nullptr)
-		{
-			other._refControlBlock->addWeakRef();
-			_refControlBlock = other._refControlBlock;
-			_ptr = other._ptr;
-		}
+		assignWeakFrom(other._ptr, other._refControlBlock);
 	}
 
 	template<typename T>
@@ -62,21 +88,14 @@ namespace keyh
 		TypeTrait::requireDerivedFrom<U, T>();
 		if (*this != other)
 		{
-			if (_refControlBlock != nullptr && _refControlBlock->releaseWeak())
-			{
-				delete _refControlBlock;
-			}
-			if (other != nullptr)
-			{
-				other._refControlBlock->addWeakRef();
-				_refControlBlock = other._refControlBlock;
-				_ptr = other._ptr;
-			}
+			releaseWeak();
+			assignWeakFrom(other._ptr, other._refControlBlock);
 		}
+		return *this;
 	}
 
 	template<typename T>
-	bool WeakPtr<T>::isValid()
+	bool WeakPtr<T>::isValid() const
 	{
 		if (_refControlBlock == nullptr)
 			return false;

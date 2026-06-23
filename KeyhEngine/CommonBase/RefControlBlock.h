@@ -12,6 +12,7 @@ namespace keyh
 	public:
 		inline void addRef() { _refCount.fetch_add(1, std::memory_order_relaxed); }
 		inline void addWeakRef() { _weakRefCount.fetch_add(1, std::memory_order_relaxed); }
+		inline int getRefCount() const { return _refCount.load(std::memory_order_relaxed); }
 
 	public:
 		bool release();
