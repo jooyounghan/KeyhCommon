@@ -8,7 +8,7 @@ namespace keyh
 	}
 
 	template<typename Derived, typename Base>
-	constexpr void keyh::TypeTrait::requireDerivedFrom() noexcept
+	constexpr void TypeTrait::requireDerivedFrom() noexcept
 	{
 		static_assert(IsDerivedFrom_v<Derived, Base>, "Derived must be derived from Base");
 	}
