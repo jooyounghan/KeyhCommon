@@ -19,6 +19,10 @@ namespace keyh
 		template<typename U>
 		friend class WeakPtr;
 
+		template<typename Base, typename Derived, typename ...Args>
+		friend RefPtr<Base> makeRefPtr(Args... args);
+
+
 	private:
 		void assignRefControlBlock();
 
