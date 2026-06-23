@@ -259,6 +259,7 @@
     <ClInclude Include="HashSet.h" />
     <ClInclude Include="HashSet.hpp" />
     <ClInclude Include="HashUtil.h" />
+    <ClInclude Include="RefControlBlock.h" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="MathUtil.hpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Queue.hpp" />
     <ClInclude Include="RefPtr.h" />
+    <ClInclude Include="RefPtr.hpp" />
     <ClInclude Include="ScalarVectorTypes.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
@@ -285,6 +287,7 @@
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector.hpp" />
     <ClInclude Include="WeakPtr.h" />
+    <ClInclude Include="WeakPtr.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssertUtil.cpp" />
@@ -297,6 +300,7 @@
     <ClCompile Include="HashMap.cpp" />
     <ClCompile Include="HashSet.cpp" />
     <ClCompile Include="HashUtil.cpp" />
+    <ClCompile Include="RefControlBlock.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="MemoryUtil.cpp" />

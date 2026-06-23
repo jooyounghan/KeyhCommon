@@ -207,6 +207,15 @@
     <ClInclude Include="Ptr.hpp">
       <Filter>헤더 파일\Pointer</Filter>
     </ClInclude>
+    <ClInclude Include="RefPtr.hpp">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="RefControlBlock.h">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="WeakPtr.hpp">
+      <Filter>헤더 파일\Pointer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -288,6 +297,9 @@
       <Filter>소스 파일\Pointer</Filter>
     </ClCompile>
     <ClCompile Include="WeakPtr.cpp">
+      <Filter>소스 파일\Pointer</Filter>
+    </ClCompile>
+    <ClCompile Include="RefControlBlock.cpp">
       <Filter>소스 파일\Pointer</Filter>
     </ClCompile>
   </ItemGroup>
