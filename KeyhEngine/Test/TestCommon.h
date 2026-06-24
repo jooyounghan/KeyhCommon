@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdio>
+#include "CommonBasePch.h"
 
 extern int g_pass;
 extern int g_fail;

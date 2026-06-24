@@ -18,17 +18,17 @@ namespace keyh
 		typename HashMap<StringView<T>, StringOffset>::FindResult findResult = _stringOffsets.find(str, &hash);
 		if (findResult.isFound())
 		{
-			const StringOffset& offset = findResult.value();
-			const T* existingStr = _stringContainer.data() + offset._offsetBegin;
-			return StringView<T>(existingStr, offset._offsetEnd - offset._offsetBegin);
+			const StringOffset* offset = findResult.value();
+			const T* existingStr = _stringContainer.begin() + offset->_offsetBegin;
+			return StringView<T>(existingStr, offset->_offsetEnd - offset->_offsetBegin);
 		}
 		else
 		{
-			memcpy(_stringContainer.data() + _currentOffset, str.data(), str.length() * sizeof(T));
+			memcpy(_stringContainer.begin() + _currentOffset, str.data(), str.length() * sizeof(T));
 			StringOffset offset = { static_cast<uint32>(_currentOffset), static_cast<uint32>(_currentOffset + str.length()) };
 			_stringOffsets.insert(str, offset, &hash);
 			_currentOffset += str.length();
-			return StringView<T>(_stringContainer.data() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
+			return StringView<T>(_stringContainer.begin() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
 		}
 	}
 

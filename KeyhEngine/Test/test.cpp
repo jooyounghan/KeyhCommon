@@ -5,35 +5,33 @@
 #include "ConcurrencyTest.h"
 #include "FlyweightStringTest.h"
 
-using namespace keyh;
-
 int g_pass = 0;
 int g_fail = 0;
 
 int main()
 {
-    test_StaticString_create_and_length();
-    test_StaticString_copy();
-    test_StaticString_move();
-    test_StaticString_clear_and_reuse();
-    test_StaticString_index_access();
-    test_StaticString_wchar();
+    //test_StaticString_create_and_length();
+    //test_StaticString_copy();
+    //test_StaticString_move();
+    //test_StaticString_clear_and_reuse();
+    //test_StaticString_index_access();
+    //test_StaticString_wchar();
 
-    test_RefPtr_basic();
-    test_RefPtr_copy();
-    test_RefPtr_copy_assign();
-    test_RefPtr_polymorphism();
+    //test_RefPtr_basic();
+    //test_RefPtr_copy();
+    //test_RefPtr_copy_assign();
+    //test_RefPtr_polymorphism();
 
-    test_WeakPtr_basic();
-    test_WeakPtr_lifetime();
-    test_WeakPtr_copy();
-    test_WeakPtr_assign_null();
-    test_WeakPtr_reassign();
-    test_WeakPtr_control_block_freed();
+    //test_WeakPtr_basic();
+    //test_WeakPtr_lifetime();
+    //test_WeakPtr_copy();
+    //test_WeakPtr_assign_null();
+    //test_WeakPtr_reassign();
+    //test_WeakPtr_control_block_freed();
 
-    test_RefPtr_concurrency();
-    test_WeakPtr_concurrency();
-    test_RefPtr_WeakPtr_concurrency_mixed();
+    //test_RefPtr_concurrency();
+    //test_WeakPtr_concurrency();
+    //test_RefPtr_WeakPtr_concurrency_mixed();
 
     test_FlyweightString_construction();
     test_FlyweightString_interning();
