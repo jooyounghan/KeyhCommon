@@ -39,6 +39,24 @@ namespace keyh
 	}
 
 	template<typename T>
+	StaticString<T>::StaticString(const T* str, size_t length) : _stringInfo(0)
+	{
+		setLength(length);
+
+		const bool ssoEnabled = length < StrUtil::ssoCapacity;
+		setSso(ssoEnabled);
+
+		if (ssoEnabled == false)
+		{
+			_heap = new T[length + 1];
+		}
+
+		T* dstBuffer = ssoEnabled ? _ssoBuffer : _heap;
+		std::memcpy(dstBuffer, str, length * sizeof(T));
+		dstBuffer[length] = T();
+	}
+
+	template<typename T>
 	StaticString<T>::StaticString(const StaticString& other) : _stringInfo(0)
 	{
 		_stringInfo = other._stringInfo;

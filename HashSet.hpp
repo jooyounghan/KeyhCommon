@@ -61,13 +61,13 @@ namespace keyh
 	HASHSET_TEMPLATE_TYPE
 	HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status)
 	{
-		return InsertResult(status);
+		return InsertResult(bucket->key(), status);
 	}
 
 	HASHSET_TEMPLATE_TYPE
 	HASHSET_CLASS::FindResult HASHSET_CLASS::makeFindResult(Bucket* bucket, bool found)
 	{
-		return FindResult(found);
+		return FindResult(bucket->key(), found);
 	}
 }
 

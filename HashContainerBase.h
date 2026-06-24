@@ -65,20 +65,6 @@ namespace keyh
 		bool isFound() const noexcept { return _found; }
 	};
 
-	template<>
-	class HashFindResult<void>
-	{
-	public:
-		explicit HashFindResult(bool found)
-			: _found(found) {}
-
-	private:
-		bool _found;
-
-	public:
-		bool isFound() const noexcept { return _found; }
-	};
-
 	class HashBucketBase
 	{
 	protected:
