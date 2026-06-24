@@ -40,6 +40,7 @@ int main()
     test_FlyweightString_wchar();
     test_FlyweightString_getters();
     test_StringPool_reference_check();
+    test_FlyweightString_performance();
 
     printSummary();
 

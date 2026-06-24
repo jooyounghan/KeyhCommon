@@ -4,12 +4,36 @@
 namespace keyh
 {
 	template<typename T>
+	StringPool1<T>::~StringPool1()
+	{
+		for (T* ptr : _allocatedStrings)
+		{
+			delete[] ptr;
+		}
+	}
+
+	template<typename T>
 	StringView<T> StringPool1<T>::findOrInsert(const StringView<T>& str, size_t hash)
 	{
-		StaticString<T> staticStr(str.c_str(), str.length());
-		typename HashSet<StaticString<T>>::InsertResult insertResult = _stringContainer.insert(staticStr, &hash);
-		const StaticString<T>& insertedKey = insertResult._value;
-		return StringView<T>(insertedKey.c_str(), insertedKey.length());
+		typename HashSet<StringView<T>>::FindResult findResult = _stringContainer.find(str, &hash);
+		if (findResult.isFound())
+		{
+			return *findResult.value();
+		}
+
+		const size_t length = str.length();
+		T* ownedString = new T[length + 1];
+		if (length > 0)
+		{
+			std::memcpy(ownedString, str.data(), length * sizeof(T));
+		}
+		ownedString[length] = T();
+
+		StringView<T> ownedView(ownedString, length);
+		typename HashSet<StringView<T>>::InsertResult insertResult = _stringContainer.insert(ownedView, &hash);
+		KEYH_ASSERT(insertResult.isSuccess(), "StringPool1 insert failed");
+		_allocatedStrings.push_back(ownedString);
+		return insertResult._value;
 	}
 
 	template<typename T, size_t PoolSize>
@@ -24,11 +48,16 @@ namespace keyh
 		}
 		else
 		{
+			const size_t needed = str.length() + 1;
+			const size_t available = PoolSize - _currentOffset;
+			KEYH_ASSERT_ARGS(needed <= available, "StringPool2 buffer overflow: need %zu elements but only %zu available (PoolSize=%zu)", needed, available, static_cast<size_t>(PoolSize));
 			memcpy(_stringContainer.data() + _currentOffset, str.data(), str.length() * sizeof(T));
+			_stringContainer[_currentOffset + str.length()] = T();
 			StringOffset offset = { static_cast<uint32>(_currentOffset), static_cast<uint32>(_currentOffset + str.length()) };
-			_stringOffsets.insert(str, offset, &hash);
-			_currentOffset += str.length();
-			return StringView<T>(_stringContainer.data() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
+			StringView<T> pooledView(_stringContainer.data() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
+			_stringOffsets.insert(pooledView, offset, &hash);
+			_currentOffset += str.length() + 1;
+			return pooledView;
 		}
 	}
 
