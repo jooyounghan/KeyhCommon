@@ -1,5 +1,6 @@
 #include "TestCommon.h"
 #include "FlyweightStringTest.h"
+#include <chrono>
 #include <cstring>
 #include <cwchar>
 #include <cstdio>
@@ -205,4 +206,56 @@ void test_StringPool_reference_check()
     std::printf("    StringPool2: flat contiguous buffer + offset HashMap.\n");
     std::printf("                 No extra heap allocations after pool creation.\n");
     std::printf("                 Better cache locality for sequential lookups.\n");
+}
+
+void test_FlyweightString_performance()
+{
+    printSection("FlyweightString - performance (time)");
+
+    constexpr const char* kWords[] = {
+        "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta"
+    };
+    constexpr int kWordCount = static_cast<int>(sizeof(kWords) / sizeof(kWords[0]));
+    constexpr int kIterations = 200000;
+
+    auto benchmarkPool1 = []() -> double
+    {
+        volatile size_t sink = 0;
+        const auto begin = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < kIterations; ++i)
+        {
+            FW1A s(kWords[i % kWordCount]);
+            sink ^= s.getHash();
+        }
+        const auto end = std::chrono::high_resolution_clock::now();
+        (void)sink;
+        return std::chrono::duration<double, std::milli>(end - begin).count();
+    };
+
+    auto benchmarkPool2 = []() -> double
+    {
+        volatile size_t sink = 0;
+        const auto begin = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < kIterations; ++i)
+        {
+            FW2A s(kWords[i % kWordCount]);
+            sink ^= s.getHash();
+        }
+        const auto end = std::chrono::high_resolution_clock::now();
+        (void)sink;
+        return std::chrono::duration<double, std::milli>(end - begin).count();
+    };
+
+    const double pool1Ms = benchmarkPool1();
+    const double pool2Ms = benchmarkPool2();
+
+    std::printf("  StringPool1: %.3f ms (%d iterations)\n", pool1Ms, kIterations);
+    std::printf("  StringPool2: %.3f ms (%d iterations)\n", pool2Ms, kIterations);
+    if (pool2Ms > 0.0)
+    {
+        std::printf("  ratio(pool1/pool2): %.3f\n", pool1Ms / pool2Ms);
+    }
+
+    CHECK(pool1Ms > 0.0);
+    CHECK(pool2Ms > 0.0);
 }

@@ -16,10 +16,11 @@ namespace keyh
 	{
 	public:
 		SINGLETON(StringPool1);
-		~StringPool1() = default;
+		~StringPool1();
 
 	private:
-		HashSet<StaticString<T>>	_stringContainer;
+		HashSet<StringView<T>>	_stringContainer;
+		Vector<T*>				_allocatedStrings;
 
 	public:
 		StringView<T> findOrInsert(const StringView<T>& str, size_t hash);
