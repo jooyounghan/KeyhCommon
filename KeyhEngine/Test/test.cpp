@@ -4,7 +4,6 @@
 #include "WeakPtrTest.h"
 #include "ConcurrencyTest.h"
 #include "FlyweightStringTest.h"
-#include "Ptr.h"
 
 using namespace keyh;
 
@@ -43,8 +42,6 @@ int main()
     test_StringPool_reference_check();
 
     printSummary();
-
-    Ptr<int> t = makePtr<int>(42);
 
     return g_fail == 0 ? 0 : 1;
 }
