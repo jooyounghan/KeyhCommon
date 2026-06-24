@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="소스 파일">
@@ -13,10 +13,75 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\StaticString">
+      <UniqueIdentifier>{A1B2C3D4-0001-0001-0001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\RefPtr">
+      <UniqueIdentifier>{A1B2C3D4-0002-0002-0002-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\WeakPtr">
+      <UniqueIdentifier>{A1B2C3D4-0003-0003-0003-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Concurrency">
+      <UniqueIdentifier>{A1B2C3D4-0004-0004-0004-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FlyweightString">
+      <UniqueIdentifier>{A1B2C3D4-0005-0005-0005-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\StaticString">
+      <UniqueIdentifier>{B1B2C3D4-0001-0001-0001-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\RefPtr">
+      <UniqueIdentifier>{B1B2C3D4-0002-0002-0002-000000000002}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\WeakPtr">
+      <UniqueIdentifier>{B1B2C3D4-0003-0003-0003-000000000003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Concurrency">
+      <UniqueIdentifier>{B1B2C3D4-0004-0004-0004-000000000004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\FlyweightString">
+      <UniqueIdentifier>{B1B2C3D4-0005-0005-0005-000000000005}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="StaticStringTest.cpp">
+      <Filter>소스 파일\StaticString</Filter>
+    </ClCompile>
+    <ClCompile Include="RefPtrTest.cpp">
+      <Filter>소스 파일\RefPtr</Filter>
+    </ClCompile>
+    <ClCompile Include="WeakPtrTest.cpp">
+      <Filter>소스 파일\WeakPtr</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrencyTest.cpp">
+      <Filter>소스 파일\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyweightStringTest.cpp">
+      <Filter>소스 파일\FlyweightString</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TestCommon.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticStringTest.h">
+      <Filter>헤더 파일\StaticString</Filter>
+    </ClInclude>
+    <ClInclude Include="RefPtrTest.h">
+      <Filter>헤더 파일\RefPtr</Filter>
+    </ClInclude>
+    <ClInclude Include="WeakPtrTest.h">
+      <Filter>헤더 파일\WeakPtr</Filter>
+    </ClInclude>
+    <ClInclude Include="ConcurrencyTest.h">
+      <Filter>헤더 파일\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyweightStringTest.h">
+      <Filter>헤더 파일\FlyweightString</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

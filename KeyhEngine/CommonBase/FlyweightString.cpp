@@ -56,11 +56,18 @@ namespace keyh
 	}
 
 
+	template class StringPool2<char>;
+	template class StringPool2<wchar_t>;
+
 	template class FlyweightString<char>;
 	template class FlyweightString<wchar_t>;
+	template class FlyweightString<char, FNV1aHash<StringView<char>>, StringPool2<char>>;
+	template class FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>, StringPool2<wchar_t>>;
 
 	using FlyweightStringA = FlyweightString<char>;
 	using FlyweightStringW = FlyweightString<wchar_t>;
+	using FlyweightStringA2 = FlyweightString<char, FNV1aHash<StringView<char>>, StringPool2<char>>;
+	using FlyweightStringW2 = FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>, StringPool2<wchar_t>>;
 }
 
 #pragma region FNV1aHash Specializations
