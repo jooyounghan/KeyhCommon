@@ -73,7 +73,7 @@ namespace keyh
 	HASHSET_TEMPLATE_TYPE
 	HASHSET_CLASS::FindResult HASHSET_CLASS::makeFindResult(Bucket* bucket, bool found)
 	{
-		return FindResult(bucket->key(), found);
+		return FindResult(&bucket->key(), found);
 	}
 }
 
