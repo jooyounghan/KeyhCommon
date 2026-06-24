@@ -1,6 +1,7 @@
 #include "TestCommon.h"
 #include "FlyweightStringTest.h"
 #include <chrono>
+#include <cstdlib>
 #include <cstring>
 #include <cwchar>
 #include <cstdio>
@@ -216,9 +217,18 @@ void test_FlyweightString_performance()
         "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta"
     };
     constexpr int kWordCount = static_cast<int>(sizeof(kWords) / sizeof(kWords[0]));
-    constexpr int kIterations = 200000;
+    const int kDefaultIterations = 200000;
+    int kIterations = kDefaultIterations;
+    if (const char* envIter = std::getenv("KEYH_FLYWEIGHT_BENCH_ITERS"))
+    {
+        const int parsed = std::atoi(envIter);
+        if (parsed > 0)
+        {
+            kIterations = parsed;
+        }
+    }
 
-    auto benchmarkPool1 = []() -> double
+    auto benchmarkPool1 = [&]() -> double
     {
         volatile size_t sink = 0;
         const auto begin = std::chrono::high_resolution_clock::now();
@@ -232,7 +242,7 @@ void test_FlyweightString_performance()
         return std::chrono::duration<double, std::milli>(end - begin).count();
     };
 
-    auto benchmarkPool2 = []() -> double
+    auto benchmarkPool2 = [&]() -> double
     {
         volatile size_t sink = 0;
         const auto begin = std::chrono::high_resolution_clock::now();
