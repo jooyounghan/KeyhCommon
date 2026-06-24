@@ -50,7 +50,7 @@ namespace keyh
 		{
 			const size_t needed = str.length() + 1;
 			const size_t available = PoolSize - _currentOffset;
-			KEYH_ASSERT_ARGS(needed <= available, "StringPool2 buffer overflow: need %zu slots but only %zu available (PoolSize=%zu)", needed, available, static_cast<size_t>(PoolSize));
+			KEYH_ASSERT_ARGS(needed <= available, "StringPool2 buffer overflow: need %zu elements but only %zu available (PoolSize=%zu)", needed, available, static_cast<size_t>(PoolSize));
 			memcpy(_stringContainer.data() + _currentOffset, str.data(), str.length() * sizeof(T));
 			_stringContainer[_currentOffset + str.length()] = T();
 			StringOffset offset = { static_cast<uint32>(_currentOffset), static_cast<uint32>(_currentOffset + str.length()) };
