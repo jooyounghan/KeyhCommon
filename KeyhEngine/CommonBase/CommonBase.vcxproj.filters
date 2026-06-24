@@ -213,9 +213,6 @@
     <ClInclude Include="FlyweightString.h">
       <Filter>헤더 파일\String</Filter>
     </ClInclude>
-    <ClInclude Include="FlyweightString.hpp">
-      <Filter>헤더 파일\String</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">

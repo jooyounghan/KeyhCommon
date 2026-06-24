@@ -249,7 +249,6 @@
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Deque.hpp" />
     <ClInclude Include="FlyweightString.h" />
-    <ClInclude Include="FlyweightString.hpp" />
     <ClInclude Include="FNV1aHasher.h" />
     <ClInclude Include="FNV1aHasher.hpp" />
     <ClInclude Include="HashContainerBase.h" />
