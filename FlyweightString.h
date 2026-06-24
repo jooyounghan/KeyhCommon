@@ -1,4 +1,6 @@
 #pragma once
+#include "CommonCore.h"
+
 #include "StaticString.h"
 #include "StringView.h"
 #include "HashMap.h"
@@ -9,7 +11,7 @@
 
 namespace keyh
 {
-	template<typename T, typename Hasher = FNV1aHash<T>>
+	template<typename T>
 	class StringPool1
 	{
 	public:
@@ -18,13 +20,12 @@ namespace keyh
 
 	private:
 		HashSet<StaticString<T>>	_stringContainer;
-		Hasher _hasher;
 
 	public:
-		StringView<T> findOrInsert(const StringView<T>& str);
+		StringView<T> findOrInsert(const StringView<T>& str, size_t hash);
 	};
 
-	template<typename T, typename Hasher = FNV1aHash<T>, size_t PoolSize = 4096>
+	template<typename T, size_t PoolSize = 65536>
 	class StringPool2
 	{
 	public:
@@ -32,31 +33,22 @@ namespace keyh
 		~StringPool2() = default;
 
 	private:
-		StaticArray<T, PoolSize>			_stringContainer;
-		Vector<uint32>						_stringOffsets;
-		Hasher _hasher;
-
-	public:
-		StringView<T> findOrInsert(const StringView<T>& str);
-	};
-
-	template<typename T, typename Hasher = FNV1aHash<T>, size_t PoolSize = 4096>
-	class StringPool3
-	{
-	public:
-		SINGLETON(StringPool3);
-		~StringPool3() = default;
+		struct StringOffset
+		{
+			uint32 _offsetBegin;
+			uint32 _offsetEnd;
+		};
 
 	private:
-		StaticArray<T, PoolSize>			_stringContainer;
-		HashMap<StringView<T>, uint32>		_stringOffsets;
-		Hasher _hasher;
+		StaticArray<T, PoolSize>				_stringContainer;
+		HashMap<StringView<T>, StringOffset>	_stringOffsets;
+		size_t									_currentOffset = 0;
 
 	public:
-		StringView<T> findOrInsert(const StringView<T>& str);
+		StringView<T> findOrInsert(const StringView<T>& str, size_t hash);
 	};
 
-	template<typename T, typename Hasher = FNV1aHash<T>, typename StringPool = StringPool1<T, Hasher>>
+	template<typename T, typename Hasher = FNV1aHash<StringView<T>>, typename StringPool = StringPool1<T>>
 	class FlyweightString
 	{
 	public:
@@ -69,16 +61,18 @@ namespace keyh
 		FlyweightString(const StringView<T>& str);
 
 	private:
+		size_t _hash = HashUtil::kInvalidHash;
 		Hasher _hasher;
 
 	private:
 		StringView<T> _stringView;
-
+		
 	public:
+		inline size_t getHash() const { return _hash; }
+		inline const StringView<T>& getStringView() const { return _stringView; }
 		inline const T* c_str() const { return _stringView.c_str(); }
 		inline size_t length() const { return _stringView.length(); }
 		inline size_t size() const { return _stringView.size(); }
 		inline bool empty() const { return _stringView.empty(); }
 	};
 }
-#include "FlyweightString.hpp"
