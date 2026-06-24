@@ -37,27 +37,27 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(const Key& key, const Value& value, bool replace)
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(const Key& key, const Value& value, bool replace, size_t* hashCache)
 	{
-		return insertImpl(replace, key, value);
+		return insertImpl(replace, hashCache, key, value);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace)
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace, size_t* hashCache)
 	{
-		return insertImpl(replace, keyh::move(key), keyh::move(value));
+		return insertImpl(replace, hashCache, keyh::move(key), keyh::move(value));
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	HASHMAP_CLASS::FindResult HASHMAP_CLASS::find(const Key& key)
+	HASHMAP_CLASS::FindResult HASHMAP_CLASS::find(const Key& key, size_t* hashCache)
 	{
-		return findImpl(key);
+		return findImpl(key, hashCache);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
-	bool HASHMAP_CLASS::remove(const Key& key)
+	bool HASHMAP_CLASS::remove(const Key& key, size_t* hashCache)
 	{
-		return removeImpl(key);
+		return removeImpl(key, hashCache);
 	}
 
 	HASHMAP_TEMPLATE_TYPE

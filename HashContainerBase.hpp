@@ -3,12 +3,12 @@ namespace keyh
 {
 	template<typename Derived>
 	template<typename Key, typename ...Args>
-	auto HashContainerBase<Derived>::insertImpl(bool replace, Key&& key, Args && ...args)
+	auto HashContainerBase<Derived>::insertImpl(bool replace, size_t* hashCache, Key&& key, Args&&... args)
 	{
 		rehashIfNeeded();
 
 		Derived* self = static_cast<Derived*>(this);
-		size_t hash = self->_hasher(key);
+		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		typename Derived::Bucket* bucket = &self->_buckets[index];
@@ -136,7 +136,7 @@ namespace keyh
 
 	template<typename Derived>
 	template<typename Key>
-	auto HashContainerBase<Derived>::findImpl(const Key& key)
+	auto HashContainerBase<Derived>::findImpl(const Key& key, size_t* hashCache)
 	{
 		using Bucket = typename Derived::Bucket;
 
@@ -144,7 +144,7 @@ namespace keyh
 		if (_capacity == 0)
 			return self->makeFindResult(nullptr, false);
 
-		size_t hash = self->_hasher(key);
+		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		Bucket* bucket = &self->_buckets[index];
@@ -170,7 +170,7 @@ namespace keyh
 
 	template<typename Derived>
 	template<typename Key>
-	bool HashContainerBase<Derived>::removeImpl(const Key& key)
+	bool HashContainerBase<Derived>::removeImpl(const Key& key, size_t* hashCache)
 	{
 		using Bucket = typename Derived::Bucket;
 
@@ -178,7 +178,7 @@ namespace keyh
 		if (_capacity == 0)
 			return false;
 
-		size_t hash = self->_hasher(key);
+		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		Bucket* bucket = &self->_buckets[index];
