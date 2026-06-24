@@ -218,13 +218,13 @@ void test_FlyweightString_performance()
     };
     constexpr int kWordCount = static_cast<int>(sizeof(kWords) / sizeof(kWords[0]));
     const int kDefaultIterations = 200000;
-    int kIterations = kDefaultIterations;
+    int iterations = kDefaultIterations;
     if (const char* envIter = std::getenv("KEYH_FLYWEIGHT_BENCH_ITERS"))
     {
         const int parsed = std::atoi(envIter);
         if (parsed > 0)
         {
-            kIterations = parsed;
+            iterations = parsed;
         }
     }
 
@@ -232,7 +232,7 @@ void test_FlyweightString_performance()
     {
         volatile size_t sink = 0;
         const auto begin = std::chrono::high_resolution_clock::now();
-        for (int i = 0; i < kIterations; ++i)
+        for (int i = 0; i < iterations; ++i)
         {
             FW1A s(kWords[i % kWordCount]);
             sink ^= s.getHash();
@@ -246,7 +246,7 @@ void test_FlyweightString_performance()
     {
         volatile size_t sink = 0;
         const auto begin = std::chrono::high_resolution_clock::now();
-        for (int i = 0; i < kIterations; ++i)
+        for (int i = 0; i < iterations; ++i)
         {
             FW2A s(kWords[i % kWordCount]);
             sink ^= s.getHash();
@@ -259,8 +259,8 @@ void test_FlyweightString_performance()
     const double pool1Ms = benchmarkPool1();
     const double pool2Ms = benchmarkPool2();
 
-    std::printf("  StringPool1: %.3f ms (%d iterations)\n", pool1Ms, kIterations);
-    std::printf("  StringPool2: %.3f ms (%d iterations)\n", pool2Ms, kIterations);
+    std::printf("  StringPool1: %.3f ms (%d iterations)\n", pool1Ms, iterations);
+    std::printf("  StringPool2: %.3f ms (%d iterations)\n", pool2Ms, iterations);
     if (pool2Ms > 0.0)
     {
         std::printf("  ratio(pool1/pool2): %.3f\n", pool1Ms / pool2Ms);
