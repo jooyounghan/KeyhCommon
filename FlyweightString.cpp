@@ -15,6 +15,12 @@ namespace keyh
 	template<typename T>
 	StringView<T> StringPool1<T>::findOrInsert(const StringView<T>& str, size_t hash)
 	{
+		typename HashSet<StringView<T>>::FindResult findResult = _stringContainer.find(str, &hash);
+		if (findResult.isFound())
+		{
+			return *findResult.value();
+		}
+
 		const size_t length = str.length();
 		T* ownedString = new T[length + 1];
 		if (length > 0)
@@ -25,15 +31,8 @@ namespace keyh
 
 		StringView<T> ownedView(ownedString, length);
 		typename HashSet<StringView<T>>::InsertResult insertResult = _stringContainer.insert(ownedView, &hash);
-		if (insertResult.isDenied())
-		{
-			delete[] ownedString;
-		}
-		else
-		{
-			_allocatedStrings.push_back(ownedString);
-		}
-
+		KEYH_ASSERT(insertResult.isSuccess(), "StringPool1 insert failed");
+		_allocatedStrings.push_back(ownedString);
 		return insertResult._value;
 	}
 
@@ -49,7 +48,7 @@ namespace keyh
 		}
 		else
 		{
-			KEYH_ASSERT(_currentOffset + str.length() + 1 <= PoolSize, "StringPool2 buffer overflow");
+			KEYH_ASSERT(_currentOffset + str.length() + 1 <= PoolSize, "StringPool2 buffer overflow: increase PoolSize");
 			memcpy(_stringContainer.data() + _currentOffset, str.data(), str.length() * sizeof(T));
 			_stringContainer[_currentOffset + str.length()] = T();
 			StringOffset offset = { static_cast<uint32>(_currentOffset), static_cast<uint32>(_currentOffset + str.length()) };

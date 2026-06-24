@@ -47,6 +47,12 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
+	HASHSET_CLASS::FindResult HASHSET_CLASS::find(const Key& key, size_t* hashCache)
+	{
+		return findImpl(key, hashCache);
+	}
+
+	HASHSET_TEMPLATE_TYPE
 	bool HASHSET_CLASS::contains(const Key& key, size_t* hashCache)
 	{
 		return findImpl(key, hashCache).isFound();
