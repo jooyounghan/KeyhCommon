@@ -17,6 +17,7 @@ namespace keyh
 
 	public:
 		StaticString(const T* str);
+		StaticString(const T* str, size_t length);
 
 	public:
 		StaticString(const StaticString& other);

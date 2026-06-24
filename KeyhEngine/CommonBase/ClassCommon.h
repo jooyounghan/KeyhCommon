@@ -12,6 +12,19 @@
 	REMOVE_COPY(ClassName) \
 	REMOVE_MOVE(ClassName)
 
+#define SINGLETON(ClassName)	\
+	private:	\
+		ClassName() = default;	\
+		REMOVE_COPY(ClassName);	\
+		REMOVE_MOVE(ClassName);	\
+	public:	\
+		static ClassName& getInstance()	\
+		{	\
+			static ClassName instance;	\
+			return instance;	\
+		}
+	
+
 #if defined(_MSC_VER)
 #define FORCE_INLINE __forceinline
 #elif defined(__GNUC__) || defined(__clang__)

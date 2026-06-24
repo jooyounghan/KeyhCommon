@@ -8,6 +8,8 @@
 #include "Ptr.h"
 #include "RefPtr.h"
 #include "WeakPtr.h"
+#include "FlyweightString.h"
+
 using namespace keyh;
 
 static int g_pass = 0;
@@ -499,6 +501,8 @@ int main()
     printSummary();
 
 	Ptr<int> t = makePtr<int>(42);
+
+	FlyweightString<char> fw1("hello");
 
     return g_fail == 0 ? 0 : 1;
 }
