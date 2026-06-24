@@ -144,7 +144,20 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ConcurrencyTest.cpp" />
+    <ClCompile Include="FlyweightStringTest.cpp" />
+    <ClCompile Include="RefPtrTest.cpp" />
+    <ClCompile Include="StaticStringTest.cpp" />
     <ClCompile Include="test.cpp" />
+    <ClCompile Include="WeakPtrTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConcurrencyTest.h" />
+    <ClInclude Include="FlyweightStringTest.h" />
+    <ClInclude Include="RefPtrTest.h" />
+    <ClInclude Include="StaticStringTest.h" />
+    <ClInclude Include="TestCommon.h" />
+    <ClInclude Include="WeakPtrTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
