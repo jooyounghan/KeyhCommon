@@ -4,12 +4,37 @@
 namespace keyh
 {
 	template<typename T>
+	StringPool1<T>::~StringPool1()
+	{
+		for (T* ptr : _allocatedStrings)
+		{
+			delete[] ptr;
+		}
+	}
+
+	template<typename T>
 	StringView<T> StringPool1<T>::findOrInsert(const StringView<T>& str, size_t hash)
 	{
-		StaticString<T> staticStr(str.c_str(), str.length());
-		typename HashSet<StaticString<T>>::InsertResult insertResult = _stringContainer.insert(staticStr, &hash);
-		const StaticString<T>& insertedKey = insertResult._value;
-		return StringView<T>(insertedKey.c_str(), insertedKey.length());
+		const size_t length = str.length();
+		T* ownedString = new T[length + 1];
+		if (length > 0)
+		{
+			std::memcpy(ownedString, str.data(), length * sizeof(T));
+		}
+		ownedString[length] = T();
+
+		StringView<T> ownedView(ownedString, length);
+		typename HashSet<StringView<T>>::InsertResult insertResult = _stringContainer.insert(ownedView, &hash);
+		if (insertResult.isDenied())
+		{
+			delete[] ownedString;
+		}
+		else
+		{
+			_allocatedStrings.push_back(ownedString);
+		}
+
+		return insertResult._value;
 	}
 
 	template<typename T, size_t PoolSize>
@@ -24,11 +49,14 @@ namespace keyh
 		}
 		else
 		{
+			KEYH_ASSERT(_currentOffset + str.length() + 1 <= PoolSize, "StringPool2 buffer overflow");
 			memcpy(_stringContainer.data() + _currentOffset, str.data(), str.length() * sizeof(T));
+			_stringContainer[_currentOffset + str.length()] = T();
 			StringOffset offset = { static_cast<uint32>(_currentOffset), static_cast<uint32>(_currentOffset + str.length()) };
-			_stringOffsets.insert(str, offset, &hash);
-			_currentOffset += str.length();
-			return StringView<T>(_stringContainer.data() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
+			StringView<T> pooledView(_stringContainer.data() + offset._offsetBegin, offset._offsetEnd - offset._offsetBegin);
+			_stringOffsets.insert(pooledView, offset, &hash);
+			_currentOffset += str.length() + 1;
+			return pooledView;
 		}
 	}
 
