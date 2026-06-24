@@ -8,6 +8,7 @@ namespace keyh
 		rehashIfNeeded();
 
 		Derived* self = static_cast<Derived*>(this);
+		// hashCache must be nullptr or point to a valid precomputed hash value for key.
 		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
@@ -144,6 +145,7 @@ namespace keyh
 		if (_capacity == 0)
 			return self->makeFindResult(nullptr, false);
 
+		// hashCache must be nullptr or point to a valid precomputed hash value for key.
 		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
@@ -178,6 +180,7 @@ namespace keyh
 		if (_capacity == 0)
 			return false;
 
+		// hashCache must be nullptr or point to a valid precomputed hash value for key.
 		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
