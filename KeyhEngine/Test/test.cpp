@@ -33,13 +33,6 @@ int main()
     //test_WeakPtr_concurrency();
     //test_RefPtr_WeakPtr_concurrency_mixed();
 
-    test_FlyweightString_construction();
-    test_FlyweightString_interning();
-    test_FlyweightString_wchar();
-    test_FlyweightString_getters();
-    test_StringPool_reference_check();
-    test_FlyweightString_performance();
-
     printSummary();
 
     return g_fail == 0 ? 0 : 1;

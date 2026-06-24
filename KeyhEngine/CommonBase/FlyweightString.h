@@ -4,34 +4,16 @@
 #include "StaticString.h"
 #include "StringView.h"
 #include "HashMap.h"
-#include "HashSet.h"
-#include "Vector.h"
 #include "StaticArray.h"
-#include "Ptr.h"
 
 namespace keyh
 {
-	template<typename T>
-	class StringPool1
-	{
-	public:
-		SINGLETON(StringPool1);
-		~StringPool1();
-
-	private:
-		HashSet<StringView<T>>	_stringContainer;
-		Vector<T*>				_allocatedStrings;
-
-	public:
-		StringView<T> findOrInsert(const StringView<T>& str, size_t hash);
-	};
-
 	template<typename T, size_t PoolSize = 65536>
-	class StringPool2
+	class StringPool
 	{
 	public:
-		SINGLETON(StringPool2);
-		~StringPool2() = default;
+		SINGLETON(StringPool);
+		~StringPool() = default;
 
 	private:
 		struct StringOffset
@@ -49,7 +31,7 @@ namespace keyh
 		StringView<T> findOrInsert(const StringView<T>& str, size_t hash);
 	};
 
-	template<typename T, typename Hasher = FNV1aHash<StringView<T>>, typename StringPool = StringPool1<T>>
+	template<typename T, typename Hasher = FNV1aHash<StringView<T>>>
 	class FlyweightString
 	{
 	public:

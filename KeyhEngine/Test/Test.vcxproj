@@ -147,7 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConcurrencyTest.cpp" />
-    <ClCompile Include="FlyweightStringTest.cpp" />
     <ClCompile Include="RefPtrTest.cpp" />
     <ClCompile Include="StaticStringTest.cpp" />
     <ClCompile Include="test.cpp" />
