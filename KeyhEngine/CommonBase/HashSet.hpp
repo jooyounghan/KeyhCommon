@@ -35,27 +35,27 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	HASHSET_CLASS::InsertResult HASHSET_CLASS::insert(const Key& key)
+	HASHSET_CLASS::InsertResult HASHSET_CLASS::insert(const Key& key, size_t* hashCache)
 	{
-		return insertImpl(false, key);
+		return insertImpl(false, hashCache, key);
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	HASHSET_CLASS::InsertResult HASHSET_CLASS::insert(Key&& key)
+	HASHSET_CLASS::InsertResult HASHSET_CLASS::insert(Key&& key, size_t* hashCache)
 	{
-		return insertImpl(false, keyh::move(key));
+		return insertImpl(false, hashCache, keyh::move(key));
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	bool HASHSET_CLASS::contains(const Key& key)
+	bool HASHSET_CLASS::contains(const Key& key, size_t* hashCache)
 	{
-		return findImpl(key).isFound();
+		return findImpl(key, hashCache).isFound();
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	bool HASHSET_CLASS::remove(const Key& key)
+	bool HASHSET_CLASS::remove(const Key& key, size_t* hashCache)
 	{
-		return removeImpl(key);
+		return removeImpl(key, hashCache);
 	}
 
 	HASHSET_TEMPLATE_TYPE

@@ -286,7 +286,7 @@ namespace keyh
 
 	protected:
 		template <typename Key, typename... Args>
-		auto insertImpl(bool replace, Key&& key, Args&&... args);
+		auto insertImpl(bool replace, size_t* hashCache, Key&& key, Args&&... args);
 
 	private:
 		template<typename BucketT>
@@ -294,11 +294,11 @@ namespace keyh
 
 	protected:
 		template<typename Key>
-		bool removeImpl(const Key& key);
+		bool removeImpl(const Key& key, size_t* hashCache = nullptr);
 
 	protected:
 		template<typename Key>
-		auto findImpl(const Key& key);
+		auto findImpl(const Key& key, size_t* hashCache = nullptr);
 
 	protected:
 		void rehashIfNeeded();
