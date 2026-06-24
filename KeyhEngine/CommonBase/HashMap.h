@@ -40,10 +40,10 @@ namespace keyh
 		Hasher	_hasher;
 
 	public:
-		InsertResult	insert(const Key& key, const Value& value, bool replace = false);
-		InsertResult	insert(Key&& key, Value&& value, bool replace = false);
-		FindResult		find(const Key& key);
-		bool			remove(const Key& key);
+		InsertResult	insert(const Key& key, const Value& value, bool replace = false, size_t* hashCache = nullptr);
+		InsertResult	insert(Key&& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
+		FindResult		find(const Key& key, size_t* hashCache = nullptr);
+		bool			remove(const Key& key, size_t* hashCache = nullptr);
 
 	private:
 		InsertResult	makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status);
