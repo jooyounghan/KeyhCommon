@@ -25,6 +25,9 @@
     <Filter Include="소스 파일\Concurrency">
       <UniqueIdentifier>{A1B2C3D4-0004-0004-0004-000000000004}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Buffer">
+      <UniqueIdentifier>{A1B2C3D4-0005-0005-0005-000000000005}</UniqueIdentifier>
+    </Filter>
     <Filter Include="헤더 파일\StaticString">
       <UniqueIdentifier>{B1B2C3D4-0001-0001-0001-000000000001}</UniqueIdentifier>
     </Filter>
@@ -39,6 +42,9 @@
     </Filter>
     <Filter Include="헤더 파일\FlyweightString">
       <UniqueIdentifier>{B1B2C3D4-0005-0005-0005-000000000005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Buffer">
+      <UniqueIdentifier>{B1B2C3D4-0006-0006-0006-000000000006}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +62,9 @@
     </ClCompile>
     <ClCompile Include="ConcurrencyTest.cpp">
       <Filter>소스 파일\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferTest.cpp">
+      <Filter>소스 파일\Buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="FlyweightStringTest.h">
       <Filter>헤더 파일\FlyweightString</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferTest.h">
+      <Filter>헤더 파일\Buffer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
