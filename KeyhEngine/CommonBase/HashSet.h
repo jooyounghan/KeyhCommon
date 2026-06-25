@@ -21,7 +21,7 @@ namespace keyh
 	public:
 		using Base::clear;
 		using Bucket = HashBucket<Key>;
-		using InsertResult = HashInsertResult<const Key>;
+		using InsertResult = HashInsertResult<void>;
 		using FindResult = HashFindResult<const Key>;
 
 	public:

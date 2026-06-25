@@ -67,6 +67,12 @@
     <Filter Include="소스 파일\Pointer">
       <UniqueIdentifier>{94aea5c2-2b18-4c41-81f1-0ddb3e52d252}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Buffer">
+      <UniqueIdentifier>{c24a727d-c1d8-4295-a00b-9dabe4144649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Buffer">
+      <UniqueIdentifier>{d6ff7611-5ba4-47e2-8c9c-eb53e5be29d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -213,6 +219,15 @@
     <ClInclude Include="FlyweightString.h">
       <Filter>헤더 파일\String</Filter>
     </ClInclude>
+    <ClInclude Include="DynamicBuffer.h">
+      <Filter>헤더 파일\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticBuffer.h">
+      <Filter>헤더 파일\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IBuffer.h">
+      <Filter>헤더 파일\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -298,6 +313,15 @@
     </ClCompile>
     <ClCompile Include="RefControlBlock.cpp">
       <Filter>소스 파일\Pointer</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicBuffer.cpp">
+      <Filter>소스 파일\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticBuffer.cpp">
+      <Filter>소스 파일\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="IBuffer.cpp">
+      <Filter>소스 파일\Buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
