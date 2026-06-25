@@ -7,12 +7,13 @@ namespace keyh
 	{
 		using Base = IBuffer<T, DynamicBuffer<T>>;
 		using Base::_offset;
+		friend class Base;
 
 	public:
 		DynamicBuffer() = default;
 		~DynamicBuffer() override = default;
 
-	public:
+	protected:
 		T* _buffer = nullptr;
 		size_t _capacity = 0;
 
@@ -22,6 +23,7 @@ namespace keyh
 	protected:
 		void resetImpl();
 		inline size_t getCapacityImpl() const { return _capacity; }
+		inline T* getBufferImpl() { return _buffer; }
 	};
 }
 

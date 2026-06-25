@@ -24,8 +24,8 @@ void test_StaticBuffer_basic()
 
     StaticBuffer<char, kBuffer256Bytes> buffer;
 
-    CHECK(sizeof(buffer._buffer) == kBuffer256Bytes);
-    CHECK(buffer._buffer[0] == 0);
+    CHECK(buffer.capacity() == kBuffer256Bytes);
+    CHECK(buffer.getBuffer()[0] == 0);
 }
 
 void test_DynamicBuffer_allocate_and_grow()
@@ -34,25 +34,25 @@ void test_DynamicBuffer_allocate_and_grow()
 
     DynamicBufferTestProxy<char> buffer;
 
-    CHECK(buffer._buffer == nullptr);
-    CHECK(buffer._capacity == 0);
+    CHECK(buffer.getBuffer() == nullptr);
+    CHECK(buffer.capacity() == 0);
 
     buffer.allocate(8);
-    CHECK(buffer._buffer != nullptr);
-    CHECK(buffer._capacity == 8);
-    CHECK(buffer._buffer[0] == 0);
+    CHECK(buffer.getBuffer() != nullptr);
+    CHECK(buffer.capacity() == 8);
+    CHECK(buffer.getBuffer()[0] == 0);
 
-    buffer._buffer[0] = 'A';
-    char* prevBuffer = buffer._buffer;
+    buffer.writeOne('A');
+    char* prevBuffer = buffer.getBuffer();
 
     buffer.allocate(4);
-    CHECK(buffer._buffer == prevBuffer);
-    CHECK(buffer._capacity == 8);
-    CHECK(buffer._buffer[0] == 'A');
+    CHECK(buffer.getBuffer() == prevBuffer);
+    CHECK(buffer.capacity() == 8);
+    CHECK(buffer.getBuffer()[0] == 'A');
 
     buffer.allocate(16);
-    CHECK(buffer._buffer != prevBuffer);
-    CHECK(buffer._capacity == 16);
-    CHECK(buffer._buffer[0] == 'A');
+    CHECK(buffer.getBuffer() != prevBuffer);
+    CHECK(buffer.capacity() == 16);
+    CHECK(buffer.getBuffer()[0] == 'A');
 }
 

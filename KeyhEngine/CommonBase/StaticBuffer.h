@@ -12,17 +12,19 @@ namespace keyh
 	{
 		using Base = IBuffer<T, StaticBuffer<T, Size>>;
 		using Base::_offset;
+		friend class Base;
 
 	public:
 		StaticBuffer() = default;
 		~StaticBuffer() override = default;
 
-	public:
+	protected:
 		uint8_t _buffer[Size] = { 0 };
 
 	protected:
 		inline void resetImpl() { _buffer[0] = T(); }
 		constexpr size_t getCapacityImpl() const { return Size; }
+		inline T* getBufferImpl() { return reinterpret_cast<T*>(_buffer); }
 	};
 }
 
