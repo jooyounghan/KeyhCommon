@@ -4,6 +4,7 @@
 #include "WeakPtrTest.h"
 #include "ConcurrencyTest.h"
 #include "FlyweightStringTest.h"
+#include "BufferTest.h"
 
 int g_pass = 0;
 int g_fail = 0;
@@ -32,6 +33,9 @@ int main()
     //test_RefPtr_concurrency();
     //test_WeakPtr_concurrency();
     //test_RefPtr_WeakPtr_concurrency_mixed();
+
+    test_StaticBuffer_basic();
+    test_DynamicBuffer_allocate_and_grow();
 
     printSummary();
 
