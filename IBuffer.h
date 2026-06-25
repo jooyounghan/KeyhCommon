@@ -1,4 +1,5 @@
 #pragma once
+#include "AssertUtil.h"
 
 namespace keyh
 {
@@ -15,9 +16,11 @@ namespace keyh
 		inline T*		getBuffer() { return getDerived()->getBufferImpl(); }
 		inline const T* getBuffer() const { return getDerived()->getBufferImpl(); }
 		inline size_t	size() const { return _offset * sizeof(T); }
+		inline size_t	capacity() const { return getDerived()->getCapacityImpl(); }
 
 	private:
 		Derived* getDerived() { return static_cast<Derived*>(this); }
+		const Derived* getDerived() const { return static_cast<const Derived*>(this); }
 
 	public:
 		void	write(const void* input, size_t size);
@@ -26,3 +29,4 @@ namespace keyh
 		size_t	getAvailableSize() const;
 	};
 }
+#include "IBuffer.hpp"

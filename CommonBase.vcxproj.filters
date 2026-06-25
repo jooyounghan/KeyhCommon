@@ -228,6 +228,9 @@
     <ClInclude Include="IBuffer.h">
       <Filter>헤더 파일\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="IBuffer.hpp">
+      <Filter>헤더 파일\Buffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
