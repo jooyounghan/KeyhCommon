@@ -33,8 +33,12 @@ namespace keyh
 		HashInsertResult(Value& value, InsertStatus status)
 			: Base(status), _value(value) {}
 
-	public:
+	private:
 		Value& _value;
+
+	public:
+		inline Value& value() { return _value; }
+		inline const Value& value() const { return _value; }
 	};
 
 	template<>
@@ -56,7 +60,7 @@ namespace keyh
 			: _value(found ? value : nullptr), _found(found) {}
 
 	private:
-		Value* _value;
+		Value*	_value;
 		bool	_found;
 
 	public:

@@ -10,8 +10,8 @@ namespace keyh
 {
 	struct FNV1aHasher
 	{
-		constexpr static size_t kInitialHashValue = 14695981039346656037ULL;
-		constexpr static size_t kHashPrime = 1099511628211ULL;
+		static constexpr size_t kInitialHashValue = 14695981039346656037ULL;
+		static constexpr size_t kHashPrime = 1099511628211ULL;
 
 		static size_t hash(const char* str, size_t length) noexcept;
 		static size_t hash(const wchar_t* str, size_t length) noexcept;

@@ -7,8 +7,8 @@ namespace keyh
 	class StaticString
 	{
 	private:
-		constexpr static size_t kSsoMask = 1ULL << 63;
-		constexpr static size_t kLengthMask = ~kSsoMask;
+		static constexpr size_t kSsoMask = 1ULL << 63;
+		static constexpr size_t kLengthMask = ~kSsoMask;
 		static T gNullChar;
 
 	public:

@@ -241,6 +241,7 @@
   <ItemGroup>
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
+    <ClInclude Include="IBuffer.h" />
     <ClInclude Include="CircularBufferUtil.h" />
     <ClInclude Include="ClassCommon.h" />
     <ClInclude Include="CommonCore.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="Delegate.hpp" />
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Deque.hpp" />
+    <ClInclude Include="DynamicBuffer.h" />
     <ClInclude Include="FlyweightString.h" />
     <ClInclude Include="FNV1aHasher.h" />
     <ClInclude Include="FNV1aHasher.hpp" />
@@ -276,6 +278,7 @@
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
+    <ClInclude Include="StaticBuffer.h" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="StringView.h" />
     <ClInclude Include="StrUtil.h" />
@@ -293,12 +296,14 @@
     <ClCompile Include="CircularBufferUtil.cpp" />
     <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="Deque.cpp" />
+    <ClCompile Include="DynamicBuffer.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="FNV1aHasher.cpp" />
     <ClCompile Include="HashContainerBase.cpp" />
     <ClCompile Include="HashMap.cpp" />
     <ClCompile Include="HashSet.cpp" />
     <ClCompile Include="HashUtil.cpp" />
+    <ClCompile Include="IBuffer.cpp" />
     <ClCompile Include="RefControlBlock.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
@@ -317,6 +322,7 @@
     <ClCompile Include="ScalarVectorTypes.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="StaticArray.cpp" />
+    <ClCompile Include="StaticBuffer.cpp" />
     <ClCompile Include="StaticString.cpp" />
     <ClCompile Include="StringView.cpp" />
     <ClCompile Include="StrUtil.cpp" />
