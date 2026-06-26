@@ -30,7 +30,4 @@ namespace keyh
 
 	template class DynamicBuffer<char>;
 	template class DynamicBuffer<wchar_t>;
-
-	using DynamicBufferA = DynamicBuffer<char>;
-	using DynamicBufferW = DynamicBuffer<wchar_t>;
 }

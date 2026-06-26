@@ -67,11 +67,23 @@
     <Filter Include="소스 파일\Pointer">
       <UniqueIdentifier>{94aea5c2-2b18-4c41-81f1-0ddb3e52d252}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Buffer">
+    <Filter Include="헤더 파일\Memory">
+      <UniqueIdentifier>{d6ff7611-5ba4-47e2-8c9c-eb53e5be29d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Memory\Buffer">
+      <UniqueIdentifier>{2b199043-a4ac-4399-8cd0-5113e2267b52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Memory">
       <UniqueIdentifier>{c24a727d-c1d8-4295-a00b-9dabe4144649}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Buffer">
-      <UniqueIdentifier>{d6ff7611-5ba4-47e2-8c9c-eb53e5be29d3}</UniqueIdentifier>
+    <Filter Include="소스 파일\Memory\Buffer">
+      <UniqueIdentifier>{caaecf40-6ac6-4248-9a5d-e606ac7cdc03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Loader\Json">
+      <UniqueIdentifier>{af8eca30-d2e1-4b38-8297-a14a22dfbe02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Loader\Json">
+      <UniqueIdentifier>{ee32257e-dedc-4bf3-8a00-ac6b82dce2ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -220,16 +232,31 @@
       <Filter>헤더 파일\String</Filter>
     </ClInclude>
     <ClInclude Include="DynamicBuffer.h">
-      <Filter>헤더 파일\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticBuffer.h">
-      <Filter>헤더 파일\Buffer</Filter>
+      <Filter>헤더 파일\Memory\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="IBuffer.h">
-      <Filter>헤더 파일\Buffer</Filter>
+      <Filter>헤더 파일\Memory\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="IBuffer.hpp">
-      <Filter>헤더 파일\Buffer</Filter>
+      <Filter>헤더 파일\Memory\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticBuffer.h">
+      <Filter>헤더 파일\Memory\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ArenaAllocator.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="ArenaAllocator.hpp">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="FileLoader.h">
+      <Filter>헤더 파일\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonLoader.h">
+      <Filter>헤더 파일\Loader\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="Json.h">
+      <Filter>헤더 파일\Loader\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -318,13 +345,25 @@
       <Filter>소스 파일\Pointer</Filter>
     </ClCompile>
     <ClCompile Include="DynamicBuffer.cpp">
-      <Filter>소스 파일\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="StaticBuffer.cpp">
-      <Filter>소스 파일\Buffer</Filter>
+      <Filter>소스 파일\Memory\Buffer</Filter>
     </ClCompile>
     <ClCompile Include="IBuffer.cpp">
-      <Filter>소스 파일\Buffer</Filter>
+      <Filter>소스 파일\Memory\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticBuffer.cpp">
+      <Filter>소스 파일\Memory\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ArenaAllocator.cpp">
+      <Filter>소스 파일\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="FileLoader.cpp">
+      <Filter>소스 파일\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonLoader.cpp">
+      <Filter>소스 파일\Loader\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="Json.cpp">
+      <Filter>소스 파일\Loader\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -239,8 +239,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ArenaAllocator.h" />
+    <ClInclude Include="ArenaAllocator.hpp" />
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
+    <ClInclude Include="FileLoader.h" />
     <ClInclude Include="IBuffer.h" />
     <ClInclude Include="CircularBufferUtil.h" />
     <ClInclude Include="ClassCommon.h" />
@@ -262,6 +265,7 @@
     <ClInclude Include="HashSet.hpp" />
     <ClInclude Include="HashUtil.h" />
     <ClInclude Include="IBuffer.hpp" />
+    <ClInclude Include="Json.h" />
     <ClInclude Include="RefControlBlock.h" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />
@@ -291,13 +295,16 @@
     <ClInclude Include="Vector.hpp" />
     <ClInclude Include="WeakPtr.h" />
     <ClInclude Include="WeakPtr.hpp" />
+    <ClInclude Include="JsonLoader.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArenaAllocator.cpp" />
     <ClCompile Include="AssertUtil.cpp" />
     <ClCompile Include="CircularBufferUtil.cpp" />
     <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="Deque.cpp" />
     <ClCompile Include="DynamicBuffer.cpp" />
+    <ClCompile Include="FileLoader.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="FNV1aHasher.cpp" />
     <ClCompile Include="HashContainerBase.cpp" />
@@ -305,6 +312,7 @@
     <ClCompile Include="HashSet.cpp" />
     <ClCompile Include="HashUtil.cpp" />
     <ClCompile Include="IBuffer.cpp" />
+    <ClCompile Include="Json.cpp" />
     <ClCompile Include="RefControlBlock.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
@@ -331,6 +339,7 @@
     <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="WeakPtr.cpp" />
+    <ClCompile Include="JsonLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CommonBase.natvis" />

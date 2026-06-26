@@ -25,5 +25,8 @@ namespace keyh
 		inline size_t getCapacityImpl() const { return _capacity; }
 		inline T* getBufferImpl() { return _buffer; }
 	};
+
+	using DynamicBufferA = DynamicBuffer<char>;
+	using DynamicBufferW = DynamicBuffer<wchar_t>;
 }
 
