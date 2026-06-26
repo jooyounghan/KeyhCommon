@@ -56,9 +56,6 @@ namespace keyh
 	template class FlyweightString<wchar_t>;
 	template class FlyweightString<char, FNV1aHash<StringView<char>>>;
 	template class FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>>;
-
-	using FlyweightStringA = FlyweightString<char, FNV1aHash<StringView<char>>>;
-	using FlyweightStringW = FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>>;
 }
 
 #pragma region FNV1aHash Specializations

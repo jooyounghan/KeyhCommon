@@ -30,6 +30,9 @@ namespace keyh
 		bool operator!=(const StringView& other) const;
 		const T& operator[](size_t index) const;
 	};
+
+	using StringViewA = StringView<char>;
+	using StringViewW = StringView<wchar_t>;
 }
 
 #pragma region FNV1aHash Specializations

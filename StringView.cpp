@@ -32,9 +32,6 @@ namespace keyh
 
 	template class StringView<char>;
 	template class StringView<wchar_t>;
-
-	using StringViewA = StringView<char>;
-	using StringViewW = StringView<wchar_t>;
 }
 
 #pragma region FNV1aHash Specializations

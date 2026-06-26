@@ -58,4 +58,7 @@ namespace keyh
 		inline size_t size() const { return _stringView.size(); }
 		inline bool empty() const { return _stringView.empty(); }
 	};
+
+	using FlyweightStringA = FlyweightString<char, FNV1aHash<StringView<char>>>;
+	using FlyweightStringW = FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>>;
 }
