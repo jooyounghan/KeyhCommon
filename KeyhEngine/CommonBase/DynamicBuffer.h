@@ -17,8 +17,12 @@ namespace keyh
 		T* _buffer = nullptr;
 		size_t _capacity = 0;
 
+	private:
+		void allocateInner(size_t size);
+
 	public:
 		void allocate(size_t size);
+		void shrinkToFit();
 
 	protected:
 		void resetImpl();

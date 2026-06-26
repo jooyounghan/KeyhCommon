@@ -1,15 +1,20 @@
 #pragma once
+#include "CommonCore.h"
+#include "Vector.h"
 #include "StringView.h"
-
+#include "DynamicBuffer.h"
 namespace keyh
 {
-	struct JsonMember
+	using TapeElement = uint64;
+
+	class JsonDocument
 	{
-		StringViewA _name;
+	private:
+		Vector<TapeElement> _tapeElements;
+		DynamicBuffer<char> _jsonString;
+
+	public:
+		void buildFromJsonString(const char* jsonString);
 	};
-
-	class Json
-	{};
-
 }
 
