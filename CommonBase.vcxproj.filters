@@ -249,7 +249,7 @@
     <ClInclude Include="ArenaAllocator.hpp">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="FileLoader.h">
+    <ClInclude Include="File.h">
       <Filter>헤더 파일\Loader</Filter>
     </ClInclude>
     <ClInclude Include="JsonLoader.h">
@@ -359,7 +359,7 @@
     <ClCompile Include="ArenaAllocator.cpp">
       <Filter>소스 파일\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="FileLoader.cpp">
+    <ClCompile Include="File.cpp">
       <Filter>소스 파일\Loader</Filter>
     </ClCompile>
     <ClCompile Include="JsonLoader.cpp">
