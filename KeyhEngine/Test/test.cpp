@@ -6,6 +6,7 @@
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
 
+#include "File.h"
 int g_pass = 0;
 int g_fail = 0;
 
@@ -34,10 +35,16 @@ int main()
     //test_WeakPtr_concurrency();
     //test_RefPtr_WeakPtr_concurrency_mixed();
 
-    test_StaticBuffer_basic();
-    test_DynamicBuffer_allocate_and_grow();
+    //test_StaticBuffer_basic();
+    //test_DynamicBuffer_allocate_and_grow();
 
-    printSummary();
+    //printSummary();
+
+    while (true)
+    {
+        keyh::File file;
+    	file.load("test.jsonc");
+    }
 
     return g_fail == 0 ? 0 : 1;
 }
