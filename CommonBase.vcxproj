@@ -266,6 +266,7 @@
     <ClInclude Include="HashUtil.h" />
     <ClInclude Include="IBuffer.hpp" />
     <ClInclude Include="Json.h" />
+    <ClInclude Include="JsonUtil.h" />
     <ClInclude Include="RefControlBlock.h" />
     <ClInclude Include="MacroCommon.h" />
     <ClInclude Include="MathUtil.h" />

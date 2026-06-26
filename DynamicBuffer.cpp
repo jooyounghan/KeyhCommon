@@ -4,18 +4,33 @@
 namespace keyh
 {
 	template<typename T>
+	void DynamicBuffer<T>::allocateInner(size_t size)
+	{
+		T* newBuffer = new T[size];
+		memcpy(static_cast<void*>(newBuffer), static_cast<void*>(_buffer), _capacity * sizeof(T));
+		_capacity = size;
+
+		resetImpl();
+		_buffer = newBuffer;
+		_buffer[_offset] = T();
+	}	
+
+	template<typename T>
 	void DynamicBuffer<T>::allocate(size_t capacity)
 	{
 		if (capacity <= _capacity)
 			return;
 		
-		T* newBuffer = new T[capacity];
-		memcpy(static_cast<void*>(newBuffer), static_cast<void*>(_buffer), _capacity * sizeof(T));
-		_capacity = capacity;
+		allocateInner(capacity);
+	}
 
-		resetImpl();
-		_buffer = newBuffer;
-		_buffer[_offset] = T();
+	template<typename T>
+	void DynamicBuffer<T>::shrinkToFit()
+	{
+		if (_offset == _capacity)
+			return;
+
+		allocateInner(_offset + 1);
 	}
 
 	template<typename T>
