@@ -19,7 +19,7 @@ namespace keyh
 		~StaticBuffer() override = default;
 
 	protected:
-		uint8_t _buffer[Size] = { 0 };
+		uint8 _buffer[Size] = { 0 };
 
 	protected:
 		inline void resetImpl() { _buffer[0] = T(); }

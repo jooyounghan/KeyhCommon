@@ -281,6 +281,7 @@
     <ClInclude Include="RefPtr.h" />
     <ClInclude Include="RefPtr.hpp" />
     <ClInclude Include="ScalarVectorTypes.h" />
+    <ClInclude Include="SimdUtil.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />

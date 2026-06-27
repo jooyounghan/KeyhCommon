@@ -1,4 +1,5 @@
 #pragma once
+#include <atomic>
 #include "CommonCore.h"
 
 namespace keyh
