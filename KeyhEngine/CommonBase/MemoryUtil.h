@@ -1,6 +1,11 @@
 #pragma once
 #include "CommonCore.h"
 
+#include <cstring>
+#if defined(KEYH_PLATFORM_WINDOWS)
+#include <malloc.h>
+#endif
+
 namespace keyh
 {
 	struct MemoryUtil

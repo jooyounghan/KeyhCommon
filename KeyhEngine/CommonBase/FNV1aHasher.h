@@ -2,6 +2,7 @@
 #include "CommonCore.h"
 #include "AssertUtil.h"
 #include "MemoryUtil.h"
+#include "SimdUtil.h"
 
 #define DECLARE_FNV1A_HASH_SPECIALIZATION(Type) template<> size_t FNV1aHash<Type>::operator()(const Type& value) const noexcept
 #define DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(Class, ...) template<> size_t FNV1aHash<Class<__VA_ARGS__>>::operator()(const Class<__VA_ARGS__>& value) const noexcept
@@ -18,6 +19,11 @@ namespace keyh
 
 		template<typename Key>
 		static size_t hash(const Key& key) noexcept;
+
+#if defined(SIMD_ENABLED)
+		static size_t hashSimd(const char* str, size_t length) noexcept;
+		static size_t hashSimd(const wchar_t* str, size_t length) noexcept;
+#endif
 	};
 
 	template<typename T>

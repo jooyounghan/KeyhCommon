@@ -111,6 +111,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +132,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="BufferTest.cpp" />
     <ClCompile Include="ConcurrencyTest.cpp" />
+    <ClCompile Include="FNV1aHasherTest.cpp" />
     <ClCompile Include="RefPtrTest.cpp" />
     <ClCompile Include="StaticStringTest.cpp" />
     <ClCompile Include="test.cpp" />
@@ -157,6 +160,7 @@
     <ClInclude Include="BufferTest.h" />
     <ClInclude Include="ConcurrencyTest.h" />
     <ClInclude Include="FlyweightStringTest.h" />
+    <ClInclude Include="FNV1aHasherTest.h" />
     <ClInclude Include="RefPtrTest.h" />
     <ClInclude Include="StaticStringTest.h" />
     <ClInclude Include="TestCommon.h" />

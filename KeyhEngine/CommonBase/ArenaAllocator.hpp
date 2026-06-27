@@ -12,7 +12,7 @@ namespace keyh
     T* ArenaAllocator::createObject(Args && ...args)
     {
         void* memory = allocateMemory(sizeof(T));
-        T* object = new (memory) T(std::forward<Args>(args)...);
+        T* object = new (memory) T(keyh::forward<Args>(args)...);
 
         if constexpr (!std::is_trivially_destructible<T>::value)
         {
