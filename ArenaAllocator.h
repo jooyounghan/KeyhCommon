@@ -1,4 +1,6 @@
 #pragma once
+#include "CommonCore.h"
+#include <type_traits>
 namespace keyh
 {
     typedef void (*DestructorFn)(void*);

@@ -1,4 +1,6 @@
 #pragma once
+#include <cstring>
+#include <cwchar>
 #include "AssertUtil.h"
 namespace keyh
 {

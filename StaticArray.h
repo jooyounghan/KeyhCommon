@@ -1,4 +1,5 @@
 #pragma once
+#include "CommonCore.h"
 namespace keyh
 {
 	template<typename T, size_t Size>
