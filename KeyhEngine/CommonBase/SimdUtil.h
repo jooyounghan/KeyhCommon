@@ -51,7 +51,7 @@ struct SimdUtil
 #if defined(__AVX512F__)
 		= __m512i;
 #elif defined(__AVX2__)
-		__m256i;
+		= __m256i;
 #endif
 
 	[[nodiscard]]
@@ -90,6 +90,25 @@ struct SimdUtil
 		unsigned long index;
 		SIMD_MASK_BSF(index, mask);
 		return static_cast<unsigned int>(index);
+	}
+
+	[[nodiscard]]
+	inline SimdVec xorVec(SimdVec a, SimdVec b) noexcept
+	{
+#if defined(__AVX512F__)
+		return _mm512_xor_si512(a, b);
+#elif defined(__AVX2__)
+		return _mm256_xor_si256(a, b);
+#endif
+	}
+
+	inline void storeTo(void* dest, SimdVec v) noexcept
+	{
+#if defined(__AVX512F__)
+		_mm512_storeu_si512(reinterpret_cast<__m512i*>(dest), v);
+#elif defined(__AVX2__)
+		_mm256_storeu_si256(reinterpret_cast<__m256i*>(dest), v);
+#endif
 	}
 
 #endif
