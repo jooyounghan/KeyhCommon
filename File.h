@@ -1,23 +1,6 @@
 #pragma once
 #include "CommonCore.h"
 
-#if defined(KEYH_PLATFORM_WINDOWS)
-#pragma region Windows
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
-#pragma endregion
-
-#elif defined(KEYH_PLATFORM_POSIX)
-
-#pragma region POSIX
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#pragma endregion
-#endif
-
 namespace keyh
 {
     class File
@@ -33,8 +16,8 @@ namespace keyh
         size_t  _fileSize = 0;
 
 #if defined(KEYH_PLATFORM_WINDOWS)
-        HANDLE _fileHandle = INVALID_HANDLE_VALUE;
-        HANDLE _mappingHandle = nullptr;
+        void* _fileHandle = nullptr;
+        void* _mappingHandle = nullptr;
 #elif defined(KEYH_PLATFORM_POSIX)
         int32 _fileDescriptor = kInvalidFileDescriptor;
 #endif

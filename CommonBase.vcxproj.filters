@@ -380,6 +380,9 @@
     <ClCompile Include="File.cpp">
       <Filter>소스 파일\File</Filter>
     </ClCompile>
+    <ClCompile Include="FileUtil.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CommonBase.natvis">

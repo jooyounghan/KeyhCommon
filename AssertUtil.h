@@ -4,6 +4,12 @@
 
 #include "Delegate.h"
 
+#if defined(_MSC_VER)
+#define KEYH_DEBUG_BREAK() __debugbreak()
+#else
+#define KEYH_DEBUG_BREAK() __builtin_trap()
+#endif
+
 #if defined(__clang__)
 #define FUNC_NAME __PRETTY_FUNCTION__
 #elif defined(__GNUC__)
