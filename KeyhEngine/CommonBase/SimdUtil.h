@@ -1,8 +1,14 @@
 #pragma once
-#include <intrin.h>
-#include <immintrin.h>
 
-#if defined(__AVX512F__) || defined(__AVX2__)
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#if defined(_MSC_VER)
+#include <intrin.h>
+#endif
+#include <immintrin.h>
+#define KEYH_X86_SIMD
+#endif
+
+#if defined(KEYH_X86_SIMD) && (defined(__AVX512F__) || defined(__AVX2__))
 #define SIMD_ENABLED
 #endif
 
@@ -113,7 +119,6 @@ struct SimdUtil
 
 #endif
 };
-
 
 
 
