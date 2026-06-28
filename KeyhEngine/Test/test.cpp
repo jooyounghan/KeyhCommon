@@ -5,7 +5,6 @@
 #include "ConcurrencyTest.h"
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
-#include "FNV1aHasherTest.h"
 
 #include "File.h"
 int g_pass = 0;
@@ -38,9 +37,6 @@ int main()
 
     //test_StaticBuffer_basic();
     //test_DynamicBuffer_allocate_and_grow();
-
-    //test_FNV1aHasher_simd_correctness();
-    //bench_FNV1aHasher_scalar_vs_simd();
 
     //printSummary();
 
