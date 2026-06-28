@@ -128,7 +128,7 @@ namespace keyh
         {
             if (requestedBytes >= kPageThresholdSize)
             {
-            	targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
+                targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
             }
         }
 
