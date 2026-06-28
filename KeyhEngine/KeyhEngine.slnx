@@ -6,7 +6,12 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="CommonBase/CommonBase.vcxproj" Id="295ebb3a-8079-45ba-a2f1-2115d709d868" />
+  <Folder Name="/Common/">
+    <Project Path="CommonBase/CommonBase.vcxproj" Id="295ebb3a-8079-45ba-a2f1-2115d709d868" />
+    <Project Path="ReflectSystem/ReflectSystem.vcxproj" Id="761c4598-1bad-4437-9e24-e8673f0c9802">
+      <BuildType Solution="DevRelease|*" Project="Release" />
+    </Project>
+  </Folder>
   <Project Path="Test/Test.vcxproj" Id="2d3d8405-cd5e-49ff-b93d-d1db42496407">
     <BuildType Solution="DevRelease|*" Project="Release" />
   </Project>
