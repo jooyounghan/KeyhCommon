@@ -32,8 +32,8 @@ namespace keyh
 #define KEYH_ASSERT_DEV(condition, message)				KEYH_ASSERT(condition, message)
 #define KEYH_ASSERT_DEV_ARGS(condition, format, ...)	KEYH_ASSERT_ARGS(condition, format, __VA_ARGS__)
 #else
-#define KEYH_ASSERT_DEV(condition, message)				__noop
-#define KEYH_ASSERT_DEV_ARGS(condition, format, ...)	__noop
+#define KEYH_ASSERT_DEV(condition, message)				KEYH_NOOP()
+#define KEYH_ASSERT_DEV_ARGS(condition, format, ...)	KEYH_NOOP()
 #endif // KEYH_DEV
 
 	struct AssertUtil
