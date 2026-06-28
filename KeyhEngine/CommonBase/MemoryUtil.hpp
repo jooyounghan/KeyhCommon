@@ -133,14 +133,7 @@ namespace keyh
         }
 
         void* ptr = nullptr;
-#if defined(_MSC_VER)
-        ptr = _aligned_malloc(requestedBytes, targetAlignment);
-#else
-        if (posix_memalign(&ptr, targetAlignment, requestedBytes) != 0)
-        {
-            ptr = nullptr;
-        }
-#endif
+        ptr = KEYH_ALIGN_MALLOC(requestedBytes, targetAlignment);
 
         if constexpr (InitializeNull)
         {
@@ -155,11 +148,7 @@ namespace keyh
     template<typename ...Types>
     void MemoryUtil::alignedFree(void* ptr)
     {
-#if defined(_MSC_VER)
-        return _aligned_free(ptr);
-#else
-        return free(ptr);
-#endif
+        KEYH_ALIGN_FREE(ptr);
     }
 
     template<typename T>

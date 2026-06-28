@@ -1,5 +1,3 @@
-#include <new>
-
 #define DELEGATE_TEMPLATE_TYPE template<typename ReturnType, typename ...Args>
 #define DELEGATE_CLASS Delegate<ReturnType(Args...)>
 
@@ -79,7 +77,7 @@ namespace keyh
         }
         else
         {
-            _instancePtr = ::operator new(sizeof(RawF), std::align_val_t{ 16 });
+            _instancePtr = KEYH_ALIGN_MALLOC(sizeof(RawF), 16);
             new (_instancePtr) RawF(keyh::forward<F>(callable));
 
             _stubFunc = [](void* inst, const uint8*, Args&&... args) -> ReturnType {
@@ -88,7 +86,7 @@ namespace keyh
 
             _destructFunc = [](void* instance) {
                 static_cast<RawF*>(instance)->~RawF();
-                ::operator delete(instance, std::align_val_t{ 16 });
+                KEYH_ALIGN_FREE(instance);
             };
         }
         return *this;

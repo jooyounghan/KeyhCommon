@@ -23,3 +23,18 @@
 #endif
 
 #define KEYH_NOOP() ((void)0)
+
+#if defined(_MSC_VER)
+#include <malloc.h>
+#define KEYH_ALIGN_MALLOC(size, align) _aligned_malloc((size), (align))
+#define KEYH_ALIGN_FREE(ptr)           _aligned_free(ptr)
+#else
+#include <cstdlib>
+#define KEYH_ALIGN_MALLOC(size, align) \
+    ([](std::size_t _s, std::size_t _a) -> void* { \
+        void* _p = nullptr; \
+        posix_memalign(&_p, _a, _s); \
+        return _p; \
+    }((size), (align)))
+#define KEYH_ALIGN_FREE(ptr)           free(ptr)
+#endif
