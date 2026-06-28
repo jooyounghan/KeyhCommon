@@ -13,7 +13,7 @@ namespace keyh
 
 		if (gAssertHandler.isValid() && gAssertHandler(message))
 		{
-			__debugbreak();
+			KEYH_DEBUG_BREAK();
 		}
 		else
 		{

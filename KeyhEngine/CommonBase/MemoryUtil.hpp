@@ -122,13 +122,18 @@ namespace keyh
 
         constexpr size_t maxAlignment = alignOf<Types...>();
         size_t requestedBytes = count * getPaddedSizeOf<Types...>();
+        size_t targetAlignment = maxAlignment;
 
-        if constexpr (maxAlignment > __STDCPP_DEFAULT_NEW_ALIGNMENT__ && requestedBytes >= kPageThresholdSize)
+        if constexpr (maxAlignment > __STDCPP_DEFAULT_NEW_ALIGNMENT__)
         {
-            maxAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
+            if (requestedBytes >= kPageThresholdSize)
+            {
+                targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
+            }
         }
 
-        void* ptr = _aligned_malloc(requestedBytes, maxAlignment);
+        void* ptr = nullptr;
+        ptr = KEYH_ALIGN_MALLOC(requestedBytes, targetAlignment);
 
         if constexpr (InitializeNull)
         {
@@ -143,7 +148,7 @@ namespace keyh
     template<typename ...Types>
     void MemoryUtil::alignedFree(void* ptr)
     {
-        return _aligned_free(ptr);
+        KEYH_ALIGN_FREE(ptr);
     }
 
     template<typename T>
