@@ -247,6 +247,7 @@
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="FileUtil.h" />
     <ClInclude Include="IBuffer.h" />
     <ClInclude Include="CircularBufferUtil.h" />
     <ClInclude Include="ClassCommon.h" />

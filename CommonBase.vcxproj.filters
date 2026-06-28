@@ -85,6 +85,12 @@
     <Filter Include="소스 파일\Loader\Json">
       <UniqueIdentifier>{ee32257e-dedc-4bf3-8a00-ac6b82dce2ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\File">
+      <UniqueIdentifier>{60946bfd-7074-4bad-a0d3-18c93c25eae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\File">
+      <UniqueIdentifier>{7274d374-68c5-4959-8929-b74ca4c645b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -249,9 +255,6 @@
     <ClInclude Include="ArenaAllocator.hpp">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>헤더 파일\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="JsonLoader.h">
       <Filter>헤더 파일\Loader\Json</Filter>
     </ClInclude>
@@ -263,6 +266,12 @@
     </ClInclude>
     <ClInclude Include="SimdUtil.h">
       <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
+    <ClInclude Include="FileUtil.h">
+      <Filter>헤더 파일\File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -362,14 +371,14 @@
     <ClCompile Include="ArenaAllocator.cpp">
       <Filter>소스 파일\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="File.cpp">
-      <Filter>소스 파일\Loader</Filter>
-    </ClCompile>
     <ClCompile Include="JsonLoader.cpp">
       <Filter>소스 파일\Loader\Json</Filter>
     </ClCompile>
     <ClCompile Include="Json.cpp">
       <Filter>소스 파일\Loader\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="File.cpp">
+      <Filter>소스 파일\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

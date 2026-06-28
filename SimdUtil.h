@@ -55,7 +55,7 @@ struct SimdUtil
 #endif
 
 	[[nodiscard]]
-	inline SimdVec set8(char x) noexcept
+	static inline SimdVec set8(char x) noexcept
 	{
 #if defined(__AVX512F__)
 		return _mm512_set1_epi8(x);
@@ -65,7 +65,7 @@ struct SimdUtil
 	}
 
 	[[nodiscard]]
-	inline SimdVec load(const void* p) noexcept
+	static inline SimdVec load(const void* p) noexcept
 	{
 #if defined(__AVX512F__)
 		return _mm512_loadu_si512(reinterpret_cast<const __m512i*>(p));
@@ -75,7 +75,7 @@ struct SimdUtil
 	}
 
 	[[nodiscard]]
-	inline SimdMask cmpEpi8(SimdVec a, SimdVec b) noexcept
+	static inline SimdMask cmpEpi8(SimdVec a, SimdVec b) noexcept
 	{
 #if defined(__AVX512F__)
 		return static_cast<SimdMask>(_mm512_cmpeq_epi8_mask(a, b));
@@ -85,7 +85,7 @@ struct SimdUtil
 	}
 
 	[[nodiscard]]
-	inline unsigned int bitScanForward(SimdMask mask) noexcept
+	static inline unsigned int bitScanForward(SimdMask mask) noexcept
 	{
 		unsigned long index;
 		SIMD_MASK_BSF(index, mask);
@@ -93,7 +93,7 @@ struct SimdUtil
 	}
 
 	[[nodiscard]]
-	inline SimdVec xorVec(SimdVec a, SimdVec b) noexcept
+	static 	inline SimdVec xorVec(SimdVec a, SimdVec b) noexcept
 	{
 #if defined(__AVX512F__)
 		return _mm512_xor_si512(a, b);
@@ -102,7 +102,7 @@ struct SimdUtil
 #endif
 	}
 
-	inline void storeTo(void* dest, SimdVec v) noexcept
+	static 	inline void storeTo(void* dest, SimdVec v) noexcept
 	{
 #if defined(__AVX512F__)
 		_mm512_storeu_si512(reinterpret_cast<__m512i*>(dest), v);

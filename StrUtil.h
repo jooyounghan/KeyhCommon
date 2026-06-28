@@ -8,11 +8,20 @@ namespace keyh
 	{
 		static constexpr size_t ssoCapacity = 16;
 
+#pragma region String Length and Compare
 		template<typename T>
 		static size_t strlen(const T* str);	
 
 		template<typename T>
 		static int strcmp(const T* lhs, const T* rhs);
+#pragma endregion
+
+#pragma region String Search and Skips
+		static const char* findNext(const char* start, const char* end, const char target);
+		static const char* skipWhiteSpace(const char* start, const char* end);
+
+		inline static bool isWhitespace(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
+#pragma endregion
 	};
 }
 #include "StrUtil.hpp"
