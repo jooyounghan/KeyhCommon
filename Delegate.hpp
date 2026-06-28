@@ -77,7 +77,7 @@ namespace keyh
         }
         else
         {
-            _instancePtr = _aligned_malloc(sizeof(RawF), 16);
+            _instancePtr = KEYH_ALIGN_MALLOC(sizeof(RawF), 16);
             new (_instancePtr) RawF(keyh::forward<F>(callable));
 
             _stubFunc = [](void* inst, const uint8*, Args&&... args) -> ReturnType {
@@ -86,7 +86,7 @@ namespace keyh
 
             _destructFunc = [](void* instance) {
                 static_cast<RawF*>(instance)->~RawF();
-                _aligned_free(instance);
+                KEYH_ALIGN_FREE(instance);
             };
         }
         return *this;
