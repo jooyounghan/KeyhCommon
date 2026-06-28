@@ -1,7 +1,5 @@
 #include "TestCommon.h"
 #include "StaticStringTest.h"
-#include <cstring>
-#include <cwchar>
 #include "StaticString.h"
 #include "StrUtil.h"
 
