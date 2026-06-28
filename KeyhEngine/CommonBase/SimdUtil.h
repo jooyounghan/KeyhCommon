@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#if defined(KEYH_PLATFORM_X86)
 #if defined(_MSC_VER)
 #include <intrin.h>
 #endif
@@ -119,7 +119,6 @@ struct SimdUtil
 
 #endif
 };
-
 
 
 

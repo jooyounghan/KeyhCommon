@@ -12,6 +12,10 @@
 #define KEYH_PLATFORM_POSIX
 #endif
 
+#if defined(__i386__) || defined(__x86_64__) || defined(_M_IX86) || defined(_M_X64)
+#define KEYH_PLATFORM_X86
+#endif
+
 #if defined(_MSC_VER)
 #define KEYH_DEBUG_BREAK() __debugbreak()
 #else
