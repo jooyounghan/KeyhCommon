@@ -1,5 +1,6 @@
 #pragma once
 #include "CommonCore.h"
+#include "MemoryUtil.h"
 
 namespace keyh
 {

@@ -1,3 +1,4 @@
+#include "MemoryUtil.h"
 namespace keyh
 {
     template<typename T>
@@ -113,42 +114,6 @@ namespace keyh
         {
             return sizeof(T) + getSizeOf<Types...>();
         }
-    }
-
-    template <bool InitializeNull, typename ...Types>
-    void* MemoryUtil::alignedMalloc(size_t count)
-    {
-        if (count == 0) return nullptr;
-
-        constexpr size_t maxAlignment = alignOf<Types...>();
-        size_t requestedBytes = count * getPaddedSizeOf<Types...>();
-        size_t targetAlignment = maxAlignment;
-
-        if constexpr (maxAlignment > __STDCPP_DEFAULT_NEW_ALIGNMENT__)
-        {
-            if (requestedBytes >= kPageThresholdSize)
-            {
-                targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
-            }
-        }
-
-        void* ptr = nullptr;
-        ptr = KEYH_ALIGN_MALLOC(requestedBytes, targetAlignment);
-
-        if constexpr (InitializeNull)
-        {
-            if (ptr != nullptr)
-            {
-                memset(ptr, 0, requestedBytes);
-            }
-        }
-        return ptr;
-    }
-
-    template<typename ...Types>
-    void MemoryUtil::alignedFree(void* ptr)
-    {
-        KEYH_ALIGN_FREE(ptr);
     }
 
     template<typename T>

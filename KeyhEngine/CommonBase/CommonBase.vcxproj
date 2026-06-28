@@ -311,6 +311,7 @@
     <ClCompile Include="Deque.cpp" />
     <ClCompile Include="DynamicBuffer.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="FileUtil.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="FNV1aHasher.cpp" />
     <ClCompile Include="HashContainerBase.cpp" />

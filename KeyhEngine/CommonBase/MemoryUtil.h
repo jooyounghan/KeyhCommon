@@ -4,6 +4,12 @@
 #include <cstring>
 #include <cstdlib>
 
+#if defined(_MSC_VER)
+#include <malloc.h>
+#else
+#include <cstdlib>
+#endif
+
 namespace keyh
 {
 	struct MemoryUtil
@@ -49,10 +55,7 @@ namespace keyh
 		static constexpr size_t getSizeOf() noexcept;
 
 	public:
-		template <bool InitializeNull, typename ...Types>
-		static void* alignedMalloc(size_t count);
-
-		template<typename ...Types>
+		static void* alignedAlloc(size_t size, size_t alignment);
 		static void alignedFree(void* aligned);
 
 		template<typename T>

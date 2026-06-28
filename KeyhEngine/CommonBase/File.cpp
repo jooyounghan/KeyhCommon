@@ -1,6 +1,15 @@
 #include "CommonBasePch.h"
 #include "File.h"
 
+#if defined(KEYH_PLATFORM_WINDOWS)
+#include <windows.h>
+#elif defined(KEYH_PLATFORM_POSIX)
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 namespace keyh
 {
 	File::~File() { unload(); }
