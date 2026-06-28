@@ -5,13 +5,16 @@ namespace keyh
 {
 	size_t MemoryUtil::fastBitCeil(size_t value)
 	{
-		uint32 x = static_cast<uint32>(value + 1);
-		unsigned long leadingZeros;
-
-		if (_BitScanReverse(&leadingZeros, x))
+		if (value <= 1)
 		{
-			return static_cast<size_t>(1) << (leadingZeros + 1);
+			return 1;
 		}
-		return 1;
+
+		--value;
+		for (size_t shift = 1; shift < sizeof(size_t) * 8; shift <<= 1)
+		{
+			value |= value >> shift;
+		}
+		return value + 1;
 	}
 }

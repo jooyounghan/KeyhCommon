@@ -2,6 +2,7 @@
 #include "CommonCore.h"
 
 #include <cstring>
+#include <cstdlib>
 #if defined(KEYH_PLATFORM_WINDOWS)
 #include <malloc.h>
 #endif

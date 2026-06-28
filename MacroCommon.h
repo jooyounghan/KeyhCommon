@@ -11,3 +11,11 @@
 #if defined(__linux__) || defined(__APPLE__) || defined(__ORBIS__) || defined(__PROSPERO__)
 #define KEYH_PLATFORM_POSIX
 #endif
+
+#if defined(_MSC_VER)
+#define KEYH_DEBUG_BREAK() __debugbreak()
+#else
+#define KEYH_DEBUG_BREAK() __builtin_trap()
+#endif
+
+#define KEYH_NOOP() ((void)0)
