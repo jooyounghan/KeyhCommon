@@ -123,23 +123,20 @@ namespace keyh
         constexpr size_t maxAlignment = alignOf<Types...>();
         size_t requestedBytes = count * getPaddedSizeOf<Types...>();
         size_t targetAlignment = maxAlignment;
-        size_t allocatedBytes = requestedBytes;
 
-        if (maxAlignment > __STDCPP_DEFAULT_NEW_ALIGNMENT__ && requestedBytes >= kPageThresholdSize)
+        if constexpr (maxAlignment > __STDCPP_DEFAULT_NEW_ALIGNMENT__)
         {
-            targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
-        }
-
-        if ((allocatedBytes % targetAlignment) != 0)
-        {
-            allocatedBytes = MemoryUtil::align(allocatedBytes, targetAlignment);
+            if (requestedBytes >= kPageThresholdSize)
+            {
+            	targetAlignment = maxAlignment > kCachelineAlignSize ? maxAlignment : kCachelineAlignSize;
+            }
         }
 
         void* ptr = nullptr;
 #if defined(_MSC_VER)
-        ptr = _aligned_malloc(allocatedBytes, targetAlignment);
+        ptr = _aligned_malloc(requestedBytes, targetAlignment);
 #else
-        if (posix_memalign(&ptr, targetAlignment, allocatedBytes) != 0)
+        if (posix_memalign(&ptr, targetAlignment, requestedBytes) != 0)
         {
             ptr = nullptr;
         }
@@ -149,7 +146,7 @@ namespace keyh
         {
             if (ptr != nullptr)
             {
-                memset(ptr, 0, allocatedBytes);
+                memset(ptr, 0, requestedBytes);
             }
         }
         return ptr;
