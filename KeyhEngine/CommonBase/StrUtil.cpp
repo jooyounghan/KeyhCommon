@@ -4,6 +4,15 @@
 
 namespace keyh
 {
+	int StrUtil::strToInt(const char* str, int radix, char** endPtr)
+	{
+		return ::strtoll(str, endPtr, radix);
+	}
+	float StrUtil::strToFloat(const char* str, char** endPtr)
+	{
+		return ::strtof(str, endPtr);
+	}
+
 	const char* StrUtil::findNext(const char* start, const char* end, const char target)
 	{
 		const char* pos = start;

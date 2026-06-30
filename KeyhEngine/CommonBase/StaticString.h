@@ -57,6 +57,9 @@ namespace keyh
 		void swap(StaticString& other) noexcept;
 		void clear();
 	};
+
+	using StaticStringA = StaticString<char>;
+	using StaticStringW = StaticString<wchar_t>;
 }
 
 #pragma region FNV1aHash Specializations

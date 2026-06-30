@@ -113,6 +113,7 @@ namespace keyh
 	public:
 		inline size_t size() const { return _isEmpty ? 0 : (_top >= _bottom ? _bottom + _capacity - _top : _bottom - _top); }
 		inline size_t capacity() const { return _capacity; }
+		inline bool empty() const { return _isEmpty; }
 	};
 }
 

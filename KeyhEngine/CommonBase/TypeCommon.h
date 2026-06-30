@@ -1,4 +1,6 @@
 #pragma once
+#include <cstddef>
+
 namespace keyh
 {
 	using byte = unsigned char;
@@ -14,4 +16,5 @@ namespace keyh
 
 	constexpr uint32 kInvalidUint32 = static_cast<uint32>(-1);
 	constexpr uint64 kInvalidUint64 = static_cast<uint64>(-1);
+	constexpr size_t kInvalidSizeT = static_cast<size_t>(-1);
 }
