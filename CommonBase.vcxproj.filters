@@ -43,12 +43,6 @@
     <Filter Include="소스 파일\Type">
       <UniqueIdentifier>{83642ff4-c1f7-4df2-876d-42e09d53405e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Loader">
-      <UniqueIdentifier>{88eeb83f-c135-436c-b5ce-dbc7663fce69}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Loader">
-      <UniqueIdentifier>{d159f91c-20f5-45f5-ba1e-fa5e2c78f69b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\Hasher">
       <UniqueIdentifier>{f5fa86a9-d620-4fa5-bd60-2e395adba863}</UniqueIdentifier>
     </Filter>
@@ -79,17 +73,17 @@
     <Filter Include="소스 파일\Memory\Buffer">
       <UniqueIdentifier>{caaecf40-6ac6-4248-9a5d-e606ac7cdc03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Loader\Json">
-      <UniqueIdentifier>{af8eca30-d2e1-4b38-8297-a14a22dfbe02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Loader\Json">
-      <UniqueIdentifier>{ee32257e-dedc-4bf3-8a00-ac6b82dce2ef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\File">
       <UniqueIdentifier>{60946bfd-7074-4bad-a0d3-18c93c25eae9}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\File">
       <UniqueIdentifier>{7274d374-68c5-4959-8929-b74ca4c645b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Json">
+      <UniqueIdentifier>{af8eca30-d2e1-4b38-8297-a14a22dfbe02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Json">
+      <UniqueIdentifier>{ee32257e-dedc-4bf3-8a00-ac6b82dce2ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -256,13 +250,13 @@
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
     <ClInclude Include="JsonLoader.h">
-      <Filter>헤더 파일\Loader\Json</Filter>
+      <Filter>헤더 파일\Json</Filter>
     </ClInclude>
     <ClInclude Include="Json.h">
-      <Filter>헤더 파일\Loader\Json</Filter>
+      <Filter>헤더 파일\Json</Filter>
     </ClInclude>
     <ClInclude Include="JsonUtil.h">
-      <Filter>헤더 파일\Loader\Json</Filter>
+      <Filter>헤더 파일\Json</Filter>
     </ClInclude>
     <ClInclude Include="SimdUtil.h">
       <Filter>헤더 파일\Util</Filter>
@@ -372,10 +366,10 @@
       <Filter>소스 파일\Memory</Filter>
     </ClCompile>
     <ClCompile Include="JsonLoader.cpp">
-      <Filter>소스 파일\Loader\Json</Filter>
+      <Filter>소스 파일\Json</Filter>
     </ClCompile>
     <ClCompile Include="Json.cpp">
-      <Filter>소스 파일\Loader\Json</Filter>
+      <Filter>소스 파일\Json</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>소스 파일\File</Filter>

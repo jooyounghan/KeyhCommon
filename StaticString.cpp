@@ -173,9 +173,6 @@ namespace keyh
 
 	template class StaticString<char>;
 	template class StaticString<wchar_t>;
-
-	using StaticStringA = StaticString<char>;
-	using StaticStringW = StaticString<wchar_t>;
 }
 
 #pragma region FNV1aHash Specializations
