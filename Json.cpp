@@ -2,24 +2,10 @@
 #include "Json.h"
 #include "StrUtil.h"
 #include "Stack.h"
-#include "StaticString.h"
 
 namespace keyh
 {
-    void JsonDocument::TapeElement::setElement(TapeType type, uint64 payload)
-    {
-        uint64 typeVal = static_cast<uint64>(type);
-        _value = (typeVal << 56) | (payload & 0x00FFFFFFFFFFFFFFULL);
-    }
-    
-    void JsonDocument::TapeElement::setStringElement(uint64 offset, uint32 length)
-    {
-        uint64 typeVal = static_cast<uint64>(TapeType::String);
-        uint64 lengthVal = static_cast<uint64>(length);
-        _value = (typeVal << 56) | ((lengthVal & 0xFFFFFF) << 32) | (offset & 0xFFFFFFFF);
-    }
-
-	static void handleError(Vector<JsonDocument::TapeElement>& tapeElements, bool condition, const char* errorMessage)
+	static void handleError(Vector<JsonUtil::TapeElement>& tapeElements, bool condition, const char* errorMessage)
 	{
 		if (!condition)
 		{
@@ -28,13 +14,13 @@ namespace keyh
 		}
 	}
 
-	static void handleTapeOpen(Vector<JsonDocument::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonDocument::TapeType type)
+	static void handleTapeOpen(Vector<JsonUtil::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonUtil::TapeType type)
 	{
 		indexStack.push(tapeElements.size());
 		tapeElements.emplace_back().setElement(type, 0);
 	}
 
-	static bool handleTapeClose(Vector<JsonDocument::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonDocument::TapeType type)
+	static bool handleTapeClose(Vector<JsonUtil::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonUtil::TapeType type)
 	{
 		if (indexStack.empty())
 		{
@@ -50,7 +36,7 @@ namespace keyh
 		return true;
 	}
 
-	static bool handleStringElement(Vector<JsonDocument::TapeElement>& tapeElements, const char* jsonString, const char* quoteStart, const char* quoteEnd)
+	static bool handleStringElement(Vector<JsonUtil::TapeElement>& tapeElements, const char* jsonString, const char* quoteStart, const char* quoteEnd)
 	{
 		if (!quoteStart || !quoteEnd || quoteEnd <= quoteStart)
 		{
@@ -59,6 +45,63 @@ namespace keyh
 
 		tapeElements.emplace_back().setStringElement(quoteStart - jsonString + 1, static_cast<uint32_t>(quoteEnd - quoteStart - 1));
 		return true;
+	}
+
+	static bool handleNumberElement(Vector<JsonUtil::TapeElement>& tapeElements, const char*& ptr, const char* end)
+	{
+		const char* current = ptr + 1;
+		bool hasDecimalPoint = false;
+		while (current < end)
+		{
+			if (StrUtil::isDigit(*current))
+			{
+				++current;
+			}
+			else if (*current == '.')
+			{
+				if (hasDecimalPoint)
+					return false;
+
+				++current;
+				hasDecimalPoint = true;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if (hasDecimalPoint)
+		{
+			float numberValue = StrUtil::strToFloat(ptr);
+			uint32 bitPattern = 0;
+			memcpy(&bitPattern, &numberValue, sizeof(float));
+			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Float, static_cast<uint64>(bitPattern));
+		}
+		else
+		{
+			int numberValue = StrUtil::strToInt(ptr);
+			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Integer, numberValue);
+		}
+		ptr = current - 1;
+		return true;
+	}
+
+	static bool handleBooleanElement(Vector<JsonUtil::TapeElement>& tapeElements, const char*& ptr, const char* end)
+	{
+		if (StrUtil::strcmp(ptr, JsonUtil::kTrue) == 0)
+		{
+			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Boolean, 1);
+			ptr += JsonUtil::kTrueLength;
+			return true;
+		}
+		else if (StrUtil::strcmp(ptr, JsonUtil::kFalse) == 0)
+		{
+			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Boolean, 0);
+			ptr += JsonUtil::kFalseLength;
+			return true;
+		}
+		return false;
 	}
 
     void JsonDocument::buildFromJsonString(const char* jsonString, size_t size)
@@ -80,12 +123,12 @@ namespace keyh
 				break;
 			case '{':
 			{
-				handleTapeOpen(_tapeElements, objectIndexStack, TapeType::ObjectStart);
+				handleTapeOpen(_tapeElements, objectIndexStack, JsonUtil::TapeType::ObjectStart);
 				break;
 			}
 			case '}':
 			{
-				if (!handleTapeClose(_tapeElements, objectIndexStack, TapeType::ObjectEnd))
+				if (handleTapeClose(_tapeElements, objectIndexStack, JsonUtil::TapeType::ObjectEnd) == false)
 				{
 					return handleError(_tapeElements, false, "Mismatched closing brace '}' in JSON string");
 				}
@@ -93,12 +136,12 @@ namespace keyh
 			}
 			case '[':
 			{
-				handleTapeOpen(_tapeElements, arrayIndexStack, TapeType::ArrayStart);
+				handleTapeOpen(_tapeElements, arrayIndexStack, JsonUtil::TapeType::ArrayStart);
 				break;
 			}
 			case ']':
 			{
-				if (!handleTapeClose(_tapeElements, arrayIndexStack, TapeType::ArrayEnd))
+				if (handleTapeClose(_tapeElements, arrayIndexStack, JsonUtil::TapeType::ArrayEnd) == false)
 				{
 					return handleError(_tapeElements, false, "Mismatched closing bracket ']' in JSON string");
 				}
@@ -109,7 +152,7 @@ namespace keyh
 				const char* quoteStart = ptr;
 				const char* quoteEnd = StrUtil::findNext(ptr + 1, end, '"');
 
-				if (!handleStringElement(_tapeElements, jsonString, quoteStart, quoteEnd))
+				if (handleStringElement(_tapeElements, jsonString, quoteStart, quoteEnd) == false)
 				{
 					return handleError(_tapeElements, false, "Invalid string in JSON string");
 				}
@@ -119,56 +162,14 @@ namespace keyh
 			}
 			default:
 			{
-				if (StrUtil::isDigit(c) || c == '-' || c == '+')
+				const bool startWithDigitOrSign = StrUtil::isDigit(c) || c == '-' || c == '+';
+				if (startWithDigitOrSign && handleNumberElement(_tapeElements, ptr, end) == false)
 				{
-					const char* current = ptr + 1;
-					bool hasDecimalPoint = false;
-					while (current < end)
-					{
-						if (StrUtil::isDigit(*current) || *current == '-' || *current == '+')
-						{
-							++current;
-						}
-						else if (*current == '.')
-						{
-							++current;
-							hasDecimalPoint = true;
-						}
-						else
-						{
-							break;
-						}
-					}
-
-					StaticStringA numberStr(ptr, current - ptr);
-					if (hasDecimalPoint)
-					{
-						float numberValue = StrUtil::strToFloat(numberStr.c_str());
-						uint32 bitPattern = 0;
-						memcpy(&bitPattern, &numberValue, sizeof(float));
-						_tapeElements.emplace_back().setElement(TapeType::Float, static_cast<uint64>(bitPattern));
-					}
-					else
-					{
-						int numberValue = StrUtil::strToInt(numberStr.c_str());
-						_tapeElements.emplace_back().setElement(TapeType::Integer, numberValue);
-					}
-					ptr = current - 1; // Move ptr to the end of the number
+					return handleError(_tapeElements, false, "Invalid number in JSON string");
 				}
-				else if (StrUtil::strcmp(ptr, "true") == 0)
+				else if (handleBooleanElement(_tapeElements, ptr, end) == false)
 				{
-					_tapeElements.emplace_back().setElement(TapeType::Boolean, 1);
-					ptr += 3; // Move ptr to the end of "true"
-
-				}
-				else if (StrUtil::strcmp(ptr, "false") == 0)
-				{
-					_tapeElements.emplace_back().setElement(TapeType::Boolean, 0);
-					ptr += 4; // Move ptr to the end of "false"
-				}
-				else
-				{
-					handleError(_tapeElements, false, "Invalid character in JSON string");
+					return handleError(_tapeElements, false, "Invalid Type in JSON string");
 				}
 				break;
 			}

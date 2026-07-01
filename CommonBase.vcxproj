@@ -320,6 +320,7 @@
     <ClCompile Include="HashUtil.cpp" />
     <ClCompile Include="IBuffer.cpp" />
     <ClCompile Include="Json.cpp" />
+    <ClCompile Include="JsonUtil.cpp" />
     <ClCompile Include="RefControlBlock.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
