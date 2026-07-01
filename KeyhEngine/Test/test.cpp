@@ -5,8 +5,8 @@
 #include "ConcurrencyTest.h"
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
+#include "JsonTest.h"
 
-#include "File.h"
 int g_pass = 0;
 int g_fail = 0;
 
@@ -38,13 +38,10 @@ int main()
     //test_StaticBuffer_basic();
     //test_DynamicBuffer_allocate_and_grow();
 
-    //printSummary();
+    test_Json_parse_test_file();
+    benchmark_Json_parse_speed();
 
-    while (true)
-    {
-        keyh::File file;
-    	file.load("test.jsonc");
-    }
+    printSummary();
 
     return g_fail == 0 ? 0 : 1;
 }

@@ -8,19 +8,22 @@ namespace keyh
 	class JsonDocument
 	{
 	public:
-		JsonDocument() = delete;
-		explicit JsonDocument(const char* jsonPath)
-		{
-			_jsonFile.load(jsonPath);
-			buildFromJsonString(_jsonFile.getStringBuffer(), _jsonFile.getFileSize());
-		}
+		JsonDocument() = default;
+		explicit JsonDocument(const char* jsonPath) { loadFromFile(jsonPath); }
+
+	public:
+		bool loadFromFile(const char* jsonPath);
+		bool buildFromJsonString(const char* jsonString, size_t size);
 
 	private:
 		File				_jsonFile;
 		Vector<JsonUtil::TapeElement> _tapeElements;
+		bool				_isValid = false;
 
-	private:
-		void buildFromJsonString(const char* jsonString, size_t size);
+	public:
+		inline bool isValid() const { return _isValid; }
+		inline size_t getTapeElementCount() const { return _tapeElements.size(); }
+		inline const Vector<JsonUtil::TapeElement>& getTapeElements() const { return _tapeElements; }
+		inline const char* getJsonStringBuffer() const { return _jsonFile.getStringBuffer(); }
 	};
 }
-
