@@ -377,6 +377,9 @@
     <ClCompile Include="FileUtil.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="JsonUtil.cpp">
+      <Filter>소스 파일\Json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CommonBase.natvis">
