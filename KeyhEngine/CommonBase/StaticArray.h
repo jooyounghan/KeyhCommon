@@ -6,6 +6,76 @@ namespace keyh
 	class StaticArray
 	{
 	public:
+		class Iterator
+		{
+		public:
+			constexpr Iterator(T* ptr) : _ptr(ptr) {}
+
+		public:
+			inline constexpr T& operator*() { return *_ptr; }
+			inline constexpr const T& operator*() const { return *_ptr; }
+			inline constexpr T* operator->() { return _ptr; }
+			inline constexpr const T* operator->() const { return _ptr; }
+			inline constexpr operator T* () { return _ptr; }
+			inline constexpr operator const T* () const { return _ptr; }
+			inline constexpr bool operator==(const Iterator& other) const { return _ptr == other._ptr; }
+			inline constexpr bool operator!=(const Iterator& other) const { return !(*this == other); }
+			inline constexpr Iterator operator+(ptrdiff_t offset) const { return Iterator(_ptr + offset); }
+			inline constexpr Iterator operator-(ptrdiff_t offset) const { return Iterator(_ptr - offset); }
+			inline constexpr ptrdiff_t operator-(const Iterator& other) const { return _ptr - other._ptr; }
+
+		public:
+			inline constexpr Iterator& operator++()
+			{
+				++_ptr;
+				return *this;
+			}
+
+			inline constexpr Iterator operator++(int)
+			{
+				Iterator temp = *this;
+				++_ptr;
+				return temp;
+			}
+
+		private:
+			T* _ptr;
+		};
+
+		class ConstIterator
+		{
+		public:
+			constexpr ConstIterator(const T* ptr) : _ptr(ptr) {}
+
+		public:
+			inline constexpr const T& operator*() const { return *_ptr; }
+			inline constexpr const T* operator->() const { return _ptr; }
+			inline constexpr operator const T* () const { return _ptr; }
+			inline constexpr bool operator==(const ConstIterator& other) const { return _ptr == other._ptr; }
+			inline constexpr bool operator!=(const ConstIterator& other) const { return !(*this == other); }
+			inline constexpr ConstIterator operator+(ptrdiff_t offset) const { return ConstIterator(_ptr + offset); }
+			inline constexpr ConstIterator operator-(ptrdiff_t offset) const { return ConstIterator(_ptr - offset); }
+			inline constexpr ptrdiff_t operator-(const ConstIterator& other) const { return _ptr - other._ptr; }
+
+		public:
+			inline constexpr ConstIterator& operator++()
+			{
+				++_ptr;
+				return *this;
+			}
+
+			inline constexpr ConstIterator operator++(int)
+			{
+				ConstIterator temp = *this;
+				++_ptr;
+				return temp;
+			}
+
+		private:
+			const T* _ptr;
+		};
+
+	public:
 		constexpr StaticArray() = default;
 		constexpr ~StaticArray() = default;
 
@@ -19,10 +89,10 @@ namespace keyh
 		T _data[Size];
 
 	public:
-		inline constexpr T* begin() { return _data; }
-		inline constexpr const T* begin() const { return _data; }
-		inline constexpr T* end() { return _data + Size; }
-		inline constexpr const T* end() const { return _data + Size; }
+		inline constexpr Iterator begin() { return Iterator(_data); }
+		inline constexpr ConstIterator begin() const { return ConstIterator(_data); }
+		inline constexpr Iterator end() { return Iterator(_data + Size); }
+		inline constexpr ConstIterator end() const { return ConstIterator(_data + Size); }
 
 	public:
 		constexpr T& operator[](size_t index) { return _data[index]; }
