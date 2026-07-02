@@ -29,6 +29,7 @@ namespace keyh
 		constexpr const T& operator[](size_t index) const { return _data[index]; }
 
 	public:
+		constexpr const T* data() const noexcept { return _data; }
 		constexpr size_t size() noexcept { return Size; }
 	};
 

@@ -14,6 +14,16 @@ namespace keyh
 		static constexpr size_t kTrueLength = sizeof(kTrue) - 1;
 		static constexpr size_t kFalseLength = sizeof(kFalse) - 1;
 
+		static constexpr size_t kIndexMask = 0xFFFFFFFF;				// lower 32 bits
+
+		static constexpr size_t kStringOffsetMask = 0xFFFFFFFF;			// lower 32 bits
+		static constexpr size_t kStringLengthMask = 0xFFFFFF;			// next 24 bits
+		static constexpr size_t kStringLengthShift = 32;				// shift for string length
+
+		static constexpr uint64 kPayloadMask = 0x00FFFFFFFFFFFFFFULL;	// lower 56 bits
+		static constexpr uint64 kTypeMask = 0xFF00000000000000ULL;		// upper 8 bits
+		static constexpr size_t kTypeShift = 56;						// shift for type (upper 8 bits)
+
 		enum class TapeType : uint8
 		{
 			ObjectStart = '{',
@@ -33,22 +43,32 @@ namespace keyh
 			uint64 _value;
 
 		public:
-			void setElement(TapeType type, uint64 payload);
-			void setStringElement(uint64 offset, uint32 length);
+			void setIndexElement(TapeType type, size_t index);
+			void setStringElement(size_t offset, size_t length);
 
 		public:
-			inline TapeType getType() const { return static_cast<TapeType>(_value >> 56); }
-			inline uint64 getPayload() const { return _value & 0x00FFFFFFFFFFFFFFULL; }
-			inline uint64 getStringOffset() const { return _value & 0xFFFFFFFF /* lower 32 bits */; }
-			inline uint32 getStringLength() const { return static_cast<uint32>((_value >> 32) & 0xFFFFFF /* next 24 bits */); }
+			inline TapeType getType() const { return static_cast<TapeType>(_value >> kTypeShift); }
+
+			inline size_t getPayloadAsIndex() const { return static_cast<size_t>(_value & kIndexMask); }
+			inline size_t getPayloadAsStringOffset() const { return static_cast<size_t>(_value & kStringOffsetMask); }
+			inline size_t getPayloadAsStringLength() const { return static_cast<size_t>((_value >> kStringLengthShift) & kStringLengthMask); }
 
 		public:
-			void setPayload(uint64 payload) { _value = (_value & 0xFF00000000000000ULL) | (payload & 0x00FFFFFFFFFFFFFFULL); }
+			uint64 getPayload() const { return _value & kPayloadMask; }
+			void setPayload(uint64 payload) { _value = (_value & kTypeMask) | (payload & kPayloadMask); }
 
 		public:
-			float		parseAsFloat() const;
-			int			parseAsInt() const;
-			StringViewA	parseAsStringView(const char* jsonString) const;
+			template<typename T>
+			T parse() const;
+
+		public:
+			StringViewA	parse(const char* jsonString) const;
+
+		private:
+			template<typename T>
+			T parseImpl() const;
+
+
 		};
 	};
 }

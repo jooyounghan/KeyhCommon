@@ -3,33 +3,52 @@
 
 namespace keyh
 {
-    void JsonUtil::TapeElement::setElement(TapeType type, uint64 payload)
+    void JsonUtil::TapeElement::setIndexElement(TapeType type, size_t index)
     {
-        uint64 typeVal = static_cast<uint64>(type);
-        _value = (typeVal << 56) | (payload & 0x00FFFFFFFFFFFFFFULL);
+        const uint64 typeVal = static_cast<uint64>(type);
+		const uint64 indexVal = static_cast<uint64>(index);
+        _value = (typeVal << kTypeShift) | (indexVal & kIndexMask);
     }
 
-    void JsonUtil::TapeElement::setStringElement(uint64 offset, uint32 length)
+    void JsonUtil::TapeElement::setStringElement(size_t offset, size_t length)
     {
-        uint64 typeVal = static_cast<uint64>(TapeType::String);
-        uint64 lengthVal = static_cast<uint64>(length);
-        _value = (typeVal << 56) | ((lengthVal & 0xFFFFFF) << 32) | (offset & 0xFFFFFFFF);
+        const uint64 typeVal = static_cast<uint64>(TapeType::String);
+        const uint64 lengthVal = static_cast<uint64>(length);
+        _value = (typeVal << kTypeShift) | ((lengthVal & kStringLengthMask) << kStringLengthShift) | (offset & kStringOffsetMask);
     }
 
-    float JsonUtil::TapeElement::parseAsFloat() const
+    template<typename T>
+    T JsonUtil::TapeElement::parse() const
     {
-        float value = 0.0f;
-        memcpy(&value, &_value, sizeof(float));
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(JsonUtil::TapeElement<T>);
+    }
+
+    template<typename T>
+    T JsonUtil::TapeElement::parseImpl() const
+    {
+        static_assert(sizeof(T) <= 7, "Type T must be 8 bytes or smaller.");
+        constexpr uint64_t mask = kInvalidUint64 >> (64 - (sizeof(T) * 8));
+        uint64_t result = _value & mask;
+
+        T value;
+        memcpy(&value, &result, sizeof(T));
         return value;
     }
 
-    int JsonUtil::TapeElement::parseAsInt() const
-    {
-		return getPayload();
-    }
+    template<>
+	float JsonUtil::TapeElement::parse<float>() const
+	{
+		return parseImpl<float>();
+	}
 
-    StringViewA JsonUtil::TapeElement::parseAsStringView(const char* jsonString) const
-    {
-        return StringViewA(jsonString + getStringOffset(), getStringLength());
-    }
+	template<>
+	int JsonUtil::TapeElement::parse<int>() const
+	{
+		return parseImpl<int>();
+	}
+
+	StringViewA JsonUtil::TapeElement::parse(const char* jsonString) const
+	{
+        return StringViewA(jsonString + getPayloadAsStringOffset(), getPayloadAsStringLength());
+	}
 }
