@@ -1,5 +1,5 @@
 #include "CommonBasePch.h"
-#include "Json.h"
+#include "JsonDocument.h"
 #include "StrUtil.h"
 #include "Stack.h"
 
@@ -11,9 +11,19 @@ namespace keyh
 		{
 			KEYH_ASSERT_DEV(false, errorMessage);
 			tapeElements.clear();
-			return false;
 		}
-		return true;
+		return false;
+	}
+
+	static void skipBOM(const char*& ptr, const char* end)
+	{
+		if (ptr + 3 <= end
+			&& static_cast<unsigned char>(ptr[0]) == 0xEF
+			&& static_cast<unsigned char>(ptr[1]) == 0xBB
+			&& static_cast<unsigned char>(ptr[2]) == 0xBF)
+		{
+			ptr += 3;
+		}
 	}
 
 	static void handleTapeOpen(Vector<JsonUtil::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonUtil::TapeType type)
@@ -143,13 +153,8 @@ namespace keyh
 
 		const char* const end = jsonString + size;
 		const char* start = jsonString;
-		if (size >= 3
-			&& static_cast<unsigned char>(start[0]) == 0xEF
-			&& static_cast<unsigned char>(start[1]) == 0xBB
-			&& static_cast<unsigned char>(start[2]) == 0xBF)
-		{
-			start += 3;
-		}
+
+		skipBOM(start, end);
 
 		const char* ptr = StrUtil::skipWhiteSpace(start, end);
 
@@ -242,4 +247,22 @@ namespace keyh
 		_isValid = true;
 		return true;
     }
+
+	JsonUtil::TapeElement* JsonDocument::getNextObjectElement(size_t index)
+	{
+		if (index >= _tapeElements.size())
+		{
+			return nullptr;
+		}
+
+		for (size_t i = index + 1; i < _tapeElements.size(); ++i)
+		{
+			JsonUtil::TapeElement& element = _tapeElements[i];
+			if (element.getType() == JsonUtil::TapeType::ObjectStart)
+			{
+
+			}
+		}
+		return nullptr;
+	}
 }

@@ -269,7 +269,8 @@
     <ClInclude Include="HashSet.hpp" />
     <ClInclude Include="HashUtil.h" />
     <ClInclude Include="IBuffer.hpp" />
-    <ClInclude Include="Json.h" />
+    <ClInclude Include="JsonDocument.h" />
+    <ClInclude Include="JsonElement.h" />
     <ClInclude Include="JsonUtil.h" />
     <ClInclude Include="RefControlBlock.h" />
     <ClInclude Include="MacroCommon.h" />
@@ -286,6 +287,8 @@
     <ClInclude Include="RefPtr.hpp" />
     <ClInclude Include="ScalarVectorTypes.h" />
     <ClInclude Include="SimdUtil.h" />
+    <ClInclude Include="Span.h" />
+    <ClInclude Include="Span.hpp" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
@@ -301,7 +304,6 @@
     <ClInclude Include="Vector.hpp" />
     <ClInclude Include="WeakPtr.h" />
     <ClInclude Include="WeakPtr.hpp" />
-    <ClInclude Include="JsonLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ArenaAllocator.cpp" />
@@ -319,7 +321,8 @@
     <ClCompile Include="HashSet.cpp" />
     <ClCompile Include="HashUtil.cpp" />
     <ClCompile Include="IBuffer.cpp" />
-    <ClCompile Include="Json.cpp" />
+    <ClCompile Include="JsonDocument.cpp" />
+    <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="JsonUtil.cpp" />
     <ClCompile Include="RefControlBlock.cpp" />
     <ClCompile Include="MacroCommon.cpp" />
@@ -337,6 +340,7 @@
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="RefPtr.cpp" />
     <ClCompile Include="ScalarVectorTypes.cpp" />
+    <ClCompile Include="Span.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="StaticArray.cpp" />
     <ClCompile Include="StaticBuffer.cpp" />
@@ -347,7 +351,6 @@
     <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="WeakPtr.cpp" />
-    <ClCompile Include="JsonLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="CommonBase.natvis" />

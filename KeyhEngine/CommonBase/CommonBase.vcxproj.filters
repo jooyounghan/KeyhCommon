@@ -85,6 +85,12 @@
     <Filter Include="소스 파일\Json">
       <UniqueIdentifier>{ee32257e-dedc-4bf3-8a00-ac6b82dce2ef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\View">
+      <UniqueIdentifier>{c79a13a8-236c-494f-b66e-2c0b10279310}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\View">
+      <UniqueIdentifier>{1ba25006-9bd8-44ca-9282-36802f4a39d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonBasePch.h">
@@ -198,9 +204,6 @@
     <ClInclude Include="HashContainerBase.hpp">
       <Filter>헤더 파일\String</Filter>
     </ClInclude>
-    <ClInclude Include="StringView.h">
-      <Filter>헤더 파일\String</Filter>
-    </ClInclude>
     <ClInclude Include="StrUtil.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
@@ -249,10 +252,7 @@
     <ClInclude Include="ArenaAllocator.hpp">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="JsonLoader.h">
-      <Filter>헤더 파일\Json</Filter>
-    </ClInclude>
-    <ClInclude Include="Json.h">
+    <ClInclude Include="JsonDocument.h">
       <Filter>헤더 파일\Json</Filter>
     </ClInclude>
     <ClInclude Include="JsonUtil.h">
@@ -264,8 +264,20 @@
     <ClInclude Include="File.h">
       <Filter>헤더 파일\File</Filter>
     </ClInclude>
+    <ClInclude Include="StringView.h">
+      <Filter>헤더 파일\View</Filter>
+    </ClInclude>
+    <ClInclude Include="Span.h">
+      <Filter>헤더 파일\View</Filter>
+    </ClInclude>
     <ClInclude Include="FileUtil.h">
-      <Filter>헤더 파일\File</Filter>
+      <Filter>헤더 파일\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Span.hpp">
+      <Filter>헤더 파일\View</Filter>
+    </ClInclude>
+    <ClInclude Include="JsonElement.h">
+      <Filter>헤더 파일\Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -332,9 +344,6 @@
     <ClCompile Include="StaticString.cpp">
       <Filter>소스 파일\String</Filter>
     </ClCompile>
-    <ClCompile Include="StringView.cpp">
-      <Filter>소스 파일\String</Filter>
-    </ClCompile>
     <ClCompile Include="FlyweightString.cpp">
       <Filter>소스 파일\String</Filter>
     </ClCompile>
@@ -365,19 +374,25 @@
     <ClCompile Include="ArenaAllocator.cpp">
       <Filter>소스 파일\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="JsonLoader.cpp">
-      <Filter>소스 파일\Json</Filter>
-    </ClCompile>
-    <ClCompile Include="Json.cpp">
+    <ClCompile Include="JsonDocument.cpp">
       <Filter>소스 파일\Json</Filter>
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>소스 파일\File</Filter>
     </ClCompile>
-    <ClCompile Include="FileUtil.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="JsonUtil.cpp">
+      <Filter>소스 파일\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="StringView.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="Span.cpp">
+      <Filter>소스 파일\View</Filter>
+    </ClCompile>
+    <ClCompile Include="FileUtil.cpp">
+      <Filter>소스 파일\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="JsonElement.cpp">
       <Filter>소스 파일\Json</Filter>
     </ClCompile>
   </ItemGroup>
