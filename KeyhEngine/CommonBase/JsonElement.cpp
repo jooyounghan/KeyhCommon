@@ -96,6 +96,17 @@ namespace keyh
 	{
 		return getTapeElement().parse(_context->_jsonString);
 	}
+
+	size_t JsonKey::getValueEndIndex() const
+	{
+		const size_t valueIndex = _index + 1;
+		const TapeElement& valueElement = _context->_tapeElementsView[valueIndex];
+		const TapeType valueType = valueElement.getType();
+		if (valueType == TapeType::ObjectStart || valueType == TapeType::ArrayStart)
+			return valueElement.getPayloadAsIndex();
+		else
+			return valueIndex;
+	}
 #pragma endregion
 
 	JsonArray::JsonArray(const JsonContext* context, size_t index)
@@ -142,9 +153,8 @@ namespace keyh
 	{
 		const TapeElement& element = getTapeElement();
 		size_t objectEndIndex = element.getPayloadAsIndex();
-		size_t endIndex = currentKey.getValue().getValueEndIndex();
-		return JsonKey	(getContext(endIndex + 1, &objectEndIndex), endIndex + 1);
-
+		size_t endIndex = currentKey.getValueEndIndex();
+		return JsonKey(getContext(endIndex + 1, &objectEndIndex), endIndex + 1);
 	}
 
 }

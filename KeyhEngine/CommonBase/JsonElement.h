@@ -65,6 +65,11 @@ using JsonElement::_index
 	public:
 		StringViewA getKeyName() const;
 		JsonValue getValue() const;
+
+	public:
+		// Returns the tape index of the last element belonging to this key's value.
+		// Used by JsonObject::getNextKey to skip over the value without constructing a JsonValue.
+		size_t getValueEndIndex() const;
 	};
 
 	class JsonArray : public JsonElement
