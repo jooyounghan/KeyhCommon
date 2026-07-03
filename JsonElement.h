@@ -13,11 +13,12 @@ namespace keyh
 	class JsonElement
 	{
 	public:
+		JsonElement() : _context(nullptr), _index(kInvalidSizeT) {}
 		JsonElement(const JsonContext* context, size_t index);
 
 	protected:
 		const JsonContext*	_context;
-		const size_t		_index;
+		size_t				_index;
 
 	public:
 		inline bool							isValid() const { return _context != nullptr; }
@@ -25,16 +26,16 @@ namespace keyh
 		inline const JsonUtil::TapeElement&	getTapeElement() const { return _context->_tapeElementsView[_index]; }
 	};
 
-#define JSON_ELEMENT_ACCESSOR()	\
+#define JSON_ELEMENT_ACCESSOR	\
 using JsonElement::_context;	\
-using JsonElement::_index;
+using JsonElement::_index
 
 	class JsonValue : public JsonElement
 	{
 		friend class JsonKey;
 		friend class JsonArray;
 		friend class JsonObject;
-		JSON_ELEMENT_ACCESSOR();
+		JSON_ELEMENT_ACCESSOR;
 
 	public:
 		JsonValue(const JsonContext* context, size_t index);
@@ -56,7 +57,7 @@ using JsonElement::_index;
 
 	class JsonKey : public JsonElement
 	{
-		JSON_ELEMENT_ACCESSOR();
+		JSON_ELEMENT_ACCESSOR;
 
 	public:
 		JsonKey(const JsonContext* context, size_t index);
@@ -68,7 +69,7 @@ using JsonElement::_index;
 
 	class JsonArray : public JsonElement
 	{
-		JSON_ELEMENT_ACCESSOR();
+		JSON_ELEMENT_ACCESSOR;
 
 	public:
 		JsonArray(const JsonContext* context, size_t index);
@@ -80,9 +81,10 @@ using JsonElement::_index;
 
 	class JsonObject : public JsonElement
 	{
-		JSON_ELEMENT_ACCESSOR();
+		JSON_ELEMENT_ACCESSOR;
 
 	public:
+		JsonObject() : JsonElement(nullptr, kInvalidSizeT) {}
 		JsonObject(const JsonContext* context, size_t index);
 
 	public:
