@@ -78,6 +78,9 @@ namespace keyh
 
 	JsonObject JsonValue::getObjectValue() const
 	{
+		if (isValid() == false)
+			return JsonObject(nullptr, 0);
+
 		return JsonObject(getContext(_index), _index);
 	}
 #pragma endregion
@@ -89,6 +92,9 @@ namespace keyh
 
 	JsonValue JsonKey::getValue() const
 	{
+		if (isValid() == false)
+			return JsonValue(nullptr, 0);
+
 		return JsonValue(getContext(_index + 1), _index + 1);
 	}
 
@@ -115,6 +121,9 @@ namespace keyh
 
 	JsonValue JsonArray::getFirstValue() const
 	{
+		if (isValid() == false)
+			return JsonValue(nullptr, 0);
+
 		const TapeElement& element = getTapeElement();
 		size_t arrayEndIndex = element.getPayloadAsIndex();
 		return JsonValue(getContext(_index + 1, &arrayEndIndex), _index + 1);
@@ -122,6 +131,9 @@ namespace keyh
 
 	JsonValue JsonArray::getNextValue(const JsonValue& currentValue) const
 	{
+		if (currentValue.isValid() == false)
+			return JsonValue(nullptr, 0);
+
 		const TapeElement& element = getTapeElement();
 		size_t arrayEndIndex = element.getPayloadAsIndex();
 		size_t endIndex = currentValue.getValueEndIndex();
@@ -137,6 +149,9 @@ namespace keyh
 
 	JsonObject JsonObject::getNextObject() const
 	{
+		if (isValid() == false)
+			return JsonObject(nullptr, 0);
+
 		const TapeElement& element = getTapeElement();
 		size_t index = element.getPayloadAsIndex();
 		return JsonObject(getContext(index + 1), index + 1);
@@ -144,6 +159,9 @@ namespace keyh
 
 	JsonKey JsonObject::getFirstKey() const
 	{
+		if (isValid() == false)
+			return JsonKey(nullptr, 0);
+
 		const TapeElement& element = getTapeElement();
 		size_t objectEndIndex = element.getPayloadAsIndex();
 		return JsonKey(getContext(_index + 1, &objectEndIndex), _index + 1);
@@ -151,6 +169,9 @@ namespace keyh
 
 	JsonKey JsonObject::getNextKey(const JsonKey& currentKey) const
 	{
+		if (currentKey.isValid() == false)
+			return JsonKey(nullptr, 0);
+
 		const TapeElement& element = getTapeElement();
 		size_t objectEndIndex = element.getPayloadAsIndex();
 		size_t endIndex = currentKey.getValueEndIndex();
