@@ -298,7 +298,7 @@ void test_Json_traverse_nested_value()
 
 void test_Json_traverse_empty_containers()
 {
-    printSection("Json - empty array terminates immediately");
+    printSection("Json - empty array and object traversal");
 
     // Build a minimal JSON with an empty array and an empty object
     const char* jsonStr =
@@ -512,7 +512,7 @@ void benchmark_Json_traversal_speed()
     //   nlohmann/json  : ~100  MB/s  – header-only DOM, convenience over speed
     //   RapidJSON DOM  : ~350  MB/s  – fast SAX/DOM, avoids memory allocation
     //   simdjson       : ~2500 MB/s  – SIMD-based, requires AVX2; on-demand API
-    //                                  reaches ~3 GB/s on nativeformat
+    //                                  reaches ~3 GB/s on native format
     //
     // Sources:
     //   https://github.com/simdjson/simdjson#performance
@@ -530,7 +530,7 @@ void benchmark_Json_traversal_speed()
     std::printf("      compiler flags, and allocation strategy.\n");
     std::printf("    - KeyhEngine uses a tape-based representation; traversal after\n");
     std::printf("      parsing is cache-friendly (sequential index reads).\n");
-    std::printf("    - simdjson uses SIMD vectorisation unavailable in pure C++20\n");
+    std::printf("    - simdjson uses SIMD vectorization unavailable in pure C++20\n");
     std::printf("      scalar code; a fair comparison requires the same ISA.\n");
 
     CHECK(successCount == kEndToEndIter);
