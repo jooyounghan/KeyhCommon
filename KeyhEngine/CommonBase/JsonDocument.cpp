@@ -153,6 +153,11 @@ namespace keyh
 			return handleError(_tapeElements, false, "JSON string is empty");
 		}
 
+		// Pre-allocate tape elements based on input size.
+		// On average, one tape element is produced roughly every 4 bytes of JSON,
+		// so this heuristic avoids most reallocation without over-allocating.
+		_tapeElements.reserve(size / 4 + 1);
+
 		const char* const end = jsonString + size;
 		const char* start = jsonString;
 
