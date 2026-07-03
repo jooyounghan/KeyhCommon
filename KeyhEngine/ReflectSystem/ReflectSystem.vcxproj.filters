@@ -13,15 +13,51 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\ReflectObject">
+      <UniqueIdentifier>{6690c0e1-fc62-4835-a490-ad97bb75b5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectObject">
+      <UniqueIdentifier>{76f0837d-5f98-4fd1-96d8-44a7d7abcdfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectProperty">
+      <UniqueIdentifier>{4f679f50-59bc-4b74-9c51-9f43bc628301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ReflectProperty">
+      <UniqueIdentifier>{0245bede-77f8-46a6-95c5-e3748932b7a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReflectSystemPch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectMetaObject.h">
+      <Filter>헤더 파일\ReflectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="IReflectProperty.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectObject.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectProperty.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ReflectSystemPch.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectMetaObject.cpp">
+      <Filter>소스 파일\ReflectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="IReflectProperty.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectObject.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectProperty.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
