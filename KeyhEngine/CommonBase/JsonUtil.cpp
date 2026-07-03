@@ -39,4 +39,8 @@ namespace keyh
         memcpy(&value, &result, sizeof(T));
         return value;
     }
+
+    template int   JsonUtil::TapeElement::parseImpl<int>() const;
+    template float JsonUtil::TapeElement::parseImpl<float>() const;
+    template bool  JsonUtil::TapeElement::parseImpl<bool>() const;
 }
