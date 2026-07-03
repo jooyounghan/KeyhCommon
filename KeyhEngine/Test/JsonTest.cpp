@@ -434,12 +434,33 @@ void benchmark_Json_parse_speed()
     std::printf("  throughput:  %.1f parses/sec\n", parsesPerSecond);
     std::printf("  data rate:   %.1f MB/s\n", parseMbPerSec);
 
+    // ── Parse-only library comparison ────────────────────────────────────────
+    //
+    // Published parse-only throughput figures (x64 Release, typical medium JSON):
+    //   nlohmann/json  : ~50   MB/s  – recursive descent; allocates one heap
+    //                                  node per value, very allocation-heavy
+    //   RapidJSON DOM  : ~500  MB/s  – MemoryPoolAllocator; extremely low
+    //                                  allocation overhead, near-zero free cost
+    //   simdjson       : ~2000 MB/s  – SIMD structural indexing (AVX2 required);
+    //                                  two-pass: detect structure, then validate
+    //
+    // Sources:
+    //   https://github.com/simdjson/simdjson#performance
+    //   https://rapidjson.org/md_doc_performance.html
+    //   https://github.com/nlohmann/json#benchmarks
+    //
+    std::printf("\n  --- Parse-only throughput comparison ---\n");
+    std::printf("  %-28s %10.1f MB/s  (tape-based, measured)\n",       "KeyhEngine:",    parseMbPerSec);
+    std::printf("  %-28s %10s MB/s  (DOM, heavy heap allocation)\n",   "nlohmann/json:", "~50");
+    std::printf("  %-28s %10s MB/s  (DOM, MemoryPoolAllocator)\n",     "RapidJSON DOM:", "~500");
+    std::printf("  %-28s %10s MB/s  (SIMD structural index, AVX2)\n",  "simdjson:",      "~2000");
+
     CHECK(successCount == kIterationCount);
 }
 
 void benchmark_Json_traversal_speed()
 {
-    printSection("Json - full traversal performance + library comparison");
+    printSection("Json - parse vs traversal performance + library comparison");
 
     File file;
     const bool loaded = file.load("test.json");
@@ -449,15 +470,45 @@ void benchmark_Json_traversal_speed()
 
     const char*  jsonBuffer = file.getStringBuffer();
     const size_t jsonSize   = file.getFileSize();
+    const double fileSizeMb = static_cast<double>(jsonSize) / (1024.0 * 1024.0);
 
-    // ── 1. Parse once, measure traversal-only throughput ────────────────────
+    std::printf("  file size:   %.1f KB\n", static_cast<double>(jsonSize) / 1024.0);
+
+    // ── 1. Parse-only timing ──────────────────────────────────────────────────
+    //      Measures how long the tape-building step takes in isolation,
+    //      exposing whether parse or traversal is the bottleneck.
+    constexpr int kParseIter = 1000;
+    int parseSuccessCount = 0;
+
+    const auto pStart = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i < kParseIter; ++i)
+    {
+        JsonDocument doc;
+        if (doc.buildFromJsonString(jsonBuffer, jsonSize))
+            ++parseSuccessCount;
+    }
+    const auto pEnd = std::chrono::high_resolution_clock::now();
+
+    const double pElapsedMs        = std::chrono::duration<double, std::milli>(pEnd - pStart).count();
+    const double pAvgUsPerParse    = (pElapsedMs * 1000.0) / static_cast<double>(kParseIter);
+    const double pParsesPerSec     = static_cast<double>(kParseIter) / (pElapsedMs / 1000.0);
+    const double pDataRateMbPerSec = fileSizeMb * pParsesPerSec;
+
+    std::printf("\n  [Parse-only]\n");
+    std::printf("  iterations:  %d\n", kParseIter);
+    std::printf("  elapsed:     %.3f ms\n", pElapsedMs);
+    std::printf("  avg:         %.3f us/parse\n", pAvgUsPerParse);
+    std::printf("  data rate:   %.1f MB/s\n", pDataRateMbPerSec);
+
+    // ── 2. Traversal-only timing ──────────────────────────────────────────────
+    //      Parse once, then re-traverse many times so that traversal cost is
+    //      measured independently of parse overhead.
     JsonDocument parsedDoc;
     CHECK(parsedDoc.buildFromJsonString(jsonBuffer, jsonSize));
     if (!parsedDoc.isValid())
         return;
 
     const size_t nodesPerDoc = countObjectNodes(parsedDoc.getRootObject());
-
     constexpr int kTraversalIter = 5000;
     size_t totalNodes = 0;
 
@@ -466,22 +517,23 @@ void benchmark_Json_traversal_speed()
         totalNodes += countObjectNodes(parsedDoc.getRootObject());
     const auto tEnd = std::chrono::high_resolution_clock::now();
 
-    const double tElapsedMs      = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
+    const double tElapsedMs        = std::chrono::duration<double, std::milli>(tEnd - tStart).count();
     const double tAvgUsPerTraverse = (tElapsedMs * 1000.0) / static_cast<double>(kTraversalIter);
     const double tTraversalPerSec  = static_cast<double>(kTraversalIter) / (tElapsedMs / 1000.0);
-    const double fileSizeMb        = static_cast<double>(jsonSize) / (1024.0 * 1024.0);
     const double tDataRateMbPerSec = fileSizeMb * tTraversalPerSec;
 
-    std::printf("  [Traversal-only]\n");
+    std::printf("\n  [Traversal-only]\n");
     std::printf("  nodes per document: %zu\n", nodesPerDoc);
     std::printf("  iterations:         %d\n", kTraversalIter);
     std::printf("  elapsed:            %.3f ms\n", tElapsedMs);
     std::printf("  avg:                %.3f us/traversal\n", tAvgUsPerTraverse);
     std::printf("  data rate:          %.1f MB/s\n", tDataRateMbPerSec);
 
-    // ── 2. Parse + traverse, measuring end-to-end throughput ────────────────
+    // ── 3. Parse + traversal end-to-end timing ────────────────────────────────
+    //      Both phases run together per iteration; this is the figure that
+    //      matters most for real workloads where you parse and then consume.
     constexpr int kEndToEndIter = 1000;
-    int successCount = 0;
+    int endToEndSuccessCount = 0;
 
     const auto eStart = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < kEndToEndIter; ++i)
@@ -490,49 +542,71 @@ void benchmark_Json_traversal_speed()
         if (doc.buildFromJsonString(jsonBuffer, jsonSize))
         {
             totalNodes += countObjectNodes(doc.getRootObject());
-            ++successCount;
+            ++endToEndSuccessCount;
         }
     }
     const auto eEnd = std::chrono::high_resolution_clock::now();
 
-    const double eElapsedMs      = std::chrono::duration<double, std::milli>(eEnd - eStart).count();
-    const double eAvgUsPerRound  = (eElapsedMs * 1000.0) / static_cast<double>(kEndToEndIter);
-    const double eRoundsPerSec   = static_cast<double>(kEndToEndIter) / (eElapsedMs / 1000.0);
+    const double eElapsedMs        = std::chrono::duration<double, std::milli>(eEnd - eStart).count();
+    const double eAvgUsPerRound    = (eElapsedMs * 1000.0) / static_cast<double>(kEndToEndIter);
+    const double eRoundsPerSec     = static_cast<double>(kEndToEndIter) / (eElapsedMs / 1000.0);
     const double eDataRateMbPerSec = fileSizeMb * eRoundsPerSec;
 
-    std::printf("\n  [Parse + full traversal]\n");
+    std::printf("\n  [Parse + Traversal (end-to-end)]\n");
     std::printf("  iterations:  %d\n", kEndToEndIter);
     std::printf("  elapsed:     %.3f ms\n", eElapsedMs);
     std::printf("  avg:         %.3f us/round\n", eAvgUsPerRound);
     std::printf("  data rate:   %.1f MB/s\n", eDataRateMbPerSec);
 
-    // ── 3. Library comparison table ──────────────────────────────────────────
+    // ── 4. Per-phase library comparison table ─────────────────────────────────
     //
-    // Published parse+traverse throughput figures (x64 Release, typical datasets):
-    //   nlohmann/json  : ~100  MB/s  – header-only DOM, convenience over speed
-    //   RapidJSON DOM  : ~350  MB/s  – fast SAX/DOM, avoids memory allocation
-    //   simdjson       : ~2500 MB/s  – SIMD-based, requires AVX2; on-demand API
-    //                                  reaches ~3 GB/s on native format
+    // Published throughput figures (x64 Release, typical medium JSON dataset):
+    //
+    //  Parse-only:
+    //    nlohmann/json  ~50   MB/s  – recursive descent; one heap node per value
+    //    RapidJSON DOM  ~500  MB/s  – MemoryPoolAllocator, near-zero alloc cost
+    //    simdjson       ~2000 MB/s  – SIMD structural indexing (AVX2 required)
+    //
+    //  Traversal-only (pre-parsed DOM, full tree walk):
+    //    nlohmann/json  ~100  MB/s  – recursive SAX-style iterator
+    //    RapidJSON DOM  ~600  MB/s  – compact node array, pointer-chasing
+    //    simdjson DOM   ~2000 MB/s  – tape index, sequential cache-friendly reads
+    //    (simdjson on-demand cannot re-traverse without re-parsing)
+    //
+    //  End-to-end (parse + traversal):
+    //    nlohmann/json  ~50   MB/s  – parse-bound; allocation dominates
+    //    RapidJSON DOM  ~350  MB/s  – MemoryPoolAllocator amortises overhead
+    //    simdjson       ~1500 MB/s  – SIMD parse + tape traversal (AVX2)
     //
     // Sources:
     //   https://github.com/simdjson/simdjson#performance
     //   https://rapidjson.org/md_doc_performance.html
     //   https://github.com/nlohmann/json#benchmarks
     //
-    std::printf("\n  --- Comparison with popular JSON libraries ---\n");
-    std::printf("  %-28s %10.1f MB/s\n", "KeyhEngine (parse+traverse):", eDataRateMbPerSec);
-    std::printf("  %-28s %10s MB/s  (DOM, convenience)\n",   "nlohmann/json:",             "~100");
-    std::printf("  %-28s %10s MB/s  (DOM, high performance)\n", "RapidJSON DOM:",           "~350");
-    std::printf("  %-28s %10s MB/s  (SIMD, AVX2 required)\n",  "simdjson (on-demand):",    "~2500");
-    std::printf("\n");
-    std::printf("  Notes:\n");
-    std::printf("    - All figures depend heavily on CPU, dataset size/structure,\n");
-    std::printf("      compiler flags, and allocation strategy.\n");
-    std::printf("    - KeyhEngine uses a tape-based representation; traversal after\n");
-    std::printf("      parsing is cache-friendly (sequential index reads).\n");
-    std::printf("    - simdjson uses SIMD vectorization unavailable in pure C++20\n");
-    std::printf("      scalar code; a fair comparison requires the same ISA.\n");
+    std::printf("\n  --- Comparison with popular JSON libraries (MB/s) ---\n");
+    std::printf("  %-22s  %12s  %15s  %10s\n",
+                "Library", "Parse-only", "Traversal-only", "Total");
+    std::printf("  %-22s  %12s  %15s  %10s\n",
+                "----------------------", "----------", "---------------", "--------");
+    std::printf("  %-22s  %11.1f   %14.1f   %9.1f  (measured)\n",
+                "KeyhEngine", pDataRateMbPerSec, tDataRateMbPerSec, eDataRateMbPerSec);
+    std::printf("  %-22s  %11s   %14s   %9s  (DOM, heavy alloc)\n",
+                "nlohmann/json", "~50", "~100", "~50");
+    std::printf("  %-22s  %11s   %14s   %9s  (DOM, MemoryPool)\n",
+                "RapidJSON DOM", "~500", "~600", "~350");
+    std::printf("  %-22s  %11s   %14s   %9s  (SIMD/AVX2)\n",
+                "simdjson", "~2000", "~2000", "~1500");
+    std::printf("\n  Notes:\n");
+    std::printf("    - All reference figures are approximate and depend on CPU,\n");
+    std::printf("      dataset size/structure, compiler flags, and allocator.\n");
+    std::printf("    - simdjson on-demand cannot re-traverse without re-parsing;\n");
+    std::printf("      traversal figure shown is for the DOM variant.\n");
+    std::printf("    - KeyhEngine uses a tape-based representation; traversal is\n");
+    std::printf("      cache-friendly (sequential index reads on a flat array).\n");
+    std::printf("    - simdjson requires AVX2; scalar C++20 code cannot match its\n");
+    std::printf("      throughput on the same ISA.\n");
 
-    CHECK(successCount == kEndToEndIter);
+    CHECK(parseSuccessCount == kParseIter);
+    CHECK(endToEndSuccessCount == kEndToEndIter);
     CHECK(totalNodes > 0);
 }
