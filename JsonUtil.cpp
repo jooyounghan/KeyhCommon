@@ -23,6 +23,11 @@ namespace keyh
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(JsonUtil::TapeElement<T>);
     }
 
+	StringViewA JsonUtil::TapeElement::parse(const char* jsonString) const
+	{
+        return StringViewA(jsonString + getPayloadAsStringOffset(), getPayloadAsStringLength());
+	}
+
     template<typename T>
     T JsonUtil::TapeElement::parseImpl() const
     {
@@ -34,21 +39,4 @@ namespace keyh
         memcpy(&value, &result, sizeof(T));
         return value;
     }
-
-    template<>
-	float JsonUtil::TapeElement::parse<float>() const
-	{
-		return parseImpl<float>();
-	}
-
-	template<>
-	int JsonUtil::TapeElement::parse<int>() const
-	{
-		return parseImpl<int>();
-	}
-
-	StringViewA JsonUtil::TapeElement::parse(const char* jsonString) const
-	{
-        return StringViewA(jsonString + getPayloadAsStringOffset(), getPayloadAsStringLength());
-	}
 }
