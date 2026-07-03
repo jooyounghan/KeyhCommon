@@ -39,7 +39,13 @@ int main()
     //test_DynamicBuffer_allocate_and_grow();
 
     test_Json_parse_test_file();
+    test_Json_traverse_root_object();
+    test_Json_traverse_array();
+    test_Json_traverse_nested_value();
+    test_Json_traverse_empty_containers();
+    test_Json_float_value_access();
     benchmark_Json_parse_speed();
+    benchmark_Json_traversal_speed();
 
     printSummary();
 
