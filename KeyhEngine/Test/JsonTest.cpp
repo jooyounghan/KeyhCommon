@@ -494,7 +494,7 @@ void benchmark_Json_traversal_speed()
     const double pParsesPerSec     = static_cast<double>(kParseIter) / (pElapsedMs / 1000.0);
     const double pDataRateMbPerSec = fileSizeMb * pParsesPerSec;
 
-    std::printf("\n  [Parse-only]\n");
+    std::printf("  [Parse-only]\n");
     std::printf("  iterations:  %d\n", kParseIter);
     std::printf("  elapsed:     %.3f ms\n", pElapsedMs);
     std::printf("  avg:         %.3f us/parse\n", pAvgUsPerParse);
@@ -599,8 +599,8 @@ void benchmark_Json_traversal_speed()
     std::printf("\n  Notes:\n");
     std::printf("    - All reference figures are approximate and depend on CPU,\n");
     std::printf("      dataset size/structure, compiler flags, and allocator.\n");
-    std::printf("    - simdjson on-demand cannot re-traverse without re-parsing;\n");
-    std::printf("      traversal figure shown is for the DOM variant.\n");
+    std::printf("    - simdjson's on-demand API cannot re-traverse without re-parsing;\n");
+    std::printf("      the ~2000 MB/s traversal-only figure refers to simdjson's DOM mode.\n");
     std::printf("    - KeyhEngine uses a tape-based representation; traversal is\n");
     std::printf("      cache-friendly (sequential index reads on a flat array).\n");
     std::printf("    - simdjson requires AVX2; scalar C++20 code cannot match its\n");
