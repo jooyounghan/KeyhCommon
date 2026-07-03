@@ -21,7 +21,7 @@ namespace keyh
 
 	public:
 		inline bool							isValid() const { return _context != nullptr; }
-		inline const JsonContext*			getContext(size_t index, const size_t* endIndex = nullptr) const { return index > (endIndex ? *endIndex : _context->_tapeElementsView.size()) ? nullptr : _context; }
+		inline const JsonContext*			getContext(size_t index, const size_t* endIndex = nullptr) const { return index >= (endIndex ? *endIndex : _context->_tapeElementsView.size()) ? nullptr : _context; }
 		inline const JsonUtil::TapeElement&	getTapeElement() const { return _context->_tapeElementsView[_index]; }
 	};
 
@@ -62,6 +62,7 @@ using JsonElement::_index;
 		JsonKey(const JsonContext* context, size_t index);
 
 	public:
+		StringViewA getKeyName() const;
 		JsonValue getValue() const;
 	};
 

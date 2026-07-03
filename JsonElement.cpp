@@ -91,6 +91,11 @@ namespace keyh
 	{
 		return JsonValue(getContext(_index + 1), _index + 1);
 	}
+
+	StringViewA JsonKey::getKeyName() const
+	{
+		return getTapeElement().parse(_context->_jsonString);
+	}
 #pragma endregion
 
 	JsonArray::JsonArray(const JsonContext* context, size_t index)
@@ -99,13 +104,17 @@ namespace keyh
 
 	JsonValue JsonArray::getFirstValue() const
 	{
-		return JsonValue(getContext(_index + 1), _index + 1);
+		const TapeElement& element = getTapeElement();
+		size_t arrayEndIndex = element.getPayloadAsIndex();
+		return JsonValue(getContext(_index + 1, &arrayEndIndex), _index + 1);
 	}
 
 	JsonValue JsonArray::getNextValue(const JsonValue& currentValue) const
 	{
+		const TapeElement& element = getTapeElement();
+		size_t arrayEndIndex = element.getPayloadAsIndex();
 		size_t endIndex = currentValue.getValueEndIndex();
-		return JsonValue(getContext(endIndex + 1, &endIndex), endIndex + 1);
+		return JsonValue(getContext(endIndex + 1, &arrayEndIndex), endIndex + 1);
 	}
 
 
@@ -124,7 +133,9 @@ namespace keyh
 
 	JsonKey JsonObject::getFirstKey() const
 	{
-		return JsonKey(getContext(_index + 1), _index + 1);
+		const TapeElement& element = getTapeElement();
+		size_t objectEndIndex = element.getPayloadAsIndex();
+		return JsonKey(getContext(_index + 1, &objectEndIndex), _index + 1);
 	}
 
 	JsonKey JsonObject::getNextKey(const JsonKey& currentKey) const
