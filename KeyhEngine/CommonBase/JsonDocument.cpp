@@ -29,7 +29,7 @@ namespace keyh
 	static void handleTapeOpen(Vector<JsonUtil::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonUtil::TapeType type)
 	{
 		indexStack.push(tapeElements.size());
-		tapeElements.emplace_back().setElement(type, 0);
+		tapeElements.emplace_back().setIndexElement(type, 0);
 	}
 
 	static bool handleTapeClose(Vector<JsonUtil::TapeElement>& tapeElements, Stack<size_t>& indexStack, JsonUtil::TapeType type)
@@ -43,7 +43,7 @@ namespace keyh
 		indexStack.pop();
 
 		tapeElements[lastIndex].setPayload(tapeElements.size());
-		tapeElements.emplace_back().setElement(type, lastIndex);
+		tapeElements.emplace_back().setIndexElement(type, lastIndex);
 
 		return true;
 	}
@@ -86,14 +86,16 @@ namespace keyh
 		if (hasDecimalPoint)
 		{
 			float numberValue = StrUtil::strToFloat(ptr);
-			uint32 bitPattern = 0;
+			size_t bitPattern = 0;
 			memcpy(&bitPattern, &numberValue, sizeof(float));
-			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Float, static_cast<uint64>(bitPattern));
+			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Float, bitPattern);
 		}
 		else
 		{
 			int numberValue = StrUtil::strToInt(ptr);
-			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Integer, numberValue);
+			size_t bitPattern = 0;
+			memcpy(&bitPattern, &numberValue, sizeof(int));
+			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Integer, bitPattern);
 		}
 		ptr = current - 1;
 		return true;
@@ -110,7 +112,7 @@ namespace keyh
 				return false;
 			}
 
-			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Boolean, 1);
+			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Boolean, 1);
 			ptr += JsonUtil::kTrueLength - 1;
 			return true;
 		}
@@ -122,7 +124,7 @@ namespace keyh
 				return false;
 			}
 
-			tapeElements.emplace_back().setElement(JsonUtil::TapeType::Boolean, 0);
+			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Boolean, 0);
 			ptr += JsonUtil::kFalseLength - 1;
 			return true;
 		}
@@ -245,24 +247,15 @@ namespace keyh
 		}
 
 		_isValid = true;
+
+		_context._tapeElementsView = Span<JsonUtil::TapeElement>(_tapeElements);
+		_context._jsonString = jsonString;
+
 		return true;
     }
 
-	JsonUtil::TapeElement* JsonDocument::getNextObjectElement(size_t index)
+	JsonObject JsonDocument::getRootObject() const
 	{
-		if (index >= _tapeElements.size())
-		{
-			return nullptr;
-		}
-
-		for (size_t i = index + 1; i < _tapeElements.size(); ++i)
-		{
-			JsonUtil::TapeElement& element = _tapeElements[i];
-			if (element.getType() == JsonUtil::TapeType::ObjectStart)
-			{
-
-			}
-		}
-		return nullptr;
+		return JsonObject(&_context, 0);
 	}
 }

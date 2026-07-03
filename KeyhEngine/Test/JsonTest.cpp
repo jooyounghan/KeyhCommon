@@ -1,6 +1,6 @@
 #include "TestCommon.h"
 #include "JsonTest.h"
-#include "Json.h"
+#include "JsonDocument.h"
 #include "JsonUtil.h"
 #include "File.h"
 
@@ -14,62 +14,16 @@ namespace
 {
     bool containsStringToken(const JsonDocument& json, const char* expected)
     {
-        const Vector<JsonUtil::TapeElement>& tape = json.getTapeElements();
-        const size_t expectedLength = std::strlen(expected);
-
-        for (size_t i = 0; i < tape.size(); ++i)
-        {
-            const JsonUtil::TapeElement& element = tape[i];
-            if (element.getType() != JsonUtil::TapeType::String)
-            {
-                continue;
-            }
-
-            const uint32 stringLength = element.getStringLength();
-            if (stringLength != expectedLength)
-            {
-                continue;
-            }
-
-            const char* tokenData = json.getJsonStringBuffer() + element.getStringOffset();
-            if (memcmp(tokenData, expected, expectedLength) == 0)
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 
     bool containsIntegerToken(const JsonDocument& json, int expected)
     {
-        const Vector<JsonUtil::TapeElement>& tape = json.getTapeElements();
-        for (size_t i = 0; i < tape.size(); ++i)
-        {
-            const JsonUtil::TapeElement& element = tape[i];
-            if (element.getType() == JsonUtil::TapeType::Integer && element.parseAsInt() == expected)
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 
     bool containsBooleanToken(const JsonDocument& json, bool expected)
     {
-        const Vector<JsonUtil::TapeElement>& tape = json.getTapeElements();
-        const uint64 expectedPayload = expected ? 1ULL : 0ULL;
-
-        for (size_t i = 0; i < tape.size(); ++i)
-        {
-            const JsonUtil::TapeElement& element = tape[i];
-            if (element.getType() == JsonUtil::TapeType::Boolean && element.getPayload() == expectedPayload)
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 }
@@ -80,7 +34,6 @@ void test_Json_parse_test_file()
 
     JsonDocument document("test.json");
     CHECK(document.isValid());
-    CHECK(document.getTapeElementCount() > 0);
     CHECK(containsStringToken(document, "KEEngine"));
     CHECK(containsStringToken(document, "GaussianSplatComponent"));
     CHECK(containsIntegerToken(document, 3840));
@@ -114,8 +67,8 @@ void benchmark_Json_parse_speed()
         JsonDocument document;
         if (document.buildFromJsonString(jsonBuffer, jsonSize))
         {
-            ++successCount;
-            totalTapeElementCount += document.getTapeElementCount();
+            //++successCount;
+            //totalTapeElementCount += document.getTapeElementCount();
         }
     }
     const auto end = std::chrono::high_resolution_clock::now();

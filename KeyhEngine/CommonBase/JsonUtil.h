@@ -61,14 +61,21 @@ namespace keyh
 			template<typename T>
 			T parse() const;
 
+			template<>
+			inline float parse<float>() const { return parseImpl<float>(); }
+
+			template<>
+			inline int parse<int>() const { return parseImpl<int>(); }
+
+			template<>
+			inline bool parse<bool>() const { return parseImpl<bool>(); }
+
 		public:
 			StringViewA	parse(const char* jsonString) const;
 
 		private:
 			template<typename T>
 			T parseImpl() const;
-
-
 		};
 	};
 }

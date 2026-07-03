@@ -1,13 +1,23 @@
+#include "Span.h"
 namespace keyh
 {
     template<typename T>
-    Span<T>::Span(T* data, size_t size)
+    Span<T>::Span() : _data(nullptr), _size(0) 
+    {}
+
+    template<typename T>
+    Span<T>::Span(const T* data, size_t size)
         : _data(data), _size(size)
     {}
     
     template<typename T>
     Span<T>::Span(const Vector<T>& vec)
         : _data(vec.data()), _size(vec.size())
+    {}
+
+    template<typename T>
+    Span<T>::Span(const Span<T>&other)
+		: _data(other._data), _size(other._size)
     {}
     
     template<typename T>

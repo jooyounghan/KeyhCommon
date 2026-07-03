@@ -1,6 +1,6 @@
 #pragma once
 #include "JsonUtil.h"
-#include "Vector.h"
+#include "JsonElement.h"
 #include "File.h"
 
 namespace keyh
@@ -20,10 +20,11 @@ namespace keyh
 		Vector<JsonUtil::TapeElement>	_tapeElements;
 		bool							_isValid = false;
 
+	private:
+		JsonContext						_context;
+
 	public:
-		inline bool										isValid() const { return _isValid; }
-		inline size_t									getTapeElementCount() const { return _tapeElements.size(); }
-		inline const Vector<JsonUtil::TapeElement>&		getTapeElements() const { return _tapeElements; }
-		inline const char*								getJsonStringBuffer() const { return _jsonFile.getStringBuffer(); }
+		inline bool						isValid() const { return _isValid; }
+		JsonObject						getRootObject() const;
 	};
 }
