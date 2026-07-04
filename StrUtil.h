@@ -6,7 +6,7 @@
 
 namespace keyh
 {
-	class IBuffer;
+	class IBufferBase;
 
 	struct StrUtil
 	{
@@ -30,11 +30,11 @@ namespace keyh
 	private:
 		constexpr StaticArray<char, kDigitMapCount> makeDigitMap();
 		constexpr StaticArray<uint64, kPowerOf10Count> makePowerOf10Map();
-		void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
+		void digitToStr(bool isNegative, uint64 value, IBufferBase* buffer);
 
 	public:
-		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);
-		static void floatToStr(float value, IBuffer* buffer, int precision = 3);
+		static void intToStr(bool isNegative, uint64 value, IBufferBase* buffer);
+		static void floatToStr(float value, IBufferBase* buffer, int precision = 3);
 #pragma endregion
 
 #pragma region String Search and Skips

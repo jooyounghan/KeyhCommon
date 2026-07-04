@@ -4,8 +4,23 @@
 
 namespace keyh
 {
+	class IBufferBase
+	{
+	public:
+		virtual ~IBufferBase() = default;
+
+	public:
+		virtual void		writeBytes(const void* input, size_t size) = 0;
+		virtual void		resetRaw() = 0;
+		virtual size_t		getSizeBytes() const = 0;
+		virtual size_t		getCapacityBytes() const = 0;
+		virtual void*		getRawBuffer() = 0;
+		virtual const void*	getRawBuffer() const = 0;
+		virtual size_t		getAvailableSizeBytes() const = 0;
+	};
+
 	template<typename T, typename Derived>
-	class IBuffer
+	class IBuffer : public IBufferBase
 	{
 	public:
 		virtual ~IBuffer() = default;
@@ -28,6 +43,15 @@ namespace keyh
 		void	writeOne(T input);
 		void	reset();
 		size_t	getAvailableSize() const;
+
+	public:
+		void		writeBytes(const void* input, size_t size) override { write(input, size); }
+		void		resetRaw() override { reset(); }
+		size_t		getSizeBytes() const override { return this->size(); }
+		size_t		getCapacityBytes() const override { return capacity(); }
+		void*		getRawBuffer() override { return getBuffer(); }
+		const void*	getRawBuffer() const override { return getBuffer(); }
+		size_t		getAvailableSizeBytes() const override { return getAvailableSize(); }
 	};
 }
 #include "IBuffer.hpp"
