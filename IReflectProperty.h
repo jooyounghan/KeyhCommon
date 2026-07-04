@@ -1,12 +1,14 @@
 #pragma once
 #include "FlyweightString.h"
-#include "JsonElement.h"
 
 namespace keyh
 {
+	class JsonElement;
+
 	class IReflectProperty
 	{
 	public:
+		IReflectProperty(const FlyweightStringA& name) : _name(name) {}
 		virtual ~IReflectProperty() = default;
 
 	protected:
@@ -16,9 +18,27 @@ namespace keyh
 		inline const FlyweightStringA& getName() const { return _name; }
 
 	public:
-		void serailizeToJson();
-		void deserializeFromJson(const JsonElement& jsonElement);
-		void serializeToBinary();
-		void deserializeFromBinary(const void* data);
+		virtual void serializeToJson() = 0;
+		virtual void deserializeFromJson(const JsonElement& jsonElement) = 0;
+		virtual void serializeToBinary() = 0;
+		virtual void deserializeFromBinary(const void* data) = 0;
+	};
+
+	template<typename ObjectType, typename ValueType>
+	class ReflectPropertyBase : public IReflectProperty
+	{
+	protected:
+		typedef ValueType& (ObjectType::* RefGetter)();
+		typedef const ValueType& (ObjectType::* ConstGetter)() const;
+
+	public:
+		ReflectPropertyBase(const FlyweightStringA& name, RefGetter refGetter, ConstGetter constGetter)
+			: IReflectProperty(name), _refGetter(refGetter), _constGetter(constGetter)
+		{
+		}
+
+	private:
+		RefGetter _refGetter = nullptr;
+		ConstGetter _constGetter = nullptr;
 	};
 }

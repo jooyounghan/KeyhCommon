@@ -1,4 +1,9 @@
 #pragma once
-class ReflectObject
-{};
+namespace keyh
+{
+	class ReflectObject
+	{
+	
+	};
+}
 
