@@ -21,8 +21,8 @@ namespace keyh
 	public:
 		virtual void serializeToJson() = 0;
 		virtual void deserializeFromJson(const JsonElement& jsonElement) = 0;
-		virtual void serializeToBinary(IBufferBase* buffer) = 0;
-		virtual void deserializeFromBinary(IBufferBase* buffer) = 0;
+		virtual void serializeToBinary(IBuffer* buffer) = 0;
+		virtual void deserializeFromBinary(IBuffer* buffer) = 0;
 	};
 
 	template<typename ObjectType, typename ValueType>
