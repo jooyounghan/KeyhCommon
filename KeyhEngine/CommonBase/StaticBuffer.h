@@ -8,9 +8,9 @@ namespace keyh
 	constexpr size_t kBuffer4KBytes = 4096;
 
 	template<typename T, size_t Size>
-	class StaticBuffer : public IBuffer<T, StaticBuffer<T, Size>>
+	class StaticBuffer : public IBufferBase<T, StaticBuffer<T, Size>>
 	{
-		using Base = IBuffer<T, StaticBuffer<T, Size>>;
+		using Base = IBufferBase<T, StaticBuffer<T, Size>>;
 		using Base::_offset;
 		friend class Base;
 
@@ -22,9 +22,10 @@ namespace keyh
 		uint8 _buffer[Size] = { 0 };
 
 	protected:
-		inline void resetImpl() { _buffer[0] = T(); }
-		constexpr size_t getCapacityImpl() const { return Size; }
-		inline T* getBufferImpl() { return reinterpret_cast<T*>(_buffer); }
+		inline void			resetImpl() { _buffer[0] = T(); }
+		constexpr size_t	getCapacityImpl() const { return Size; }
+		inline T*			getBufferImpl() { return reinterpret_cast<T*>(_buffer); }
+		inline const T*		getBufferImpl() const { return reinterpret_cast<const T*>(_buffer); }
 	};
 
 	using StaticBufferA256Bytes = StaticBuffer<char, kBuffer256Bytes>;

@@ -7,7 +7,7 @@ namespace keyh
 	struct JsonContext
 	{
 		Span<JsonUtil::TapeElement> _tapeElementsView;
-		const char*					_jsonString;
+		const char*					_jsonString = nullptr;
 	};
 
 	class JsonElement

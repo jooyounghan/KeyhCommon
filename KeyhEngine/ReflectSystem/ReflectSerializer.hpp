@@ -7,7 +7,7 @@ namespace keyh
 	template<typename T>
 	void ReflectSerializer::serializeToJson(const T& object)
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T, "The type is not supported for serialization. Please implement the serializeToJson method for this type.");
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
 	}
 
 	DECLARE_SERIALIZE_TO_JSON(int8);

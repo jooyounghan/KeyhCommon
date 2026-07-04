@@ -3,9 +3,9 @@
 namespace keyh
 {
 	template<typename T>
-	class DynamicBuffer : public IBuffer<T, DynamicBuffer<T>>
+	class DynamicBuffer : public IBufferBase<T, DynamicBuffer<T>>
 	{
-		using Base = IBuffer<T, DynamicBuffer<T>>;
+		using Base = IBufferBase<T, DynamicBuffer<T>>;
 		using Base::_offset;
 		friend class Base;
 
@@ -26,8 +26,9 @@ namespace keyh
 
 	protected:
 		void resetImpl();
-		inline size_t getCapacityImpl() const { return _capacity; }
-		inline T* getBufferImpl() { return _buffer; }
+		inline size_t	getCapacityImpl() const { return _capacity; }
+		inline T*		getBufferImpl() { return _buffer; }
+		inline const T* getBufferImpl() const { return _buffer; }
 	};
 
 	using DynamicBufferA = DynamicBuffer<char>;

@@ -1,7 +1,7 @@
 namespace keyh
 {
 	template<typename T, typename Derived>
-	void IBuffer<T, Derived>::write(const void* input, size_t size)
+	void IBufferBase<T, Derived>::write(const void* input, size_t size)
 	{
 		if (getAvailableSize() < size)
 		{
@@ -17,7 +17,7 @@ namespace keyh
 	}
 
 	template<typename T, typename Derived>
-	void IBuffer<T, Derived>::writeOne(T input)
+	void IBufferBase<T, Derived>::writeOne(T input)
 	{
 		if (getAvailableSize() == 0)
 		{
@@ -32,14 +32,14 @@ namespace keyh
 	}
 
 	template<typename T, typename Derived>
-	void IBuffer<T, Derived>::reset()
+	void IBufferBase<T, Derived>::reset()
 	{
 		_offset = 0;
 		getDerived()->resetImpl();
 	}
 
 	template<typename T, typename Derived>
-	size_t IBuffer<T, Derived>::getAvailableSize() const
+	size_t IBufferBase<T, Derived>::getAvailableSize() const
 	{
 		const size_t capacity = getDerived()->getCapacityImpl();
 		return capacity > size() ? capacity - size() : 0;

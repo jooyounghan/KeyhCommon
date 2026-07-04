@@ -4,10 +4,10 @@
 
 namespace keyh
 {
-	class IBufferBase
+	class IBuffer
 	{
 	public:
-		virtual ~IBufferBase() = default;
+		virtual ~IBuffer() = default;
 
 	public:
 		virtual void		writeBytes(const void* input, size_t size) = 0;
@@ -20,10 +20,10 @@ namespace keyh
 	};
 
 	template<typename T, typename Derived>
-	class IBuffer : public IBufferBase
+	class IBufferBase : public IBuffer
 	{
 	public:
-		virtual ~IBuffer() = default;
+		virtual ~IBufferBase() = default;
 
 	protected:
 		size_t _offset = 0;
@@ -45,13 +45,13 @@ namespace keyh
 		size_t	getAvailableSize() const;
 
 	public:
-		void		writeBytes(const void* input, size_t size) override { write(input, size); }
-		void		resetRaw() override { reset(); }
-		size_t		getSizeBytes() const override { return size(); }
-		size_t		getCapacityBytes() const override { return capacity(); }
-		void*		getRawBuffer() override { return getBuffer(); }
-		const void*	getRawBuffer() const override { return getBuffer(); }
-		size_t		getAvailableSizeBytes() const override { return getAvailableSize(); }
+		inline virtual void			writeBytes(const void* input, size_t size) override { write(input, size); }
+		inline virtual void			resetRaw() override { reset(); }
+		inline virtual size_t		getSizeBytes() const override { return size(); }
+		inline virtual size_t		getCapacityBytes() const override { return capacity(); }
+		inline virtual void*		getRawBuffer() override { return getBuffer(); }
+		inline virtual const void*	getRawBuffer() const override { return getBuffer(); }
+		inline virtual size_t		getAvailableSizeBytes() const override { return getAvailableSize(); }
 	};
 }
 #include "IBuffer.hpp"
