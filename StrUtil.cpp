@@ -1,4 +1,5 @@
 #include "CommonBasePch.h"
+#include "IBuffer.h"
 #include "StrUtil.h"
 #include "SimdUtil.h"
 #include "IBuffer.h"
@@ -38,7 +39,7 @@ namespace keyh
 
 	}
 
-	void StrUtil::digitToStr(bool isNegative, uint64 value, IBuffer* buffer)
+	void StrUtil::digitToStr(bool isNegative, uint64 value, IBufferBase* buffer)
 	{
 		constexpr StaticArray<char, kDigitMapCount> digitMap = makeDigitMap();
 		constexpr StaticArray<uint64, kPowerOf10Count> power10Map = makePowerOf10Map();
@@ -71,14 +72,14 @@ namespace keyh
 		}
 	}
 
-	void StrUtil::intToStr(bool isNegative, uint64 value, IBuffer* buffer)
+	void StrUtil::intToStr(bool isNegative, uint64 value, IBufferBase* buffer)
 	{
 		//char temp[32];
 		//int len = snprintf(temp, sizeof(temp), "%lld", value);
 		//buffer->write(temp, len);	
 	}
 
-	void StrUtil::floatToStr(float value, IBuffer* buffer, int precision)
+	void StrUtil::floatToStr(float value, IBufferBase* buffer, int precision)
 	{
 		//char format[8];
 		//snprintf(format, sizeof(format), "%%.%df", precision);

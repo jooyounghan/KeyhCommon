@@ -6,7 +6,7 @@
 
 namespace keyh
 {
-	class IBuffer;
+	class IBufferBase;
 
 	struct StrUtil
 	{
@@ -33,8 +33,8 @@ namespace keyh
 		static void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
 
 	public:
-		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);
-		static void floatToStr(float value, IBuffer* buffer, int precision = 3);
+		static void intToStr(bool isNegative, uint64 value, IBufferBase* buffer);
+		static void floatToStr(float value, IBufferBase* buffer, int precision = 3);
 #pragma endregion
 
 #pragma region String Search and Skips
