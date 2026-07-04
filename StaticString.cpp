@@ -25,7 +25,7 @@ namespace keyh
 		const size_t length = StrUtil::strlen(str);
 		setLength(length);
 
-		const bool ssoEnabled = length < StrUtil::ssoCapacity;
+		const bool ssoEnabled = length < StrUtil::kSsoCapacity;
 		setSso(ssoEnabled);
 
 		if (ssoEnabled == false)
@@ -43,7 +43,7 @@ namespace keyh
 	{
 		setLength(length);
 
-		const bool ssoEnabled = length < StrUtil::ssoCapacity;
+		const bool ssoEnabled = length < StrUtil::kSsoCapacity;
 		setSso(ssoEnabled);
 
 		if (ssoEnabled == false)
@@ -93,7 +93,7 @@ namespace keyh
 
 		if (isSso())
 		{
-			std::memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::ssoCapacity * sizeof(T));
+			std::memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::kSsoCapacity * sizeof(T));
 		}
 		else
 		{

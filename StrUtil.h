@@ -2,11 +2,18 @@
 #include <cstring>
 #include <cwchar>
 #include "AssertUtil.h"
+#include "StaticArray.h"
+
 namespace keyh
 {
+	class IBuffer;
+
 	struct StrUtil
 	{
-		static constexpr size_t ssoCapacity = 16;
+		static constexpr size_t kSsoCapacity = 16;
+		static constexpr size_t kDigitMapCount = 200;
+		static constexpr size_t kDigitMapHalfCount = kDigitMapCount / 2;
+		static constexpr size_t kPowerOf10Count = 20;
 
 #pragma region String Length and Compare
 		template<typename T>
@@ -19,6 +26,15 @@ namespace keyh
 #pragma region Convert
 		static int strToInt(const char* str, int radix = 10, char** endPtr = nullptr);
 		static float strToFloat(const char* str, char** endPtr = nullptr);
+
+	private:
+		constexpr StaticArray<char, kDigitMapCount> makeDigitMap();
+		constexpr StaticArray<uint64, kPowerOf10Count> makePowerOf10Map();
+		void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
+
+	public:
+		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);
+		static void floatToStr(float value, IBuffer* buffer, int precision = 3);
 #pragma endregion
 
 #pragma region String Search and Skips

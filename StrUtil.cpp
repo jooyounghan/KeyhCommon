@@ -8,9 +8,55 @@ namespace keyh
 	{
 		return ::strtoll(str, endPtr, radix);
 	}
+
 	float StrUtil::strToFloat(const char* str, char** endPtr)
 	{
 		return ::strtof(str, endPtr);
+	}
+
+	constexpr StaticArray<char, StrUtil::kDigitMapCount> StrUtil::makeDigitMap()
+	{
+		StaticArray<char, StrUtil::kDigitMapCount> digitMap;
+		for (size_t idx = 0; idx < StrUtil::kDigitMapCount; ++idx)
+		{
+			digitMap[2 * idx + 0] = '0' + static_cast<char>(idx / 10);
+			digitMap[2 * idx + 1] = '0' + static_cast<char>(idx % 10);
+		}
+		return digitMap;
+	}
+
+	constexpr StaticArray<uint64, StrUtil::kPowerOf10Count> StrUtil::makePowerOf10Map()
+	{
+		StaticArray<uint64, StrUtil::kPowerOf10Count> power10Map;
+		power10Map[0] = 1;
+		for (uint32 idx = 1; idx < StrUtil::kPowerOf10Count; ++idx)
+		{
+			power10Map[idx] = power10Map[idx - 1] * 10ull;
+		}
+		return power10Map;
+
+	}
+
+	void StrUtil::digitToStr(bool isNegative, uint64 value, IBuffer* buffer)
+	{
+		constexpr StaticArray<char, kDigitMapCount> digitMap = makeDigitMap();
+		constexpr StaticArray<uint64, kPowerOf10Count> power10Map = makePowerOf10Map();
+	}
+
+	void StrUtil::intToStr(bool isNegative, uint64 value, IBuffer* buffer)
+	{
+		//char temp[32];
+		//int len = snprintf(temp, sizeof(temp), "%lld", value);
+		//buffer->write(temp, len);	
+	}
+
+	void StrUtil::floatToStr(float value, IBuffer* buffer, int precision)
+	{
+		//char format[8];
+		//snprintf(format, sizeof(format), "%%.%df", precision);
+		//char temp[64];
+		//int len = snprintf(temp, sizeof(temp), format, value);
+		//buffer->write(temp, len);
 	}
 
 	const char* StrUtil::findNext(const char* start, const char* end, const char target)

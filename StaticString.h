@@ -30,7 +30,7 @@ namespace keyh
 	private:
 		union
 		{
-			T _ssoBuffer[StrUtil::ssoCapacity];
+			T _ssoBuffer[StrUtil::kSsoCapacity];
 			T* _heap;
 		};
 		size_t _stringInfo;
