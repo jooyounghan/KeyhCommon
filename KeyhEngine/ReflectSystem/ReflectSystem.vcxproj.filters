@@ -25,6 +25,12 @@
     <Filter Include="헤더 파일\ReflectProperty">
       <UniqueIdentifier>{0245bede-77f8-46a6-95c5-e3748932b7a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\ReflectionUtil">
+      <UniqueIdentifier>{7ba8e5dc-8ee0-460e-8160-3d1e8dd1f2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectionUtil">
+      <UniqueIdentifier>{8d571207-47a6-4c68-bc25-7ae90b153778}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ReflectSystemPch.h">
@@ -42,6 +48,12 @@
     <ClInclude Include="ReflectProperty.h">
       <Filter>헤더 파일\ReflectProperty</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectSerializer.h">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectSerializer.hpp">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ReflectSystemPch.cpp">
@@ -58,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="ReflectProperty.cpp">
       <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectSerializer.cpp">
+      <Filter>소스 파일\ReflectionUtil</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

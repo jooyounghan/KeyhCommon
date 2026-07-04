@@ -10,10 +10,10 @@ static constexpr char kLongText[] = "this string is longer than the sso buffer";
 static constexpr wchar_t kShortWideText[] = L"world";
 static constexpr wchar_t kLongWideText[] = L"this wide string is longer than the sso buffer";
 
-static_assert((sizeof(kShortText) - 1) < StrUtil::ssoCapacity);
-static_assert((sizeof(kLongText) - 1) >= StrUtil::ssoCapacity);
-static_assert((sizeof(kShortWideText) / sizeof(wchar_t) - 1) < StrUtil::ssoCapacity);
-static_assert((sizeof(kLongWideText) / sizeof(wchar_t) - 1) >= StrUtil::ssoCapacity);
+static_assert((sizeof(kShortText) - 1) < StrUtil::kSsoCapacity);
+static_assert((sizeof(kLongText) - 1) >= StrUtil::kSsoCapacity);
+static_assert((sizeof(kShortWideText) / sizeof(wchar_t) - 1) < StrUtil::kSsoCapacity);
+static_assert((sizeof(kLongWideText) / sizeof(wchar_t) - 1) >= StrUtil::kSsoCapacity);
 
 void test_StaticString_create_and_length()
 {
