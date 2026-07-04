@@ -47,7 +47,7 @@ namespace keyh
 	public:
 		void		writeBytes(const void* input, size_t size) override { write(input, size); }
 		void		resetRaw() override { reset(); }
-		size_t		getSizeBytes() const override { return this->size(); }
+		size_t		getSizeBytes() const override { return size(); }
 		size_t		getCapacityBytes() const override { return capacity(); }
 		void*		getRawBuffer() override { return getBuffer(); }
 		const void*	getRawBuffer() const override { return getBuffer(); }
