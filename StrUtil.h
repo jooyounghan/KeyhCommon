@@ -30,7 +30,7 @@ namespace keyh
 	private:
 		static constexpr StaticArray<char, kDigitMapCount> makeDigitMap();
 		static constexpr StaticArray<uint64, kPowerOf10Count> makePowerOf10Map();
-		void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
+		static void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
 
 	public:
 		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);

@@ -1,6 +1,7 @@
 #include "CommonBasePch.h"
 #include "StrUtil.h"
 #include "SimdUtil.h"
+#include "IBuffer.h"
 
 namespace keyh
 {
@@ -41,6 +42,33 @@ namespace keyh
 	{
 		constexpr StaticArray<char, kDigitMapCount> digitMap = makeDigitMap();
 		constexpr StaticArray<uint64, kPowerOf10Count> power10Map = makePowerOf10Map();
+
+		if (isNegative) buffer->writeOne('-');
+		if (v == 0)
+		{
+			buffer->writeOne('0');
+		}
+		else
+		{
+			size_t decimalLength = getDecimalLength(v);
+			const bool isLenghtOdd = decimalLength & 1;
+			if (isLenghtOdd)
+			{
+				uint64 pow = power10Map[decimalLength - 1];
+				uint64 leadingDigit = v / pow;
+				buffer->writeOne(static_cast<char>('0' + leadingDigit));
+				v -= pow * leadingDigit;
+				--decimalLength;
+			}
+			while (decimalLength > 0)
+			{
+				uint64_t pow = power10Map[decimalLength - 2];
+				uint64_t digits = v / pow;
+				buffer->write(&digitMap[2 * digits], 2);
+				v -= pow * digits;
+				decimalLength -= 2;
+			}
+		}
 	}
 
 	void StrUtil::intToStr(bool isNegative, uint64 value, IBuffer* buffer)
