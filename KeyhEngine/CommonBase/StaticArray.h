@@ -6,7 +6,7 @@ namespace keyh
 	class StaticArray
 	{
 	public:
-		constexpr StaticArray() = default;
+		constexpr StaticArray() : _data{} {}
 		constexpr ~StaticArray() = default;
 
 	public:
