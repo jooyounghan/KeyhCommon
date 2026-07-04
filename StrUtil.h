@@ -28,9 +28,9 @@ namespace keyh
 		static float strToFloat(const char* str, char** endPtr = nullptr);
 
 	private:
-		constexpr StaticArray<char, kDigitMapCount> makeDigitMap();
-		constexpr StaticArray<uint64, kPowerOf10Count> makePowerOf10Map();
-		void digitToStr(bool isNegative, uint64 value, IBufferBase* buffer);
+		static constexpr StaticArray<char, kDigitMapCount> makeDigitMap();
+		static constexpr StaticArray<uint64, kPowerOf10Count> makePowerOf10Map();
+		void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
 
 	public:
 		static void intToStr(bool isNegative, uint64 value, IBufferBase* buffer);
