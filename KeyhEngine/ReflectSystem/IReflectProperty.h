@@ -1,5 +1,6 @@
 #pragma once
 #include "FlyweightString.h"
+#include "../CommonBase/IBuffer.h"
 
 namespace keyh
 {
@@ -20,8 +21,8 @@ namespace keyh
 	public:
 		virtual void serializeToJson() = 0;
 		virtual void deserializeFromJson(const JsonElement& jsonElement) = 0;
-		virtual void serializeToBinary() = 0;
-		virtual void deserializeFromBinary(const void* data) = 0;
+		virtual void serializeToBinary(IBufferBase* buffer) = 0;
+		virtual void deserializeFromBinary(IBufferBase* buffer) = 0;
 	};
 
 	template<typename ObjectType, typename ValueType>
