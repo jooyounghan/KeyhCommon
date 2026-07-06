@@ -54,6 +54,9 @@
     <ClInclude Include="ReflectSerializer.hpp">
       <Filter>헤더 파일\ReflectionUtil</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectProperty.hpp">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ReflectSystemPch.cpp">

@@ -1,6 +1,7 @@
 #pragma once
+#include "ReflectSerializer.h"
 #include "FlyweightString.h"
-#include "../CommonBase/IBuffer.h"
+#include "IBuffer.h"
 
 namespace keyh
 {
@@ -19,10 +20,10 @@ namespace keyh
 		inline const FlyweightStringA& getName() const { return _name; }
 
 	public:
-		virtual void serializeToJson() = 0;
+		virtual void serializeToBuffer(IBuffer* buffer) = 0;
 		virtual void deserializeFromJson(const JsonElement& jsonElement) = 0;
 		virtual void serializeToBinary(IBuffer* buffer) = 0;
-		virtual void deserializeFromBinary(IBuffer* buffer) = 0;
+		virtual void deserializeFromBinary(const void* data, size_t size) = 0;
 	};
 
 	template<typename ObjectType, typename ValueType>
@@ -38,7 +39,7 @@ namespace keyh
 		{
 		}
 
-	private:
+	protected:
 		RefGetter _refGetter = nullptr;
 		ConstGetter _constGetter = nullptr;
 	};
