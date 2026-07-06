@@ -52,7 +52,7 @@ namespace keyh
 		}
 	}
 
-	static void extractDigits(const char*& str, uint32& result, size_t& digitCount)
+	static void extractDigits(const char*& str, uint64& result, size_t& digitCount)
 	{
 		if (str == nullptr)
 		{
@@ -71,33 +71,45 @@ namespace keyh
 		return;
 	}
 
-	int StrUtil::strToInt(const char* str)
+	template<typename T>
+	T StrUtil::strToInt(const char* str)
 	{
 		bool isNegative = false;
-		uint32 result = 0;
+		uint64 result = 0;
 		size_t digitCount = 0;
 		extractSign(str, isNegative);
 		extractDigits(str, result, digitCount);
-		return isNegative ? -static_cast<int>(result) : static_cast<int>(result);
+
+		return static_cast<T>(result) * (isNegative ? -1 : 1);
 	}
 
-	float StrUtil::strToFloat(const char* str)
+	template int8 StrUtil::strToInt<int8>(const char*);
+	template int16 StrUtil::strToInt<int16>(const char*);
+	template int32 StrUtil::strToInt<int32>(const char*);
+	template int64 StrUtil::strToInt<int64>(const char*);
+	template uint8 StrUtil::strToInt<uint8>(const char*);
+	template uint16 StrUtil::strToInt<uint16>(const char*);
+	template uint32 StrUtil::strToInt<uint32>(const char*);
+	template uint64 StrUtil::strToInt<uint64>(const char*);
+
+	template<typename T>
+	T StrUtil::strToFloat(const char* str)
 	{
-		float result = 0.f;
+		T result = 0.f;
 
 		bool isNegative = false;
-		uint32 integerPart = 0;
+		uint64 integerPart = 0;
 		size_t digitCount = 0;
 		extractSign(str, isNegative);
 		extractDigits(str, integerPart, digitCount);
 
-		result = static_cast<float>(integerPart);
+		result = static_cast<T>(integerPart);
 
 		if (*str == '.')
 		{
 			++str;
 
-			uint32 fractionPart = 0;
+			uint64 fractionPart = 0;
 			size_t fractionCount = 0;
 
 			extractDigits(str, fractionPart, fractionCount);
@@ -108,12 +120,15 @@ namespace keyh
 					fractionCount = kPowerOf10Count - 1;
 				}
 				constexpr StaticArray<uint64, kPowerOf10Count> kPower10Map = makePowerOf10Map();
-				result += fractionPart / static_cast<float>(kPower10Map[fractionCount]);
+				result += fractionPart / static_cast<T>(kPower10Map[fractionCount]);
 			}
 		}
 
 		return isNegative ? -result : result;
 	}
+
+	template float StrUtil::strToFloat<float>(const char*);
+	template double StrUtil::strToFloat<double>(const char*);
 
 	size_t getDigitLength(uint64 value)
 	{
@@ -175,7 +190,7 @@ namespace keyh
 		digitToStr(isNegative, value, buffer);
 	}
 
-	void StrUtil::floatToStr(float value, IBuffer* buffer, size_t precision)
+	void StrUtil::floatToStr(double value, IBuffer* buffer, size_t precision)
 	{
 		bool isNegative = value > 0;
 		if (isnan(value)) return buffer->writeBytes(isNegative ? "-nan" : "nan", isNegative ? 4 : 3);

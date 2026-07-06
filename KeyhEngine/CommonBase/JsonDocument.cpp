@@ -85,14 +85,14 @@ namespace keyh
 
 		if (hasDecimalPoint)
 		{
-			float numberValue = StrUtil::strToFloat(ptr);
+			float numberValue = StrUtil::strToFloat<float>(ptr);
 			size_t bitPattern = 0;
 			memcpy(&bitPattern, &numberValue, sizeof(float));
 			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Float, bitPattern);
 		}
 		else
 		{
-			int numberValue = StrUtil::strToInt(ptr);
+			int numberValue = StrUtil::strToInt<int>(ptr);
 			size_t bitPattern = 0;
 			memcpy(&bitPattern, &numberValue, sizeof(int));
 			tapeElements.emplace_back().setIndexElement(JsonUtil::TapeType::Integer, bitPattern);

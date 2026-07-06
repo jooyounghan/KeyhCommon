@@ -158,6 +158,7 @@
     <ClInclude Include="ReflectMetaObject.h" />
     <ClInclude Include="ReflectObject.h" />
     <ClInclude Include="ReflectProperty.h" />
+    <ClInclude Include="ReflectProperty.hpp" />
     <ClInclude Include="ReflectSerializer.h" />
     <ClInclude Include="ReflectSerializer.hpp" />
     <ClInclude Include="ReflectSystemPch.h" />

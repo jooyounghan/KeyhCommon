@@ -19,15 +19,17 @@ namespace keyh
 #pragma endregion
 
 #pragma region Convert
-		static int strToInt(const char* str);
-		static float strToFloat(const char* str);
+		template<typename T>
+		static T strToInt(const char* str);
+		template<typename T>
+		static T strToFloat(const char* str);
 
 	private:
 		static void digitToStr(bool isNegative, uint64 value, IBuffer* buffer);
 		
 	public:
 		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);
-		static void floatToStr(float value, IBuffer* buffer, size_t precision = 3);
+		static void floatToStr(double value, IBuffer* buffer, size_t precision = 3);
 #pragma endregion
 
 #pragma region String Search and Skips
