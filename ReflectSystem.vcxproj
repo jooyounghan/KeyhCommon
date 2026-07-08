@@ -155,7 +155,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IReflectProperty.h" />
+    <ClInclude Include="ReflectionUtil.h" />
     <ClInclude Include="ReflectMetaObject.h" />
+    <ClInclude Include="ReflectMetaObject.hpp" />
     <ClInclude Include="ReflectObject.h" />
     <ClInclude Include="ReflectProperty.h" />
     <ClInclude Include="ReflectProperty.hpp" />

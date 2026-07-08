@@ -10,3 +10,10 @@
 
 #include "StaticString.h"
 #include "FlyweightString.h"
+
+#include "Ptr.h"
+#include "RefPtr.h"
+#include "WeakPtr.h"
+
+#include "HashMap.h"
+#include "Vector.h"

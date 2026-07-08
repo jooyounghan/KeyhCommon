@@ -10,7 +10,7 @@ namespace keyh
 		static void serializeToBuffer(const T& object, IBuffer* buffer);
 
 		template<typename T>
-		static void deserializeFromBuffer(const IBuffer* buffer, T& object);
+		static void deserializeFromBuffer(const void* buffer, T& object);
 	};
 }
 #include "ReflectSerializer.hpp"
