@@ -62,8 +62,8 @@ def _parse_property_args(args_str):
     if not args_str or not args_str.strip():
         return property_name, default_value
 
-    # PropertyName = "..."
-    pn_match = re.search(r'PropertyName\s*=\s*"([^"]*)"', args_str)
+    # PropertyName = "..."  (use word boundary to avoid matching substrings)
+    pn_match = re.search(r'\bPropertyName\s*=\s*"([^"]*)"', args_str)
     if pn_match:
         property_name = pn_match.group(1)
 
@@ -223,10 +223,23 @@ def _parse_class_body(lines, start_line):
 
             # ----------------------------------------------------------------
             # KEYH_REFLECT_PROPERTY(...)
+            # Use a depth-counting parser so that arguments containing nested
+            # parentheses (e.g. Default = SomeType(1, 2)) are matched correctly.
             # ----------------------------------------------------------------
-            m = re.match(r'KEYH_REFLECT_PROPERTY\s*\(([^)]*)\)\s*$', stripped)
-            if m:
-                args_str = m.group(1).strip()
+            if re.match(r'KEYH_REFLECT_PROPERTY\s*\(', stripped):
+                # Extract argument string between the outer parentheses
+                paren_start = stripped.index('(')
+                args_str = ''
+                depth_p = 0
+                for ci, ch in enumerate(stripped[paren_start:]):
+                    if ch == '(':
+                        depth_p += 1
+                    elif ch == ')':
+                        depth_p -= 1
+                        if depth_p == 0:
+                            args_str = stripped[paren_start + 1:paren_start + ci].strip()
+                            break
+
                 prop_name_override, default_val = _parse_property_args(args_str)
 
                 # The variable declaration is on the next non-blank line
@@ -435,11 +448,12 @@ def main():
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Collect all .h files (skip previously generated files)
+    # Collect all .h files under the project directory recursively (skip generated files)
     header_files = sorted(
-        os.path.join(project_dir, f)
-        for f in os.listdir(project_dir)
-        if f.endswith('.h') and not f.endswith('.generated.h')
+        os.path.join(root, fname)
+        for root, _dirs, files in os.walk(project_dir)
+        for fname in files
+        if fname.endswith('.h') and not fname.endswith('.generated.h')
     )
 
     if args.verbose:
