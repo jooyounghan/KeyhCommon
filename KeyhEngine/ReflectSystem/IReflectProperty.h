@@ -1,46 +1,37 @@
 #pragma once
+#include "ReflectionUtil.h"
 #include "ReflectSerializer.h"
 #include "FlyweightString.h"
 #include "IBuffer.h"
 
 namespace keyh
 {
+	class IReflectObject;
 	class JsonElement;
 
 	class IReflectProperty
 	{
 	public:
-		IReflectProperty(const FlyweightStringA& name) : _name(name) {}
+		IReflectProperty(const FlyweightStringA& propertyName, const FlyweightStringA& groupName)
+			: _propertyName(propertyName), _groupName(groupName) {}
 		virtual ~IReflectProperty() = default;
 
 	protected:
-		FlyweightStringA _name;
+		FlyweightStringA _propertyName;
+		FlyweightStringA _groupName;
 
 	public:
-		inline const FlyweightStringA& getName() const { return _name; }
+		inline const FlyweightStringA& getPropertyName() const { return _propertyName; }
+		inline const FlyweightStringA& getGroupName() const { return _groupName; }
 
 	public:
-		virtual void serializeToBuffer(IBuffer* buffer) = 0;
-		virtual void deserializeFromJson(const JsonElement& jsonElement) = 0;
-		virtual void serializeToBinary(IBuffer* buffer) = 0;
-		virtual void deserializeFromBinary(const void* data, size_t size) = 0;
-	};
-
-	template<typename ObjectType, typename ValueType>
-	class ReflectPropertyBase : public IReflectProperty
-	{
-	protected:
-		typedef ValueType& (ObjectType::* RefGetter)();
-		typedef const ValueType& (ObjectType::* ConstGetter)() const;
+		virtual bool isDefault(const IReflectObject* object) const = 0;
+		virtual bool isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const = 0;
 
 	public:
-		ReflectPropertyBase(const FlyweightStringA& name, RefGetter refGetter, ConstGetter constGetter)
-			: IReflectProperty(name), _refGetter(refGetter), _constGetter(constGetter)
-		{
-		}
-
-	protected:
-		RefGetter _refGetter = nullptr;
-		ConstGetter _constGetter = nullptr;
+		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) = 0;
+		virtual void deserializeFromJson(const JsonElement& jsonElement, IReflectObject* object) = 0;
+		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) = 0;
+		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) = 0;
 	};
 }

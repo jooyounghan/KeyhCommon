@@ -51,6 +51,10 @@ namespace keyh
 		StringView<T> _stringView;
 		
 	public:
+		bool operator==(const FlyweightString& other) const;
+		bool operator!=(const FlyweightString& other) const;
+
+	public:
 		inline size_t getHash() const { return _hash; }
 		inline const StringView<T>& getStringView() const { return _stringView; }
 		inline const T* c_str() const { return _stringView.c_str(); }

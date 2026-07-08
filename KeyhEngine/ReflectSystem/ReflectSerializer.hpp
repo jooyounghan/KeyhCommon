@@ -8,7 +8,7 @@ namespace keyh
 	}
 
 	template<typename T>
-	void ReflectSerializer::deserializeFromBuffer(const IBuffer* buffer, T& object)
+	void ReflectSerializer::deserializeFromBuffer(const void* buffer, T& object)
 	{
 		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
 	}
@@ -40,7 +40,7 @@ namespace keyh
 #pragma region deserializeFromBuffer
 #define DECLARE_DESERIALIZE_TO_BUFFER(Type) \
 	template <> \
-	void ReflectSerializer::deserializeFromBuffer(const IBuffer* buffer, Type& object)
+	void ReflectSerializer::deserializeFromBuffer(const void* buffer, Type& object)
 
 	DECLARE_DESERIALIZE_TO_BUFFER(int8);
 	DECLARE_DESERIALIZE_TO_BUFFER(int16);

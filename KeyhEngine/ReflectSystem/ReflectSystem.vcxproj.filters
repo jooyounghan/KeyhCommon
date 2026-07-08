@@ -57,6 +57,12 @@
     <ClInclude Include="ReflectProperty.hpp">
       <Filter>헤더 파일\ReflectProperty</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectionUtil.h">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectMetaObject.hpp">
+      <Filter>헤더 파일\ReflectObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ReflectSystemPch.cpp">

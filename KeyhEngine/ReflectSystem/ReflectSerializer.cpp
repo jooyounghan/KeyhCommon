@@ -63,13 +63,47 @@ namespace keyh
 
 #pragma region deserializeFromBuffer
 #define DEFINE_DESERIALIZE_TO_BUFFER_INT(Type)	\
-	template<> void ReflectSerializer::deserializeFromBuffer<Type>(const IBuffer* buffer, Type& object) {	\
-		object = StrUtil::strToInt<Type>(buffer);	\
+	template<> void ReflectSerializer::deserializeFromBuffer<Type>(const void* buffer, Type& object) {	\
+		object = StrUtil::strToInt<Type>(static_cast<const char*>(buffer));	\
 	}
 
 #define DEFINE_DESERIALIZE_TO_BUFFER_FLOAT(Type)	\
-	template<> void ReflectSerializer::deserializeFromBuffer<Type>(const IBuffer* buffer, Type& object) {	\
-		object = StrUtil::strToFloat<Type>(buffer);	\
+	template<> void ReflectSerializer::deserializeFromBuffer<Type>(const void* buffer, Type& object) {	\
+		object = StrUtil::strToFloat<Type>(static_cast<const char*>(buffer));	\
 	}
+
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(int8);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(int16);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(int32);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(int64);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(uint8);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(uint16);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(uint32);
+	DEFINE_DESERIALIZE_TO_BUFFER_INT(uint64);
+
+	DEFINE_DESERIALIZE_TO_BUFFER_FLOAT(float);
+	DEFINE_DESERIALIZE_TO_BUFFER_FLOAT(double);
+
+#undef DEFINE_DESERIALIZE_TO_BUFFER_INT
+#undef DEFINE_DESERIALIZE_TO_BUFFER_FLOAT
+
+	template<>
+	void ReflectSerializer::deserializeFromBuffer<bool>(const void* buffer, bool& object) {
+		const char* str = static_cast<const char*>(buffer);
+		object = StrUtil::strcmp(str, "true") == 0;
+	}
+
+	template<>
+	void ReflectSerializer::deserializeFromBuffer<StaticStringA>(const void* buffer, StaticStringA& object) 
+	{
+		object = StaticStringA(static_cast<const char*>(buffer));
+	}
+
+	template<>
+	void ReflectSerializer::deserializeFromBuffer<FlyweightStringA>(const void* buffer, FlyweightStringA& object) 
+	{
+		object = FlyweightStringA(static_cast<const char*>(buffer));
+	}
+
 #pragma endregion
 }

@@ -52,6 +52,18 @@ namespace keyh
 		_stringView = StringPool<T>::getInstance().findOrInsert(str, _hash);
 	}
 
+	template<typename T, typename Hasher>
+	bool FlyweightString<T, Hasher>::operator==(const FlyweightString& other) const
+	{
+		return _hash == other._hash;
+	}
+
+	template<typename T, typename Hasher>
+	bool FlyweightString<T, Hasher>::operator!=(const FlyweightString& other) const
+	{
+		return _hash != other._hash;
+	}
+
 	template class FlyweightString<char>;
 	template class FlyweightString<wchar_t>;
 	template class FlyweightString<char, FNV1aHash<StringView<char>>>;
