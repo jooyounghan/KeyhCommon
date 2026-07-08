@@ -17,13 +17,13 @@ namespace keyh
 	template<typename ObjectType, typename ValueType>
 	ValueType& ReflectProperty<ObjectType, ValueType>::getValueRef(IReflectObject* object) const
 	{
-		return (static_cast<ObjectType*>(object)->*_refGetter)();
+		return _refGetter(*static_cast<ObjectType*>(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
 	const ValueType& ReflectProperty<ObjectType, ValueType>::getValueConstRef(const IReflectObject* object) const
 	{
-		return (static_cast<const ObjectType*>(object)->*_constGetter)();
+		return _constGetter(*static_cast<const ObjectType*>(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
