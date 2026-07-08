@@ -155,12 +155,22 @@ def _parse_variable_declaration(line):
 # ---------------------------------------------------------------------------
 
 def _strip_line_comment(line):
-    """Remove a C++ '//' line comment, respecting double-quoted strings."""
+    """Remove a C++ '//' line comment, respecting double-quoted strings.
+
+    Escape sequences inside strings are handled by advancing two characters
+    whenever a backslash is encountered, which correctly covers both '\\' and
+    '\"' without look-behind ambiguity.
+    """
     in_string = False
     i = 0
     while i < len(line):
         ch = line[i]
-        if ch == '"' and (i == 0 or line[i - 1] != '\\'):
+        if ch == '\\' and in_string:
+            # Skip the next character regardless of what it is; this handles
+            # '\\' (escaped backslash) and '\"' (escaped quote) uniformly.
+            i += 2
+            continue
+        if ch == '"':
             in_string = not in_string
         elif not in_string and ch == '/' and i + 1 < len(line) and line[i + 1] == '/':
             return line[:i]
