@@ -4,6 +4,8 @@
 #include "FlyweightString.h"
 #include "IBuffer.h"
 
+#define KEYH_REFLECT_PROPERTY
+
 namespace keyh
 {
 	class IReflectObject;

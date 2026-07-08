@@ -63,6 +63,12 @@
     <ClInclude Include="ReflectMetaObject.hpp">
       <Filter>헤더 파일\ReflectObject</Filter>
     </ClInclude>
+    <ClInclude Include="IReflectObject.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectObject.hpp">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ReflectSystemPch.cpp">
@@ -82,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="ReflectSerializer.cpp">
       <Filter>소스 파일\ReflectionUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="IReflectObject.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
