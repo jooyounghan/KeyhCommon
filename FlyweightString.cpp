@@ -68,6 +68,11 @@ namespace keyh
 	template class FlyweightString<wchar_t>;
 	template class FlyweightString<char, FNV1aHash<StringView<char>>>;
 	template class FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>>;
+
+	// Static Empty sentinels (default-constructed: kInvalidHash, empty StringView).
+	// Used as a "no group" / "no value" sentinel throughout the reflection system.
+	template<typename T, typename Hasher>
+	const FlyweightString<T, Hasher> FlyweightString<T, Hasher>::Empty;
 }
 
 #pragma region FNV1aHash Specializations
