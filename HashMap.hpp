@@ -1,8 +1,6 @@
 #define HASHMAP_TEMPLATE_TYPE template<typename Key, typename Value, typename Hasher>
 #define HASHMAP_CLASS HashMap<Key, Value, Hasher>
 
-#include <utility>
-
 namespace keyh
 {
 	HASHMAP_TEMPLATE_TYPE
