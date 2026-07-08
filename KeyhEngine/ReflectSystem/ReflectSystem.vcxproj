@@ -154,11 +154,13 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IReflectObject.h" />
     <ClInclude Include="IReflectProperty.h" />
     <ClInclude Include="ReflectionUtil.h" />
     <ClInclude Include="ReflectMetaObject.h" />
     <ClInclude Include="ReflectMetaObject.hpp" />
     <ClInclude Include="ReflectObject.h" />
+    <ClInclude Include="ReflectObject.hpp" />
     <ClInclude Include="ReflectProperty.h" />
     <ClInclude Include="ReflectProperty.hpp" />
     <ClInclude Include="ReflectSerializer.h" />
@@ -166,6 +168,7 @@
     <ClInclude Include="ReflectSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IReflectObject.cpp" />
     <ClCompile Include="IReflectProperty.cpp" />
     <ClCompile Include="ReflectMetaObject.cpp" />
     <ClCompile Include="ReflectObject.cpp" />

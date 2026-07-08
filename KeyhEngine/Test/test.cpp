@@ -6,9 +6,19 @@
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
 #include "JsonTest.h"
+#include "ReflectObject.h"
 
 int g_pass = 0;
 int g_fail = 0;
+
+class REFLECTIVE(TestObject)
+{
+protected:
+    KEYH_REFLECT_PROPERTY
+	int     _intValue = 0;
+    KEYH_REFLECT_PROPERTY
+    float   _floatValue = 0.0f;
+};
 
 int main()
 {
