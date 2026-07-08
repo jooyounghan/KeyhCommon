@@ -4,7 +4,29 @@
 #include "FlyweightString.h"
 #include "IBuffer.h"
 
-#define KEYH_REFLECT_PROPERTY
+// Marker macro placed before a member variable to register it as a reflected property.
+// Accepts optional key=value pairs parsed by the reflection code generator:
+//   PropertyName = "CustomName"   override the property name (default: variable name)
+//   Default      = <expr>         default value expression (default: value-initialised)
+// Example:
+//   KEYH_REFLECT_PROPERTY(PropertyName = "Health", Default = 100)
+//   int _health = 100;
+#define KEYH_REFLECT_PROPERTY(...)
+
+// Begin a named property group.  All KEYH_REFLECT_PROPERTY declarations between
+// this macro and the matching KEYH_REFLECT_PROPERTY_GROUP_END are assigned to the
+// group whose name is the string literal argument.
+// Example:
+//   KEYH_REFLECT_PROPERTY_GROUP("Physics")
+//   KEYH_REFLECT_PROPERTY()
+//   float _mass = 1.0f;
+//   KEYH_REFLECT_PROPERTY_GROUP_END
+#define KEYH_REFLECT_PROPERTY_GROUP(groupName)
+
+// End the current property group.  Properties after this macro (or at the top
+// of the class before any group) are assigned FlyweightStringA::Empty as their
+// group name.
+#define KEYH_REFLECT_PROPERTY_GROUP_END
 
 namespace keyh
 {
