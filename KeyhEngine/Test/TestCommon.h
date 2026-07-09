@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdio>
 #include "CommonBasePch.h"
+#include "ReflectSystemPch.h"
 
 extern int g_pass;
 extern int g_fail;

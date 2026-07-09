@@ -4,19 +4,13 @@ namespace keyh
 	template<typename T>
 	void ReflectSerializer::serializeToBuffer(const T& object, IBuffer* buffer)
 	{
-		static_assert(sizeof(T) == 0,
-			"T does not support for this template type."
-			" Triggered in: " FUNC_NAME
-		);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
 	}
 
 	template<typename T>
 	void ReflectSerializer::deserializeFromBuffer(const void* buffer, T& object)
 	{
-		static_assert(sizeof(T) == 0,
-			"T does not support for this template type."
-			" Triggered in: " FUNC_NAME
-		);
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
 	}
 
 #pragma region serializeToBuffer

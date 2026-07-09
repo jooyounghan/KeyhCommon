@@ -7,17 +7,25 @@
 #include "BufferTest.h"
 #include "JsonTest.h"
 #include "ReflectObject.h"
-
+#include "StaticString.h"
 int g_pass = 0;
 int g_fail = 0;
 
+using namespace keyh;
+
 class REFLECTIVE(TestObject)
 {
+    KEYH_REFLECT_BODY(TestObject)  // 한 번만 넣으면 됨 (friend 선언)
 protected:
-    KEYH_REFLECT_PROPERTY
-	int     _intValue = 0;
-    KEYH_REFLECT_PROPERTY
-    float   _floatValue = 0.0f;
+    KEYH_REFLECT_PROPERTY_GROUP("Group1")
+        KEYH_REFLECT_PROPERTY(Default = 0)
+        int _intValue = 0;
+    KEYH_REFLECT_PROPERTY(PropertyName = "FloatValue", Default = 0.0f)
+        float _floatValue = 0.0f;
+    KEYH_REFLECT_PROPERTY_GROUP_END
+
+        KEYH_REFLECT_PROPERTY()
+        StaticStringA _stringValue;
 };
 
 int main()
