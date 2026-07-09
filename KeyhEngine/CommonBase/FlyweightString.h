@@ -35,6 +35,9 @@ namespace keyh
 	class FlyweightString
 	{
 	public:
+		static const FlyweightString Empty;
+
+	public:
 		FlyweightString() = default;
 		~FlyweightString() = default;
 

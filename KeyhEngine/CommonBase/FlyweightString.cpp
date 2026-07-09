@@ -64,6 +64,13 @@ namespace keyh
 		return _hash != other._hash;
 	}
 
+	// Static Empty sentinels (default-constructed: kInvalidHash, empty StringView).
+	// Used as a "no group" / "no value" sentinel throughout the reflection system.
+	// This definition must appear before the explicit instantiations below so that
+	// the member is available when each instantiation is compiled.
+	template<typename T, typename Hasher>
+	const FlyweightString<T, Hasher> FlyweightString<T, Hasher>::Empty;
+
 	template class FlyweightString<char>;
 	template class FlyweightString<wchar_t>;
 	template class FlyweightString<char, FNV1aHash<StringView<char>>>;

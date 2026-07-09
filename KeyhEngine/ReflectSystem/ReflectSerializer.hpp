@@ -4,13 +4,19 @@ namespace keyh
 	template<typename T>
 	void ReflectSerializer::serializeToBuffer(const T& object, IBuffer* buffer)
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
+		static_assert(sizeof(T) == 0,
+			"T does not support for this template type."
+			" Triggered in: " FUNC_NAME
+		);
 	}
 
 	template<typename T>
 	void ReflectSerializer::deserializeFromBuffer(const void* buffer, T& object)
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
+		static_assert(sizeof(T) == 0,
+			"T does not support for this template type."
+			" Triggered in: " FUNC_NAME
+		);
 	}
 
 #pragma region serializeToBuffer
@@ -40,7 +46,7 @@ namespace keyh
 #pragma region deserializeFromBuffer
 #define DECLARE_DESERIALIZE_TO_BUFFER(Type) \
 	template <> \
-	void ReflectSerializer::deserializeFromBuffer(const void* buffer, Type& object)
+	void ReflectSerializer::deserializeFromBuffer<Type>(const void* buffer, Type& object)
 
 	DECLARE_DESERIALIZE_TO_BUFFER(int8);
 	DECLARE_DESERIALIZE_TO_BUFFER(int16);
@@ -58,6 +64,6 @@ namespace keyh
 	DECLARE_DESERIALIZE_TO_BUFFER(StaticStringA);
 	DECLARE_DESERIALIZE_TO_BUFFER(FlyweightStringA);
 
-#undef DECLARE_SERIALIZE_TO_BUFFER
+#undef DECLARE_DESERIALIZE_TO_BUFFER
 #pragma endregion
 }
