@@ -16,7 +16,7 @@ Pre-build event example (Visual Studio .vcxproj)
 -------------------------------------------------
     <PreBuildEvent>
       <Command>call "$(SolutionDir)..\\Tools\\run_reflect_codegen.bat"
-               "$(ProjectDir)"</Command>
+               "$(ProjectDir)."</Command>
     </PreBuildEvent>
 
 Including the generated file
@@ -366,7 +366,7 @@ def generate_inl_content(all_classes, source_files, output_filename):
     lines.append('// Pre-build event snippet for .vcxproj:')
     lines.append('//   <PreBuildEvent>')
     lines.append('//     <Command>call "$(SolutionDir)..\\Tools\\run_reflect_codegen.bat"')
-    lines.append('//              "$(ProjectDir)"</Command>')
+    lines.append('//              "$(ProjectDir)."</Command>')
     lines.append('//   </PreBuildEvent>')
     lines.append('')
 

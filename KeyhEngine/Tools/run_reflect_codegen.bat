@@ -14,7 +14,7 @@ setlocal EnableDelayedExpansion
 ::  Pre-build event example (.vcxproj):
 ::    <PreBuildEvent>
 ::      <Command>call "$(SolutionDir)..^Tools\run_reflect_codegen.bat"
-::               "$(ProjectDir)"</Command>
+::               "$(ProjectDir)."</Command>
 ::    </PreBuildEvent>
 :: ============================================================
 
