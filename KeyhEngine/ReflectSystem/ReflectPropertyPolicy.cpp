@@ -9,7 +9,7 @@ namespace keyh
 
 #define DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(Type)																\
 	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {			\
-		bool isNegative = value < 0;																			\
+		bool isNegative = static_cast<int64>(value) < 0;														\
 		uint64 absValue = isNegative ? static_cast<uint64>(-static_cast<int64>(value)) : static_cast<uint64>(value); \
 		StrUtil::intToStr(isNegative, absValue, buffer);														\
 	}
@@ -66,6 +66,9 @@ namespace keyh
 #pragma endregion
 
 #pragma region deserializeFromJson
+// TODO: Implement JSON deserialization for each type in a future step.
+//       These stubs exist so that ReflectPropertyPolicy<T> is fully specialized
+//       for all built-in types even before deserialization logic is written.
 
 #define DEFINE_DESERIALIZE_FROM_JSON_INT(Type)																		\
 	template<> void ReflectPropertyPolicy<Type>::deserializeFromJson(const JsonElement& json, Type& value) {}
@@ -100,6 +103,7 @@ namespace keyh
 #pragma endregion
 
 #pragma region serializeToBinary
+// TODO: Implement binary serialization for each type in a future step.
 
 #define DEFINE_SERIALIZE_TO_BINARY(Type)																		\
 	template<> void ReflectPropertyPolicy<Type>::serializeToBinary(IBuffer* buffer, const Type& value) {}
@@ -123,6 +127,7 @@ namespace keyh
 #pragma endregion
 
 #pragma region deserializeFromBinary
+// TODO: Implement binary deserialization for each type in a future step.
 
 #define DEFINE_DESERIALIZE_FROM_BINARY(Type)																						\
 	template<> void ReflectPropertyPolicy<Type>::deserializeFromBinary(const void* data, size_t size, Type& value) {}
