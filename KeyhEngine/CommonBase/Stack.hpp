@@ -1,4 +1,3 @@
-#include <stack>
 namespace keyh
 {
 	template<typename T>
