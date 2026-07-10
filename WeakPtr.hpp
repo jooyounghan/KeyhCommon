@@ -1,4 +1,3 @@
-#include "WeakPtr.h"
 namespace keyh
 {
 	template<typename T>
