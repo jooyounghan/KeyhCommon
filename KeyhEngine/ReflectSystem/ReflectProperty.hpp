@@ -29,32 +29,37 @@ namespace keyh
 	template<typename ObjectType, typename ValueType>
 	bool ReflectProperty<ObjectType, ValueType>::isDefault(const IReflectObject* object) const
 	{
-		return _defaultValue == getValueConstRef(object);
+		return ReflectPropertyPolicy<ValueType>::isEqual(_defaultValue, getValueConstRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
 	bool ReflectProperty<ObjectType, ValueType>::isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const
 	{
-		return getValueConstRef(objectA) == getValueConstRef(objectB);
+		return ReflectPropertyPolicy<ValueType>::isEqual(getValueConstRef(objectA), getValueConstRef(objectB));
 	}
 
 	template<typename ObjectType, typename ValueType>
 	void ReflectProperty<ObjectType, ValueType>::serializeToJson(IBuffer* buffer, const IReflectObject* object)
 	{
-		ReflectSerializer::serializeToBuffer<ValueType>(getValueConstRef(object), buffer);
+		ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, getValueConstRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonElement & jsonElement, IReflectObject* object)
-	{}
+	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonElement& jsonElement, IReflectObject* object)
+	{
+		ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonElement, getValueRef(object));
+	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::serializeToBinary(IBuffer * buffer, const IReflectObject* object)
-	{}
+	void ReflectProperty<ObjectType, ValueType>::serializeToBinary(IBuffer* buffer, const IReflectObject* object)
+	{
+		ReflectPropertyPolicy<ValueType>::serializeToBinary(buffer, getValueConstRef(object));
+	}
 
 	template<typename ObjectType, typename ValueType>
 	void ReflectProperty<ObjectType, ValueType>::deserializeFromBinary(const void* data, size_t size, IReflectObject* object)
-	{}
-
+	{
+		ReflectPropertyPolicy<ValueType>::deserializeFromBinary(data, size, getValueRef(object));
+	}
 
 }
