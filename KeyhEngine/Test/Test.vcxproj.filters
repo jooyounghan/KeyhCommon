@@ -101,5 +101,11 @@
     <ClInclude Include="JsonTest.h">
       <Filter>헤더 파일\Json</Filter>
     </ClInclude>
+    <ClInclude Include="test.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="reflect_generated.inl">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

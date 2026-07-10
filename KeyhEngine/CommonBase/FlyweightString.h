@@ -69,3 +69,12 @@ namespace keyh
 	using FlyweightStringA = FlyweightString<char, FNV1aHash<StringView<char>>>;
 	using FlyweightStringW = FlyweightString<wchar_t, FNV1aHash<StringView<wchar_t>>>;
 }
+
+#pragma region FNV1aHash Specializations
+#include "FNV1aHasher.h"
+namespace keyh
+{
+	DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(FlyweightString, char);
+	DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(FlyweightString, wchar_t);
+}
+#pragma endregion

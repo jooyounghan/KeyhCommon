@@ -3,6 +3,8 @@
 #include "CommonBasePch.h"
 #include "ReflectSystemPch.h"
 
+#include "ReflectObject.h"
+
 extern int g_pass;
 extern int g_fail;
 

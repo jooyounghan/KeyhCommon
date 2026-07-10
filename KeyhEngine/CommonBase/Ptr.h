@@ -21,11 +21,19 @@ namespace keyh
 		Ptr(T* ptr = nullptr);
 		template<typename U>
 		Ptr(U* ptr);
-		Ptr(const Ptr<T>& other) = delete;
 
 	public:
-		Ptr(Ptr<T>&& other) noexcept;
 		~Ptr();
+
+	public:
+		Ptr(const Ptr<T>& other) = delete;
+		Ptr(Ptr<T>&& other) noexcept;
+
+	public:
+		template<typename U>
+		Ptr(const Ptr<U>& other) = delete;
+		template<typename U>
+		Ptr(Ptr<U>&& other);
 
 	public:
 		Ptr<T>& operator=(const Ptr<T>& other) = delete;

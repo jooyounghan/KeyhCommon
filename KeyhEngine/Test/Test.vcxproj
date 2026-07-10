@@ -171,8 +171,14 @@
     <ClInclude Include="JsonTest.h" />
     <ClInclude Include="RefPtrTest.h" />
     <ClInclude Include="StaticStringTest.h" />
+    <ClInclude Include="test.h" />
     <ClInclude Include="TestCommon.h" />
     <ClInclude Include="WeakPtrTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="reflect_generated.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
