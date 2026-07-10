@@ -10,7 +10,7 @@ namespace keyh
 	)
 	{
 		Ptr<IReflectProperty> property = makePtr<ReflectProperty<ObjectType, PropertyType>>(propertyName, groupName, defaultValue, refGetter, constGetter);
-		_properties.push_back(property);
-		_propertyMap[propertyName] = property.get();
+		_properties.push_back(keyh::move(property));
+		_propertyMap.insert(propertyName, property.get());
 	}
 }

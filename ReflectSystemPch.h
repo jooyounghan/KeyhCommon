@@ -17,3 +17,5 @@
 
 #include "HashMap.h"
 #include "Vector.h"
+
+#include "IBuffer.h"
