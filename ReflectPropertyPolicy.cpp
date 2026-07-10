@@ -7,30 +7,37 @@ namespace keyh
 
 #pragma region serializeToJson
 
-#define DEFINE_SERIALIZE_TO_JSON_INT(Type)																	\
-	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {		\
-		bool isNegative = value >= 0;																		\
-		StrUtil::intToStr(isNegative, static_cast<uint64>(value), buffer);									\
+#define DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(Type)																\
+	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {			\
+		bool isNegative = value < 0;																			\
+		uint64 absValue = isNegative ? static_cast<uint64>(-static_cast<int64>(value)) : static_cast<uint64>(value); \
+		StrUtil::intToStr(isNegative, absValue, buffer);														\
 	}
 
-#define DEFINE_SERIALIZE_TO_JSON_FLOAT(Type)																\
-	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {		\
-		StrUtil::floatToStr(static_cast<double>(value), buffer);											\
+#define DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(Type)																\
+	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {			\
+		StrUtil::intToStr(false, static_cast<uint64>(value), buffer);											\
 	}
 
-	DEFINE_SERIALIZE_TO_JSON_INT(int8)
-	DEFINE_SERIALIZE_TO_JSON_INT(int16)
-	DEFINE_SERIALIZE_TO_JSON_INT(int32)
-	DEFINE_SERIALIZE_TO_JSON_INT(int64)
-	DEFINE_SERIALIZE_TO_JSON_INT(uint8)
-	DEFINE_SERIALIZE_TO_JSON_INT(uint16)
-	DEFINE_SERIALIZE_TO_JSON_INT(uint32)
-	DEFINE_SERIALIZE_TO_JSON_INT(uint64)
+#define DEFINE_SERIALIZE_TO_JSON_FLOAT(Type)																	\
+	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value) {			\
+		StrUtil::floatToStr(static_cast<double>(value), buffer);												\
+	}
+
+	DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int8)
+	DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int16)
+	DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int32)
+	DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int64)
+	DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint8)
+	DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint16)
+	DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint32)
+	DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint64)
 
 	DEFINE_SERIALIZE_TO_JSON_FLOAT(float)
 	DEFINE_SERIALIZE_TO_JSON_FLOAT(double)
 
-#undef DEFINE_SERIALIZE_TO_JSON_INT
+#undef DEFINE_SERIALIZE_TO_JSON_SIGNED_INT
+#undef DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_FLOAT
 
 	template<>
@@ -39,9 +46,9 @@ namespace keyh
 		constexpr char kTrue[]  = "true";
 		constexpr char kFalse[] = "false";
 		if (value)
-			buffer->writeBytes(kTrue, sizeof(kTrue));
+			buffer->writeBytes(kTrue, sizeof(kTrue) - 1);
 		else
-			buffer->writeBytes(kFalse, sizeof(kFalse));
+			buffer->writeBytes(kFalse, sizeof(kFalse) - 1);
 	}
 
 	template<>
