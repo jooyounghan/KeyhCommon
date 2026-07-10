@@ -125,7 +125,7 @@
     <PreBuildEvent>
       <Message>
       </Message>
-      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)"</Command>
+      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
