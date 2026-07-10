@@ -458,27 +458,24 @@ def main():
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Collect all .h and .cpp files under the project directory recursively (skip generated files)
-    _SCAN_EXTENSIONS = ('.h', '.cpp')
-    source_files = sorted(
+    # Collect all .h files under the project directory recursively (skip generated files)
+    header_files = sorted(
         os.path.join(root, fname)
         for root, _dirs, files in os.walk(project_dir)
         for fname in files
-        if fname.endswith(_SCAN_EXTENSIONS)
-        and not fname.endswith('.generated.h')
-        and not fname.endswith('.generated.cpp')
+        if fname.endswith('.h') and not fname.endswith('.generated.h')
     )
 
-    print(f'[Reflect] Starting – scanning {len(source_files)} source file(s) in {project_dir}')
+    print(f'[Reflect] Starting – scanning {len(header_files)} header(s) in {project_dir}')
 
     if args.verbose:
-        for fp in source_files:
+        for fp in header_files:
             print(f'[Reflect]   {os.path.relpath(fp, project_dir)}')
 
     all_classes = []
     source_files_with_classes = []
 
-    for filepath in source_files:
+    for filepath in header_files:
         try:
             classes = find_reflective_classes(filepath)
         except Exception as exc:
