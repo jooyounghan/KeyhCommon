@@ -458,21 +458,27 @@ def main():
 
     os.makedirs(output_dir, exist_ok=True)
 
-    # Collect all .h files under the project directory recursively (skip generated files)
-    header_files = sorted(
+    # Collect all .h and .cpp files under the project directory recursively (skip generated files)
+    _SCAN_EXTENSIONS = ('.h', '.cpp')
+    source_files = sorted(
         os.path.join(root, fname)
         for root, _dirs, files in os.walk(project_dir)
         for fname in files
-        if fname.endswith('.h') and not fname.endswith('.generated.h')
+        if fname.endswith(_SCAN_EXTENSIONS)
+        and not fname.endswith('.generated.h')
+        and not fname.endswith('.generated.cpp')
     )
 
+    print(f'[Reflect] Starting – scanning {len(source_files)} source file(s) in {project_dir}')
+
     if args.verbose:
-        print(f'[Reflect] Scanning {len(header_files)} header(s) in {project_dir}')
+        for fp in source_files:
+            print(f'[Reflect]   {os.path.relpath(fp, project_dir)}')
 
     all_classes = []
     source_files_with_classes = []
 
-    for filepath in header_files:
+    for filepath in source_files:
         try:
             classes = find_reflective_classes(filepath)
         except Exception as exc:
@@ -499,8 +505,7 @@ def main():
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write('// AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.\n')
             f.write('// No REFLECTIVE classes with annotated properties were found.\n')
-        if args.verbose:
-            print(f'[Reflect] No annotated properties found; wrote placeholder {output_path}')
+        print(f'[Reflect] Done – no REFLECTIVE classes with annotated properties found; wrote placeholder to {output_path}')
         return
 
     content = generate_inl_content(all_classes, source_files_with_classes, output_name)
@@ -508,7 +513,8 @@ def main():
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(content)
 
-    print(f'[Reflect] Generated {output_path} ({len(all_classes)} class(es))')
+    total_props = sum(len(props) for _, props, _ in all_classes)
+    print(f'[Reflect] Done – exported {len(all_classes)} class(es) / {total_props} propert(ies) to {output_path}')
 
 
 if __name__ == '__main__':
