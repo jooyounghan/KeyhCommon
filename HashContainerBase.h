@@ -186,11 +186,11 @@ namespace keyh
 	public:
 		HashBucket(const HashBucket&) = delete;
 		HashBucket& operator=(const HashBucket&) = delete;
-		HashBucket(HashBucket&& other)
+		HashBucket(HashBucket&& other) noexcept
 		{
 			moveFrom(other);
 		}
-		HashBucket& operator=(HashBucket&& other)
+		HashBucket& operator=(HashBucket&& other) noexcept
 		{
 			if (this != &other)
 			{

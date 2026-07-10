@@ -23,6 +23,12 @@ namespace keyh
 	}
 
 	template<typename T>
+	Ptr<T>::~Ptr()
+	{
+		release();
+	}
+
+	template<typename T>
 	Ptr<T>::Ptr(Ptr<T>&& other) noexcept
 	{
 		_ptr = other._ptr;
@@ -30,9 +36,11 @@ namespace keyh
 	}
 
 	template<typename T>
-	Ptr<T>::~Ptr()
+	template<typename U>
+	Ptr<T>::Ptr(Ptr<U>&& other)
 	{
-		release();
+		TypeTrait::requireDerivedFrom<U, T>();
+		_ptr = other._ptr;
 	}
 
 	template<typename T>
