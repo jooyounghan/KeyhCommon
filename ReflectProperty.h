@@ -1,5 +1,6 @@
 #pragma once
 #include "IReflectProperty.h"
+#include "ReflectPropertyPolicy.h"
 
 namespace keyh
 {
