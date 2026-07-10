@@ -514,7 +514,7 @@ def main():
         f.write(content)
 
     total_props = sum(len(props) for _, props, _ in all_classes)
-    print(f'[Reflect] Done – exported {len(all_classes)} class(es) / {total_props} propert(ies) to {output_path}')
+    print(f'[Reflect] Done – exported {len(all_classes)} class(es) / {total_props} property(ies) to {output_path}')
 
 
 if __name__ == '__main__':
