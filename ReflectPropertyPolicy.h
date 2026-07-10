@@ -1,6 +1,4 @@
 #pragma once
-#include "FlyweightString.h"
-#include "StaticString.h"
 
 namespace keyh
 {

@@ -1,4 +1,3 @@
-#include "ReflectObject.h"
 namespace keyh
 {
 	template<typename ObjectType>

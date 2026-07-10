@@ -1,4 +1,3 @@
-#include "ReflectProperty.h"
 namespace keyh
 {
 	template<typename ObjectType, typename ValueType>
