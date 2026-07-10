@@ -246,6 +246,7 @@
     <ClInclude Include="ArenaAllocator.hpp" />
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
+    <ClInclude Include="CommonBase.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileUtil.h" />
     <ClInclude Include="IBuffer.h" />
