@@ -48,6 +48,12 @@
     <ClInclude Include="ReflectProperty.h">
       <Filter>헤더 파일\ReflectProperty</Filter>
     </ClInclude>
+    <ClInclude Include="ReflectPropertyPolicy.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectPropertyPolicy.hpp">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
     <ClInclude Include="ReflectSerializer.h">
       <Filter>헤더 파일\ReflectionUtil</Filter>
     </ClInclude>
@@ -84,6 +90,9 @@
       <Filter>소스 파일\ReflectProperty</Filter>
     </ClCompile>
     <ClCompile Include="ReflectProperty.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectPropertyPolicy.cpp">
       <Filter>소스 파일\ReflectProperty</Filter>
     </ClCompile>
     <ClCompile Include="ReflectSerializer.cpp">

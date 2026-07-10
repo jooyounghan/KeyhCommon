@@ -163,6 +163,8 @@
     <ClInclude Include="ReflectObject.hpp" />
     <ClInclude Include="ReflectProperty.h" />
     <ClInclude Include="ReflectProperty.hpp" />
+    <ClInclude Include="ReflectPropertyPolicy.h" />
+    <ClInclude Include="ReflectPropertyPolicy.hpp" />
     <ClInclude Include="ReflectSerializer.h" />
     <ClInclude Include="ReflectSerializer.hpp" />
     <ClInclude Include="ReflectSystemPch.h" />
@@ -173,6 +175,7 @@
     <ClCompile Include="ReflectMetaObject.cpp" />
     <ClCompile Include="ReflectObject.cpp" />
     <ClCompile Include="ReflectProperty.cpp" />
+    <ClCompile Include="ReflectPropertyPolicy.cpp" />
     <ClCompile Include="ReflectSerializer.cpp" />
     <ClCompile Include="ReflectSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
