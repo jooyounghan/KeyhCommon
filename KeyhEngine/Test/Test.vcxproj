@@ -123,8 +123,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PreBuildEvent>
-      <Message>
-      </Message>
+      <Message>Running Reflect Code Generator...</Message>
       <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
