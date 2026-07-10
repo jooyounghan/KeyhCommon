@@ -2,7 +2,7 @@
 // ReflectSystem public API umbrella header.
 //
 // Include this single header in your project's ForcedIncludeFiles build setting
-// (or PCH / shared common header) to expose all reflection types without
+// (or PCH / shared common header) to expose all types without
 // per-file includes.
 //
 // Visual Studio usage – add to each ItemDefinitionGroup in .vcxproj:

@@ -1,5 +1,3 @@
-#include "ReflectPropertyPolicy.h"
-
 namespace keyh
 {
 	// Default isEqual: delegates to operator==.

@@ -1,4 +1,3 @@
-#include "TypeTraitCommon.h"
 namespace keyh
 {
 	template<typename T>
