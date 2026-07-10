@@ -466,7 +466,7 @@ def main():
         if fname.endswith('.h') and not fname.endswith('.generated.h')
     )
 
-    print(f'[Reflect] Starting – scanning {len(header_files)} header(s) in {project_dir}')
+    print(f'[Reflect] Starting - scanning {len(header_files)} header(s) in {project_dir}')
 
     if args.verbose:
         for fp in header_files:
@@ -490,7 +490,7 @@ def main():
                 if args.verbose:
                     print(
                         f'[Reflect]   {os.path.basename(filepath)}: '
-                        f'{class_name} – {len(properties)} property(ies)'
+                        f'{class_name} - {len(properties)} property(ies)'
                     )
         if has_props:
             source_files_with_classes.append(filepath)
@@ -502,7 +502,7 @@ def main():
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write('// AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.\n')
             f.write('// No REFLECTIVE classes with annotated properties were found.\n')
-        print(f'[Reflect] Done – no REFLECTIVE classes with annotated properties found; wrote placeholder to {output_path}')
+        print(f'[Reflect] Done - no REFLECTIVE classes with annotated properties found; wrote placeholder to {output_path}')
         return
 
     content = generate_inl_content(all_classes, source_files_with_classes, output_name)
@@ -511,7 +511,7 @@ def main():
         f.write(content)
 
     total_props = sum(len(props) for _, props, _ in all_classes)
-    print(f'[Reflect] Done – exported {len(all_classes)} class(es) / {total_props} property(ies) to {output_path}')
+    print(f'[Reflect] Done - exported {len(all_classes)} class(es) / {total_props} property(ies) to {output_path}')
 
 
 if __name__ == '__main__':
