@@ -93,9 +93,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonBasePch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="MemoryUtil.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>
@@ -280,6 +277,7 @@
       <Filter>헤더 파일\Json</Filter>
     </ClInclude>
     <ClInclude Include="CommonBase.h" />
+    <ClInclude Include="CommonBasePch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
