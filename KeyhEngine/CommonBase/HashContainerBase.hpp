@@ -1,4 +1,3 @@
-#include "HashContainerBase.h"
 namespace keyh
 {
 	template<typename Derived>

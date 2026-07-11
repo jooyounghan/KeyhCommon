@@ -1,4 +1,3 @@
-#include "RefPtr.h"
 namespace keyh
 {
 	template<typename Base, typename Derived, typename ...Args>
