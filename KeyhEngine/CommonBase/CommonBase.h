@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // CommonBase public API umbrella header.
 //
 // Include this single header in your project's ForcedIncludeFiles build setting
