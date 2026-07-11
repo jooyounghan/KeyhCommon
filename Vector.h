@@ -8,6 +8,56 @@ namespace keyh
 	class Vector
 	{
 	public:
+		class Iterator
+		{
+		public:
+			Iterator(T* ptr);
+
+		public:
+			inline T& operator*() { return *_ptr; }
+			inline const T& operator*() const { return *_ptr; }
+			inline T* operator->() { return _ptr; }
+			inline const T* operator->() const { return _ptr; }
+			inline operator T* () { return _ptr; }
+			inline operator const T* () const { return _ptr; }
+			inline bool operator==(const Iterator& other) const { return _ptr == other._ptr; }
+			inline bool operator!=(const Iterator& other) const { return !(*this == other); }
+			inline Iterator operator+(ptrdiff_t offset) const { return Iterator(_ptr + offset); }
+			inline Iterator operator-(ptrdiff_t offset) const { return Iterator(_ptr - offset); }
+			inline ptrdiff_t operator-(const Iterator& other) const { return _ptr - other._ptr; }
+
+		public:
+			Iterator& operator++();
+			Iterator operator++(int);
+
+		private:
+			T* _ptr;
+		};
+
+		class ConstIterator
+		{
+		public:
+			ConstIterator(const T* ptr);
+
+		public:
+			inline const T& operator*() const { return *_ptr; }
+			inline const T* operator->() const { return _ptr; }
+			inline operator const T* () const { return _ptr; }
+			inline bool operator==(const ConstIterator& other) const { return _ptr == other._ptr; }
+			inline bool operator!=(const ConstIterator& other) const { return !(*this == other); }
+			inline ConstIterator operator+(ptrdiff_t offset) const { return ConstIterator(_ptr + offset); }
+			inline ConstIterator operator-(ptrdiff_t offset) const { return ConstIterator(_ptr - offset); }
+			inline ptrdiff_t operator-(const ConstIterator& other) const { return _ptr - other._ptr; }
+
+		public:
+			ConstIterator& operator++();
+			ConstIterator operator++(int);
+
+		private:
+			const T* _ptr;
+		};
+
+	public:
 		Vector() = default;
 		~Vector();
 
@@ -32,10 +82,10 @@ namespace keyh
 		void pop_back();
 
 	public:
-		inline T* begin() { return static_cast<T*>(_data); }
-		inline T* end() { return static_cast<T*>(_data) + _size; }
-		inline const T* begin() const { return static_cast<const T*>(_data); }
-		inline const T* end() const { return static_cast<const T*>(_data) + _size; }
+		inline Iterator begin() { return Iterator(static_cast<T*>(_data)); }
+		inline Iterator end() { return Iterator(static_cast<T*>(_data) + _size); }
+		inline ConstIterator begin() const { return ConstIterator(static_cast<const T*>(_data)); }
+		inline ConstIterator end() const { return ConstIterator(static_cast<const T*>(_data) + _size); }
 
 	public:
 		T& operator[](size_t index);

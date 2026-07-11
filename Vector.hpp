@@ -1,6 +1,44 @@
 namespace keyh
 {
 	template<typename T>
+	Vector<T>::Iterator::Iterator(T* ptr)
+		: _ptr(ptr) {}
+
+	template<typename T>
+	typename Vector<T>::Iterator& Vector<T>::Iterator::operator++()
+	{
+		++_ptr;
+		return *this;
+	}
+
+	template<typename T>
+	typename Vector<T>::Iterator Vector<T>::Iterator::operator++(int)
+	{
+		Iterator temp = *this;
+		++_ptr;
+		return temp;
+	}
+
+	template<typename T>
+	Vector<T>::ConstIterator::ConstIterator(const T* ptr)
+		: _ptr(ptr) {}
+
+	template<typename T>
+	typename Vector<T>::ConstIterator& Vector<T>::ConstIterator::operator++()
+	{
+		++_ptr;
+		return *this;
+	}
+
+	template<typename T>
+	typename Vector<T>::ConstIterator Vector<T>::ConstIterator::operator++(int)
+	{
+		ConstIterator temp = *this;
+		++_ptr;
+		return temp;
+	}
+
+	template<typename T>
 	Vector<T>::~Vector()
 	{
 		clear();
