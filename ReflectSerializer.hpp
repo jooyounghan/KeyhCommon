@@ -64,15 +64,9 @@
     template<typename T>
     void ReflectSerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value)
     {
-        constexpr char kObjectBegin = '{';
-        constexpr char kObjectEnd = '}';
-        constexpr char kDelimiter = ',';
-        constexpr char kQuote = '"';
-        constexpr char kValueBegin = ':';
-
         const IReflectObject* reflectObject = static_cast<const IReflectObject*>(&value);
 
-        buffer->writeBytes(&kObjectBegin, 1);
+        buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
 
 		const ReflectMetaObject& metaObject = reflectObject->getMetaObject();
         const OwnerVector<IReflectProperty>& properties = metaObject.getReflectProperties();
@@ -84,19 +78,19 @@
 				continue;
 
             if (isFirst == false)
-				buffer->writeBytes(&kDelimiter, 1);
+				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
 			
             isFirst = false;
 			const FlyweightStringA& propertyName = property->getPropertyName();
-			buffer->writeBytes(&kQuote, 1);
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes(propertyName.c_str(), propertyName.size());
-			buffer->writeBytes(&kQuote, 1);
-			buffer->writeBytes(&kValueBegin, 1);
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
 
 			property->serializeToJson(buffer, reflectObject);
 		}
 
-        buffer->writeBytes(&kObjectEnd, 1);
+        buffer->writeBytes(&ReflectionUtil::kObjectEnd, 1);
     }
 
     template<typename T>

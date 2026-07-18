@@ -20,4 +20,16 @@ namespace keyh
 	template <typename T>
 	constexpr bool IsReflectObject_v = IsDerivedFrom_v<T, IReflectObject>;
 #pragma endregion
+
+	struct ReflectionUtil
+	{
+		static constexpr char kObjectBegin = '{';
+		static constexpr char kObjectEnd = '}';
+		static constexpr char kArrayBegin = '[';
+		static constexpr char kArrayEnd = ']';
+		static constexpr char kDelimiter = ',';
+		static constexpr char kQuote = '"';
+		static constexpr char kValueBegin = ':';
+
+	};
 }
