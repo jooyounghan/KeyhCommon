@@ -69,6 +69,21 @@ namespace keyh
 		bool isFound() const noexcept { return _found; }
 	};
 
+	template<typename Value>
+	struct HashConstFindValue
+	{
+		using type = const Value;
+	};
+
+	template<typename Value>
+	struct HashConstFindValue<Value*>
+	{
+		using type = const Value*;
+	};
+
+	template<typename Value>
+	using HashConstFindValue_t = typename HashConstFindValue<Value>::type;
+
 	class HashBucketBase
 	{
 	protected:
@@ -303,6 +318,9 @@ namespace keyh
 	protected:
 		template<typename Key>
 		auto findImpl(const Key& key, size_t* hashCache = nullptr);
+
+		template<typename Key>
+		auto findImpl(const Key& key, size_t* hashCache = nullptr) const;
 
 	protected:
 		void rehashIfNeeded();
