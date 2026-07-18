@@ -161,7 +161,8 @@ namespace keyh
 		size_t hash = hashCache ? *hashCache : self->_hasher(key);
 		size_t index = CircularBufferUtil::getIndex(hash, 0, self->_capacity);
 
-		auto* bucket = &self->_buckets[index];
+		using BucketPtr = decltype(&self->_buckets[0]);
+		BucketPtr bucket = &self->_buckets[index];
 		size_t currentIndex = index;
 		int32 searchPsl = 0;
 		do
