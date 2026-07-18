@@ -23,6 +23,7 @@ namespace keyh
 		using Bucket = HashBucket<Key>;
 		using InsertResult = HashInsertResult<void>;
 		using FindResult = HashFindResult<const Key>;
+		using ConstFindResult = FindResult;
 
 	public:
 		HashSet() = default;
@@ -44,12 +45,14 @@ namespace keyh
 		InsertResult	insert(const Key& key, size_t* hashCache = nullptr);
 		InsertResult	insert(Key&& key, size_t* hashCache = nullptr);
 		FindResult	find(const Key& key, size_t* hashCache = nullptr);
+		ConstFindResult	find(const Key& key, size_t* hashCache = nullptr) const;
 		bool			contains(const Key& key, size_t* hashCache = nullptr);
 		bool			remove(const Key& key, size_t* hashCache = nullptr);
 
 	private:
 		InsertResult makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status);
 		FindResult makeFindResult(Bucket* bucket, bool found);
+		ConstFindResult makeFindResult(const Bucket* bucket, bool found) const;
 	};
 }
 #include "HashSet.hpp"

@@ -23,6 +23,7 @@ namespace keyh
 		using Bucket = HashBucket<Key, Value>;
 		using InsertResult = HashInsertResult<Value>;
 		using FindResult = HashFindResult<Value>;
+		using ConstFindResult = HashFindResult<HashConstFindValue_t<Value>>;
 
 	public:
 		HashMap() = default;
@@ -44,11 +45,13 @@ namespace keyh
 		InsertResult	insert(const Key& key, const Value& value, bool replace = false, size_t* hashCache = nullptr);
 		InsertResult	insert(Key&& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
 		FindResult		find(const Key& key, size_t* hashCache = nullptr);
+		ConstFindResult	find(const Key& key, size_t* hashCache = nullptr) const;
 		bool			remove(const Key& key, size_t* hashCache = nullptr);
 
 	private:
 		InsertResult	makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status);
 		FindResult		makeFindResult(Bucket* bucket, bool found);
+		ConstFindResult	makeFindResult(const Bucket* bucket, bool found) const;
 	};
 }
 #include "HashMap.hpp"

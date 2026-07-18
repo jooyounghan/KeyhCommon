@@ -138,17 +138,31 @@ namespace keyh
 	template<typename Key>
 	auto HashContainerBase<Derived>::findImpl(const Key& key, size_t* hashCache)
 	{
-		using Bucket = typename Derived::Bucket;
-
 		Derived* self = static_cast<Derived*>(this);
-		if (_capacity == 0)
+		return findImplInternal(self, key, hashCache);
+	}
+
+	template<typename Derived>
+	template<typename Key>
+	auto HashContainerBase<Derived>::findImpl(const Key& key, size_t* hashCache) const
+	{
+		const Derived* self = static_cast<const Derived*>(this);
+		return findImplInternal(self, key, hashCache);
+	}
+
+	template<typename Derived>
+	template<typename Self, typename Key>
+	auto HashContainerBase<Derived>::findImplInternal(Self* self, const Key& key, size_t* hashCache)
+	{
+		if (self->_capacity == 0)
 			return self->makeFindResult(nullptr, false);
 
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
 		size_t hash = hashCache ? *hashCache : self->_hasher(key);
-		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
+		size_t index = CircularBufferUtil::getIndex(hash, 0, self->_capacity);
 
-		Bucket* bucket = &self->_buckets[index];
+		using BucketPtr = decltype(&self->_buckets[index]);
+		BucketPtr bucket = &self->_buckets[index];
 		size_t currentIndex = index;
 		int32 searchPsl = 0;
 		do
@@ -162,7 +176,7 @@ namespace keyh
 			}
 
 			++searchPsl;
-			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, _capacity);
+			currentIndex = CircularBufferUtil::getIndex(currentIndex, 1, self->_capacity);
 			bucket = &self->_buckets[currentIndex];
 		} while (currentIndex != index);
 
