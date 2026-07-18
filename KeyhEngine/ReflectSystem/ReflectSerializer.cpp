@@ -108,7 +108,7 @@ namespace keyh
 #undef DEFINE_DESERIALIZE_FROM_JSON_INT
 #undef DEFINE_DESERIALIZE_FROM_JSON_FLOAT
 
-        template<>
+    template<>
     void ReflectSerializer<bool>::deserializeFromJson(const JsonElement& json, bool& value) {}
 
     template<>
