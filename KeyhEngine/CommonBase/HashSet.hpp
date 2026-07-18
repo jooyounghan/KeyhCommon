@@ -53,7 +53,7 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	HASHSET_CLASS::ConstFindResult HASHSET_CLASS::find(const Key& key, size_t* hashCache) const
+	HASHSET_CLASS::FindResult HASHSET_CLASS::find(const Key& key, size_t* hashCache) const
 	{
 		return findImpl(key, hashCache);
 	}
@@ -83,9 +83,9 @@ namespace keyh
 	}
 
 	HASHSET_TEMPLATE_TYPE
-	HASHSET_CLASS::ConstFindResult HASHSET_CLASS::makeFindResult(const Bucket* bucket, bool found) const
+	HASHSET_CLASS::FindResult HASHSET_CLASS::makeFindResult(const Bucket* bucket, bool found) const
 	{
-		return ConstFindResult(bucket ? &bucket->key() : nullptr, found);
+		return FindResult(bucket ? &bucket->key() : nullptr, found);
 	}
 }
 
