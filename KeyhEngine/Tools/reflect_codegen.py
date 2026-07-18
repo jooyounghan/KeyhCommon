@@ -535,6 +535,29 @@ def main():
 
     output_path = os.path.join(output_dir, output_name)
 
+    # ------------------------------------------------------------------
+    # Up-to-date check: skip generation when the output file already
+    # exists and every relevant input (scanned headers + this script)
+    # was last modified *before* the output was last modified (i.e.
+    # nothing has changed since the last successful generation run).
+    # ------------------------------------------------------------------
+    if os.path.isfile(output_path) and header_files:
+        output_mtime = os.path.getmtime(output_path)
+
+        # Collect mtimes for all inputs, skipping any file that has been
+        # removed between the directory scan and this stat call.
+        input_files = list(header_files) + [os.path.abspath(__file__)]
+        input_mtimes = []
+        for fp in input_files:
+            try:
+                input_mtimes.append(os.path.getmtime(fp))
+            except FileNotFoundError:
+                pass  # File removed between scan and stat; skip it
+
+        if input_mtimes and max(input_mtimes) <= output_mtime:
+            print(f'[Reflect] Up-to-date - {output_path} is newer than all scanned headers; skipping generation.')
+            return
+
     if not all_classes:
         # Write a placeholder so the file always exists for the build system
         with open(output_path, 'w', encoding='utf-8') as f:
