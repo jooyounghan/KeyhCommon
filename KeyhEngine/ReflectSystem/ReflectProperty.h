@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "IReflectProperty.h"
 #include "ReflectPropertyPolicy.h"
 
@@ -31,7 +31,7 @@ namespace keyh
 
 	public:
 		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) override;
-		virtual void deserializeFromJson(const JsonElement& jsonElement, IReflectObject* object) override;
+		virtual void deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) override;
 		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) override;
 		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) override;
 	};

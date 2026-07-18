@@ -1,6 +1,5 @@
 ﻿#include "ReflectSystemPch.h"
 #include "ReflectSerializer.h"
-#include "JsonElement.h"
 
 namespace keyh
 {
@@ -83,39 +82,45 @@ namespace keyh
 #pragma endregion
 
 #pragma region deserializeFromJson
-    // TODO: Implement JSON deserialization for each type in a future step.
-    //       These stubs exist so that ReflectSerializer<T> is fully specialized
-    //       for all built-in types even before deserialization logic is written.
 
-#define DEFINE_DESERIALIZE_FROM_JSON_INT(Type)                                                                        \
-    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonElement& json, Type& value) {}
+#define DEFINE_DESERIALIZE_FROM_JSON_INT(Type)                                                          \
+    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value)    \
+    {                                                                                                   \
+        value = static_cast<Type>(json.getIntValue());                                                   \
+    }
 
-#define DEFINE_DESERIALIZE_FROM_JSON_FLOAT(Type)                                                                    \
-    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonElement& json, Type& value) {}
+#define DEFINE_DESERIALIZE_FROM_JSON_FLOAT(Type)                                                        \
+    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value)    \
+    {                                                                                                   \
+        value = static_cast<Type>(json.getFloatValue());                                                 \
+    }
 
     DEFINE_DESERIALIZE_FROM_JSON_INT(int8)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(int16)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(int32)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(int64)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(uint8)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(uint16)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(uint32)
-        DEFINE_DESERIALIZE_FROM_JSON_INT(uint64)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(int16)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(int32)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(int64)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(uint8)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(uint16)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(uint32)
+    DEFINE_DESERIALIZE_FROM_JSON_INT(uint64)
 
-        DEFINE_DESERIALIZE_FROM_JSON_FLOAT(float)
-        DEFINE_DESERIALIZE_FROM_JSON_FLOAT(double)
+    DEFINE_DESERIALIZE_FROM_JSON_FLOAT(float)
+    DEFINE_DESERIALIZE_FROM_JSON_FLOAT(double)
 
 #undef DEFINE_DESERIALIZE_FROM_JSON_INT
 #undef DEFINE_DESERIALIZE_FROM_JSON_FLOAT
 
     template<>
-    void ReflectSerializer<bool>::deserializeFromJson(const JsonElement& json, bool& value) {}
+    void ReflectSerializer<bool>::deserializeFromJson(const JsonValue& json, bool& value) 
+    {
+        value = json.getBoolValue();
+    }
 
     template<>
-    void ReflectSerializer<StaticStringA>::deserializeFromJson(const JsonElement& json, StaticStringA& value) {}
+    void ReflectSerializer<StaticStringA>::deserializeFromJson(const JsonValue& json, StaticStringA& value) {}
 
     template<>
-    void ReflectSerializer<FlyweightStringA>::deserializeFromJson(const JsonElement& json, FlyweightStringA& value) {}
+    void ReflectSerializer<FlyweightStringA>::deserializeFromJson(const JsonValue& json, FlyweightStringA& value) {}
 
 #pragma endregion
 

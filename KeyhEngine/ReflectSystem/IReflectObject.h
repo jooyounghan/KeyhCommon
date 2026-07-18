@@ -1,8 +1,9 @@
 ﻿#pragma once
-#include "ReflectMetaObject.h"
 
 namespace keyh
 {
+	class ReflectMetaObject;
+
 	class IReflectObject
 	{
 	public:

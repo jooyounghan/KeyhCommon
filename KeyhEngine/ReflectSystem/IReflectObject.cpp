@@ -1,5 +1,6 @@
 ﻿#include "ReflectSystemPch.h"
 #include "IReflectObject.h"
+#include "ReflectMetaObject.h"
 
 namespace keyh
 {

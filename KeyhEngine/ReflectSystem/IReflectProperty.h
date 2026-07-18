@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ReflectionUtil.h"
 #include "ReflectSerializer.h"
 
@@ -29,7 +29,7 @@
 namespace keyh
 {
 	class IReflectObject;
-	class JsonElement;
+	class JsonValue;
 
 	class IReflectProperty
 	{
@@ -52,7 +52,7 @@ namespace keyh
 
 	public:
 		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) = 0;
-		virtual void deserializeFromJson(const JsonElement& jsonElement, IReflectObject* object) = 0;
+		virtual void deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) = 0;
 		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) = 0;
 		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) = 0;
 	};

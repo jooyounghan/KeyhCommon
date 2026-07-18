@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "JsonUtil.h"
 #include "Span.h"
 

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "IReflectObject.h"
+#include "ReflectMetaObject.h"
 
 // Expands to "ClassName : public keyh::ReflectObject<ClassName>".
 // Usage:  class REFLECTIVE(MyClass) { ... };
