@@ -5,7 +5,7 @@ namespace keyh
 	template<typename T>
 	bool ReflectPropertyPolicy<T>::isEqual(const T& a, const T& b)
 	{
-		return a == b;
+		return ReflectSerializer<T>::isEqual(a, b);
 	}
 
 	template<typename T>
@@ -38,18 +38,16 @@ namespace keyh
 	bool ReflectPropertyPolicy<Vector<ElementType>>::isEqual(const Vector<ElementType>& a, const Vector<ElementType>& b)
 	{
 		if (a.size() != b.size())
-		{
 			return false;
-		}
+
 		for (size_t i = 0; i < a.size(); ++i)
 		{
-			if (!ReflectPropertyPolicy<ElementType>::isEqual(a[i], b[i]))
-			{
+			if (ReflectPropertyPolicy<ElementType>::isEqual(a[i], b[i]) == false)
 				return false;
-			}
 		}
 		return true;
 	}
+
 	template<typename ElementType>
 	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToJson(IBuffer* buffer, const Vector<ElementType>& value)
 	{}

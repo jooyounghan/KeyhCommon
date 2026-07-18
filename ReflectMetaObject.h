@@ -17,6 +17,7 @@ namespace keyh
 
 	public:
 		IReflectProperty* findProperty(const FlyweightStringA& propertyName);
+		inline const OwnerVector<IReflectProperty>& getReflectProperties() const { return _properties; }
 
 	public:
 		template<typename ObjectType, typename PropertyType>

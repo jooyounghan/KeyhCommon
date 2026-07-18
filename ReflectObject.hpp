@@ -9,7 +9,7 @@
 	template<typename ObjectType>
 	ReflectMetaObject ReflectObject<ObjectType>::initializeMetaObject()
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(ReflectMetaObject<ObjectType>);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
 	}
 
 	template<typename ObjectType>

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ReflectMetaObject.h"
 
 namespace keyh
@@ -18,6 +18,8 @@ namespace keyh
 
 	public:
 		inline const FlyweightStringA& getObjectName() const { return _objectName; }
-
+		
+	public:
+		bool isEqual(const IReflectObject* other) const;
 	};
 }
