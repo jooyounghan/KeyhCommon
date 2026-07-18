@@ -1,4 +1,4 @@
-#include "test.h"
+﻿#include "test.h"
 
 #include "StaticStringTest.h"
 #include "RefPtrTest.h"
@@ -7,6 +7,9 @@
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
 #include "JsonTest.h"
+
+#include <iostream>
+
 int g_pass = 0;
 int g_fail = 0;
 
@@ -42,16 +45,25 @@ int main()
     //test_StaticBuffer_basic();
     //test_DynamicBuffer_allocate_and_grow();
 
-    test_Json_parse_test_file();
-    test_Json_traverse_root_object();
-    test_Json_traverse_array();
-    test_Json_traverse_nested_value();
-    test_Json_traverse_empty_containers();
-    test_Json_float_value_access();
-    benchmark_Json_parse_speed();
-    benchmark_Json_traversal_speed();
+    //test_Json_parse_test_file();
+    //test_Json_traverse_root_object();
+    //test_Json_traverse_array();
+    //test_Json_traverse_nested_value();
+    //test_Json_traverse_empty_containers();
+    //test_Json_float_value_access();
+    //benchmark_Json_parse_speed();
+    //benchmark_Json_traversal_speed();
 
-    printSummary();
+    //printSummary();
 
+
+    TestObject testObject;
+    const Vector<IReflectProperty*>& properties = testObject.getMetaObject().getProperties();
+    for (const auto& property : properties) 
+    {
+        std::cout << "Property Name: " << property->getPropertyName().c_str() << std::endl;
+		std::cout << "Group Name: " << property->getGroupName().c_str() << std::endl;
+		std::cout << "------------------------" << std::endl;
+	};
     return g_fail == 0 ? 0 : 1;
 }

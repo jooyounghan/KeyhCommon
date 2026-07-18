@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename ObjectType, typename PropertyType>
 	void ReflectMetaObject::addReflectProperty(

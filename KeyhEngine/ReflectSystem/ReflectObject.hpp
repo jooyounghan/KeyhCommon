@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename ObjectType>
 	ReflectObject<ObjectType>::ReflectObject(const FlyweightStringA& objectName)
@@ -13,7 +13,7 @@ namespace keyh
 	}
 
 	template<typename ObjectType>
-	const ReflectMetaObject& keyh::ReflectObject<ObjectType>::getMetaObject() const
+	const ReflectMetaObject& ReflectObject<ObjectType>::getMetaObject() const
 	{
 		static ReflectMetaObject metaObject = initializeMetaObject();
 		return metaObject;

@@ -1,8 +1,7 @@
+﻿#include "ReflectPropertyPolicy.h"
 namespace keyh
 {
-	// Default isEqual: delegates to operator==.
-	// Works for all arithmetic types, StaticStringA, and FlyweightStringA.
-	// Specialize ReflectPropertyPolicy<T>::isEqual for custom comparison semantics.
+#pragma region Base
 	template<typename T>
 	bool ReflectPropertyPolicy<T>::isEqual(const T& a, const T& b)
 	{
@@ -12,56 +11,83 @@ namespace keyh
 	template<typename T>
 	void ReflectPropertyPolicy<T>::serializeToJson(IBuffer* buffer, const T& value)
 	{
-		static_assert(sizeof(T) == 0,
-			"ReflectPropertyPolicy<T>::serializeToJson is not implemented for this type. "
-			"Specialize ReflectPropertyPolicy<T> to add JSON serialization support.");
+		return ReflectSerializer<T>::serializeToJson(buffer, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::deserializeFromJson(const JsonElement& json, T& value)
 	{
-		static_assert(sizeof(T) == 0,
-			"ReflectPropertyPolicy<T>::deserializeFromJson is not implemented for this type. "
-			"Specialize ReflectPropertyPolicy<T> to add JSON deserialization support.");
+		return ReflectSerializer<T>::deserializeFromJson(json, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::serializeToBinary(IBuffer* buffer, const T& value)
 	{
-		static_assert(sizeof(T) == 0,
-			"ReflectPropertyPolicy<T>::serializeToBinary is not implemented for this type. "
-			"Specialize ReflectPropertyPolicy<T> to add binary serialization support.");
+		return ReflectSerializer<T>::serializeToBinary(buffer, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::deserializeFromBinary(const void* data, size_t size, T& value)
 	{
-		static_assert(sizeof(T) == 0,
-			"ReflectPropertyPolicy<T>::deserializeFromBinary is not implemented for this type. "
-			"Specialize ReflectPropertyPolicy<T> to add binary deserialization support.");
+		return ReflectSerializer<T>::deserializeFromBinary(data, size, value);
 	}
+#pragma endregion
 
-// Declares explicit specializations for a built-in type.
-// The definitions live in ReflectPropertyPolicy.cpp.
-#define DECLARE_REFLECT_PROPERTY_POLICY(Type)																		\
-	template<> void ReflectPropertyPolicy<Type>::serializeToJson(IBuffer* buffer, const Type& value);				\
-	template<> void ReflectPropertyPolicy<Type>::deserializeFromJson(const JsonElement& json, Type& value);			\
-	template<> void ReflectPropertyPolicy<Type>::serializeToBinary(IBuffer* buffer, const Type& value);				\
-	template<> void ReflectPropertyPolicy<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
+#pragma region Vector Policy
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<Vector<ElementType>>::isEqual(const Vector<ElementType>& a, const Vector<ElementType>& b)
+	{
+		if (a.size() != b.size())
+		{
+			return false;
+		}
+		for (size_t i = 0; i < a.size(); ++i)
+		{
+			if (!ReflectPropertyPolicy<ElementType>::isEqual(a[i], b[i]))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToJson(IBuffer* buffer, const Vector<ElementType>& value)
+	{}
+	
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromJson(const JsonElement & json, Vector<ElementType>&value)
+	{}
+	
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToBinary(IBuffer * buffer, const Vector<ElementType>&value)
+	{}
+	template<typename ElementType>
+	
+	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromBinary(const void* data, size_t size, Vector<ElementType>&value)
+	{}
+#pragma endregion
 
-	DECLARE_REFLECT_PROPERTY_POLICY(int8)
-	DECLARE_REFLECT_PROPERTY_POLICY(int16)
-	DECLARE_REFLECT_PROPERTY_POLICY(int32)
-	DECLARE_REFLECT_PROPERTY_POLICY(int64)
-	DECLARE_REFLECT_PROPERTY_POLICY(uint8)
-	DECLARE_REFLECT_PROPERTY_POLICY(uint16)
-	DECLARE_REFLECT_PROPERTY_POLICY(uint32)
-	DECLARE_REFLECT_PROPERTY_POLICY(uint64)
-	DECLARE_REFLECT_PROPERTY_POLICY(float)
-	DECLARE_REFLECT_PROPERTY_POLICY(double)
-	DECLARE_REFLECT_PROPERTY_POLICY(bool)
-	DECLARE_REFLECT_PROPERTY_POLICY(StaticStringA)
-	DECLARE_REFLECT_PROPERTY_POLICY(FlyweightStringA)
-
-#undef DECLARE_REFLECT_PROPERTY_POLICY
+#pragma region HashMap Policy
+	template<typename KeyType, typename ValueType, typename Hasher>
+	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
+	{
+		return false;
+	}
+	
+	template<typename KeyType, typename ValueType, typename Hasher>
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
+	{}
+	
+	template<typename KeyType, typename ValueType, typename Hasher>
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonElement& json, HashMap<KeyType, ValueType, Hasher>& value)
+	{}
+	
+	template<typename KeyType, typename ValueType, typename Hasher>
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToBinary(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
+	{}
+	
+	template<typename KeyType, typename ValueType, typename Hasher>
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromBinary(const void* data, size_t size, HashMap<KeyType, ValueType, Hasher>& value)
+	{}
+#pragma endregion
 }
