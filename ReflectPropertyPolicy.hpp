@@ -1,5 +1,4 @@
-﻿#include "ReflectPropertyPolicy.h"
-namespace keyh
+﻿namespace keyh
 {
 #pragma region Base
 	template<typename T>
@@ -15,7 +14,7 @@ namespace keyh
 	}
 
 	template<typename T>
-	void ReflectPropertyPolicy<T>::deserializeFromJson(const JsonElement& json, T& value)
+	void ReflectPropertyPolicy<T>::deserializeFromJson(const JsonValue& json, T& value)
 	{
 		return ReflectSerializer<T>::deserializeFromJson(json, value);
 	}
@@ -53,7 +52,7 @@ namespace keyh
 	{}
 	
 	template<typename ElementType>
-	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromJson(const JsonElement & json, Vector<ElementType>&value)
+	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromJson(const JsonValue& json, Vector<ElementType>&value)
 	{}
 	
 	template<typename ElementType>
@@ -77,7 +76,7 @@ namespace keyh
 	{}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
-	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonElement& json, HashMap<KeyType, ValueType, Hasher>& value)
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value)
 	{}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>

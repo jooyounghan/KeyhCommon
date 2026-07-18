@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename ObjectType, typename ValueType>
 	ReflectProperty<ObjectType, ValueType>::ReflectProperty(
@@ -44,9 +44,9 @@ namespace keyh
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonElement& jsonElement, IReflectObject* object)
+	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object)
 	{
-		ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonElement, getValueRef(object));
+		ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonValue, getValueRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>

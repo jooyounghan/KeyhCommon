@@ -13,7 +13,7 @@
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectSerializer<T, IsReflectObject>::deserializeFromJson(const JsonElement& json, T& value)
+    void ReflectSerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
@@ -34,7 +34,7 @@
 #define DECLARE_REFLECT_PROPERTY_SERIALIZER(Type)                                                                   \
     template<> bool ReflectSerializer<Type>::isEqual(const Type& a, const Type& b);                                 \
     template<> void ReflectSerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value);                   \
-    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonElement& json, Type& value);             \
+    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value);             \
     template<> void ReflectSerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
     template<> void ReflectSerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
 
@@ -99,23 +99,26 @@
     }
 
     template<typename T>
-    void ReflectSerializer<T, true>::deserializeFromJson(const JsonElement& json, T& value)
+    void ReflectSerializer<T, true>::deserializeFromJson(const JsonValue& json, T& value)
     {
-        JsonValue jsonValue(json.getContext(json.getIndex()), json.getIndex());
-        JsonObject jsonObject = jsonValue.getObjectValue();
-        const Vector<Ptr<IReflectProperty>>& properties = value.getMetaObject().getReflectProperties();
+		const ReflectMetaObject& metaObject = value.getMetaObject();
+        JsonObject jsonObject = json.getObjectValue();
+
+        if (jsonObject.isValid() == false)
+        {
+			KEYH_ASSERT(false, "JSON value is not an object.");
+            return;
+        }
+
         for (JsonKey jsonKey = jsonObject.getFirstKey(); jsonKey.isValid(); jsonKey = jsonObject.getNextKey(jsonKey))
         {
             const StringViewA keyName = jsonKey.getKeyName();
-            for (size_t i = 0; i < properties.size(); ++i)
-            {
-                IReflectProperty* property = properties[i].get();
-                if (property == nullptr || property->getPropertyName().getStringView() != keyName)
-                    continue;
 
-                property->deserializeFromJson(jsonKey.getValue(), &value);
-                break;
-            }
+			IReflectProperty* property = metaObject.findProperty(keyName);
+			if (property == nullptr)
+				continue;
+
+			property->deserializeFromJson(jsonKey.getValue(), &value);
         }
     }
 
