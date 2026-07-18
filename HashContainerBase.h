@@ -322,6 +322,10 @@ namespace keyh
 		template<typename Key>
 		auto findImpl(const Key& key, size_t* hashCache = nullptr) const;
 
+	private:
+		template<typename Self, typename Key>
+		static auto findImplInternal(Self* self, const Key& key, size_t* hashCache);
+
 	protected:
 		void rehashIfNeeded();
 		void rehash(size_t newCapacity);
