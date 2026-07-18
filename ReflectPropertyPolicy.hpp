@@ -1,4 +1,5 @@
-﻿namespace keyh
+﻿
+namespace keyh
 {
 #pragma region Base
 	template<typename T>

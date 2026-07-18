@@ -38,25 +38,25 @@
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::serializeToJson(IBuffer* buffer, const IReflectObject* object)
+	void ReflectProperty<ObjectType, ValueType>::serializeToJson(IBuffer* buffer, const IReflectObject* object) const
 	{
 		ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, getValueConstRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object)
+	void ReflectProperty<ObjectType, ValueType>::deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) const
 	{
 		ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonValue, getValueRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::serializeToBinary(IBuffer* buffer, const IReflectObject* object)
+	void ReflectProperty<ObjectType, ValueType>::serializeToBinary(IBuffer* buffer, const IReflectObject* object) const
 	{
 		ReflectPropertyPolicy<ValueType>::serializeToBinary(buffer, getValueConstRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::deserializeFromBinary(const void* data, size_t size, IReflectObject* object)
+	void ReflectProperty<ObjectType, ValueType>::deserializeFromBinary(const void* data, size_t size, IReflectObject* object) const
 	{
 		ReflectPropertyPolicy<ValueType>::deserializeFromBinary(data, size, getValueRef(object));
 	}

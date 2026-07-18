@@ -3,11 +3,11 @@
 
 namespace keyh
 {
-	IReflectProperty* ReflectMetaObject::findProperty(const FlyweightStringA& propertyName)
+	const IReflectProperty* ReflectMetaObject::findProperty(const FlyweightStringA& propertyName) const
 	{
 		using FindResult = HashMap<FlyweightStringA, IReflectProperty*>::FindResult;
 		FindResult findResult = _propertyMap.find(propertyName);
 
-		return findResult.isFound() ? findResult.value() : nullptr;
+		return findResult.isFound() ? *findResult.value() : nullptr;
 	}
 }
