@@ -102,6 +102,7 @@ namespace keyh
 		void swap(Vector& other) noexcept;
 
 	public:
+		inline T* data() { return static_cast<T*>(_data); }
 		inline const T* data() const { return static_cast<const T*>(_data); }
 		inline size_t size() const { return _size; }
 		inline size_t capacity() const { return _capacity; }

@@ -303,6 +303,8 @@
     <ClInclude Include="TypeTraitCommon.hpp" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="Vector.hpp" />
+    <ClInclude Include="OwnerVector.h" />
+    <ClInclude Include="OwnerVector.hpp" />
     <ClInclude Include="WeakPtr.h" />
     <ClInclude Include="WeakPtr.hpp" />
   </ItemGroup>
@@ -351,6 +353,7 @@
     <ClCompile Include="TypeCommon.cpp" />
     <ClCompile Include="TypeTraitCommon.cpp" />
     <ClCompile Include="Vector.cpp" />
+    <ClCompile Include="OwnerVector.cpp" />
     <ClCompile Include="WeakPtr.cpp" />
   </ItemGroup>
   <ItemGroup>
