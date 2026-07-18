@@ -1,5 +1,4 @@
-﻿
-namespace keyh
+﻿namespace keyh
 {
 #pragma region Base
 	template<typename T>
@@ -50,11 +49,28 @@ namespace keyh
 
 	template<typename ElementType>
 	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToJson(IBuffer* buffer, const Vector<ElementType>& value)
-	{}
+	{
+		buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+		for (size_t i = 0; i < value.size(); ++i)
+		{
+			if (i > 0)
+				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+
+			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, value[i]);
+		}
+		buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
+	}
 	
 	template<typename ElementType>
 	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromJson(const JsonValue& json, Vector<ElementType>&value)
-	{}
+	{
+		JsonArray jsonArray = json.getArrayValue();
+		for (JsonValue jsonValue = jsonArray.getFirstValue(); jsonValue.isValid(); jsonValue = jsonArray.getNextValue(jsonValue))
+		{
+			ElementType& element = value.push_back(ElementType());
+			ReflectPropertyPolicy<ElementType>::deserializeFromJson(jsonValue, element);
+		}
+	}
 	
 	template<typename ElementType>
 	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToBinary(IBuffer * buffer, const Vector<ElementType>&value)

@@ -4,7 +4,6 @@
 namespace keyh
 {
 	class IBuffer;
-	class JsonValue;
 
 #pragma region Base Policy
 	template<typename T>

@@ -117,10 +117,18 @@ namespace keyh
     }
 
     template<>
-    void ReflectSerializer<StaticStringA>::deserializeFromJson(const JsonValue& json, StaticStringA& value) {}
+    void ReflectSerializer<StaticStringA>::deserializeFromJson(const JsonValue& json, StaticStringA& value) 
+    {
+        StringViewA stringView = json.getStringValue();
+        value = StaticStringA(stringView.c_str(), stringView.length());
+    }
 
     template<>
-    void ReflectSerializer<FlyweightStringA>::deserializeFromJson(const JsonValue& json, FlyweightStringA& value) {}
+    void ReflectSerializer<FlyweightStringA>::deserializeFromJson(const JsonValue& json, FlyweightStringA& value) 
+    {
+        StringViewA stringView = json.getStringValue();
+        value = FlyweightStringA(stringView);
+    }
 
 #pragma endregion
 
