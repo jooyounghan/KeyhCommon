@@ -9,8 +9,7 @@
 		, ReflectConstGetter<ObjectType, PropertyType> constGetter
 	)
 	{
-		Ptr<IReflectProperty> property = makePtr<ReflectProperty<ObjectType, PropertyType>>(propertyName, groupName, defaultValue, refGetter, constGetter);
-		_properties.push_back(keyh::move(property));
-		_propertyMap.insert(propertyName, property.get());
+		IReflectProperty* property = _properties.emplace_back<ReflectProperty<ObjectType, PropertyType>>(propertyName, groupName, defaultValue, refGetter, constGetter);
+		_propertyMap.insert(propertyName, property);
 	}
 }

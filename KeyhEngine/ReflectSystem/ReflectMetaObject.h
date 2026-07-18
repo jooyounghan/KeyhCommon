@@ -12,7 +12,7 @@ namespace keyh
 		ReflectMetaObject() = default;
 		
 	protected:
-		Vector<Ptr<IReflectProperty>>					_properties;
+		OwnerVector<IReflectProperty>					_properties;
 		HashMap<FlyweightStringA, IReflectProperty*>	_propertyMap;
 
 	public:
