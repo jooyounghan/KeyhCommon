@@ -1,5 +1,4 @@
-﻿#include "ReflectSerializer.h"
-namespace keyh
+﻿namespace keyh
 {
     template<typename T, bool IsReflectObject>
     bool ReflectSerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
@@ -65,13 +64,59 @@ namespace keyh
     template<typename T>
     void ReflectSerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value)
     {
-		const IReflectObject* reflectObject = static_cast<const IReflectObject*>(&value);
+        constexpr char kObjectBegin = '{';
+        constexpr char kObjectEnd = '}';
+        constexpr char kDelimiter = ',';
+        constexpr char kQuote = '"';
+        constexpr char kValueBegin = ':';
+
+        const IReflectObject* reflectObject = static_cast<const IReflectObject*>(&value);
+
+        buffer->writeBytes(&kObjectBegin, 1);
+
+		const ReflectMetaObject& metaObject = reflectObject->getMetaObject();
+        const OwnerVector<IReflectProperty>& properties = metaObject.getReflectProperties();
+
+        bool isFirst = true;
+		for (const IReflectProperty* property : properties)
+		{
+			if (property == nullptr)
+				continue;
+
+            if (isFirst == false)
+				buffer->writeBytes(&kDelimiter, 1);
+			
+            isFirst = false;
+			const FlyweightStringA& propertyName = property->getPropertyName();
+			buffer->writeBytes(&kQuote, 1);
+			buffer->writeBytes(propertyName.c_str(), propertyName.size());
+			buffer->writeBytes(&kQuote, 1);
+			buffer->writeBytes(&kValueBegin, 1);
+			property->serializeToJson(buffer, reflectObject);
+		}
+
+        buffer->writeBytes(&kObjectEnd, 1);
     }
 
     template<typename T>
     void ReflectSerializer<T, true>::deserializeFromJson(const JsonElement& json, T& value)
     {
+        JsonValue jsonValue(json.getContext(json.getIndex()), json.getIndex());
+        JsonObject jsonObject = jsonValue.getObjectValue();
+        const Vector<Ptr<IReflectProperty>>& properties = value.getMetaObject().getReflectProperties();
+        for (JsonKey jsonKey = jsonObject.getFirstKey(); jsonKey.isValid(); jsonKey = jsonObject.getNextKey(jsonKey))
+        {
+            const StringViewA keyName = jsonKey.getKeyName();
+            for (size_t i = 0; i < properties.size(); ++i)
+            {
+                IReflectProperty* property = properties[i].get();
+                if (property == nullptr || property->getPropertyName().getStringView() != keyName)
+                    continue;
 
+                property->deserializeFromJson(jsonKey.getValue(), &value);
+                break;
+            }
+        }
     }
 
     template<typename T>
