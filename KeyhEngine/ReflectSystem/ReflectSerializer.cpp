@@ -5,6 +5,23 @@
 namespace keyh
 {
 
+#define DEFINE_IS_EQUAL(Type)                                                                                       \
+    template<> bool ReflectSerializer<Type>::isEqual(const Type& a, const Type& b) { return a == b; }
+	DEFINE_IS_EQUAL(int8)
+    DEFINE_IS_EQUAL(int16)
+    DEFINE_IS_EQUAL(int32)
+    DEFINE_IS_EQUAL(int64)
+    DEFINE_IS_EQUAL(uint8)
+    DEFINE_IS_EQUAL(uint16)
+    DEFINE_IS_EQUAL(uint32)
+    DEFINE_IS_EQUAL(uint64)
+    DEFINE_IS_EQUAL(float)
+    DEFINE_IS_EQUAL(double)
+    DEFINE_IS_EQUAL(bool)
+    DEFINE_IS_EQUAL(StaticStringA)
+    DEFINE_IS_EQUAL(FlyweightStringA)
+#undef DEFINE_IS_EQUAL
+
 #pragma region serializeToJson
 
 #define DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(Type)                                                                \
@@ -25,16 +42,16 @@ namespace keyh
     }
 
     DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int8)
-        DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int16)
-        DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int32)
-        DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int64)
-        DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint8)
-        DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint16)
-        DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint32)
-        DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint64)
+    DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int16)
+    DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int32)
+    DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(int64)
+    DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint8)
+    DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint16)
+    DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint32)
+    DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(uint64)
 
-        DEFINE_SERIALIZE_TO_JSON_FLOAT(float)
-        DEFINE_SERIALIZE_TO_JSON_FLOAT(double)
+    DEFINE_SERIALIZE_TO_JSON_FLOAT(float)
+    DEFINE_SERIALIZE_TO_JSON_FLOAT(double)
 
 #undef DEFINE_SERIALIZE_TO_JSON_SIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT

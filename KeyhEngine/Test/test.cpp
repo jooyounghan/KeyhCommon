@@ -58,11 +58,12 @@ int main()
 
 
     TestObject testObject;
-    const Vector<IReflectProperty*>& properties = testObject.getMetaObject().getProperties();
-    for (const auto& property : properties) 
+    const OwnerVector<IReflectProperty>& properties = testObject.getMetaObject().getReflectProperties();
+    for (const IReflectProperty* property : properties) 
     {
+        static const char* empty = "";
         std::cout << "Property Name: " << property->getPropertyName().c_str() << std::endl;
-		std::cout << "Group Name: " << property->getGroupName().c_str() << std::endl;
+        std::cout << "Group Name: " << (property->getGroupName().c_str() ? property->getGroupName().c_str() : empty) << std::endl;
 		std::cout << "------------------------" << std::endl;
 	};
     return g_fail == 0 ? 0 : 1;

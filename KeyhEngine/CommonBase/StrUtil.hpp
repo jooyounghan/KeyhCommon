@@ -1,15 +1,15 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename T>
 	size_t StrUtil::strlen(const T* str)
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(StrUtil::strlen<T>);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
 	}
 
 	template<typename T>
 	int StrUtil::strcmp(const T* lhs, const T* rhs)
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(StrUtil::strcmp<T>);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
 	}
 
 	template<>

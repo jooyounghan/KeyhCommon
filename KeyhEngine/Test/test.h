@@ -3,6 +3,14 @@
 
 namespace keyh
 {
+    class REFLECTIVE(TestSubObject)
+    {
+        KEYH_REFLECT_BODY(TestSubObject)
+    protected:
+        KEYH_REFLECT_PROPERTY(PropertyName = "Names")
+            Vector<StaticStringA> _names;
+    };
+
     class REFLECTIVE(TestObject)
     {
         KEYH_REFLECT_BODY(TestObject)
@@ -19,6 +27,9 @@ namespace keyh
 
         KEYH_REFLECT_PROPERTY(PropertyName="Names")
 		Vector<StaticStringA> _names;
+
+		KEYH_REFLECT_PROPERTY(PropertyName = "SubObject")
+		TestSubObject _subObject;
     };
 }
 #include "reflect_generated.inl"
