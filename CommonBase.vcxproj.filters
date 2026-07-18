@@ -129,6 +129,12 @@
     <ClInclude Include="Vector.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
+    <ClInclude Include="OwnerVector.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="OwnerVector.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
     <ClInclude Include="HashMap.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
@@ -302,6 +308,9 @@
       <Filter>소스 파일\Util</Filter>
     </ClCompile>
     <ClCompile Include="Vector.cpp">
+      <Filter>소스 파일\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="OwnerVector.cpp">
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
     <ClCompile Include="HashMap.cpp">

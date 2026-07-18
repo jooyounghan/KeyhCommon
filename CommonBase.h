@@ -30,5 +30,6 @@
 
 #include "HashMap.h"
 #include "Vector.h"
+#include "OwnerVector.h"
 
 #include "IBuffer.h"
