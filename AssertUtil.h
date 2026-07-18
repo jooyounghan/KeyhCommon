@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstdlib>
 #include <cstdio>
 
@@ -20,11 +20,10 @@
 #define FUNC_NAME __func__
 #endif
 
-#define STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(ClassName)	\
-	static_assert(false,								\
-		#ClassName										\
-		" does not support for this template type."		\
-		" Triggered in: " FUNC_NAME						\
+#define STATIC_ASSERT_FUNCTION_NOT_SUPPORTED()	\
+	static_assert(false,	\
+		"Function does not support for this template type."	\
+		" Triggered in: " FUNC_NAME	\
 	)
 
 namespace keyh

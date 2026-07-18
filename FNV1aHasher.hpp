@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename Key>
 	size_t FNV1aHasher::hash(const Key& key) noexcept
@@ -33,6 +33,6 @@ namespace keyh
 	template<typename T>
 	size_t FNV1aHash<T>::operator()(const T& value) const noexcept
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(FNV1aHash<T>);
+		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
 	}
 }

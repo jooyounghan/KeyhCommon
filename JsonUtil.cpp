@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "JsonUtil.h"
 
 namespace keyh
@@ -20,7 +20,7 @@ namespace keyh
     template<typename T>
     T JsonUtil::TapeElement::parse() const
     {
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(JsonUtil::TapeElement<T>);
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
 	StringViewA JsonUtil::TapeElement::parse(const char* jsonString) const
