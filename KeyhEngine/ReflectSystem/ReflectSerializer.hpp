@@ -92,6 +92,7 @@
 			buffer->writeBytes(propertyName.c_str(), propertyName.size());
 			buffer->writeBytes(&kQuote, 1);
 			buffer->writeBytes(&kValueBegin, 1);
+
 			property->serializeToJson(buffer, reflectObject);
 		}
 
@@ -114,7 +115,7 @@
         {
             const StringViewA keyName = jsonKey.getKeyName();
 
-			IReflectProperty* property = metaObject.findProperty(keyName);
+			const IReflectProperty* property = metaObject.findProperty(keyName);
 			if (property == nullptr)
 				continue;
 

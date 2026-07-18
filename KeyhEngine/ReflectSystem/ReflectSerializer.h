@@ -1,5 +1,8 @@
 ﻿#pragma once
 #include "ReflectionUtil.h"
+#include "IReflectObject.h"
+#include "ReflectMetaObject.h"
+#include "IReflectProperty.h"
 #include "JsonElement.h"
 
 namespace keyh
@@ -28,7 +31,4 @@ namespace keyh
 	};
 }
 
-#include "IReflectObject.h"
-#include "ReflectMetaObject.h"
-#include "IReflectProperty.h"
 #include "ReflectSerializer.hpp"

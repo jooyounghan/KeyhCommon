@@ -50,9 +50,9 @@ namespace keyh
 		virtual bool isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const = 0;
 
 	public:
-		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) = 0;
-		virtual void deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) = 0;
-		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) = 0;
-		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) = 0;
+		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) const = 0;
+		virtual void deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) const = 0;
+		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) const = 0;
+		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) const = 0;
 	};
 }
