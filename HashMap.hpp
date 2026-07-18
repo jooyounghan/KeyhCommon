@@ -53,6 +53,12 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::ConstFindResult HASHMAP_CLASS::find(const Key& key, size_t* hashCache) const
+	{
+		return findImpl(key, hashCache);
+	}
+
+	HASHMAP_TEMPLATE_TYPE
 	bool HASHMAP_CLASS::remove(const Key& key, size_t* hashCache)
 	{
 		return removeImpl(key, hashCache);
@@ -68,6 +74,12 @@ namespace keyh
 	HASHMAP_CLASS::FindResult HASHMAP_CLASS::makeFindResult(Bucket* bucket, bool found)
 	{
 		return FindResult(bucket ? &bucket->value() : nullptr, found);
+	}
+
+	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::ConstFindResult HASHMAP_CLASS::makeFindResult(const Bucket* bucket, bool found) const
+	{
+		return ConstFindResult(bucket ? &bucket->value() : nullptr, found);
 	}
 }
 
