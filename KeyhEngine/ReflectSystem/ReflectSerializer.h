@@ -1,6 +1,7 @@
 ﻿#pragma once
-#include "ReflectObject.h"
+#include "ReflectionUtil.h"
 #include "JsonElement.h"
+
 namespace keyh
 {
 	class IBuffer;
@@ -26,4 +27,8 @@ namespace keyh
 		static void deserializeFromBinary(const void* data, size_t size, T& value);
 	};
 }
+
+#include "IReflectObject.h"
+#include "ReflectMetaObject.h"
+#include "IReflectProperty.h"
 #include "ReflectSerializer.hpp"
