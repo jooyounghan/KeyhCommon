@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "ReflectionUtil.h"
-#include "ReflectSerializer.h"
 
 // Marker macro placed before a member variable to register it as a reflected property.
 // Accepts optional key=value pairs parsed by the reflection code generator:
