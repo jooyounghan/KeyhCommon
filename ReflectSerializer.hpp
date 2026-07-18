@@ -1,62 +1,24 @@
-namespace keyh
+﻿namespace keyh
 {
-	template<typename T>
-	void ReflectSerializer::serializeToBuffer(const T& object, IBuffer* buffer)
-	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
-	}
+#define DECLARE_REFLECT_PROPERTY_SERIALIZER(Type)                                                                   \
+    template<> void ReflectSerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value);                   \
+    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonElement& json, Type& value);             \
+    template<> void ReflectSerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
+    template<> void ReflectSerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
 
-	template<typename T>
-	void ReflectSerializer::deserializeFromBuffer(const void* buffer, T& object)
-	{
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED(T);
-	}
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(int8)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(int16)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(int32)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(int64)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(uint8)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(uint16)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(uint32)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(uint64)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(float)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(double)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(bool)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(StaticStringA)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(FlyweightStringA)
 
-#pragma region serializeToBuffer
-#define DECLARE_SERIALIZE_TO_BUFFER(Type) \
-	template <> \
-	void ReflectSerializer::serializeToBuffer<Type>(const Type& object, IBuffer* buffer)
-
-	DECLARE_SERIALIZE_TO_BUFFER(int8);
-	DECLARE_SERIALIZE_TO_BUFFER(int16);
-	DECLARE_SERIALIZE_TO_BUFFER(int32);
-	DECLARE_SERIALIZE_TO_BUFFER(int64);
-	DECLARE_SERIALIZE_TO_BUFFER(uint8);
-	DECLARE_SERIALIZE_TO_BUFFER(uint16);
-	DECLARE_SERIALIZE_TO_BUFFER(uint32);
-	DECLARE_SERIALIZE_TO_BUFFER(uint64);
-
-	DECLARE_SERIALIZE_TO_BUFFER(float);
-	DECLARE_SERIALIZE_TO_BUFFER(double);
-
-	DECLARE_SERIALIZE_TO_BUFFER(bool);
-	DECLARE_SERIALIZE_TO_BUFFER(StaticStringA);
-	DECLARE_SERIALIZE_TO_BUFFER(FlyweightStringA);
-
-#undef DECLARE_SERIALIZE_TO_BUFFER
-#pragma endregion
-
-#pragma region deserializeFromBuffer
-#define DECLARE_DESERIALIZE_TO_BUFFER(Type) \
-	template <> \
-	void ReflectSerializer::deserializeFromBuffer<Type>(const void* buffer, Type& object)
-
-	DECLARE_DESERIALIZE_TO_BUFFER(int8);
-	DECLARE_DESERIALIZE_TO_BUFFER(int16);
-	DECLARE_DESERIALIZE_TO_BUFFER(int32);
-	DECLARE_DESERIALIZE_TO_BUFFER(int64);
-	DECLARE_DESERIALIZE_TO_BUFFER(uint8);
-	DECLARE_DESERIALIZE_TO_BUFFER(uint16);
-	DECLARE_DESERIALIZE_TO_BUFFER(uint32);
-	DECLARE_DESERIALIZE_TO_BUFFER(uint64);
-
-	DECLARE_DESERIALIZE_TO_BUFFER(float);
-	DECLARE_DESERIALIZE_TO_BUFFER(double);
-
-	DECLARE_DESERIALIZE_TO_BUFFER(bool);
-	DECLARE_DESERIALIZE_TO_BUFFER(StaticStringA);
-	DECLARE_DESERIALIZE_TO_BUFFER(FlyweightStringA);
-
-#undef DECLARE_DESERIALIZE_TO_BUFFER
-#pragma endregion
+#undef DECLARE_REFLECT_PROPERTY_POLICY
 }

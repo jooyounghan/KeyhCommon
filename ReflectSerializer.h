@@ -1,16 +1,16 @@
-#pragma once
+﻿#pragma once
 namespace keyh
 {
 	class IBuffer;
+	class JsonElement;
 
-	class ReflectSerializer
+	template<typename T>
+	struct ReflectSerializer
 	{
-	public:
-		template<typename T>
-		static void serializeToBuffer(const T& object, IBuffer* buffer);
-
-		template<typename T>
-		static void deserializeFromBuffer(const void* buffer, T& object);
+		static void serializeToJson(IBuffer* buffer, const T& value);
+		static void deserializeFromJson(const JsonElement& json, T& value);
+		static void serializeToBinary(IBuffer* buffer, const T& value);
+		static void deserializeFromBinary(const void* data, size_t size, T& value);
 	};
 }
 #include "ReflectSerializer.hpp"
