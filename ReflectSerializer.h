@@ -12,5 +12,3 @@ namespace keyh
 		static void deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject);
 	};
 }
-
-#include "ReflectSerializer.hpp"
