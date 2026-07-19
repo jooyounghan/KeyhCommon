@@ -33,3 +33,5 @@
 #include "OwnerVector.h"
 
 #include "IBuffer.h"
+
+#include "File.h"
