@@ -1,42 +1,42 @@
 ﻿namespace keyh
 {
     template<typename T, bool IsReflectObject>
-    bool ReflectSerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
+    bool ReflectPropertySerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectSerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectSerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
+    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectSerializer<T, IsReflectObject>::serializeToBinary(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, IsReflectObject>::serializeToBinary(IBuffer* buffer, const T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectSerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
+    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
 
 #define DECLARE_REFLECT_PROPERTY_SERIALIZER(Type)                                                                   \
-    template<> bool ReflectSerializer<Type>::isEqual(const Type& a, const Type& b);                                 \
-    template<> void ReflectSerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value);                   \
-    template<> void ReflectSerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value);             \
-    template<> void ReflectSerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
-    template<> void ReflectSerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
+    template<> bool ReflectPropertySerializer<Type>::isEqual(const Type& a, const Type& b);                                 \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value);                   \
+    template<> void ReflectPropertySerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value);             \
+    template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
+    template<> void ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
 
     DECLARE_REFLECT_PROPERTY_SERIALIZER(int8)
     DECLARE_REFLECT_PROPERTY_SERIALIZER(int16)
@@ -54,7 +54,7 @@
 #undef DECLARE_REFLECT_PROPERTY_SERIALIZER
 
     template <typename T>
-    bool ReflectSerializer<T, true>::isEqual(const T& a, const T& b)
+    bool ReflectPropertySerializer<T, true>::isEqual(const T& a, const T& b)
     {
         const IReflectObject* reflectObjectA = static_cast<const IReflectObject*>(&a);
         const IReflectObject* reflectObjectB = static_cast<const IReflectObject*>(&b);
@@ -62,7 +62,7 @@
     }
 
     template<typename T>
-    void ReflectSerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value)
     {
         const IReflectObject* reflectObject = static_cast<const IReflectObject*>(&value);
 
@@ -94,7 +94,7 @@
     }
 
     template<typename T>
-    void ReflectSerializer<T, true>::deserializeFromJson(const JsonValue& json, T& value)
+    void ReflectPropertySerializer<T, true>::deserializeFromJson(const JsonValue& json, T& value)
     {
 		const ReflectMetaObject& metaObject = value.getMetaObject();
         JsonObject jsonObject = json.getObjectValue();
@@ -118,13 +118,13 @@
     }
 
     template<typename T>
-    void ReflectSerializer<T, true>::serializeToBinary(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, true>::serializeToBinary(IBuffer* buffer, const T& value)
     {
 
     }
 
     template<typename T>
-    void ReflectSerializer<T, true>::deserializeFromBinary(const void* data, size_t size, T& value)
+    void ReflectPropertySerializer<T, true>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
 
     }
