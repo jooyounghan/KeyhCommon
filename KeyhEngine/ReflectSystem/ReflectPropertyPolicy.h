@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "ReflectSerializer.h"
+#include "ReflectPropertySerializer.h"
 
 namespace keyh
 {
