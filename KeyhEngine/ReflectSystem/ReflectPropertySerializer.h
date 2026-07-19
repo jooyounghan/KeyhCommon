@@ -35,3 +35,5 @@ namespace keyh
 		static void deserializeFromBinary(const void* data, size_t size, T& value);
 	};
 }
+
+#include "ReflectPropertySerializer.hpp"
