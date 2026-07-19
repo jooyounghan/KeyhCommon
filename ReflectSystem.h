@@ -20,4 +20,4 @@
 #include "ReflectObject.h"
 #include "ReflectProperty.h"
 #include "ReflectPropertyPolicy.h"
-#include "ReflectSerializer.h"
+#include "ReflectPropertySerializer.h"

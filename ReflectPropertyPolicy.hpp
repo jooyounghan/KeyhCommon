@@ -4,31 +4,31 @@
 	template<typename T>
 	bool ReflectPropertyPolicy<T>::isEqual(const T& a, const T& b)
 	{
-		return ReflectSerializer<T>::isEqual(a, b);
+		return ReflectPropertySerializer<T>::isEqual(a, b);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::serializeToJson(IBuffer* buffer, const T& value)
 	{
-		return ReflectSerializer<T>::serializeToJson(buffer, value);
+		return ReflectPropertySerializer<T>::serializeToJson(buffer, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::deserializeFromJson(const JsonValue& json, T& value)
 	{
-		return ReflectSerializer<T>::deserializeFromJson(json, value);
+		return ReflectPropertySerializer<T>::deserializeFromJson(json, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::serializeToBinary(IBuffer* buffer, const T& value)
 	{
-		return ReflectSerializer<T>::serializeToBinary(buffer, value);
+		return ReflectPropertySerializer<T>::serializeToBinary(buffer, value);
 	}
 
 	template<typename T>
 	void ReflectPropertyPolicy<T>::deserializeFromBinary(const void* data, size_t size, T& value)
 	{
-		return ReflectSerializer<T>::deserializeFromBinary(data, size, value);
+		return ReflectPropertySerializer<T>::deserializeFromBinary(data, size, value);
 	}
 #pragma endregion
 

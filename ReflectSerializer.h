@@ -1,18 +1,24 @@
 ﻿#pragma once
-#include "ReflectionUtil.h"
+#include "JsonElement.h"
 #include "IReflectObject.h"
 #include "ReflectMetaObject.h"
-#include "IReflectProperty.h"
-#include "JsonElement.h"
 
 namespace keyh
 {
 	class IBuffer;
-	class JsonValue;
 
-	template<typename T, bool IsReflectObject = IsReflectObject_v<T>>
 	struct ReflectSerializer
 	{
+		static void serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject);
+		static void deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject);
+	};
+
+	template<typename T, bool IsReflectObject = IsReflectObject_v<T>>
+	struct ReflectPropertySerializer
+	{
+		friend class ReflectPropertyPolicy<T>;
+
+	protected:
 		static bool isEqual(const T& a, const T& b);
 		static void serializeToJson(IBuffer* buffer, const T& value);
 		static void deserializeFromJson(const JsonValue& json, T& value);
@@ -21,8 +27,11 @@ namespace keyh
 	};
 
 	template<typename T>
-	struct ReflectSerializer<T, true>
+	struct ReflectPropertySerializer<T, true>
 	{
+		friend class ReflectPropertyPolicy<T>;
+
+	protected:
 		static bool isEqual(const T& a, const T& b);
 		static void serializeToJson(IBuffer* buffer, const T& value);
 		static void deserializeFromJson(const JsonValue& json, T& value);
