@@ -4,11 +4,31 @@
 
 namespace keyh
 {
-
     void ReflectSerializer::serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject)
     {
+		StaticBuffer<utf8, kBuffer4KBytes> buffer;
 
+		if (reflectObject == nullptr)
+		{
+			KEYH_ASSERT_ARGS(false, "Reflect object is null.");
+			return;
+		}
 
+		buffer.writeBytes("{", 1);
+
+		const ReflectMetaObject& metaObject = reflectObject->getMetaObject();
+        const OwnerVector<IReflectProperty>& properties = metaObject.getReflectProperties();
+		for (const IReflectProperty* reflectProperty : properties)
+		{
+			if (reflectProperty == nullptr)
+				continue;
+
+			const FlyweightStringA& propertyName = reflectProperty->getPropertyName();
+			buffer.write(propertyName.c_str(), propertyName.size());
+			reflectProperty->serializeToJson(&buffer, reflectObject);
+		}
+
+		buffer.writeBytes("}", 1);
     }
 
     void ReflectSerializer::deserializeFromJson(const StringViewA & filePath, IReflectObject * reflectObject)
