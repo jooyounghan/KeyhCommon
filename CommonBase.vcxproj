@@ -248,6 +248,7 @@
     <ClInclude Include="AssertUtil.hpp" />
     <ClInclude Include="CommonBase.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="FileWriter.h" />
     <ClInclude Include="FileUtil.h" />
     <ClInclude Include="IBuffer.h" />
     <ClInclude Include="CircularBufferUtil.h" />
@@ -316,6 +317,7 @@
     <ClCompile Include="Deque.cpp" />
     <ClCompile Include="DynamicBuffer.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="FileWriter.cpp" />
     <ClCompile Include="FileUtil.cpp" />
     <ClCompile Include="FlyweightString.cpp" />
     <ClCompile Include="FNV1aHasher.cpp" />

@@ -37,3 +37,4 @@
 #include "DynamicBuffer.h"
 
 #include "File.h"
+#include "FileWriter.h"
