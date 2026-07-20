@@ -67,7 +67,7 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
         return false;
     }
     serializeObjectToBuffer(&writer, reflectObject);
-    return true;
+    return writer.flush();
 }
 
 void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)
