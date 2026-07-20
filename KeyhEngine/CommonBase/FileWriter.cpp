@@ -27,7 +27,7 @@ namespace keyh
 #endif
     }
 
-    bool FileWriter::write(const void* data, size_t size)
+    bool FileWriter::writeRaw(const void* data, size_t size)
     {
         if (size == 0)
             return true;
@@ -70,8 +70,28 @@ namespace keyh
 #endif
     }
 
+    bool FileWriter::flush()
+    {
+        if (_hasError)
+            return false;
+
+        const size_t pending = _writeBuffer.getSizeBytes();
+        if (pending == 0)
+            return true;
+
+        const bool ok = writeRaw(_writeBuffer.getRawBuffer(), pending);
+        _writeBuffer.reset();
+        if (!ok)
+            _hasError = true;
+        return ok;
+    }
+
     void FileWriter::close()
     {
+        // Any flush failure is stored in _hasError and can be checked via hasError()
+        // after an explicit close() call. The destructor cannot propagate errors.
+        flush();
+
 #if defined(KEYH_PLATFORM_WINDOWS)
         if (_fileHandle != nullptr && _fileHandle != INVALID_HANDLE_VALUE)
         {
@@ -92,6 +112,66 @@ namespace keyh
         FileWriter writer;
         if (!writer.open(filePath))
             return false;
-        return writer.write(data, size);
+        writer.writeBytes(data, size);
+        return writer.flush();
+    }
+
+    // -----------------------------------------------------------------------
+    // IBuffer interface
+    // -----------------------------------------------------------------------
+
+    void FileWriter::writeBytes(const void* input, size_t size)
+    {
+        if (size == 0)
+            return;
+
+        // If the incoming chunk is larger than or equal to the full buffer
+        // capacity, flush the pending buffer and write directly to the file.
+        if (size >= getCapacityBytes())
+        {
+            flush();
+            if (!writeRaw(input, size))
+                _hasError = true;
+            return;
+        }
+
+        // If the incoming chunk does not fit in the remaining space, flush first.
+        if (size > _writeBuffer.getAvailableSizeBytes())
+            flush();
+
+        _writeBuffer.writeBytes(input, size);
+    }
+
+    void FileWriter::resetRaw()
+    {
+        _writeBuffer.reset();
+    }
+
+    size_t FileWriter::getSizeBytes() const
+    {
+        return _writeBuffer.getSizeBytes();
+    }
+
+    size_t FileWriter::getCapacityBytes() const
+    {
+        return kBuffer4KBytes;
+    }
+
+    void* FileWriter::getRawBuffer()
+    {
+        // FileWriter is a write-only streaming abstraction; direct buffer access is not supported.
+        return nullptr;
+    }
+
+    const void* FileWriter::getRawBuffer() const
+    {
+        // FileWriter is a write-only streaming abstraction; direct buffer access is not supported.
+        return nullptr;
+    }
+
+    size_t FileWriter::getAvailableSizeBytes() const
+    {
+        return _writeBuffer.getAvailableSizeBytes();
     }
 }
+
