@@ -176,12 +176,10 @@
     <ClInclude Include="ReflectObject.hpp" />
     <ClInclude Include="ReflectProperty.h" />
     <ClInclude Include="ReflectProperty.hpp" />
-    <ClInclude Include="ReflectPropertySerializer.h" />
-    <ClInclude Include="ReflectPropertySerializer.hpp" />
-    <ClInclude Include="ReflectPropertyPolicy.h" />
-    <ClInclude Include="ReflectPropertyPolicy.hpp" />
     <ClInclude Include="ReflectSerializer.h" />
     <ClInclude Include="ReflectSerializer.hpp" />
+    <ClInclude Include="ReflectPropertyPolicy.h" />
+    <ClInclude Include="ReflectPropertyPolicy.hpp" />
     <ClInclude Include="ReflectSystem.h" />
     <ClInclude Include="ReflectSystemPch.h" />
   </ItemGroup>
@@ -191,7 +189,6 @@
     <ClCompile Include="ReflectMetaObject.cpp" />
     <ClCompile Include="ReflectObject.cpp" />
     <ClCompile Include="ReflectProperty.cpp" />
-    <ClCompile Include="ReflectPropertySerializer.cpp" />
     <ClCompile Include="ReflectPropertyPolicy.cpp" />
     <ClCompile Include="ReflectSerializer.cpp" />
     <ClCompile Include="ReflectSystemPch.cpp">
