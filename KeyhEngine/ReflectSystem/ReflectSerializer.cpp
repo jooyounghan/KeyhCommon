@@ -2,7 +2,6 @@
 #include "ReflectSerializer.h"
 #include "JsonDocument.h"
 #include "FileWriter.h"
-#include "DynamicBuffer.h"
 
 namespace keyh
 {
@@ -61,11 +60,14 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
         return false;
     }
 
-    DynamicBufferA buffer;
-    buffer.allocate(kBuffer4KBytes);
-    serializeObjectToBuffer(&buffer, reflectObject);
-
-    return FileWriter::save(filePath.c_str(), buffer.getRawBuffer(), buffer.getSizeBytes());
+    FileWriter writer;
+    if (!writer.open(filePath.c_str()))
+    {
+        KEYH_ASSERT_ARGS(false, "Failed to open file for writing: %s", filePath.c_str());
+        return false;
+    }
+    serializeObjectToBuffer(&writer, reflectObject);
+    return true;
 }
 
 void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)

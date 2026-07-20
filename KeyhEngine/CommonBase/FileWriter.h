@@ -1,9 +1,11 @@
 #pragma once
 #include "CommonCore.h"
+#include "IBuffer.h"
+#include "StaticBuffer.h"
 
 namespace keyh
 {
-    class FileWriter
+    class FileWriter : public IBuffer
     {
     public:
         FileWriter() = default;
@@ -17,12 +19,27 @@ namespace keyh
         int32 _fileDescriptor = kInvalidFileDescriptor;
 #endif
 
+    private:
+        StaticBufferA4KBytes _writeBuffer;
+
     public:
         bool open(const char* filePath);
-        bool write(const void* data, size_t size);
+        bool flush();
         void close();
+
+    private:
+        bool writeRaw(const void* data, size_t size);
 
     public:
         static bool save(const char* filePath, const void* data, size_t size);
+
+    public:
+        virtual void        writeBytes(const void* input, size_t size) override;
+        virtual void        resetRaw() override;
+        virtual size_t      getSizeBytes() const override;
+        virtual size_t      getCapacityBytes() const override;
+        virtual void*       getRawBuffer() override;
+        virtual const void* getRawBuffer() const override;
+        virtual size_t      getAvailableSizeBytes() const override;
     };
 }

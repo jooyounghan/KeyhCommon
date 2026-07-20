@@ -27,7 +27,7 @@ namespace keyh
 #endif
     }
 
-    bool FileWriter::write(const void* data, size_t size)
+    bool FileWriter::writeRaw(const void* data, size_t size)
     {
         if (size == 0)
             return true;
@@ -70,8 +70,21 @@ namespace keyh
 #endif
     }
 
+    bool FileWriter::flush()
+    {
+        const size_t pending = _writeBuffer.getSizeBytes();
+        if (pending == 0)
+            return true;
+
+        const bool ok = writeRaw(_writeBuffer.getRawBuffer(), pending);
+        _writeBuffer.reset();
+        return ok;
+    }
+
     void FileWriter::close()
     {
+        flush();
+
 #if defined(KEYH_PLATFORM_WINDOWS)
         if (_fileHandle != nullptr && _fileHandle != INVALID_HANDLE_VALUE)
         {
@@ -92,6 +105,63 @@ namespace keyh
         FileWriter writer;
         if (!writer.open(filePath))
             return false;
-        return writer.write(data, size);
+        writer.writeBytes(data, size);
+        return true;
+    }
+
+    // -----------------------------------------------------------------------
+    // IBuffer interface
+    // -----------------------------------------------------------------------
+
+    void FileWriter::writeBytes(const void* input, size_t size)
+    {
+        if (size == 0)
+            return;
+
+        // If the incoming chunk is larger than or equal to the full buffer
+        // capacity, flush the pending buffer and write directly to the file.
+        if (size >= kBuffer4KBytes)
+        {
+            flush();
+            writeRaw(input, size);
+            return;
+        }
+
+        // If the incoming chunk does not fit in the remaining space, flush first.
+        if (size > _writeBuffer.getAvailableSizeBytes())
+            flush();
+
+        _writeBuffer.writeBytes(input, size);
+    }
+
+    void FileWriter::resetRaw()
+    {
+        _writeBuffer.reset();
+    }
+
+    size_t FileWriter::getSizeBytes() const
+    {
+        return 0;
+    }
+
+    size_t FileWriter::getCapacityBytes() const
+    {
+        return kBuffer4KBytes;
+    }
+
+    void* FileWriter::getRawBuffer()
+    {
+        return nullptr;
+    }
+
+    const void* FileWriter::getRawBuffer() const
+    {
+        return nullptr;
+    }
+
+    size_t FileWriter::getAvailableSizeBytes() const
+    {
+        return _writeBuffer.getAvailableSizeBytes();
     }
 }
+
