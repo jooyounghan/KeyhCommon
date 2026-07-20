@@ -3,6 +3,7 @@
 namespace keyh
 {
 	class ReflectMetaObject;
+	class IReflectProperty;
 
 	class IReflectObject
 	{
@@ -14,8 +15,12 @@ namespace keyh
 	protected:
 		FlyweightStringA _objectName;
 
-	public:
+	protected:
 		virtual const ReflectMetaObject& getMetaObject() const = 0;
+	
+	public:
+		const IReflectProperty* findProperty(const FlyweightStringA& propertyName) const;
+		const OwnerVector<IReflectProperty>& getReflectProperties() const;
 
 	public:
 		inline const FlyweightStringA& getObjectName() const { return _objectName; }

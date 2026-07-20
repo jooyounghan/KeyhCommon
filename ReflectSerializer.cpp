@@ -1,4 +1,4 @@
-#include "ReflectSystemPch.h"
+﻿#include "ReflectSystemPch.h"
 #include "ReflectSerializer.h"
 #include "JsonDocument.h"
 
@@ -16,8 +16,7 @@ namespace keyh
 
 		buffer.writeBytes("{", 1);
 
-		const ReflectMetaObject& metaObject = reflectObject->getMetaObject();
-        const OwnerVector<IReflectProperty>& properties = metaObject.getReflectProperties();
+        const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
 		for (const IReflectProperty* reflectProperty : properties)
 		{
 			if (reflectProperty == nullptr)
@@ -46,7 +45,7 @@ namespace keyh
 		for (JsonKey jsonKey = rootObject.getFirstKey(); jsonKey.isValid(); jsonKey = rootObject.getNextKey(jsonKey))
 		{
 			const StringViewA keyName = jsonKey.getKeyName();
-			const IReflectProperty* property = reflectObject->getMetaObject().findProperty(keyName);
+			const IReflectProperty* property = reflectObject->findProperty(keyName);
 			if (property == nullptr)
 				continue;
 

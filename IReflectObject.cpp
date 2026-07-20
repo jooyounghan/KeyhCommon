@@ -4,6 +4,18 @@
 
 namespace keyh
 {
+	const IReflectProperty* IReflectObject::findProperty(const FlyweightStringA& propertyName) const
+	{
+		const ReflectMetaObject& metaObject = getMetaObject();
+		return metaObject.findProperty(propertyName);
+	}
+
+	const OwnerVector<IReflectProperty>& IReflectObject::getReflectProperties() const
+	{
+		const ReflectMetaObject& metaObject = getMetaObject();
+		return metaObject.getReflectProperties();
+	}
+
 	bool IReflectObject::isEqual(const IReflectObject* other) const
 	{
 		if (this == other || other == nullptr)
