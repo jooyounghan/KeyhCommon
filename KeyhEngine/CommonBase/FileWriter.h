@@ -21,11 +21,13 @@ namespace keyh
 
     private:
         StaticBufferA4KBytes _writeBuffer;
+        bool _hasError = false;
 
     public:
         bool open(const char* filePath);
         bool flush();
         void close();
+        bool hasError() const { return _hasError; }
 
     private:
         bool writeRaw(const void* data, size_t size);

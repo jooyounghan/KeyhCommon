@@ -72,12 +72,17 @@ namespace keyh
 
     bool FileWriter::flush()
     {
+        if (_hasError)
+            return false;
+
         const size_t pending = _writeBuffer.getSizeBytes();
         if (pending == 0)
             return true;
 
         const bool ok = writeRaw(_writeBuffer.getRawBuffer(), pending);
         _writeBuffer.reset();
+        if (!ok)
+            _hasError = true;
         return ok;
     }
 
@@ -106,7 +111,7 @@ namespace keyh
         if (!writer.open(filePath))
             return false;
         writer.writeBytes(data, size);
-        return true;
+        return writer.flush();
     }
 
     // -----------------------------------------------------------------------
@@ -123,7 +128,8 @@ namespace keyh
         if (size >= kBuffer4KBytes)
         {
             flush();
-            writeRaw(input, size);
+            if (!writeRaw(input, size))
+                _hasError = true;
             return;
         }
 
@@ -141,7 +147,7 @@ namespace keyh
 
     size_t FileWriter::getSizeBytes() const
     {
-        return 0;
+        return _writeBuffer.getSizeBytes();
     }
 
     size_t FileWriter::getCapacityBytes() const
@@ -151,11 +157,13 @@ namespace keyh
 
     void* FileWriter::getRawBuffer()
     {
+        // FileWriter is a write-only streaming abstraction; direct buffer access is not supported.
         return nullptr;
     }
 
     const void* FileWriter::getRawBuffer() const
     {
+        // FileWriter is a write-only streaming abstraction; direct buffer access is not supported.
         return nullptr;
     }
 
