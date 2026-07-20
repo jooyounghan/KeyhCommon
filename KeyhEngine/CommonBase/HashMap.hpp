@@ -1,4 +1,4 @@
-#define HASHMAP_TEMPLATE_TYPE template<typename Key, typename Value, typename Hasher>
+﻿#define HASHMAP_TEMPLATE_TYPE template<typename Key, typename Value, typename Hasher>
 #define HASHMAP_CLASS HashMap<Key, Value, Hasher>
 
 namespace keyh
@@ -79,7 +79,8 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::ConstFindResult HASHMAP_CLASS::makeFindResult(const Bucket* bucket, bool found) const
 	{
-		return ConstFindResult(bucket ? &bucket->value() : nullptr, found);
+		using ConstValue = HashConstFindValue_t<Value>;
+		return ConstFindResult(bucket ? const_cast<ConstValue*>(&bucket->value()) : nullptr, found);
 	}
 }
 

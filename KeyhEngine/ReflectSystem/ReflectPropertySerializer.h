@@ -1,6 +1,8 @@
-#pragma once
+﻿#pragma once
 #include "JsonElement.h"
 #include "ReflectionUtil.h"
+#include "IReflectProperty.h"
+#include "IReflectObject.h"
 
 namespace keyh
 {
@@ -12,7 +14,7 @@ namespace keyh
 	template<typename T, bool IsReflectObject = IsReflectObject_v<T>>
 	struct ReflectPropertySerializer
 	{
-		friend class ReflectPropertyPolicy<T>;
+		friend struct ReflectPropertyPolicy<T>;
 
 	protected:
 		static bool isEqual(const T& a, const T& b);
@@ -25,7 +27,7 @@ namespace keyh
 	template<typename T>
 	struct ReflectPropertySerializer<T, true>
 	{
-		friend class ReflectPropertyPolicy<T>;
+		friend struct ReflectPropertyPolicy<T>;
 
 	protected:
 		static bool isEqual(const T& a, const T& b);

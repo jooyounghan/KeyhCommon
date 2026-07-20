@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
     template<typename T, bool IsReflectObject>
     bool ReflectPropertySerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
@@ -68,8 +68,7 @@ namespace keyh
 
         buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
 
-		const ReflectMetaObject& metaObject = reflectObject->getMetaObject();
-        const OwnerVector<IReflectProperty>& properties = metaObject.getReflectProperties();
+        const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
 
         bool isFirst = true;
 		for (const IReflectProperty* property : properties)
