@@ -155,13 +155,17 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     template<>
     void ReflectPropertySerializer<StaticStringA>::serializeToJson(IBuffer* buffer, const StaticStringA& value)
     {
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(value.c_str(), value.size());
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
     }
 
     template<>
     void ReflectPropertySerializer<FlyweightStringA>::serializeToJson(IBuffer* buffer, const FlyweightStringA& value)
     {
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(value.c_str(), value.size());
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
     }
 
 #pragma endregion
