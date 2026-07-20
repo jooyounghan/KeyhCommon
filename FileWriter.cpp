@@ -88,6 +88,8 @@ namespace keyh
 
     void FileWriter::close()
     {
+        // Any flush failure is stored in _hasError and can be checked via hasError()
+        // after an explicit close() call. The destructor cannot propagate errors.
         flush();
 
 #if defined(KEYH_PLATFORM_WINDOWS)
@@ -125,7 +127,7 @@ namespace keyh
 
         // If the incoming chunk is larger than or equal to the full buffer
         // capacity, flush the pending buffer and write directly to the file.
-        if (size >= kBuffer4KBytes)
+        if (size >= getCapacityBytes())
         {
             flush();
             if (!writeRaw(input, size))
