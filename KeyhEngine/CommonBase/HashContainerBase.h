@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "HashUtil.h"
 #include "CircularBufferUtil.h"
@@ -333,6 +333,10 @@ namespace keyh
 	public:
 		void reserve(size_t newCapacity);
 		void clear();
+
+	public:
+		inline size_t capacity() const noexcept { return _capacity; }
+		inline size_t size() const noexcept { return _size; }
 	};
 }
 
