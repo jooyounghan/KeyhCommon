@@ -87,16 +87,74 @@
 	{
 		if (a.size() != b.size())
 			return false;
+
+		for (const auto& bucket : a)
+		{
+			auto findResult = b.find(bucket.key());
+			if (!findResult.isFound())
+				return false;
+
+			if (!ReflectPropertyPolicy<ValueType>::isEqual(bucket.value(), *findResult.value()))
+				return false;
+		}
+		return true;
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
 	{
+		buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+		bool isFirst = true;
+		for (const auto& bucket : value)
+		{
+			if (!isFirst)
+				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+			isFirst = false;
+
+			buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
+
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+			buffer->writeBytes("k", 1);
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
+			ReflectPropertyPolicy<KeyType>::serializeToJson(buffer, bucket.key());
+
+			buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+			buffer->writeBytes("v", 1);
+			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
+			ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, bucket.value());
+
+			buffer->writeBytes(&ReflectionUtil::kObjectEnd, 1);
+		}
+		buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value)
-	{}
+	{
+		JsonArray jsonArray = json.getArrayValue();
+		for (JsonValue jsonEntry = jsonArray.getFirstValue(); jsonEntry.isValid(); jsonEntry = jsonArray.getNextValue(jsonEntry))
+		{
+			JsonObject entryObj = jsonEntry.getObjectValue();
+			if (!entryObj.isValid())
+				continue;
+
+			KeyType k;
+			ValueType v;
+			for (JsonKey jsonKey = entryObj.getFirstKey(); jsonKey.isValid(); jsonKey = entryObj.getNextKey(jsonKey))
+			{
+				StringViewA keyName = jsonKey.getKeyName();
+				if (keyName == StringViewA("k"))
+					ReflectPropertyPolicy<KeyType>::deserializeFromJson(jsonKey.getValue(), k);
+				else if (keyName == StringViewA("v"))
+					ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonKey.getValue(), v);
+			}
+			value.insert(keyh::move(k), keyh::move(v));
+		}
+	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToBinary(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
