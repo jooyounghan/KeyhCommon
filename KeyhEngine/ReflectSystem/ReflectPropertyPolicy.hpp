@@ -135,6 +135,7 @@
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value)
 	{
+		value.clear();
 		JsonArray jsonArray = json.getArrayValue();
 		for (JsonValue jsonEntry = jsonArray.getFirstValue(); jsonEntry.isValid(); jsonEntry = jsonArray.getNextValue(jsonEntry))
 		{
@@ -144,15 +145,24 @@
 
 			KeyType k;
 			ValueType v;
+			bool hasKey = false;
+			bool hasValue = false;
 			for (JsonKey jsonKey = entryObj.getFirstKey(); jsonKey.isValid(); jsonKey = entryObj.getNextKey(jsonKey))
 			{
 				StringViewA keyName = jsonKey.getKeyName();
-				if (keyName == StringViewA("k"))
+				if (keyName == "k")
+				{
 					ReflectPropertyPolicy<KeyType>::deserializeFromJson(jsonKey.getValue(), k);
-				else if (keyName == StringViewA("v"))
+					hasKey = true;
+				}
+				else if (keyName == "v")
+				{
 					ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonKey.getValue(), v);
+					hasValue = true;
+				}
 			}
-			value.insert(keyh::move(k), keyh::move(v));
+			if (hasKey && hasValue)
+				value.insert(keyh::move(k), keyh::move(v));
 		}
 	}
 	
