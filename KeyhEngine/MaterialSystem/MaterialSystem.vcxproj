@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{761c4598-1bad-4437-9e24-e8673f0c9802}</ProjectGuid>
-    <RootNamespace>ReflectSystem</RootNamespace>
+    <ProjectGuid>{2c6ed981-4f90-4c4a-ad05-f1d776a2a9c6}</ProjectGuid>
+    <RootNamespace>MaterialSystem</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,16 +71,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PublicIncludeDirectories>$(SolutionDir)ReflectSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(SolutionDir)MaterialSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PublicIncludeDirectories>$(SolutionDir)ReflectSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(SolutionDir)MaterialSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PublicIncludeDirectories>$(SolutionDir)ReflectSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(SolutionDir)MaterialSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PublicIncludeDirectories>$(SolutionDir)ReflectSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>$(SolutionDir)MaterialSystem;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -90,8 +90,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>ReflectSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -112,8 +112,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>ReflectSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -132,8 +132,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>ReflectSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -154,8 +154,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>ReflectSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -167,31 +167,12 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="IReflectObject.h" />
-    <ClInclude Include="IReflectProperty.h" />
-    <ClInclude Include="ReflectionUtil.h" />
-    <ClInclude Include="ReflectMetaObject.h" />
-    <ClInclude Include="ReflectMetaObject.hpp" />
-    <ClInclude Include="ReflectObject.h" />
-    <ClInclude Include="ReflectObject.hpp" />
-    <ClInclude Include="ReflectProperty.h" />
-    <ClInclude Include="ReflectProperty.hpp" />
-    <ClInclude Include="ReflectSerializer.h" />
-    <ClInclude Include="ReflectSerializer.hpp" />
-    <ClInclude Include="ReflectPropertyPolicy.h" />
-    <ClInclude Include="ReflectPropertyPolicy.hpp" />
-    <ClInclude Include="ReflectSystem.h" />
-    <ClInclude Include="ReflectSystemPch.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IReflectObject.cpp" />
-    <ClCompile Include="IReflectProperty.cpp" />
-    <ClCompile Include="ReflectMetaObject.cpp" />
-    <ClCompile Include="ReflectObject.cpp" />
-    <ClCompile Include="ReflectProperty.cpp" />
-    <ClCompile Include="ReflectPropertyPolicy.cpp" />
-    <ClCompile Include="ReflectSerializer.cpp" />
-    <ClCompile Include="ReflectSystemPch.cpp">
+    <ClCompile Include="MaterialSystem.cpp" />
+    <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -199,8 +180,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CommonBase\CommonBase.vcxproj">
-      <Project>{295ebb3a-8079-45ba-a2f1-2115d709d868}</Project>
+    <ProjectReference Include="..\ReflectSystem\ReflectSystem.vcxproj">
+      <Project>{761c4598-1bad-4437-9e24-e8673f0c9802}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\RenderRHI\RenderRHI.vcxproj">
+      <Project>{66accf7b-05be-4d44-a3db-8d984d900305}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -284,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="CommonBase.h" />
     <ClInclude Include="CommonBasePch.h" />
+    <ClInclude Include="FileWriter.h">
+      <Filter>헤더 파일\File</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonBasePch.cpp">
@@ -402,6 +405,9 @@
     </ClCompile>
     <ClCompile Include="JsonElement.cpp">
       <Filter>소스 파일\Json</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWriter.cpp">
+      <Filter>소스 파일\File</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

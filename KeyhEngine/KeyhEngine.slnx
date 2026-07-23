@@ -8,7 +8,17 @@
   </Configurations>
   <Folder Name="/Common/">
     <Project Path="CommonBase/CommonBase.vcxproj" Id="295ebb3a-8079-45ba-a2f1-2115d709d868" />
+  </Folder>
+  <Folder Name="/EngineCore/">
     <Project Path="ReflectSystem/ReflectSystem.vcxproj" Id="761c4598-1bad-4437-9e24-e8673f0c9802">
+      <BuildType Solution="DevRelease|*" Project="Release" />
+    </Project>
+  </Folder>
+  <Folder Name="/RenderCore/">
+    <Project Path="MaterialSystem/MaterialSystem.vcxproj" Id="2c6ed981-4f90-4c4a-ad05-f1d776a2a9c6">
+      <BuildType Solution="DevRelease|*" Project="Release" />
+    </Project>
+    <Project Path="RenderRHI/RenderRHI.vcxproj" Id="66accf7b-05be-4d44-a3db-8d984d900305">
       <BuildType Solution="DevRelease|*" Project="Release" />
     </Project>
   </Folder>

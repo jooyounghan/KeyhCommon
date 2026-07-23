@@ -11,8 +11,6 @@
 // After that, every .cpp in the referencing project has access to all
 // ReflectSystem types with no explicit #include required.
 
-#include "CommonBase.h"
-
 #include "ReflectionUtil.h"
 #include "IReflectProperty.h"
 #include "IReflectObject.h"
