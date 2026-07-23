@@ -91,7 +91,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>ReflectSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -113,7 +113,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>ReflectSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -133,7 +133,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>ReflectSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -155,7 +155,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>CommonBase.h;ReflectionSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>ReflectSystem.h;RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -168,6 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MaterialSystem.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
