@@ -303,8 +303,8 @@ namespace keyh
 			Iterator(Bucket* current, Bucket* end);
 
 		public:
-			inline Bucket& operator*() { return *_current; }
-			inline Bucket* operator->() { return _current; }
+			inline Bucket& operator*() { KEYH_ASSERT(_current != _end, "HashContainerBase::Iterator: dereferencing end iterator"); return *_current; }
+			inline Bucket* operator->() { KEYH_ASSERT(_current != _end, "HashContainerBase::Iterator: dereferencing end iterator"); return _current; }
 			inline bool operator==(const Iterator& other) const { return _current == other._current; }
 			inline bool operator!=(const Iterator& other) const { return _current != other._current; }
 			Iterator& operator++();
@@ -323,8 +323,8 @@ namespace keyh
 			ConstIterator(const Bucket* current, const Bucket* end);
 
 		public:
-			inline const Bucket& operator*() const { return *_current; }
-			inline const Bucket* operator->() const { return _current; }
+			inline const Bucket& operator*() const { KEYH_ASSERT(_current != _end, "HashContainerBase::ConstIterator: dereferencing end iterator"); return *_current; }
+			inline const Bucket* operator->() const { KEYH_ASSERT(_current != _end, "HashContainerBase::ConstIterator: dereferencing end iterator"); return _current; }
 			inline bool operator==(const ConstIterator& other) const { return _current == other._current; }
 			inline bool operator!=(const ConstIterator& other) const { return _current != other._current; }
 			ConstIterator& operator++();
