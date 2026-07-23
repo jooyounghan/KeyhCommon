@@ -294,4 +294,92 @@ namespace keyh
 		_capacity = 0;
 		_size = 0;
 	}
+
+	template<typename Derived>
+	HashContainerBase<Derived>::Iterator::Iterator(Bucket* current, Bucket* end)
+		: _current(current), _end(end) {}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::Iterator& HashContainerBase<Derived>::Iterator::operator++()
+	{
+		++_current;
+		while (_current != _end && _current->isEmpty())
+			++_current;
+		return *this;
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::Iterator HashContainerBase<Derived>::Iterator::operator++(int)
+	{
+		Iterator temp = *this;
+		++(*this);
+		return temp;
+	}
+
+	template<typename Derived>
+	HashContainerBase<Derived>::ConstIterator::ConstIterator(const Bucket* current, const Bucket* end)
+		: _current(current), _end(end) {}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::ConstIterator& HashContainerBase<Derived>::ConstIterator::operator++()
+	{
+		++_current;
+		while (_current != _end && _current->isEmpty())
+			++_current;
+		return *this;
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::ConstIterator HashContainerBase<Derived>::ConstIterator::operator++(int)
+	{
+		ConstIterator temp = *this;
+		++(*this);
+		return temp;
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::Iterator HashContainerBase<Derived>::begin()
+	{
+		Derived* self = static_cast<Derived*>(this);
+		if (!self->_buckets)
+			return Iterator(nullptr, nullptr);
+		typename Derived::Bucket* first = self->_buckets;
+		typename Derived::Bucket* last = self->_buckets + _capacity;
+		while (first != last && first->isEmpty())
+			++first;
+		return Iterator(first, last);
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::Iterator HashContainerBase<Derived>::end()
+	{
+		Derived* self = static_cast<Derived*>(this);
+		if (!self->_buckets)
+			return Iterator(nullptr, nullptr);
+		typename Derived::Bucket* last = self->_buckets + _capacity;
+		return Iterator(last, last);
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::ConstIterator HashContainerBase<Derived>::begin() const
+	{
+		const Derived* self = static_cast<const Derived*>(this);
+		if (!self->_buckets)
+			return ConstIterator(nullptr, nullptr);
+		const typename Derived::Bucket* first = self->_buckets;
+		const typename Derived::Bucket* last = self->_buckets + _capacity;
+		while (first != last && first->isEmpty())
+			++first;
+		return ConstIterator(first, last);
+	}
+
+	template<typename Derived>
+	typename HashContainerBase<Derived>::ConstIterator HashContainerBase<Derived>::end() const
+	{
+		const Derived* self = static_cast<const Derived*>(this);
+		if (!self->_buckets)
+			return ConstIterator(nullptr, nullptr);
+		const typename Derived::Bucket* last = self->_buckets + _capacity;
+		return ConstIterator(last, last);
+	}
 }
