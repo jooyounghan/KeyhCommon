@@ -85,12 +85,14 @@
 	template<typename KeyType, typename ValueType, typename Hasher>
 	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
 	{
-		return false;
+		if (a.size() != b.size())
+			return false;
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
-	{}
+	{
+	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value)
