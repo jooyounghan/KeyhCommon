@@ -24,6 +24,8 @@ namespace keyh
 		using InsertResult = HashInsertResult<void>;
 		using FindResult = HashFindResult<const Key>;
 		using ConstFindResult = FindResult;
+		using Iterator = typename Base::Iterator;
+		using ConstIterator = typename Base::ConstIterator;
 
 	public:
 		HashSet() = default;
