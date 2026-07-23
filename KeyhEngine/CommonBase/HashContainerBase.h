@@ -294,6 +294,47 @@ namespace keyh
 	template <typename Derived>
 	class HashContainerBase
 	{
+	public:
+		class Iterator
+		{
+		public:
+			using Bucket = typename Derived::Bucket;
+
+			Iterator(Bucket* current, Bucket* end);
+
+		public:
+			inline Bucket& operator*() { return *_current; }
+			inline Bucket* operator->() { return _current; }
+			inline bool operator==(const Iterator& other) const { return _current == other._current; }
+			inline bool operator!=(const Iterator& other) const { return _current != other._current; }
+			Iterator& operator++();
+			Iterator operator++(int);
+
+		private:
+			Bucket* _current;
+			Bucket* _end;
+		};
+
+		class ConstIterator
+		{
+		public:
+			using Bucket = typename Derived::Bucket;
+
+			ConstIterator(const Bucket* current, const Bucket* end);
+
+		public:
+			inline const Bucket& operator*() const { return *_current; }
+			inline const Bucket* operator->() const { return _current; }
+			inline bool operator==(const ConstIterator& other) const { return _current == other._current; }
+			inline bool operator!=(const ConstIterator& other) const { return _current != other._current; }
+			ConstIterator& operator++();
+			ConstIterator operator++(int);
+
+		private:
+			const Bucket* _current;
+			const Bucket* _end;
+		};
+
 	protected:
 		size_t _capacity = 0;
 		size_t _size = 0;
@@ -337,6 +378,12 @@ namespace keyh
 	public:
 		inline size_t capacity() const noexcept { return _capacity; }
 		inline size_t size() const noexcept { return _size; }
+
+	public:
+		Iterator begin();
+		Iterator end();
+		ConstIterator begin() const;
+		ConstIterator end() const;
 	};
 }
 
