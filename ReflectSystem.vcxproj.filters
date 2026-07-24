@@ -69,9 +69,6 @@
     <ClInclude Include="ReflectObject.hpp">
       <Filter>헤더 파일\ReflectProperty</Filter>
     </ClInclude>
-    <ClInclude Include="ReflectSystem.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ReflectPropertyPolicy.h">
       <Filter>헤더 파일\ReflectionUtil</Filter>
     </ClInclude>
