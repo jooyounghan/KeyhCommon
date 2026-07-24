@@ -4,9 +4,4 @@
   <PropertyGroup>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <ForcedIncludeFiles>RenderRHI.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-    </ClCompile>
-  </ItemDefinitionGroup>
 </Project>

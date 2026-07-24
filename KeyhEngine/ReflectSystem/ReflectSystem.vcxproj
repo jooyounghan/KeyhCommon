@@ -180,7 +180,6 @@
     <ClInclude Include="ReflectSerializer.hpp" />
     <ClInclude Include="ReflectPropertyPolicy.h" />
     <ClInclude Include="ReflectPropertyPolicy.hpp" />
-    <ClInclude Include="ReflectSystem.h" />
     <ClInclude Include="ReflectSystemPch.h" />
   </ItemGroup>
   <ItemGroup>

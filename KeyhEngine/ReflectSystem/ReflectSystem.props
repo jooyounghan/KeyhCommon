@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <ForcedIncludeFiles>ReflectSystem.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>ReflectionUtil.h;IReflectProperty.h;IReflectObject.h;ReflectMetaObject.h;ReflectObject.h;ReflectProperty.h;ReflectPropertyPolicy.h;ReflectSerializer.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>

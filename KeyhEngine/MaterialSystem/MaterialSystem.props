@@ -5,9 +5,4 @@
   <PropertyGroup>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <ForcedIncludeFiles>MaterialSystem.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-    </ClCompile>
-  </ItemDefinitionGroup>
 </Project>

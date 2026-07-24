@@ -167,7 +167,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="RenderRHI.h" />
     <ClInclude Include="RenderRhiPch.h" />
   </ItemGroup>
   <ItemGroup>
