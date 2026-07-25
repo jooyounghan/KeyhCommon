@@ -155,9 +155,15 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IRhiCommandQueue.h" />
+    <ClInclude Include="IRhiDevice.h" />
+    <ClInclude Include="IRhiSwapChain.h" />
     <ClInclude Include="RenderRhiPch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IRhiCommandQueue.cpp" />
+    <ClCompile Include="IRhiDevice.cpp" />
+    <ClCompile Include="IRhiSwapChain.cpp" />
     <ClCompile Include="RenderRhiPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
