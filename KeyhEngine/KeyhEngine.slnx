@@ -25,6 +25,9 @@
       <BuildType Solution="DevRelease|*" Project="Release" />
     </Project>
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="Test/Test.vcxproj" Id="2d3d8405-cd5e-49ff-b93d-d1db42496407">
     <BuildType Solution="DevRelease|*" Project="Release" />
   </Project>

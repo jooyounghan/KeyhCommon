@@ -282,7 +282,6 @@
     <ClInclude Include="JsonElement.h">
       <Filter>헤더 파일\Json</Filter>
     </ClInclude>
-    <ClInclude Include="CommonBase.h" />
     <ClInclude Include="CommonBasePch.h" />
     <ClInclude Include="FileWriter.h">
       <Filter>헤더 파일\File</Filter>
@@ -414,5 +413,8 @@
     <Natvis Include="CommonBase.natvis">
       <Filter>리소스 파일</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CommonBase.props" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
     // -----------------------------------------------------------------------
     // Primary template stubs — all primitive specialisations are in the .cpp.

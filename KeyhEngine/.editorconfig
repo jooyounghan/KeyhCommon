@@ -1,0 +1,8 @@
+﻿root = true
+
+# All files
+[*]
+charset = utf-8-bom
+
+# JSON files
+[*.json]
