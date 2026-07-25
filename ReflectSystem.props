@@ -8,7 +8,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>ReflectionUtil.h;IReflectProperty.h;IReflectObject.h;ReflectMetaObject.h;ReflectObject.h;ReflectProperty.h;ReflectPropertyPolicy.h;ReflectSerializer.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+	  <ForcedIncludeFiles>%(ForcedIncludeFiles);ReflectionUtil.h;IReflectProperty.h;IReflectObject.h;ReflectMetaObject.h;ReflectObject.h;ReflectProperty.h;ReflectPropertyPolicy.h;ReflectSerializer.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>
