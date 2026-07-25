@@ -159,6 +159,7 @@
     <ClInclude Include="IRhiDevice.h" />
     <ClInclude Include="IRhiSwapChain.h" />
     <ClInclude Include="RenderRhiPch.h" />
+    <ClInclude Include="RhiEnum.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IRhiCommandQueue.cpp" />
@@ -170,6 +171,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RhiEnum.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonBase\CommonBase.vcxproj">

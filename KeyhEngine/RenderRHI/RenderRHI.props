@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\CommonBase\CommonBase.props" Condition="'$(_CommonBasePropsImported)' != 'true'" />
   <PropertyGroup>
@@ -16,7 +16,11 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RenderRHIVcpkgInstalledDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+		  $(MSBuildThisFileDirectory);
+		  $(RenderRHIVcpkgInstalledDir)include;
+		  %(AdditionalIncludeDirectories);
+	  </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->

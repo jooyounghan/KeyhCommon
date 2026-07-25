@@ -4,11 +4,17 @@
   <Import Project="..\RenderRHI\RenderRHI.props" Condition="'$(_RenderRHIPropsImported)' != 'true'" />
   <PropertyGroup>
     <_MaterialSystemPropsImported>true</_MaterialSystemPropsImported>
-    <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>
+		$(MSBuildThisFileDirectory);
+		$(PublicIncludeDirectories)
+	</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+		  $(MSBuildThisFileDirectory);
+		  %(AdditionalIncludeDirectories)
+	  </AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>
