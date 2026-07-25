@@ -4,10 +4,24 @@
   <PropertyGroup>
     <_RenderRHIPropsImported>true</_RenderRHIPropsImported>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <!-- Enable vcpkg manifest mode so that vcpkg.json in this directory is used -->
+    <VcpkgEnabled>true</VcpkgEnabled>
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+    <VcpkgManifestRoot>$(MSBuildThisFileDirectory)</VcpkgManifestRoot>
+    <!-- Derive a default triplet when vcpkg integration has not set VcpkgTriplet -->
+    <VcpkgTriplet Condition="'$(VcpkgTriplet)' == '' And '$(Platform)' == 'x64'">x64-windows</VcpkgTriplet>
+    <VcpkgTriplet Condition="'$(VcpkgTriplet)' == '' And '$(Platform)' == 'Win32'">x86-windows</VcpkgTriplet>
+    <!-- vcpkg installs packages under vcpkg_installed next to vcpkg.json -->
+    <RenderRHIVcpkgInstalledDir>$(MSBuildThisFileDirectory)vcpkg_installed\$(VcpkgTriplet)\</RenderRHIVcpkgInstalledDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RenderRHIVcpkgInstalledDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->
+      <AdditionalLibraryDirectories>$(RenderRHIVcpkgInstalledDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d12.lib;dxgi.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
 </Project>
