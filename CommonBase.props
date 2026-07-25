@@ -29,7 +29,7 @@
 		  DynamicBuffer.h;
 		  File.h;
 		  FileWriter.h;
-		  %(ForcedIncludeFiles)
+		  %(ForcedIncludeFiles);
 	  </ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
