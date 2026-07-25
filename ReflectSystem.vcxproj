@@ -202,6 +202,9 @@
       <Project>{295ebb3a-8079-45ba-a2f1-2115d709d868}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ReflectSystem.props" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
