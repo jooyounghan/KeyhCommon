@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "AssertUtil.h"
 #include "StaticArray.h"
 

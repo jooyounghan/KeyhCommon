@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_CommonBasePropsImported>true</_CommonBasePropsImported>
@@ -7,7 +7,30 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>CommonBase.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>
+		  CommonCore.h;
+		  AssertUtil.h;
+		  FileUtil.h;
+		  HashUtil.h;
+		  MathUtil.h;
+		  MemoryUtil.h;
+		  SimdUtil.h;
+		  StrUtil.h;
+		  StaticString.h;
+		  FlyweightString.h;
+		  Ptr.h;
+		  RefPtr.h;
+		  WeakPtr.h;
+		  HashMap.h;
+		  Vector.h;
+		  OwnerVector.h;
+		  IBuffer.h;
+		  StaticBuffer.h;
+		  DynamicBuffer.h;
+		  File.h;
+		  FileWriter.h;
+		  %(ForcedIncludeFiles)
+	  </ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>
