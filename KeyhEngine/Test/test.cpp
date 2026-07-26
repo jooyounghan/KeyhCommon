@@ -66,5 +66,7 @@ int main()
         std::cout << "Group Name: " << (property->getGroupName().c_str() ? property->getGroupName().c_str() : empty) << std::endl;
 		std::cout << "------------------------" << std::endl;
 	};
+
+	D3D12Instance instance;
     return g_fail == 0 ? 0 : 1;
 }
