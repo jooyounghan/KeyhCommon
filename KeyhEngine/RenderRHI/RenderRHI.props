@@ -17,7 +17,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RenderRHIVcpkgInstalledDir)include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles);RhiEnum.h;IRhiInstance.h;IRhiAdapter.h;IRhiDevice.h;</ForcedIncludeFiles>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);RenderRhiPch.h;RhiEnum.h;IRhiInstance.h;IRhiAdapter.h;IRhiDevice.h;</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->
