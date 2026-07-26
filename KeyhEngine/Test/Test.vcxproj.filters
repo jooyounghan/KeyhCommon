@@ -108,4 +108,7 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Test.props" />
+  </ItemGroup>
 </Project>
