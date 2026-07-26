@@ -16,16 +16,13 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>
-		  $(MSBuildThisFileDirectory);
-		  $(RenderRHIVcpkgInstalledDir)include;
-		  %(AdditionalIncludeDirectories);
-	  </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RenderRHIVcpkgInstalledDir)include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->
       <AdditionalLibraryDirectories>$(RenderRHIVcpkgInstalledDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);RhiEnum.h;IRhiInstance.h;IRhiAdapter.h;IRhiDevice.h;</ForcedIncludeFiles>
     </Link>
   </ItemDefinitionGroup>
 </Project>

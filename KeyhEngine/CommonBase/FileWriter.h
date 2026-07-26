@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CommonCore.h"
 #include "IBuffer.h"
 #include "StaticBuffer.h"
@@ -20,7 +20,7 @@ namespace keyh
 #endif
 
     private:
-        StaticBufferA4KBytes _writeBuffer;
+        StaticBufferA<kBuffer4KBytes> _writeBuffer;
         bool _hasError = false;
 
     public:

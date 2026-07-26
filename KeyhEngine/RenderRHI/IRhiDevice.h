@@ -1,6 +1,7 @@
 ﻿#pragma once
 namespace keyh
 {
+	class IRhiAdapter;
 	class IRhiCommandQueue;
 	class IRhiSwapChain;
 	class IRhiBuffer;
@@ -15,6 +16,9 @@ namespace keyh
 	public:
 		IRhiDevice() = default;
 		virtual ~IRhiDevice() = default;
+
+	public:
+		virtual bool initialize(IRhiAdapter* adapter) = 0;
 
 	public:
 		virtual IRhiCommandQueue*		createCommandQueue() = 0;
@@ -37,6 +41,9 @@ namespace keyh
 		virtual ~D3D12Device() = default;
 
 	public:
+		virtual bool initialize(IRhiAdapter* adapter) override;
+
+	public:
 		virtual IRhiCommandQueue* createCommandQueue() override;
 		virtual IRhiSwapChain* createSwapChain() override;
 		virtual IRhiBuffer* createBuffer() override;
@@ -50,6 +57,7 @@ namespace keyh
 		virtual void allocateMemoryHeap() override;
 
 	protected:
+		Microsoft::WRL::ComPtr<ID3D12Device>	_device;
 	};
 
 }

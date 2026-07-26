@@ -11,10 +11,8 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>
-		  $(MSBuildThisFileDirectory);
-		  %(AdditionalIncludeDirectories)
-	  </AdditionalIncludeDirectories>
-    </ClCompile>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+	  <ForcedIncludeFiles>%(ForcedIncludeFiles);</ForcedIncludeFiles>
+	</ClCompile>
   </ItemDefinitionGroup>
 </Project>

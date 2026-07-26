@@ -2,6 +2,7 @@
 #include "IBuffer.h"
 namespace keyh
 {
+	constexpr size_t kBuffer128Bytes = 128;
 	constexpr size_t kBuffer256Bytes = 256;
 	constexpr size_t kBuffer1KBytes = 1024;
 	constexpr size_t kBuffer2KBytes = 2048;
@@ -28,14 +29,10 @@ namespace keyh
 		inline const T*		getBufferImpl() const { return reinterpret_cast<const T*>(_buffer); }
 	};
 
-	using StaticBufferA256Bytes = StaticBuffer<char, kBuffer256Bytes>;
-	using StaticBufferA1KBytes = StaticBuffer<char, kBuffer1KBytes>;
-	using StaticBufferA2KBytes = StaticBuffer<char, kBuffer2KBytes>;
-	using StaticBufferA4KBytes = StaticBuffer<char, kBuffer4KBytes>;
+	template<size_t Size>
+	using StaticBufferA = StaticBuffer<char, Size>;
 
-	using StaticBufferW256Bytes = StaticBuffer<wchar_t, kBuffer256Bytes>;
-	using StaticBufferW1KBytes = StaticBuffer<wchar_t, kBuffer1KBytes>;
-	using StaticBufferW2KBytes = StaticBuffer<wchar_t, kBuffer2KBytes>;
-	using StaticBufferW4KBytes = StaticBuffer<wchar_t, kBuffer4KBytes>;
+	template<size_t Size>
+	using StaticBufferW = StaticBuffer<wchar_t, Size>;
 }
 
