@@ -19,14 +19,11 @@ namespace keyh
 	class IRhiSwapChain
 	{
 	public:
-		IRhiSwapChain(RHISwapChainDesc desc);
+		IRhiSwapChain(const RHISwapChainDesc& desc);
 		virtual ~IRhiSwapChain() = default;
 
 	protected:
-		uint32					_width;
-		uint32					_height;
-		uint32					_bufferCount;
-		EResourceFormat			_format;
+		RHISwapChainDesc		_desc;
 
 	public:
 		virtual void			present() = 0;
@@ -38,13 +35,12 @@ namespace keyh
 	class D3D12SwapChain : public IRhiSwapChain
 	{
 	public:
-		D3D12SwapChain(RHISwapChainDesc desc);
+		D3D12SwapChain(const RHISwapChainDesc& desc, IDXGIFactory7* factory, IRhiCommandQueue* presentQueue);
 		virtual ~D3D12SwapChain() override = default;
 
 	private:
 		Microsoft::WRL::ComPtr<IDXGISwapChain3> _swapChain;
 
-	public:
 		bool initialize(IDXGIFactory7* factory, IRhiCommandQueue* presentQueue);
 	};
 }
