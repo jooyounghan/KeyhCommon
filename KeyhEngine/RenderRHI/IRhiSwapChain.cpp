@@ -4,31 +4,31 @@
 
 namespace keyh
 {
-	IRhiSwapChain::IRhiSwapChain(RHISwapChainDesc desc)
-		: _width(desc._width), _height(desc._height), _bufferCount(desc._bufferCount), _format(desc._format)
+	IRhiSwapChain::IRhiSwapChain(const RHISwapChainDesc& desc)
+		: _desc(desc)
 	{
 	}
 
 
-	D3D12SwapChain::D3D12SwapChain(RHISwapChainDesc desc)
+	D3D12SwapChain::D3D12SwapChain(const RHISwapChainDesc& desc, IDXGIFactory7* factory, IRhiCommandQueue* presentQueue)
 		: IRhiSwapChain(desc)
 	{
-
+		initialize(factory, presentQueue);
 	}
 
 	bool D3D12SwapChain::initialize(IDXGIFactory7* factory, IRhiCommandQueue* presentQueue)
 	{
-		const D3D12ResourceFormatInfo& formatInfo = D3D12ResourceFormatInfo::getInfo(_format);
+		const D3D12ResourceFormatInfo& formatInfo = D3D12ResourceFormatInfo::getInfo(_desc._format);
 
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-		swapChainDesc.Width = _width;
-		swapChainDesc.Height = _height;
+		swapChainDesc.Width = _desc._width;
+		swapChainDesc.Height = _desc._height;
 		swapChainDesc.Format = formatInfo._format;
 		swapChainDesc.Stereo = FALSE;
 		swapChainDesc.SampleDesc.Count = 1;
 		swapChainDesc.SampleDesc.Quality = 0;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapChainDesc.BufferCount = _bufferCount;
+		swapChainDesc.BufferCount = _desc._bufferCount;
 		swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 		swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
@@ -37,7 +37,7 @@ namespace keyh
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = factory->CreateSwapChainForHwnd(
 			nullptr,
-			static_cast<HWND>(desc._windowHandle),
+			static_cast<HWND>(_desc._windowHandle),
 			&swapChainDesc,
 			nullptr,
 			nullptr,

@@ -62,12 +62,7 @@ namespace keyh
 	
 	IRhiSwapChain* D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
 	{
-		IRhiSwapChain* swapChain = _swapChains.emplace_back<D3D12SwapChain>(desc);
-
-		D3D12SwapChain* d3d12SwapChain = static_cast<D3D12SwapChain*>(swapChain);
-		d3d12SwapChain->initialize(getDxgiFactory(), presentQueue);
-
-		return d3d12SwapChain;
+		return _swapChains.emplace_back<D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
 	}
 	
 	IRhiBuffer* D3D12Device::createBuffer()
