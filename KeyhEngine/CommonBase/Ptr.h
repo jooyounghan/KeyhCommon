@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CommonCore.h"
 namespace keyh
 {
@@ -17,13 +17,14 @@ namespace keyh
 		template<typename Base, typename Derived, typename ...Args>
 		friend Ptr<Base> makePtr(Args... args);
 
+	public:
+		Ptr() = default;
+		~Ptr();
+
 	private:
-		Ptr(T* ptr = nullptr);
+		Ptr(T* ptr);
 		template<typename U>
 		Ptr(U* ptr);
-
-	public:
-		~Ptr();
 
 	public:
 		Ptr(const Ptr<T>& other) = delete;

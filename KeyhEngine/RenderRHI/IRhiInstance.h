@@ -2,7 +2,6 @@
 namespace keyh
 {
 	class IRhiDevice;
-	class IRhiAdapter;
 
 	class IRhiInstance
 	{
@@ -14,12 +13,10 @@ namespace keyh
 		virtual bool initialize() = 0;
 
 	public:
-		inline const OwnerVector<IRhiAdapter>&	getAdapters() const { return _adapters; }
-		inline const OwnerVector<IRhiDevice>&	getDevices() const { return _devices; }
+		inline const OwnerVector<IRhiDevice>& getDevices() const { return _devices; }
 
 	protected:
-		OwnerVector<IRhiAdapter>	_adapters;
-		OwnerVector<IRhiDevice>		_devices;
+		OwnerVector<IRhiDevice>	_devices;
 	};
 
 #pragma region D3D12Instance

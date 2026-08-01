@@ -1,6 +1,5 @@
 ﻿#include "RenderRhiPch.h"
 #include "IRhiInstance.h"
-#include "IRhiAdapter.h"
 #include "IRhiDevice.h"
 
 namespace keyh
@@ -31,9 +30,8 @@ namespace keyh
 			Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter4;
 			if (SUCCEEDED(adapter.As(&adapter4)))
 			{
-				IRhiAdapter* adapter = _adapters.emplace_back<D3D12Adapter>(adapter4);
-				IRhiDevice* device = _devices.emplace_back<D3D12Device>();
-				device->initialize(adapter);
+				IRhiDevice* device = _devices.emplace_back<D3D12Device>(adapter4);
+				device->initialize();
 			}
 		}
 

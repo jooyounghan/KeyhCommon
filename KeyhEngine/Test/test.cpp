@@ -68,5 +68,6 @@ int main()
 	};
 
 	D3D12Instance instance;
+    bool test = instance.initialize();
     return g_fail == 0 ? 0 : 1;
 }

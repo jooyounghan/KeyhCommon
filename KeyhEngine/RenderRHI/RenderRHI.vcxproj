@@ -155,7 +155,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="IRhiAdapter.h" />
     <ClInclude Include="IRhiCommandQueue.h" />
     <ClInclude Include="IRhiDevice.h" />
     <ClInclude Include="IRhiInstance.h" />
@@ -164,7 +163,6 @@
     <ClInclude Include="RhiEnum.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IRhiAdapter.cpp" />
     <ClCompile Include="IRhiCommandQueue.cpp" />
     <ClCompile Include="IRhiDevice.cpp" />
     <ClCompile Include="IRhiInstance.cpp" />

@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename Base, typename Derived, typename ...Args>
 	Ptr<Base> makePtr(Args... args)

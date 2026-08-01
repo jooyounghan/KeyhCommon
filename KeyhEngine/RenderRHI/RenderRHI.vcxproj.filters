@@ -36,18 +36,12 @@
     <ClInclude Include="IRhiDevice.h">
       <Filter>헤더 파일\RhiDevice</Filter>
     </ClInclude>
-    <ClInclude Include="IRhiAdapter.h">
-      <Filter>헤더 파일\RhiDevice</Filter>
-    </ClInclude>
     <ClInclude Include="IRhiInstance.h">
       <Filter>헤더 파일\RhiDevice</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RenderRhiPch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="IRhiSwapChain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="IRhiCommandQueue.cpp">
@@ -59,10 +53,10 @@
     <ClCompile Include="IRhiDevice.cpp">
       <Filter>소스 파일\RhiDevice</Filter>
     </ClCompile>
-    <ClCompile Include="IRhiAdapter.cpp">
+    <ClCompile Include="IRhiInstance.cpp">
       <Filter>소스 파일\RhiDevice</Filter>
     </ClCompile>
-    <ClCompile Include="IRhiInstance.cpp">
+    <ClCompile Include="IRhiSwapChain.cpp">
       <Filter>소스 파일\RhiDevice</Filter>
     </ClCompile>
   </ItemGroup>
