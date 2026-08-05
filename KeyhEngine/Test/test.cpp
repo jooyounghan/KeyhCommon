@@ -7,6 +7,7 @@
 #include "FlyweightStringTest.h"
 #include "BufferTest.h"
 #include "JsonTest.h"
+#include "ReflectTest.h"
 
 #include <iostream>
 
@@ -54,20 +55,14 @@ int main()
     //benchmark_Json_parse_speed();
     //benchmark_Json_traversal_speed();
 
-    //printSummary();
+    test_Reflect_serialize_primitives();
+    test_Reflect_deserialize_primitives();
+    test_Reflect_roundtrip_primitives();
+    test_Reflect_roundtrip_vector();
+    test_Reflect_roundtrip_nested_object();
+    benchmark_Reflect_deserialize_128kb_x100();
 
+    printSummary();
 
-    TestObject testObject;
-    const OwnerVector<IReflectProperty>& properties = testObject.getMetaObject().getReflectProperties();
-    for (const IReflectProperty* property : properties) 
-    {
-        static const char* empty = "";
-        std::cout << "Property Name: " << property->getPropertyName().c_str() << std::endl;
-        std::cout << "Group Name: " << (property->getGroupName().c_str() ? property->getGroupName().c_str() : empty) << std::endl;
-		std::cout << "------------------------" << std::endl;
-	};
-
-	D3D12Instance instance;
-    bool test = instance.initialize();
     return g_fail == 0 ? 0 : 1;
 }

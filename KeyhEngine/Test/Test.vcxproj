@@ -162,6 +162,7 @@
     <ClCompile Include="BufferTest.cpp" />
     <ClCompile Include="ConcurrencyTest.cpp" />
     <ClCompile Include="JsonTest.cpp" />
+    <ClCompile Include="ReflectTest.cpp" />
     <ClCompile Include="RefPtrTest.cpp" />
     <ClCompile Include="StaticStringTest.cpp" />
     <ClCompile Include="test.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="ConcurrencyTest.h" />
     <ClInclude Include="FlyweightStringTest.h" />
     <ClInclude Include="JsonTest.h" />
+    <ClInclude Include="ReflectTest.h" />
     <ClInclude Include="RefPtrTest.h" />
     <ClInclude Include="StaticStringTest.h" />
     <ClInclude Include="test.h" />
@@ -185,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.props" />
+    <None Include="large_test_object.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
