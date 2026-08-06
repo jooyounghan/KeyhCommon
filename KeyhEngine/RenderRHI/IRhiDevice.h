@@ -40,7 +40,7 @@ namespace keyh
 		virtual bool initialize() = 0;
 
 	public:
-		virtual IRhiCommandQueue*		createCommandQueue() = 0;
+		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) = 0;
 		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) = 0;
 		virtual IRhiBuffer*				createBuffer() = 0;
 		virtual IRhiTexture*			createTexture() = 0;
@@ -69,13 +69,13 @@ namespace keyh
 	public:
 		IDXGIFactory7*			getDxgiFactory() const;
 		inline IDXGIAdapter4*	getDxgiAdapter() const { return _adapter.Get(); }
-		inline ID3D12Device*	getD3D12Device() const { return _device.Get(); }
+		inline ID3D12Device*	getNativeDevice() const { return _device.Get(); }
 
 	public:
 		virtual bool initialize() override;
 
 	public:
-		virtual IRhiCommandQueue*		createCommandQueue() override;
+		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) override;
 		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) override;
 		virtual IRhiBuffer*				createBuffer() override;
 		virtual IRhiTexture*			createTexture() override;

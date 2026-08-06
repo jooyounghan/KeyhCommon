@@ -44,8 +44,8 @@ namespace keyh
 
     struct D3D12ResourceFormatInfo : public ResourceFormatInfoBase, public IEnumInfoTable<EResourceFormat, ResourceFormatInfoBase, EResourceFormat::Count, D3D12ResourceFormatInfo>
     {
-        DXGI_FORMAT _format;
-        DXGI_FORMAT _srgbFormat;
+        DXGI_FORMAT _format = DXGI_FORMAT_UNKNOWN;
+        DXGI_FORMAT _srgbFormat = DXGI_FORMAT_UNKNOWN;
 
 		D3D12ResourceFormatInfo() = default;
         D3D12ResourceFormatInfo(
@@ -79,7 +79,7 @@ namespace keyh
 
     struct D3D12CommandQueueInfo : public CommandQueueInfoBase, public IEnumInfoTable<ECommandQueueType, CommandQueueInfoBase, ECommandQueueType::Count, D3D12CommandQueueInfo>
     {
-        D3D12_COMMAND_LIST_TYPE _type;
+        D3D12_COMMAND_LIST_TYPE _type = D3D12_COMMAND_LIST_TYPE_NONE;
 
         D3D12CommandQueueInfo() = default;
         D3D12CommandQueueInfo(

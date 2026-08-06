@@ -1,6 +1,7 @@
 ﻿#include "RenderRhiPch.h"
 #include "IRhiDevice.h"
 #include "IRhiSwapChain.h"
+#include "IRhiCommandQueue.h"
 
 namespace keyh
 {
@@ -18,7 +19,7 @@ namespace keyh
 		if (FAILED(hr))
 		{
 			KEYH_ASSERT(false, "Failed to get adapter description.");
-			return;
+			return false;
 		}
 
 		_adapterInfo.description = desc.Description;
@@ -35,7 +36,6 @@ namespace keyh
 				D3D_FEATURE_LEVEL_12_0
 		};
 
-		HRESULT hr;
 		for (const D3D_FEATURE_LEVEL featureLevel : featureLevels)
 		{
 			hr = D3D12CreateDevice(_adapter.Get(), featureLevel, IID_PPV_ARGS(&_device));
@@ -55,9 +55,9 @@ namespace keyh
 
 	}
 
-	IRhiCommandQueue* D3D12Device::createCommandQueue()
+	IRhiCommandQueue* D3D12Device::createCommandQueue(ECommandQueueType commandQueueType)
 	{
-		return nullptr;
+		return _commandQueues.emplace_back<D3D12CommandQueue>(this, commandQueueType);
 	}
 	
 	IRhiSwapChain* D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
