@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "RhiEnum.h"
+
 namespace keyh
 {
 	class IRhiCommandList;
