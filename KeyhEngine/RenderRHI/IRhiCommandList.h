@@ -1,7 +1,7 @@
 ﻿#pragma once
 namespace keyh
 {
-	class IRhiCommandPool;
+	class D3D12CommandPool;
 
 	class IRhiCommandList
 	{
@@ -42,7 +42,7 @@ namespace keyh
 	class D3D12CommandList : public IRhiCommandList
 	{
 	public:
-		D3D12CommandList(IRhiCommandPool* commandPool, ECommandQueueType queueType);
+		D3D12CommandList(D3D12CommandPool* commandPool, ECommandQueueType queueType);
 		~D3D12CommandList() override = default;
 
 	public:
@@ -70,8 +70,7 @@ namespace keyh
 		inline ID3D12GraphicsCommandList* getNativeCommandList() const { return _commandList.Get(); }
 
 	private:
-		IRhiCommandPool*									_ownerPool;
+		D3D12CommandPool*									_ownerPool;
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	_commandList;
 	};
 }
-

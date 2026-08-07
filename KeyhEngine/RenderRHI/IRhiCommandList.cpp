@@ -4,14 +4,13 @@
 
 namespace keyh
 {
-	D3D12CommandList::D3D12CommandList(IRhiCommandPool* commandPool, ECommandQueueType queueType)
+	D3D12CommandList::D3D12CommandList(D3D12CommandPool* commandPool, ECommandQueueType queueType)
 		: IRhiCommandList(queueType)
 		, _ownerPool(commandPool)
 	{
 		D3D12CommandQueueInfo commandQueueInfo = D3D12CommandQueueInfo::getInfo(queueType);
-		ID3D12Device* d3d12Device = static_cast<D3D12Device*>(commandPool->getDevice())->getNativeDevice();
-		D3D12CommandPool* d3d12CommandPool = static_cast<D3D12CommandPool*>(commandPool);
-		d3d12Device->CreateCommandList(0, commandQueueInfo._type, d3d12CommandPool->getNativeCommandPool(), nullptr, IID_PPV_ARGS(_commandList.GetAddressOf()));
+		ID3D12Device* d3d12Device = commandPool->getD3D12Device()->getNativeDevice();
+		d3d12Device->CreateCommandList(0, commandQueueInfo._type, commandPool->getNativeCommandPool(), nullptr, IID_PPV_ARGS(_commandList.GetAddressOf()));
 	}
 
 	void D3D12CommandList::begin()

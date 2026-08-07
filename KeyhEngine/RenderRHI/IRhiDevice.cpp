@@ -2,6 +2,7 @@
 #include "IRhiDevice.h"
 #include "IRhiSwapChain.h"
 #include "IRhiCommandQueue.h"
+#include "IRhiCommandPool.h"
 
 namespace keyh
 {
@@ -58,6 +59,11 @@ namespace keyh
 	IRhiCommandQueue* D3D12Device::createCommandQueue(ECommandQueueType commandQueueType)
 	{
 		return _commandQueues.emplace_back<D3D12CommandQueue>(this, commandQueueType);
+	}
+
+	IRhiCommandPool* D3D12Device::createCommandPool(ECommandQueueType commandQueueType)
+	{
+		return _commandPools.emplace_back<D3D12CommandPool>(this, commandQueueType);
 	}
 	
 	IRhiSwapChain* D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)

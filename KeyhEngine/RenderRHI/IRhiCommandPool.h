@@ -1,8 +1,10 @@
 ﻿#pragma once
-
+#include "RhiEnum.h"
 namespace keyh
 {
 	class IRhiCommandList;
+	class IRhiDevice;
+	class D3D12Device;
 
 	class IRhiCommandPool
 	{
@@ -26,7 +28,7 @@ namespace keyh
 	class D3D12CommandPool : public IRhiCommandPool
 	{
 	public:
-		D3D12CommandPool(IRhiDevice* device, ECommandQueueType queueType);
+		D3D12CommandPool(D3D12Device* device, ECommandQueueType queueType);
 		~D3D12CommandPool() override = default;
 
 	public:
@@ -34,10 +36,11 @@ namespace keyh
 		virtual void reset() override;
 
 	public:
+		inline D3D12Device*				getD3D12Device() const { return _d3d12Device; }
 		inline ID3D12CommandAllocator*	getNativeCommandPool() const { return _allocator.Get(); }
 
 	private:
+		D3D12Device*									_d3d12Device = nullptr;
 		Microsoft::WRL::ComPtr<ID3D12CommandAllocator>	_allocator;
 	};
 }
-
