@@ -3,6 +3,7 @@ namespace keyh
 {
 	class IRhiAdapter;
 	class IRhiCommandQueue;
+	class IRhiCommandPool;
 	class IRhiSwapChain;
 	class IRhiBuffer;
 	class IRhiTexture;
@@ -41,6 +42,7 @@ namespace keyh
 
 	public:
 		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) = 0;
+		virtual IRhiCommandPool*		createCommandPool(ECommandQueueType commandQueueType) = 0;
 		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) = 0;
 		virtual IRhiBuffer*				createBuffer() = 0;
 		virtual IRhiTexture*			createTexture() = 0;
@@ -64,6 +66,7 @@ namespace keyh
 		Microsoft::WRL::ComPtr<IDXGIAdapter4>	_adapter;
 		Microsoft::WRL::ComPtr<ID3D12Device>	_device;
 		OwnerVector<IRhiCommandQueue>			_commandQueues;
+		OwnerVector<IRhiCommandPool>			_commandPools;
 		OwnerVector<IRhiSwapChain>				_swapChains;
 
 	public:
@@ -76,6 +79,7 @@ namespace keyh
 
 	public:
 		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) override;
+		virtual IRhiCommandPool*		createCommandPool(ECommandQueueType commandQueueType) override;
 		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) override;
 		virtual IRhiBuffer*				createBuffer() override;
 		virtual IRhiTexture*			createTexture() override;
@@ -91,4 +95,3 @@ namespace keyh
 	};
 
 }
-

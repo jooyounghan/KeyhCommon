@@ -4,6 +4,7 @@
 namespace keyh
 {
 	class IRhiDevice;
+	class D3D12Device;
 
 	class IRhiCommandQueue
 	{
@@ -21,7 +22,7 @@ namespace keyh
 	class D3D12CommandQueue : public IRhiCommandQueue
 	{
 	public:
-		D3D12CommandQueue(IRhiDevice* device, ECommandQueueType commandQueueType);
+		D3D12CommandQueue(D3D12Device* device, ECommandQueueType commandQueueType);
 		~D3D12CommandQueue() override = default;
 
 	public:

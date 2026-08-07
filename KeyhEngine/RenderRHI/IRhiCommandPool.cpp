@@ -10,11 +10,12 @@ namespace keyh
 		, _queueType(queueType)
 	{}
 
-	D3D12CommandPool::D3D12CommandPool(IRhiDevice* device, ECommandQueueType queueType)
+	D3D12CommandPool::D3D12CommandPool(D3D12Device* device, ECommandQueueType queueType)
 		: IRhiCommandPool(device, queueType)
+		, _d3d12Device(device)
 	{
 		D3D12CommandQueueInfo commandQueueInfo = D3D12CommandQueueInfo::getInfo(queueType);
-		static_cast<D3D12Device*>(device)->getNativeDevice()->CreateCommandAllocator(
+		_d3d12Device->getNativeDevice()->CreateCommandAllocator(
 			commandQueueInfo._type, IID_PPV_ARGS(&_allocator)
 		);
 	}

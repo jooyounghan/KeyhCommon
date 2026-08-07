@@ -10,10 +10,10 @@ namespace keyh
 	
 	}
 
-	D3D12CommandQueue::D3D12CommandQueue(IRhiDevice* device, ECommandQueueType commandQueueType)
+	D3D12CommandQueue::D3D12CommandQueue(D3D12Device* device, ECommandQueueType commandQueueType)
 		: IRhiCommandQueue(commandQueueType)
 	{
-		ID3D12Device* d3d12Device = static_cast<D3D12Device*>(device)->getNativeDevice();
+		ID3D12Device* d3d12Device = device->getNativeDevice();
 		
 		D3D12CommandQueueInfo commandQueueInfo = D3D12CommandQueueInfo::getInfo(_commandQueueType);
 		D3D12_COMMAND_QUEUE_DESC queueDesc = {};
