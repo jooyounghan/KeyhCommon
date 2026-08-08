@@ -1,4 +1,4 @@
-#include "TestCommon.h"
+﻿#include "TestCommon.h"
 #include "ReflectTest.h"
 #include "test.h"
 #include "ReflectSerializer.h"

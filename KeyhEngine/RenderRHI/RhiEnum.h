@@ -14,6 +14,21 @@ namespace keyh
         return count;
     }
 
+    template<typename EnumType>
+    constexpr uint32 getIndex(EnumType value)
+    {
+        uint32 v = static_cast<uint32>(value);
+
+        if (v == 0)
+            return 0;
+
+        uint32 index = 1;
+        while (v >>= 1)
+            ++index;
+
+        return index;
+    }
+
 	template<typename Derived, uint32 Count>
     struct InfoList
     {
@@ -62,20 +77,26 @@ namespace keyh
         static InfoList<Derived, Count> getInfoList(EnumType combinedFlags);
 
     protected:
-        static void registerEntry(uint32 index, Derived info)
+        static void registerEntry(EnumType type, Derived info)
         {
-            getTable()[index] = keyh::move(info);
+            getTable()[getIndex(type)] = keyh::move(info);
         }
 
     private:
         static Derived* getTable()
         {
-            static Derived table[static_cast<uint32_t>(Count)];
+            static Derived table[Count];
             return table;
         }
     };
 
 #define UINT(x) static_cast<uint32>(x)
+#define EnumTable(EnumType, InfoType, EnumCount, Derived)   \
+    IEnumInfoTable<EnumType, InfoType, UINT(EnumCount), Derived>
+
+#define EnumFlagTable(EnumType, InfoType, EnumMax, Derived)   \
+    IEnumInfoTable<EnumType, InfoType, calculateFlagCount(EnumMax), Derived, true>
+
 #pragma region ResourceFormat
     enum class EResourceFormat
     {
@@ -98,7 +119,7 @@ namespace keyh
         DXGI_FORMAT         _srgbFormat = DXGI_FORMAT_UNKNOWN;
     };
 
-    struct D3D12ResourceFormatInfo : public ResourceFormatInfoBase, public IEnumInfoTable<EResourceFormat, ResourceFormatInfoBase, UINT(EResourceFormat::Count), D3D12ResourceFormatInfo>
+    struct D3D12ResourceFormatInfo : public ResourceFormatInfoBase, public EnumTable(EResourceFormat, ResourceFormatInfoBase, EResourceFormat::Count, D3D12ResourceFormatInfo)
     {
 		D3D12ResourceFormatInfo() = default;
         D3D12ResourceFormatInfo(
@@ -131,7 +152,7 @@ namespace keyh
         D3D12_COMMAND_LIST_TYPE _type = D3D12_COMMAND_LIST_TYPE_NONE;
     };
 
-    struct D3D12CommandQueueInfo : public CommandQueueInfoBase, public IEnumInfoTable<ECommandQueueType, CommandQueueInfoBase, UINT(ECommandQueueType::Count), D3D12CommandQueueInfo>
+    struct D3D12CommandQueueInfo : public CommandQueueInfoBase, public EnumTable(ECommandQueueType, CommandQueueInfoBase, ECommandQueueType::Count, D3D12CommandQueueInfo)
     {
 
         D3D12CommandQueueInfo() = default;
@@ -160,7 +181,7 @@ namespace keyh
 		D3D12_HEAP_TYPE     _heapType = D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_DEFAULT;
 	};
 
-	struct D3D12HeapTypeInfo : public HeapTypeInfoBase, public IEnumInfoTable<EHeapType, HeapTypeInfoBase, UINT(EHeapType::Count), D3D12HeapTypeInfo>
+	struct D3D12HeapTypeInfo : public HeapTypeInfoBase, public EnumTable(EHeapType, HeapTypeInfoBase, EHeapType::Count, D3D12HeapTypeInfo)
 	{
 		D3D12HeapTypeInfo() = default;
 		D3D12HeapTypeInfo(
@@ -188,7 +209,7 @@ namespace keyh
 		D3D12_RESOURCE_DIMENSION _dimension = D3D12_RESOURCE_DIMENSION_UNKNOWN;
 	};
 
-	struct D3D12ResourceDimensionInfo : public ResourceDimensionInfoBase, public IEnumInfoTable<EResourceDimension, ResourceDimensionInfoBase, UINT(EResourceDimension::Count), D3D12ResourceDimensionInfo>
+	struct D3D12ResourceDimensionInfo : public ResourceDimensionInfoBase, public EnumTable(EResourceDimension, ResourceDimensionInfoBase, EResourceDimension::Count, D3D12ResourceDimensionInfo)
 	{
 		D3D12ResourceDimensionInfo() = default;
 		D3D12ResourceDimensionInfo(
@@ -201,7 +222,7 @@ namespace keyh
 
 
 #pragma region ResourceFlag
-    enum class EResourceFlag : unsigned int
+    enum class EResourceFlag : uint32
     {
         None = 0,
         DenyShaderResource = 1 << 0,
@@ -218,22 +239,22 @@ namespace keyh
 	struct ResourceFlagInfoBase
     {
         FlyweightStringA    _name;
-        D3D12_RESOURCE_FLAGS _flags = D3D12_RESOURCE_FLAG_NONE;
+        D3D12_RESOURCE_FLAGS _flag = D3D12_RESOURCE_FLAG_NONE;
     };
 
-    struct D3D12ResourceFlagInfo : public ResourceFlagInfoBase, public IEnumInfoTable<EResourceFlag, ResourceFlagInfoBase, UINT(EResourceFlag::Max), D3D12ResourceFlagInfo, true>
+    struct D3D12ResourceFlagInfo : public ResourceFlagInfoBase, public EnumFlagTable(EResourceFlag, ResourceFlagInfoBase, EResourceFlag::Max, D3D12ResourceFlagInfo)
     {
         D3D12ResourceFlagInfo() = default;
         D3D12ResourceFlagInfo(
             const char* name
-            , D3D12_RESOURCE_FLAGS flags
+            , D3D12_RESOURCE_FLAGS flag
         );
         static void initializePlatformTable();
     };
 #pragma endregion
 
 #pragma region ResourceState
-	enum class EResourceState : unsigned int
+	enum class EResourceState : uint32
 	{
 		Common = 0,
 		VertexAndConstantBuffer = 1 << 0,
@@ -254,12 +275,14 @@ namespace keyh
 
         Max = RaytracingAccelerationStructure
 	};
-	struct ResourceStateInfoBase
+
+    struct ResourceStateInfoBase
 	{
 		FlyweightStringA    _name;
 		D3D12_RESOURCE_STATES _state = D3D12_RESOURCE_STATE_COMMON;
 	};
-	struct D3D12ResourceStateInfo : public ResourceStateInfoBase, public IEnumInfoTable<EResourceState, ResourceStateInfoBase, UINT(EResourceState::Max), D3D12ResourceStateInfo, true>
+	
+    struct D3D12ResourceStateInfo : public ResourceStateInfoBase, public EnumFlagTable(EResourceState, ResourceStateInfoBase, EResourceState::Max, D3D12ResourceStateInfo)
 	{
 		D3D12ResourceStateInfo() = default;
 		D3D12ResourceStateInfo(
@@ -268,5 +291,5 @@ namespace keyh
 		);
 		static void initializePlatformTable();
 	};
-    #undef UINT
+#undef UINT
 }

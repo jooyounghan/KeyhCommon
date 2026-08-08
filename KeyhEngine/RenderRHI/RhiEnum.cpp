@@ -1,4 +1,4 @@
-#include "RenderRhiPch.h"
+﻿#include "RenderRhiPch.h"
 #include "RhiEnum.h"
 
 namespace keyh
@@ -21,8 +21,6 @@ namespace keyh
 
         return list;
     }
-
-
 
 #pragma region ResourceFormat
 	D3D12ResourceFormatInfo::D3D12ResourceFormatInfo(
@@ -101,13 +99,14 @@ namespace keyh
 
     void D3D12ResourceFlagInfo::initializePlatformTable()
     {
-        registerEntry(0, { "None",               D3D12_RESOURCE_FLAG_NONE                      });
-        registerEntry(1, { "DenyShaderResource", D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE      });
-        registerEntry(2, { "RenderTarget",       D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET       });
-        registerEntry(4, { "DepthStencil",       D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL       });
-        registerEntry(8, { "UnorderedAccess",    D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS    });
-        registerEntry(16,{ "SimultaneousAccess", D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS });
-        registerEntry(32,{ "CrossAdapter",       D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER       });
+        registerEntry(EResourceFlag::None                   , { "None",               D3D12_RESOURCE_FLAG_NONE });
+        registerEntry(EResourceFlag::DenyShaderResource     , { "DenyShaderResource", D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE });
+        registerEntry(EResourceFlag::RenderTarget           , { "RenderTarget",       D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET });
+        registerEntry(EResourceFlag::DepthStencil           , { "DepthStencil",       D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL });
+        registerEntry(EResourceFlag::UnorderedAccess        , { "UnorderedAccess",    D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS });
+        registerEntry(EResourceFlag::SimultaneousAccess     , { "SimultaneousAccess", D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS });
+        registerEntry(EResourceFlag::CrossAdapter           , { "CrossAdapter",       D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER       });
+        registerEntry(EResourceFlag::AccelerationStructure  , { "AccelerationStructure", D3D12_RESOURCE_FLAG_RAYTRACING_ACCELERATION_STRUCTURE });
     }
 #pragma endregion
     D3D12ResourceStateInfo::D3D12ResourceStateInfo(const char* name, D3D12_RESOURCE_STATES state)

@@ -6,7 +6,7 @@ namespace keyh
     class REFLECTIVE(TestSubObject)
     {
         KEYH_REFLECT_BODY(TestSubObject)
-    protected:
+    public:
         KEYH_REFLECT_PROPERTY(PropertyName = "Names")
             Vector<StaticStringA> _names;
     };
@@ -14,7 +14,7 @@ namespace keyh
     class REFLECTIVE(TestObject)
     {
         KEYH_REFLECT_BODY(TestObject)
-    protected:
+    public:
         KEYH_REFLECT_PROPERTY_GROUP("Group1")
         KEYH_REFLECT_PROPERTY(Default = 0)
         int _intValue = 0;

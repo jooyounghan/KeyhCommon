@@ -5,6 +5,17 @@ namespace keyh
 {
 	D3D12_RESOURCE_DESC RhiBufferDesc::getD3D12ResourceDesc() const
 	{
+		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
+		InfoList infoList = D3D12ResourceFlagInfo::getInfoList(_flags);
+		for (uint32 idx = 0; idx < infoList._count; ++idx)
+		{
+			const D3D12ResourceFlagInfo* resourceFlagInfo = infoList._items[idx];
+			if (resourceFlagInfo != nullptr)
+			{
+				flags |= resourceFlagInfo->_flag;
+			}
+		}
+
 		D3D12_RESOURCE_DESC resourceDesc = {};
 		resourceDesc.Dimension = D3D12ResourceDimensionInfo::getInfo(_dimension)._dimension;
 		resourceDesc.Width = _width;
@@ -13,7 +24,7 @@ namespace keyh
 		resourceDesc.MipLevels = 1;
 		resourceDesc.Format = D3D12ResourceFormatInfo::getInfo(_format)._format;
 		resourceDesc.SampleDesc.Count = 1;
-		resourceDesc.Flags = D3D12ResourceFlagInfo::getInfo(_flags)._flags;
+		resourceDesc.Flags = flags;
 
 		return resourceDesc;
 	}
