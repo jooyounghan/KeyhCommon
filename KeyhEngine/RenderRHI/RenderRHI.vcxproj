@@ -155,21 +155,25 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IRhiBuffer.h" />
     <ClInclude Include="IRhiCommandList.h" />
     <ClInclude Include="IRhiCommandPool.h" />
     <ClInclude Include="IRhiCommandQueue.h" />
     <ClInclude Include="IRhiDevice.h" />
     <ClInclude Include="IRhiInstance.h" />
+    <ClInclude Include="IRhiMemoryHeap.h" />
     <ClInclude Include="IRhiSwapChain.h" />
     <ClInclude Include="RenderRhiPch.h" />
     <ClInclude Include="RhiEnum.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IRhiBuffer.cpp" />
     <ClCompile Include="IRhiCommandList.cpp" />
     <ClCompile Include="IRhiCommandPool.cpp" />
     <ClCompile Include="IRhiCommandQueue.cpp" />
     <ClCompile Include="IRhiDevice.cpp" />
     <ClCompile Include="IRhiInstance.cpp" />
+    <ClCompile Include="IRhiMemoryHeap.cpp" />
     <ClCompile Include="IRhiSwapChain.cpp" />
     <ClCompile Include="RenderRhiPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

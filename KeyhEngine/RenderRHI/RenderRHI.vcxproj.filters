@@ -25,6 +25,12 @@
     <Filter Include="소스 파일\Command">
       <UniqueIdentifier>{33087fec-f071-4c16-8030-4c5cb4b9cefc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Memory">
+      <UniqueIdentifier>{1790a63f-aabd-4359-a881-061ab78bf1ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Memory">
+      <UniqueIdentifier>{afdbe222-a389-423f-9842-088dbaa3eb59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderRhiPch.h">
@@ -51,6 +57,12 @@
     <ClInclude Include="IRhiCommandList.h">
       <Filter>헤더 파일\Command</Filter>
     </ClInclude>
+    <ClInclude Include="IRhiMemoryHeap.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiBuffer.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RenderRhiPch.cpp">
@@ -76,6 +88,12 @@
     </ClCompile>
     <ClCompile Include="IRhiCommandList.cpp">
       <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiMemoryHeap.cpp">
+      <Filter>소스 파일\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiBuffer.cpp">
+      <Filter>소스 파일\Memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
