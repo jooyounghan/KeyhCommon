@@ -81,7 +81,7 @@ namespace keyh
 		virtual Ptr<IRhiCommandQueue>	createCommandQueue(ECommandQueueType commandQueueType) override;
 		virtual Ptr<IRhiCommandPool>	createCommandPool(ECommandQueueType commandQueueType) override;
 		virtual Ptr<IRhiSwapChain>		createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) override;
-		virtual Ptr<IRhiBuffer>			createBuffer(const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default) override;
+		virtual Ptr<IRhiBuffer>			createBuffer(const RhiBufferDesc& desc, EHeapType heapType) override;
 		virtual Ptr<IRhiTexture>		createTexture() override;
 		virtual Ptr<IRhiSampler>		createSampler() override;
 		virtual Ptr<IRhiFence>			createFence() override;

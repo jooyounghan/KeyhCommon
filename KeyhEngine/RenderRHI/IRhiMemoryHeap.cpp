@@ -49,6 +49,6 @@ namespace keyh
 			return {};
 		}
 
-		return makePtr<IRhiBuffer, D3D12Buffer>(desc, resource);
+		return makePtr<IRhiBuffer, D3D12Buffer>(desc, keyh::move(resource));
 	}
 }
