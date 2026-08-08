@@ -37,7 +37,7 @@ namespace keyh
     protected:
         static void registerEntry(EnumType type, Derived info)
         {
-            getTable()[static_cast<uint32_t>(type)] = std::move(info);
+            getTable()[static_cast<uint32_t>(type)] = keyh::move(info);
         }
 
     private:
@@ -64,7 +64,7 @@ namespace keyh
     protected:
         static void registerEntry(uint32 index, Derived info)
         {
-            getTable()[index] = std::move(info);
+            getTable()[index] = keyh::move(info);
         }
 
     private:
