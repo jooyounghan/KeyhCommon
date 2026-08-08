@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Ptr.h"
+#include "RhiEnum.h"
 
 namespace keyh
 {
@@ -23,8 +25,8 @@ namespace keyh
 		EHeapType _heapType;
 
 	public:
-		virtual void createBuffer(const RhiBufferDesc& desc, IRhiBuffer* buffer) = 0;
-		virtual void createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset, IRhiBuffer* buffer) = 0;
+		virtual Ptr<IRhiBuffer> createBuffer(const RhiBufferDesc& desc) = 0;
+		virtual Ptr<IRhiBuffer> createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset) = 0;
 	};
 
 	class D3D12MemoryHeap : public IRhiMemoryHeap
@@ -43,9 +45,8 @@ namespace keyh
 		Microsoft::WRL::ComPtr<ID3D12Heap> _heap;
 
 	public:
-		virtual void createBuffer(const RhiBufferDesc& desc, IRhiBuffer* buffer) override;
-		virtual void createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset, IRhiBuffer* buffer) override;
+		virtual Ptr<IRhiBuffer> createBuffer(const RhiBufferDesc& desc) override;
+		virtual Ptr<IRhiBuffer> createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset) override;
 	};
 	
 }
-

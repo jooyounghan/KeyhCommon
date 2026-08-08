@@ -56,49 +56,49 @@ namespace keyh
 
 	}
 
-	IRhiCommandQueue* D3D12Device::createCommandQueue(ECommandQueueType commandQueueType)
+	Ptr<IRhiCommandQueue> D3D12Device::createCommandQueue(ECommandQueueType commandQueueType)
 	{
-		return _commandQueues.emplace_back<D3D12CommandQueue>(this, commandQueueType);
+		return makePtr<IRhiCommandQueue, D3D12CommandQueue>(this, commandQueueType);
 	}
 
-	IRhiCommandPool* D3D12Device::createCommandPool(ECommandQueueType commandQueueType)
+	Ptr<IRhiCommandPool> D3D12Device::createCommandPool(ECommandQueueType commandQueueType)
 	{
-		return _commandPools.emplace_back<D3D12CommandPool>(this, commandQueueType);
+		return makePtr<IRhiCommandPool, D3D12CommandPool>(this, commandQueueType);
 	}
 	
-	IRhiSwapChain* D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
+	Ptr<IRhiSwapChain> D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
 	{
-		return _swapChains.emplace_back<D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
+		return makePtr<IRhiSwapChain, D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
 	}
 	
-	IRhiBuffer* D3D12Device::createBuffer()
+	Ptr<IRhiBuffer> D3D12Device::createBuffer(const RhiBufferDesc& desc, EHeapType heapType)
 	{
-		return nullptr;
+		return makePtr<IRhiBuffer, D3D12Buffer>(_device.Get(), desc, heapType);
 	}
 	
-	IRhiTexture* D3D12Device::createTexture()
+	Ptr<IRhiTexture> D3D12Device::createTexture()
 	{
-		return nullptr;
+		return {};
 	}
 	
-	IRhiSampler* D3D12Device::createSampler()
+	Ptr<IRhiSampler> D3D12Device::createSampler()
 	{
-		return nullptr;
+		return {};
 	}
 	
-	IRhiFence* D3D12Device::createFence()
+	Ptr<IRhiFence> D3D12Device::createFence()
 	{
-		return nullptr;
+		return {};
 	}
 	
-	IRhiGraphicsPipeline* D3D12Device::createGraphicsPipeline()
+	Ptr<IRhiGraphicsPipeline> D3D12Device::createGraphicsPipeline()
 	{
-		return nullptr;
+		return {};
 	}
 	
-	IRhiComputePipeline* D3D12Device::createComputePipeline()
+	Ptr<IRhiComputePipeline> D3D12Device::createComputePipeline()
 	{
-		return nullptr;
+		return {};
 	}
 
 	void D3D12Device::allocateMemoryHeap()

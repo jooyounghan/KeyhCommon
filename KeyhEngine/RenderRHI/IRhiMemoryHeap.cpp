@@ -26,21 +26,29 @@ namespace keyh
         d3d12Device->CreateHeap(&heapDesc, IID_PPV_ARGS(&_heap));
 	}
 
-	void D3D12MemoryHeap::createBuffer(const RhiBufferDesc& desc, IRhiBuffer* buffer)
+	Ptr<IRhiBuffer> D3D12MemoryHeap::createBuffer(const RhiBufferDesc& desc)
 	{
-        D3D12_RESOURCE_DESC resourceDesc = desc.getD3D12ResourceDesc();
-        //_device->getNativeDevice()->CreatePlacedResource(
-        //    _heap.Get(),
-        //    0,
-        //    &resourceDesc,
-        //    D3D12_RESOURCE_STATE_DEPTH_WRITE,
-        //    nullptr,
-        //    IID_PPV_ARGS(&_shadowMap)
-        //);
+		return createPlacedBuffer(desc, 0);
 	}
 
-	void D3D12MemoryHeap::createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset, IRhiBuffer* buffer)
+	Ptr<IRhiBuffer> D3D12MemoryHeap::createPlacedBuffer(const RhiBufferDesc& desc, uint32 offset)
 	{
-	
+		D3D12_RESOURCE_DESC resourceDesc = desc.getD3D12ResourceDesc();
+		Microsoft::WRL::ComPtr<ID3D12Resource> resource;
+		const HRESULT hr = _device->getNativeDevice()->CreatePlacedResource(
+			_heap.Get(),
+			offset,
+			&resourceDesc,
+			D3D12_RESOURCE_STATE_COMMON,
+			nullptr,
+			IID_PPV_ARGS(&resource)
+		);
+		if (FAILED(hr))
+		{
+			KEYH_ASSERT_ARGS(false, "Failed to create placed buffer resource. HRESULT: 0x%X", hr);
+			return {};
+		}
+
+		return makePtr<IRhiBuffer, D3D12Buffer>(desc, resource);
 	}
 }

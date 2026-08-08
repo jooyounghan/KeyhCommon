@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Ptr.h"
+#include "RhiEnum.h"
 namespace keyh
 {
 	class IRhiAdapter;
@@ -13,6 +15,7 @@ namespace keyh
 	class IRhiComputePipeline;
 
 	struct RHISwapChainDesc;
+	struct RhiBufferDesc;
 
 	struct RhiAdapterInfo
 	{
@@ -41,15 +44,15 @@ namespace keyh
 		virtual bool initialize() = 0;
 
 	public:
-		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) = 0;
-		virtual IRhiCommandPool*		createCommandPool(ECommandQueueType commandQueueType) = 0;
-		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) = 0;
-		virtual IRhiBuffer*				createBuffer() = 0;
-		virtual IRhiTexture*			createTexture() = 0;
-		virtual IRhiSampler*			createSampler() = 0;
-		virtual IRhiFence*				createFence() = 0;
-		virtual IRhiGraphicsPipeline*	createGraphicsPipeline() = 0;
-		virtual IRhiComputePipeline*	createComputePipeline() = 0;
+		virtual Ptr<IRhiCommandQueue>	createCommandQueue(ECommandQueueType commandQueueType) = 0;
+		virtual Ptr<IRhiCommandPool>	createCommandPool(ECommandQueueType commandQueueType) = 0;
+		virtual Ptr<IRhiSwapChain>		createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) = 0;
+		virtual Ptr<IRhiBuffer>			createBuffer(const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default) = 0;
+		virtual Ptr<IRhiTexture>		createTexture() = 0;
+		virtual Ptr<IRhiSampler>		createSampler() = 0;
+		virtual Ptr<IRhiFence>			createFence() = 0;
+		virtual Ptr<IRhiGraphicsPipeline> createGraphicsPipeline() = 0;
+		virtual Ptr<IRhiComputePipeline> createComputePipeline() = 0;
 
 	public:
 		virtual void					allocateMemoryHeap() = 0;
@@ -65,9 +68,6 @@ namespace keyh
 	protected:
 		Microsoft::WRL::ComPtr<IDXGIAdapter4>	_adapter;
 		Microsoft::WRL::ComPtr<ID3D12Device>	_device;
-		OwnerVector<IRhiCommandQueue>			_commandQueues;
-		OwnerVector<IRhiCommandPool>			_commandPools;
-		OwnerVector<IRhiSwapChain>				_swapChains;
 
 	public:
 		IDXGIFactory7*			getDxgiFactory() const;
@@ -78,15 +78,15 @@ namespace keyh
 		virtual bool initialize() override;
 
 	public:
-		virtual IRhiCommandQueue*		createCommandQueue(ECommandQueueType commandQueueType) override;
-		virtual IRhiCommandPool*		createCommandPool(ECommandQueueType commandQueueType) override;
-		virtual IRhiSwapChain*			createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) override;
-		virtual IRhiBuffer*				createBuffer() override;
-		virtual IRhiTexture*			createTexture() override;
-		virtual IRhiSampler*			createSampler() override;
-		virtual IRhiFence*				createFence() override;
-		virtual IRhiGraphicsPipeline*	createGraphicsPipeline() override;
-		virtual IRhiComputePipeline*	createComputePipeline() override;
+		virtual Ptr<IRhiCommandQueue>	createCommandQueue(ECommandQueueType commandQueueType) override;
+		virtual Ptr<IRhiCommandPool>	createCommandPool(ECommandQueueType commandQueueType) override;
+		virtual Ptr<IRhiSwapChain>		createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) override;
+		virtual Ptr<IRhiBuffer>			createBuffer(const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default) override;
+		virtual Ptr<IRhiTexture>		createTexture() override;
+		virtual Ptr<IRhiSampler>		createSampler() override;
+		virtual Ptr<IRhiFence>			createFence() override;
+		virtual Ptr<IRhiGraphicsPipeline> createGraphicsPipeline() override;
+		virtual Ptr<IRhiComputePipeline> createComputePipeline() override;
 
 	public:
 		virtual void allocateMemoryHeap() override;
