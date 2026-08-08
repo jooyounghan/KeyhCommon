@@ -1,7 +1,6 @@
-﻿#include "RenderRhiPch.h"
+#include "RenderRhiPch.h"
 #include "RhiEnum.h"
 
-#define UINT(x) static_cast<uint32>(x)
 namespace keyh
 {
     template<typename EnumType, typename InfoType, uint32 Count, typename Derived>
@@ -40,11 +39,11 @@ namespace keyh
 
     void D3D12ResourceFormatInfo::initializePlatformTable()
     {
-        getTable()[UINT(EResourceFormat::Unknown)] = D3D12ResourceFormatInfo{ "UNKNOWN", 0, 0, false, false, DXGI_FORMAT::DXGI_FORMAT_UNKNOWN, DXGI_FORMAT::DXGI_FORMAT_UNKNOWN };
-        getTable()[UINT(EResourceFormat::R32G32B32A32_Float)] = D3D12ResourceFormatInfo{ "R32G32B32A32_FLOAT", 16, 1, false, false, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT };
-        getTable()[UINT(EResourceFormat::B8G8R8A8_UNorm)] = D3D12ResourceFormatInfo{ "B8G8R8A8_UNORM", 4, 1, false, false, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_B8G8R8A8_UNORM_SRGB };
-        getTable()[UINT(EResourceFormat::R8G8B8A8_UNorm)] = D3D12ResourceFormatInfo{ "R8G8B8A8_UNORM", 4, 1, false, false, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB };
-        getTable()[UINT(EResourceFormat::R32_Float)] = D3D12ResourceFormatInfo{ "R32_FLOAT", 4, 1, false, false, DXGI_FORMAT_R32_FLOAT, DXGI_FORMAT_R32_FLOAT };
+        registerEntry(EResourceFormat::Unknown,           { "UNKNOWN",           0,  0, false, false, DXGI_FORMAT::DXGI_FORMAT_UNKNOWN,           DXGI_FORMAT::DXGI_FORMAT_UNKNOWN           });
+        registerEntry(EResourceFormat::R32G32B32A32_Float,{ "R32G32B32A32_FLOAT",16, 1, false, false, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT, DXGI_FORMAT::DXGI_FORMAT_R32G32B32A32_FLOAT });
+        registerEntry(EResourceFormat::B8G8R8A8_UNorm,    { "B8G8R8A8_UNORM",    4,  1, false, false, DXGI_FORMAT_B8G8R8A8_UNORM,                  DXGI_FORMAT_B8G8R8A8_UNORM_SRGB            });
+        registerEntry(EResourceFormat::R8G8B8A8_UNorm,    { "R8G8B8A8_UNORM",    4,  1, false, false, DXGI_FORMAT_R8G8B8A8_UNORM,                  DXGI_FORMAT_R8G8B8A8_UNORM_SRGB            });
+        registerEntry(EResourceFormat::R32_Float,         { "R32_FLOAT",         4,  1, false, false, DXGI_FORMAT_R32_FLOAT,                        DXGI_FORMAT_R32_FLOAT                      });
     }
 #pragma endregion
 
@@ -61,9 +60,9 @@ namespace keyh
 
     void D3D12CommandQueueInfo::initializePlatformTable()
     {
-        getTable()[UINT(ECommandQueueType::Direct)] = D3D12CommandQueueInfo{ "Direct", true, D3D12_COMMAND_LIST_TYPE_DIRECT };
-        getTable()[UINT(ECommandQueueType::Compute)] = D3D12CommandQueueInfo{ "Compute", false, D3D12_COMMAND_LIST_TYPE_COMPUTE };
-        getTable()[UINT(ECommandQueueType::Copy)] = D3D12CommandQueueInfo{ "Copy", false, D3D12_COMMAND_LIST_TYPE_COPY };
+        registerEntry(ECommandQueueType::Direct,  { "Direct",  true,  D3D12_COMMAND_LIST_TYPE_DIRECT  });
+        registerEntry(ECommandQueueType::Compute, { "Compute", false, D3D12_COMMAND_LIST_TYPE_COMPUTE });
+        registerEntry(ECommandQueueType::Copy,    { "Copy",    false, D3D12_COMMAND_LIST_TYPE_COPY    });
     }
 #pragma endregion
 
@@ -74,9 +73,9 @@ namespace keyh
 
     void D3D12HeapTypeInfo::initializePlatformTable()
     {
-        getTable()[UINT(EHeapType::Default)] = D3D12HeapTypeInfo{ "Default", D3D12_HEAP_TYPE_DEFAULT };
-		getTable()[UINT(EHeapType::Upload)] = D3D12HeapTypeInfo{ "Upload", D3D12_HEAP_TYPE_UPLOAD };
-		getTable()[UINT(EHeapType::Readback)] = D3D12HeapTypeInfo{ "Readback", D3D12_HEAP_TYPE_READBACK };
+        registerEntry(EHeapType::Default,  { "Default",  D3D12_HEAP_TYPE_DEFAULT  });
+        registerEntry(EHeapType::Upload,   { "Upload",   D3D12_HEAP_TYPE_UPLOAD   });
+        registerEntry(EHeapType::Readback, { "Readback", D3D12_HEAP_TYPE_READBACK });
     }
 #pragma endregion
 
@@ -87,10 +86,10 @@ namespace keyh
 
     void D3D12ResourceDimensionInfo::initializePlatformTable()
     {
-        getTable()[UINT(EResourceDimension::Buffer)] = D3D12ResourceDimensionInfo{ "Buffer", D3D12_RESOURCE_DIMENSION_BUFFER };
-        getTable()[UINT(EResourceDimension::Texture1D)] = D3D12ResourceDimensionInfo{ "Texture1D", D3D12_RESOURCE_DIMENSION_TEXTURE1D };
-        getTable()[UINT(EResourceDimension::Texture2D)] = D3D12ResourceDimensionInfo{ "Texture2D", D3D12_RESOURCE_DIMENSION_TEXTURE2D };
-		getTable()[UINT(EResourceDimension::Texture3D)] = D3D12ResourceDimensionInfo{ "Texture3D", D3D12_RESOURCE_DIMENSION_TEXTURE3D };
+        registerEntry(EResourceDimension::Buffer,    { "Buffer",    D3D12_RESOURCE_DIMENSION_BUFFER    });
+        registerEntry(EResourceDimension::Texture1D, { "Texture1D", D3D12_RESOURCE_DIMENSION_TEXTURE1D });
+        registerEntry(EResourceDimension::Texture2D, { "Texture2D", D3D12_RESOURCE_DIMENSION_TEXTURE2D });
+        registerEntry(EResourceDimension::Texture3D, { "Texture3D", D3D12_RESOURCE_DIMENSION_TEXTURE3D });
     }
 #pragma endregion
 
@@ -102,13 +101,13 @@ namespace keyh
 
     void D3D12ResourceFlagInfo::initializePlatformTable()
     {
-		getTable()[UINT(EResourceFlag::None)] = D3D12ResourceFlagInfo{ "None", D3D12_RESOURCE_FLAG_NONE };
-        getTable()[UINT(EResourceFlag::DenyShaderResource)] = D3D12ResourceFlagInfo{ "DenyShaderResource", D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE };
-		getTable()[UINT(EResourceFlag::RenderTarget)] = D3D12ResourceFlagInfo{ "RenderTarget", D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET };
-		getTable()[UINT(EResourceFlag::DepthStencil)] = D3D12ResourceFlagInfo{ "DepthStencil", D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL };
-		getTable()[UINT(EResourceFlag::UnorderedAccess)] = D3D12ResourceFlagInfo{ "UnorderedAccess", D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS };
-		getTable()[UINT(EResourceFlag::SimultaneousAccess)] = D3D12ResourceFlagInfo{ "SimultaneousAccess", D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS }; 
-		getTable()[UINT(EResourceFlag::CrossAdapter)] = D3D12ResourceFlagInfo{ "CrossAdapter", D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER }; 
+        registerEntry(0, { "None",               D3D12_RESOURCE_FLAG_NONE                      });
+        registerEntry(1, { "DenyShaderResource", D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE      });
+        registerEntry(2, { "RenderTarget",       D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET       });
+        registerEntry(4, { "DepthStencil",       D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL       });
+        registerEntry(8, { "UnorderedAccess",    D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS    });
+        registerEntry(16,{ "SimultaneousAccess", D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS });
+        registerEntry(32,{ "CrossAdapter",       D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER       });
     }
 #pragma endregion
     D3D12ResourceStateInfo::D3D12ResourceStateInfo(const char* name, D3D12_RESOURCE_STATES state)
@@ -120,5 +119,3 @@ namespace keyh
     
     }
 }
-
-#undef UINT
