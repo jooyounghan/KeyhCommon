@@ -23,6 +23,11 @@
 	}
 
 	template<typename T>
+	Ptr<T>::Ptr(nullptr_t)
+		: _ptr(nullptr)
+	{}
+
+	template<typename T>
 	Ptr<T>::~Ptr()
 	{
 		release();
