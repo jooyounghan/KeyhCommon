@@ -77,6 +77,21 @@ namespace keyh
     }
 #pragma endregion
 
+#pragma region HeapFlag
+	D3D12HeapFlagInfo::D3D12HeapFlagInfo(const char* name, D3D12_HEAP_FLAGS flag)
+		: HeapFlagInfoBase{ name, flag }
+	{}
+
+	void D3D12HeapFlagInfo::initializePlatformTable()
+	{
+		registerEntry(EHeapFlag::None            , { "None", D3D12_HEAP_FLAG_NONE });
+		registerEntry(EHeapFlag::Shared          , { "Shared", D3D12_HEAP_FLAG_SHARED });
+		registerEntry(EHeapFlag::CrossAdapter    , { "CrossAdapter", D3D12_HEAP_FLAG_SHARED_CROSS_ADAPTER });
+		registerEntry(EHeapFlag::Protected       , { "Protected", D3D12_HEAP_FLAG_HARDWARE_PROTECTED });
+		registerEntry(EHeapFlag::NotResident     , { "NotResident", D3D12_HEAP_FLAG_CREATE_NOT_RESIDENT });
+	}
+#pragma endregion
+
 #pragma region ResourceDimension
     D3D12ResourceDimensionInfo::D3D12ResourceDimensionInfo(const char* name, D3D12_RESOURCE_DIMENSION dimension)
         : ResourceDimensionInfoBase{ name, dimension }
@@ -105,16 +120,50 @@ namespace keyh
         registerEntry(EResourceFlag::DepthStencil           , { "DepthStencil",       D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL });
         registerEntry(EResourceFlag::UnorderedAccess        , { "UnorderedAccess",    D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS });
         registerEntry(EResourceFlag::SimultaneousAccess     , { "SimultaneousAccess", D3D12_RESOURCE_FLAG_ALLOW_SIMULTANEOUS_ACCESS });
-        registerEntry(EResourceFlag::CrossAdapter           , { "CrossAdapter",       D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER       });
+        registerEntry(EResourceFlag::CrossAdapter           , { "CrossAdapter",       D3D12_RESOURCE_FLAG_ALLOW_CROSS_ADAPTER });
         registerEntry(EResourceFlag::AccelerationStructure  , { "AccelerationStructure", D3D12_RESOURCE_FLAG_RAYTRACING_ACCELERATION_STRUCTURE });
     }
 #pragma endregion
+
+#pragma region ResourceState
     D3D12ResourceStateInfo::D3D12ResourceStateInfo(const char* name, D3D12_RESOURCE_STATES state)
         : ResourceStateInfoBase{ name, state }
     {}
 
     void D3D12ResourceStateInfo::initializePlatformTable()
     {
-    
+		registerEntry(EResourceState::Common                            , { "Common", D3D12_RESOURCE_STATE_COMMON });
+		registerEntry(EResourceState::VertexAndConstantBuffer           , { "VertexAndConstantBuffer", D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER });
+		registerEntry(EResourceState::IndexBuffer                       , { "IndexBuffer", D3D12_RESOURCE_STATE_INDEX_BUFFER });
+		registerEntry(EResourceState::RenderTarget                      , { "RenderTarget", D3D12_RESOURCE_STATE_RENDER_TARGET });
+		registerEntry(EResourceState::UnorderedAccess                   , { "UnorderedAccess", D3D12_RESOURCE_STATE_UNORDERED_ACCESS });
+		registerEntry(EResourceState::DepthWrite                        , { "DepthWrite", D3D12_RESOURCE_STATE_DEPTH_WRITE });
+		registerEntry(EResourceState::DepthRead                         , { "DepthRead", D3D12_RESOURCE_STATE_DEPTH_READ });
+		registerEntry(EResourceState::NonPixelShaderResource            , { "NonPixelShaderResource", D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE });
+		registerEntry(EResourceState::PixelShaderResource               , { "PixelShaderResource", D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE });
+		registerEntry(EResourceState::StreamOut                         , { "StreamOut", D3D12_RESOURCE_STATE_STREAM_OUT });
+		registerEntry(EResourceState::IndirectArgument                  , { "IndirectArgument", D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT });
+		registerEntry(EResourceState::CopyDest                          , { "CopyDest", D3D12_RESOURCE_STATE_COPY_DEST });
+		registerEntry(EResourceState::CopySource                        , { "CopySource", D3D12_RESOURCE_STATE_COPY_SOURCE });
+		registerEntry(EResourceState::ResolveDest                       , { "ResolveDest", D3D12_RESOURCE_STATE_RESOLVE_DEST });
+		registerEntry(EResourceState::ResolveSource                     , { "ResolveSource", D3D12_RESOURCE_STATE_RESOLVE_SOURCE });
+		registerEntry(EResourceState::RaytracingAccelerationStructure   , { "RaytracingAccelerationStructure", D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE });
     }
+#pragma endregion
+
+#pragma region DescriptorType
+    RhiDescriptorTypeInfo::RhiDescriptorTypeInfo(const char* name, D3D12_DESCRIPTOR_RANGE_TYPE type)
+		: RhiDescriptorTypeInfoBase{ name, type }
+    {}
+
+    void RhiDescriptorTypeInfo::initializePlatformTable()
+    {
+		registerEntry(ERhiDescriptorType::UniformBuffer             , { "UniformBuffer", D3D12_DESCRIPTOR_RANGE_TYPE_CBV });
+		registerEntry(ERhiDescriptorType::StorageBufferReadOnly     , { "StorageBufferReadOnly", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
+		registerEntry(ERhiDescriptorType::StorageBufferReadWrite    , { "StorageBufferReadWrite", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
+		registerEntry(ERhiDescriptorType::SampledImage              , { "SampledImage", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
+		registerEntry(ERhiDescriptorType::StorageImage              , { "StorageImage", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
+		registerEntry(ERhiDescriptorType::Sampler                   , { "Sampler", D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER });
+    }
+#pragma endregion
 }

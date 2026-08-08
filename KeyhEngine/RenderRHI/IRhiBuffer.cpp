@@ -3,10 +3,17 @@
 
 namespace keyh
 {
+	uint32 RhiBufferDesc::getStride() const
+	{
+		ResourceFormatInfoBase resourceFormatInfo = D3D12ResourceFormatInfo::getInfo(_format);
+		return resourceFormatInfo._bytesPerPixel;
+	}
+
+#if defined(KEYH_PLATFORM_WINDOWS)
 	D3D12_RESOURCE_DESC RhiBufferDesc::getD3D12ResourceDesc() const
 	{
 		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
-		InfoList infoList = D3D12ResourceFlagInfo::getInfoList(_flags);
+		InfoList infoList = D3D12ResourceFlagInfo::getInfoList(_resourceFlags);
 		for (uint32 idx = 0; idx < infoList._count; ++idx)
 		{
 			const D3D12ResourceFlagInfo* resourceFlagInfo = infoList._items[idx];
@@ -29,6 +36,22 @@ namespace keyh
 		return resourceDesc;
 	}
 
+	D3D12_RESOURCE_STATES RhiBufferDesc::getD3D12ResourceStates() const
+	{
+		D3D12_RESOURCE_STATES states = D3D12_RESOURCE_STATE_COMMON;
+		InfoList infoList = D3D12ResourceStateInfo::getInfoList(_resourceStateFlags);
+		for (uint32 idx = 0; idx < infoList._count; ++idx)
+		{
+			const D3D12ResourceStateInfo* resourceStateInfo = infoList._items[idx];
+			if (resourceStateInfo != nullptr)
+			{
+				states |= resourceStateInfo->_state;
+			}
+		}
+		return states;
+	}
+#endif
+
 	IRhiBuffer::IRhiBuffer(const RhiBufferDesc& desc)
 		: _desc(desc)
 	{}
@@ -46,7 +69,7 @@ namespace keyh
 			&heapProperties,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
-			D3D12_RESOURCE_STATE_COMMON,
+			desc.getD3D12ResourceStates(),
 			nullptr,
 			IID_PPV_ARGS(&_resource)
 		);

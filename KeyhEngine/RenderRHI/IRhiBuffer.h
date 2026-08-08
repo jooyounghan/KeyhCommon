@@ -8,13 +8,16 @@ namespace keyh
 		uint32 _width = 0;
 		uint32 _height = 0;
 		uint32 _depth = 1;
-		uint32 _stride = 0;
 		EResourceFormat _format = EResourceFormat::Unknown;
 		EResourceDimension _dimension = EResourceDimension::Buffer;
-		EResourceFlag _flags = EResourceFlag::None;
+		EResourceFlag _resourceFlags = EResourceFlag::None;
+		EResourceState _resourceStateFlags = EResourceState::Common;
+
+		uint32 getStride() const;
 
 #if defined(KEYH_PLATFORM_WINDOWS)
-		D3D12_RESOURCE_DESC getD3D12ResourceDesc() const;
+		D3D12_RESOURCE_DESC		getD3D12ResourceDesc() const;
+		D3D12_RESOURCE_STATES	getD3D12ResourceStates() const;
 #endif
 	};
 

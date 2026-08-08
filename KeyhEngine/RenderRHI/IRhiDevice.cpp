@@ -3,6 +3,7 @@
 #include "IRhiSwapChain.h"
 #include "IRhiCommandQueue.h"
 #include "IRhiCommandPool.h"
+#include "IRhiBuffer.h"
 
 namespace keyh
 {
@@ -58,22 +59,22 @@ namespace keyh
 
 	Ptr<IRhiCommandQueue> D3D12Device::createCommandQueue(ECommandQueueType commandQueueType)
 	{
-		return makePtr<IRhiCommandQueue, D3D12CommandQueue>(this, commandQueueType);
+		return makePtr<D3D12CommandQueue>(this, commandQueueType);
 	}
 
 	Ptr<IRhiCommandPool> D3D12Device::createCommandPool(ECommandQueueType commandQueueType)
 	{
-		return makePtr<IRhiCommandPool, D3D12CommandPool>(this, commandQueueType);
+		return makePtr<D3D12CommandPool>(this, commandQueueType);
 	}
 	
 	Ptr<IRhiSwapChain> D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
 	{
-		return makePtr<IRhiSwapChain, D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
+		return makePtr<D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
 	}
 	
 	Ptr<IRhiBuffer> D3D12Device::createBuffer(const RhiBufferDesc& desc, EHeapType heapType)
 	{
-		return makePtr<IRhiBuffer, D3D12Buffer>(_device.Get(), desc, heapType);
+		return makePtr<D3D12Buffer>(_device.Get(), desc, heapType);
 	}
 	
 	Ptr<IRhiTexture> D3D12Device::createTexture()

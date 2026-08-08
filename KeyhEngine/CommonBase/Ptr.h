@@ -27,6 +27,9 @@ namespace keyh
 		Ptr(U* ptr);
 
 	public:
+		Ptr(nullptr_t);
+
+	public:
 		Ptr(const Ptr<T>& other) = delete;
 		Ptr(Ptr<T>&& other) noexcept;
 

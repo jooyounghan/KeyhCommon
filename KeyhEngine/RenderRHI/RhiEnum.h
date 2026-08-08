@@ -1,17 +1,19 @@
 ﻿#pragma once
 namespace keyh
 {
-	template<typename EnumType>
+    template<typename EnumType>
     constexpr uint32 calculateFlagCount(EnumType maxFlag)
     {
         uint32 value = static_cast<uint32>(maxFlag);
-        uint32 count = 0;
-        while (value > 0)
+        uint32 bitCount = 0;
+
+        while (value)
         {
             value >>= 1;
-            count++;
+            ++bitCount;
         }
-        return count;
+
+        return bitCount + 1;
     }
 
     template<typename EnumType>
@@ -90,9 +92,8 @@ namespace keyh
         }
     };
 
-#define UINT(x) static_cast<uint32>(x)
 #define EnumTable(EnumType, InfoType, EnumCount, Derived)   \
-    IEnumInfoTable<EnumType, InfoType, UINT(EnumCount), Derived>
+    IEnumInfoTable<EnumType, InfoType, static_cast<uint32>(EnumCount), Derived>
 
 #define EnumFlagTable(EnumType, InfoType, EnumMax, Derived)   \
     IEnumInfoTable<EnumType, InfoType, calculateFlagCount(EnumMax), Derived, true>
@@ -192,6 +193,35 @@ namespace keyh
 	};
 #pragma endregion
 
+#pragma region HeapFlags
+    enum class EHeapFlag : uint32
+    {
+        None = 0,
+        Shared = 1 << 0,
+        CrossAdapter = 1 << 1,
+        Protected = 1 << 2,
+        NotResident = 1 << 3,
+
+        Max = NotResident
+    };
+
+    struct HeapFlagInfoBase
+    {
+        FlyweightStringA _name;
+        D3D12_HEAP_FLAGS _flag = D3D12_HEAP_FLAG_NONE;
+    };
+
+    struct D3D12HeapFlagInfo : public HeapFlagInfoBase, public EnumFlagTable(EHeapFlag, HeapFlagInfoBase, EHeapFlag::Max, D3D12HeapFlagInfo)
+    {
+        D3D12HeapFlagInfo() = default;
+        D3D12HeapFlagInfo(
+            const char* name,
+            D3D12_HEAP_FLAGS flag);
+
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
 #pragma region ResourceDimension
 	enum class EResourceDimension : uint8
 	{
@@ -224,14 +254,14 @@ namespace keyh
 #pragma region ResourceFlag
     enum class EResourceFlag : uint32
     {
-        None = 0,
-        DenyShaderResource = 1 << 0,
-        RenderTarget = 1 << 1,
-        DepthStencil = 1 << 2,
-        UnorderedAccess = 1 << 3,
-        SimultaneousAccess = 1 << 4,
-        CrossAdapter = 1 << 5,
-        AccelerationStructure = 1 << 6,
+        None                    = 0,
+        DenyShaderResource      = 1 << 0,
+        RenderTarget            = 1 << 1,
+        DepthStencil            = 1 << 2,
+        UnorderedAccess         = 1 << 3,
+        SimultaneousAccess      = 1 << 4,
+        CrossAdapter            = 1 << 5,
+        AccelerationStructure   = 1 << 6,
 
         Max = AccelerationStructure
     };
@@ -256,22 +286,22 @@ namespace keyh
 #pragma region ResourceState
 	enum class EResourceState : uint32
 	{
-		Common = 0,
-		VertexAndConstantBuffer = 1 << 0,
-		IndexBuffer = 1 << 1,
-		RenderTarget = 1 << 2,
-		UnorderedAccess = 1 << 3,
-		DepthWrite = 1 << 4,
-		DepthRead = 1 << 5,
-		NonPixelShaderResource = 1 << 6,
-		PixelShaderResource = 1 << 7,
-		StreamOut = 1 << 8,
-		IndirectArgument = 1 << 9,
-		CopyDest = 1 << 10,
-		CopySource = 1 << 11,
-		ResolveDest = 1 << 12,
-		ResolveSource = 1 << 13,
-		RaytracingAccelerationStructure = 1 << 14,
+		Common                            = 0,
+		VertexAndConstantBuffer           = 1 << 0,
+		IndexBuffer                       = 1 << 1,
+		RenderTarget                      = 1 << 2,
+		UnorderedAccess                   = 1 << 3,
+		DepthWrite                        = 1 << 4,
+		DepthRead                         = 1 << 5,
+		NonPixelShaderResource            = 1 << 6,
+		PixelShaderResource               = 1 << 7,
+		StreamOut                         = 1 << 8,
+		IndirectArgument                  = 1 << 9,
+		CopyDest                          = 1 << 10,
+		CopySource                        = 1 << 11,
+		ResolveDest                       = 1 << 12,
+		ResolveSource                     = 1 << 13,
+		RaytracingAccelerationStructure   = 1 << 14,
 
         Max = RaytracingAccelerationStructure
 	};
@@ -291,5 +321,35 @@ namespace keyh
 		);
 		static void initializePlatformTable();
 	};
-#undef UINT
+#pragma endregion
+
+#pragma region DescriptorType
+    enum class ERhiDescriptorType
+    {
+        UniformBuffer,
+        StorageBufferReadOnly,
+        StorageBufferReadWrite,
+        SampledImage,
+        StorageImage,
+
+        Sampler,
+        Count
+    };
+
+	struct RhiDescriptorTypeInfoBase
+	{
+		FlyweightStringA _name;
+        D3D12_DESCRIPTOR_RANGE_TYPE _type = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	};
+
+    struct RhiDescriptorTypeInfo : public RhiDescriptorTypeInfoBase, public EnumTable(ERhiDescriptorType, RhiDescriptorTypeInfoBase, ERhiDescriptorType::Count, RhiDescriptorTypeInfo)
+    {
+        RhiDescriptorTypeInfo() = default;
+        RhiDescriptorTypeInfo(
+            const char* name
+            , D3D12_DESCRIPTOR_RANGE_TYPE type
+        );
+        static void initializePlatformTable();
+    };
+#pragma endregion
 }
