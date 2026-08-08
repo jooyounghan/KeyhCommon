@@ -35,6 +35,12 @@ namespace keyh
         inline static const Derived& getInfo(EnumType type) { return getTable()[static_cast<uint32_t>(type)]; }
 
     protected:
+        static void registerEntry(EnumType type, Derived info)
+        {
+            getTable()[static_cast<uint32_t>(type)] = std::move(info);
+        }
+
+    private:
         static Derived* getTable()
         {
             static Derived table[Count];
@@ -56,6 +62,12 @@ namespace keyh
         static InfoList<Derived, Count> getInfoList(EnumType combinedFlags);
 
     protected:
+        static void registerEntry(uint32 index, Derived info)
+        {
+            getTable()[index] = std::move(info);
+        }
+
+    private:
         static Derived* getTable()
         {
             static Derived table[static_cast<uint32_t>(Count)];
