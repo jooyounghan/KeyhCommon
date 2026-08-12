@@ -326,8 +326,15 @@ namespace keyh
 		if (this == &other)
 			return;
 
+		if (isHeapAllocated() && other.isHeapAllocated())
+		{
+			MemoryUtil::swap(_storage._heap, other._storage._heap);
+			MemoryUtil::swap(_size, other._size);
+			MemoryUtil::swap(_capacityInfo, other._capacityInfo);
+			return;
+		}
+
 		InlinedVector temp(keyh::move(other));
-		other.clear();
 		for (size_t i = 0; i < _size; ++i)
 		{
 			other.emplace_back(keyh::move((*this)[i]));
