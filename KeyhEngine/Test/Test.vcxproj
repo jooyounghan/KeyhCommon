@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="BufferTest.cpp" />
     <ClCompile Include="ConcurrencyTest.cpp" />
+    <ClCompile Include="InlinedVectorTest.cpp" />
     <ClCompile Include="JsonTest.cpp" />
     <ClCompile Include="ReflectTest.cpp" />
     <ClCompile Include="RefPtrTest.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="BufferTest.h" />
     <ClInclude Include="ConcurrencyTest.h" />
     <ClInclude Include="FlyweightStringTest.h" />
+    <ClInclude Include="InlinedVectorTest.h" />
     <ClInclude Include="JsonTest.h" />
     <ClInclude Include="ReflectTest.h" />
     <ClInclude Include="RefPtrTest.h" />

@@ -34,6 +34,9 @@
     <Filter Include="소스 파일\Reflect">
       <UniqueIdentifier>{A1B2C3D4-0007-0007-0007-000000000007}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\InlinedVector">
+      <UniqueIdentifier>{A1B2C3D4-0008-0008-0008-000000000008}</UniqueIdentifier>
+    </Filter>
     <Filter Include="헤더 파일\StaticString">
       <UniqueIdentifier>{B1B2C3D4-0001-0001-0001-000000000001}</UniqueIdentifier>
     </Filter>
@@ -57,6 +60,9 @@
     </Filter>
     <Filter Include="헤더 파일\Reflect">
       <UniqueIdentifier>{B1B2C3D4-0008-0008-0008-000000000008}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\InlinedVector">
+      <UniqueIdentifier>{B1B2C3D4-0009-0009-0009-000000000009}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="ReflectTest.cpp">
       <Filter>소스 파일\Reflect</Filter>
+    </ClCompile>
+    <ClCompile Include="InlinedVectorTest.cpp">
+      <Filter>소스 파일\InlinedVector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="ReflectTest.h">
       <Filter>헤더 파일\Reflect</Filter>
+    </ClInclude>
+    <ClInclude Include="InlinedVectorTest.h">
+      <Filter>헤더 파일\InlinedVector</Filter>
     </ClInclude>
     <ClInclude Include="test.h">
       <Filter>헤더 파일</Filter>
