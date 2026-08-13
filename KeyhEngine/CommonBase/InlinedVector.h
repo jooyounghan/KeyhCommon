@@ -124,7 +124,6 @@ namespace keyh
 		void swap(InlinedVector& other);
 
 	public:
-		inline T* data() { return getBuffer(); }
 		inline const T* data() const { return getBuffer(); }
 		inline size_t size() const { return _size; }
 		inline size_t capacity() const { return isHeapAllocated() ? getHeapCapacity() : Count; }

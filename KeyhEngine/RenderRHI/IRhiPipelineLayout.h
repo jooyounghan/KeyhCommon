@@ -30,7 +30,6 @@ namespace keyh
 		const RhiStaticSamplerDesc*		_staticSamplers = nullptr;
 		uint32							_staticSamplerCount = 0;
 
-		EPipelineLayoutFlags			flags = EPipelineLayoutFlags::None;
 	public:
 		size_t getHash() const;
 	};

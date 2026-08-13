@@ -45,6 +45,7 @@ namespace keyh
 			}
 		}
 
+		//FNV1aHash< EPipelineLayoutFlags> hasher;
 		return hash;
 	}
 
@@ -57,66 +58,119 @@ namespace keyh
 
 	}
 
+	inline void clearDenyFlag(D3D12_ROOT_SIGNATURE_FLAGS& flags, uint32_t activeStages, EShaderStage stage, D3D12_ROOT_SIGNATURE_FLAGS denyFlag)
+	{
+		if (activeStages & static_cast<uint32_t>(stage))
+		{
+			flags &= ~denyFlag;
+		}
+	}
+
+	D3D12_ROOT_SIGNATURE_FLAGS calculateD3D12RootSignatureFlags(const RhiPipelineLayoutDesc& desc)
+	{
+		D3D12_ROOT_SIGNATURE_FLAGS flags = D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS
+			| D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS;
+
+		uint32_t activeStages = 0;
+
+		for (uint32_t i = 0; i < desc._bindingCount; ++i)
+		{
+			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._bindings[i]._stageFlags)._visibility);
+		}
+
+		for (uint32_t i = 0; i < desc._pushConstantCount; ++i)
+		{
+			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._pushConstants[i]._stageFlags)._visibility);
+		}
+
+		for (uint32_t i = 0; i < desc._staticSamplerCount; ++i)
+		{
+			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._staticSamplers[i]._stageFlags)._visibility);
+		}
+
+		constexpr uint32_t vertexFlag			= static_cast<uint32_t>(EShaderStage::Vertex);
+		constexpr uint32_t hullFlag				= static_cast<uint32_t>(EShaderStage::Hull);
+		constexpr uint32_t domainFlag			= static_cast<uint32_t>(EShaderStage::Domain);
+		constexpr uint32_t geometryFlag			= static_cast<uint32_t>(EShaderStage::Geometry);
+		constexpr uint32_t pixelFlag			= static_cast<uint32_t>(EShaderStage::Pixel);
+		constexpr uint32_t amplificationFlag	= static_cast<uint32_t>(EShaderStage::Amplification);
+		constexpr uint32_t meshFlag				= static_cast<uint32_t>(EShaderStage::Mesh);
+
+		clearDenyFlag(flags, activeStages, EShaderStage::Vertex, D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Hull, D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Domain, D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Geometry, D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Pixel, D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Amplification, D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS);
+		clearDenyFlag(flags, activeStages, EShaderStage::Mesh, D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS);
+
+		if (activeStages & static_cast<uint32_t>(EShaderStage::Vertex))
+		{
+			flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		}
+
+		return flags;
+	}
+
 	D3D12PipelineLayout::D3D12PipelineLayout(ID3D12Device* device, const RhiPipelineLayoutDesc& desc)
 		: IRhiPipelineLayout(desc)
 	{	
-		Vector<D3D12_ROOT_PARAMETER> rootParameters;
-		rootParameters.resize(_pushConstantCount);
+		InlinedVector<D3D12_ROOT_PARAMETER, 64> rootParameters;
 		uint32_t paramIndex = 0;
 		for (uint32_t idx = 0; idx < desc._pushConstantCount; ++idx)
 		{
-			const RhiPushConstantRange& pushConst = desc._pushConstants[i];
-			rootParameters[paramIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
-			rootParameters[paramIndex].Constants.ShaderRegister = pushConst._shaderRegister;
-			rootParameters[paramIndex].Constants.RegisterSpace = pushConst._registerSpace;
-			rootParameters[paramIndex].Constants.Num32BitValues = pushConst._sizeInBytes / 4;
-			rootParameters[paramIndex].ShaderVisibility = D3D12ShaderStageInfo::getInfo(pushConst._stageFlags)._visibility;
+			const RhiPushConstantRange& pushConst = desc._pushConstants[idx];
+			D3D12_ROOT_PARAMETER& rootParameter = rootParameters.emplace_back();
+			rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+			rootParameter.Constants.ShaderRegister = pushConst._shaderRegister;
+			rootParameter.Constants.RegisterSpace = pushConst._registerSpace;
+			rootParameter.Constants.Num32BitValues = pushConst._sizeInBytes / 4;
+			rootParameter.ShaderVisibility = D3D12ShaderStageInfo::getInfo(pushConst._stageFlags)._visibility;
 			paramIndex++;
 		}
 
-		Vector<D3D12_DESCRIPTOR_RANGE> descriptorRanges;
-		descriptorRanges.resize(desc._bindingCount);
+		InlinedVector<D3D12_DESCRIPTOR_RANGE, 64> descriptorRanges;
 		for (uint32_t idx = 0; idx < desc._bindingCount; ++idx)
 		{
 			const RhiDescriptorBinding& binding = desc._bindings[idx];
+			D3D12_DESCRIPTOR_RANGE& descriptorRange = descriptorRanges.emplace_back();
+			descriptorRange.RangeType = D3D12DescriptorTypeInfo::getInfo(binding._descriptorType)._type;
+			descriptorRange.NumDescriptors = binding._descriptorCount;
+			descriptorRange.BaseShaderRegister = binding._bindingSlot;
+			descriptorRange.RegisterSpace = binding._registerSpace;
+			descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-			descriptorRanges[idx].RangeType = D3D12DescriptorTypeInfo::getInfo(binding._descriptorType)._type;
-			descriptorRanges[idx].NumDescriptors = binding._descriptorCount;
-			descriptorRanges[idx].BaseShaderRegister = binding._bindingSlot;
-			descriptorRanges[idx].RegisterSpace = binding._registerSpace;
-			descriptorRanges[idx].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-			rootParameters[paramIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-			rootParameters[paramIndex].DescriptorTable.NumDescriptorRanges = 1;
-			rootParameters[paramIndex].DescriptorTable.pDescriptorRanges = &descriptorRanges[idx];
-			rootParameters[paramIndex].ShaderVisibility = D3D12ShaderStageInfo::getInfo(binding._stageFlags)._visibility;
+			D3D12_ROOT_PARAMETER& rootParameter = rootParameters.emplace_back();
+			rootParameter.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParameter.DescriptorTable.NumDescriptorRanges = 1;
+			rootParameter.DescriptorTable.pDescriptorRanges = &descriptorRanges[idx];
+			rootParameter.ShaderVisibility = D3D12ShaderStageInfo::getInfo(binding._stageFlags)._visibility;
 			paramIndex++;
 		}
 
-		Vector<D3D12_STATIC_SAMPLER_DESC> staticSamplers;
-		staticSamplers.resize(desc._staticSamplerCount);
+		InlinedVector<D3D12_STATIC_SAMPLER_DESC, 64> staticSamplers;
 		for (uint32_t idx = 0; idx < desc._staticSamplerCount; ++idx)
 		{
 			const RhiStaticSamplerDesc& samplerDesc = desc._staticSamplers[idx];
-			staticSamplers[idx].Filter = D3D12FilterInfo::getInfo(samplerDesc._filter)._filter;
-			staticSamplers[idx].AddressU = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressU)._addressMode;
-			staticSamplers[idx].AddressV = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressV)._addressMode;
-			staticSamplers[idx].AddressW = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressW)._addressMode;
-			staticSamplers[idx].MipLODBias = 0.0f;
-			staticSamplers[idx].MaxAnisotropy = 16;
-			staticSamplers[idx].ComparisonFunc = D3D12ComparisonFunctionInfo::getInfo(samplerDesc._comparisonFunc)._comparisonFunc;
-			staticSamplers[idx].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
-			staticSamplers[idx].MinLOD = 0.0f;
-			staticSamplers[idx].MaxLOD = D3D12_FLOAT32_MAX;
-			staticSamplers[idx].ShaderRegister = samplerDesc._shaderRegister;
-			staticSamplers[idx].RegisterSpace = samplerDesc._registerSpace;
-			staticSamplers[idx].ShaderVisibility = D3D12ShaderStageInfo::getInfo(samplerDesc._stageFlags)._visibility;
-		}
-
-		D3D12_ROOT_SIGNATURE_FLAGS flags = D3D12_ROOT_SIGNATURE_FLAG_NONE;
-		if (desc.flags & static_cast<uint32_t>(ERhiPipelineLayoutFlags::AllowInputAssemblerInputLayout))
-		{
-			flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+			D3D12_STATIC_SAMPLER_DESC& staticSampler = staticSamplers.emplace_back();
+			staticSampler.Filter = D3D12FilterInfo::getInfo(samplerDesc._filter)._filter;
+			staticSampler.AddressU = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressU)._addressMode;
+			staticSampler.AddressV = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressV)._addressMode;
+			staticSampler.AddressW = D3D12SamplerAddressModeInfo::getInfo(samplerDesc._addressW)._addressMode;
+			staticSampler.MipLODBias = 0.0f;
+			staticSampler.MaxAnisotropy = 16;
+			staticSampler.ComparisonFunc = D3D12ComparisonFunctionInfo::getInfo(samplerDesc._comparisonFunc)._comparisonFunc;
+			staticSampler.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE;
+			staticSampler.MinLOD = 0.0f;
+			staticSampler.MaxLOD = D3D12_FLOAT32_MAX;
+			staticSampler.ShaderRegister = samplerDesc._shaderRegister;
+			staticSampler.RegisterSpace = samplerDesc._registerSpace;
+			staticSampler.ShaderVisibility = D3D12ShaderStageInfo::getInfo(samplerDesc._stageFlags)._visibility;
 		}
 
 		uint32_t totalParamsCount = _bindingCount + _pushConstantCount;
@@ -125,7 +179,7 @@ namespace keyh
 		rootSigDesc.pParameters = rootParameters.data();
 		rootSigDesc.NumStaticSamplers = desc._staticSamplerCount;
 		rootSigDesc.pStaticSamplers = staticSamplers.data();
-		rootSigDesc.Flags = flags;
+		rootSigDesc.Flags = calculateD3D12RootSignatureFlags(desc);
 
 		Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig;
 		Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;

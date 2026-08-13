@@ -361,6 +361,8 @@ namespace keyh
 		Hull,
 		Domain,
 		Geometry,
+		Amplification,
+		Mesh,
         All = Compute,
         Count
 	};

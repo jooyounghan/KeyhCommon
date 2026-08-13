@@ -174,12 +174,14 @@ namespace keyh
 
     void D3D12ShaderStageInfo::initializePlatformTable()
     {
-        registerEntry(EShaderStage::All         , { "All", D3D12_SHADER_VISIBILITY_ALL } );
-		registerEntry(EShaderStage::Vertex      , { "Vertex",  D3D12_SHADER_VISIBILITY_VERTEX });
-		registerEntry(EShaderStage::Pixel       , { "Pixel", D3D12_SHADER_VISIBILITY_PIXEL });
-		registerEntry(EShaderStage::Hull        , { "Hull", D3D12_SHADER_VISIBILITY_HULL });
-		registerEntry(EShaderStage::Domain      , { "Domain", D3D12_SHADER_VISIBILITY_DOMAIN });
-		registerEntry(EShaderStage::Geometry    , { "Geometry", D3D12_SHADER_VISIBILITY_GEOMETRY });
+        registerEntry(EShaderStage::All             , { "All", D3D12_SHADER_VISIBILITY_ALL } );
+		registerEntry(EShaderStage::Vertex          , { "Vertex",  D3D12_SHADER_VISIBILITY_VERTEX });
+		registerEntry(EShaderStage::Pixel           , { "Pixel", D3D12_SHADER_VISIBILITY_PIXEL });
+		registerEntry(EShaderStage::Hull            , { "Hull", D3D12_SHADER_VISIBILITY_HULL });
+		registerEntry(EShaderStage::Domain          , { "Domain", D3D12_SHADER_VISIBILITY_DOMAIN });
+		registerEntry(EShaderStage::Geometry        , { "Geometry", D3D12_SHADER_VISIBILITY_GEOMETRY });
+        registerEntry(EShaderStage::Amplification   , { "Amplification", D3D12_SHADER_VISIBILITY_AMPLIFICATION });
+        registerEntry(EShaderStage::Mesh            , { "Mesh", D3D12_SHADER_VISIBILITY_MESH });
     }
 #pragma endregion
 
