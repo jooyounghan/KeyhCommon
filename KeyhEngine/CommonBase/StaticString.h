@@ -8,7 +8,7 @@ namespace keyh
 	{
 	private:
 		static constexpr size_t kHeapMask = size_t(1) << (sizeof(size_t) * 8 - 1);
-		static constexpr size_t kLengthMask = ~kHeapMask;
+		static constexpr size_t kCapacityMask = ~kHeapMask;
 		static T gNullChar;
 
 	public:
@@ -33,19 +33,21 @@ namespace keyh
 			T _ssoBuffer[StrUtil::kSsoCapacity];
 			T* _heap;
 		};
-		size_t _stringInfo;
+		size_t _size;
+		size_t _capacityInfo;
 
 	private:
-		inline size_t getLength() const { return _stringInfo & kLengthMask; }
-		inline void setLength(size_t length) { _stringInfo = (_stringInfo & kHeapMask) | (length & kLengthMask); }
-		inline bool isSso() const { return (_stringInfo & kHeapMask) != 0; }
-		inline void setSso(bool sso) { _stringInfo = (_stringInfo & kLengthMask) | (sso ? kHeapMask : 0); }
+		inline size_t getHeapCapacity() const { return _capacityInfo & kCapacityMask; }
+		inline void setHeapCapacity(size_t capacity) { _capacityInfo = (_capacityInfo & kHeapMask) | (capacity & kCapacityMask); }
+		inline bool isHeapAllocated() const { return (_capacityInfo & kHeapMask) != 0; }
+		inline void setHeapAllocated(bool heapAllocated) { _capacityInfo = (_capacityInfo & kCapacityMask) | (heapAllocated ? kHeapMask : 0); }
 
 	public:
-		inline const T* c_str() const { return isSso() ? _ssoBuffer : _heap; }
-		inline size_t length() const { return getLength(); }
-		inline size_t size() const { return getLength(); }
-		inline bool empty() const { return getLength() == 0; }
+		inline const T* c_str() const { return isHeapAllocated() ? _heap : _ssoBuffer; }
+		inline size_t length() const { return _size; }
+		inline size_t size() const { return _size; }
+		inline size_t capacity() const { return isHeapAllocated() ? getHeapCapacity() : StrUtil::kSsoCapacity; }
+		inline bool empty() const { return _size == 0; }
 
 	public:
 		bool operator==(const StaticString& other) const;
