@@ -135,6 +135,12 @@
     <ClInclude Include="OwnerVector.hpp">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
+    <ClInclude Include="InlinedVector.h">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
+    <ClInclude Include="InlinedVector.hpp">
+      <Filter>헤더 파일\Container</Filter>
+    </ClInclude>
     <ClInclude Include="HashMap.h">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
