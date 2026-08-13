@@ -68,6 +68,7 @@ namespace keyh
 	protected:
 		Microsoft::WRL::ComPtr<IDXGIAdapter4>	_adapter;
 		Microsoft::WRL::ComPtr<ID3D12Device>	_device;
+		mutable Microsoft::WRL::ComPtr<IDXGIFactory7> _factory;
 
 	public:
 		IDXGIFactory7*			getDxgiFactory() const;

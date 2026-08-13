@@ -6,8 +6,8 @@
 
 #include <d3d12.h>
 #include <dxgi1_6.h>
+
+#include "D3D12RhiEnum.h"
 #else
 #endif
 #pragma endregion
-
-#include "D3D12RhiEnum.h"

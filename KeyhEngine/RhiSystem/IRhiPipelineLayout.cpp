@@ -38,14 +38,6 @@ namespace keyh
 			}
 		}
 
-		{
-			FNV1aHash<RhiStaticSamplerDesc> hasher;
-			for (uint32 i = 0; i < _staticSamplerCount; ++i)
-			{
-				hash ^= hasher(_staticSamplers[i]);
-			}
-		}
-
 		//FNV1aHash< EPipelineLayoutFlags> hasher;
 		return hash;
 	}
@@ -93,14 +85,6 @@ namespace keyh
 		{
 			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._staticSamplers[i]._stageFlags)._visibility);
 		}
-
-		constexpr uint32_t vertexFlag			= static_cast<uint32_t>(EShaderStage::Vertex);
-		constexpr uint32_t hullFlag				= static_cast<uint32_t>(EShaderStage::Hull);
-		constexpr uint32_t domainFlag			= static_cast<uint32_t>(EShaderStage::Domain);
-		constexpr uint32_t geometryFlag			= static_cast<uint32_t>(EShaderStage::Geometry);
-		constexpr uint32_t pixelFlag			= static_cast<uint32_t>(EShaderStage::Pixel);
-		constexpr uint32_t amplificationFlag	= static_cast<uint32_t>(EShaderStage::Amplification);
-		constexpr uint32_t meshFlag				= static_cast<uint32_t>(EShaderStage::Mesh);
 
 		clearDenyFlag(flags, activeStages, EShaderStage::Vertex, D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS);
 		clearDenyFlag(flags, activeStages, EShaderStage::Hull, D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS);

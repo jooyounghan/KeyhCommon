@@ -9,9 +9,11 @@ namespace keyh
 {
 	IDXGIFactory7* D3D12Device::getDxgiFactory() const
 	{
-		Microsoft::WRL::ComPtr<IDXGIFactory7> factory;
-		_adapter->GetParent(IID_PPV_ARGS(&factory));
-		return factory.Get();
+		if (!_factory)
+		{
+			_adapter->GetParent(IID_PPV_ARGS(&_factory));
+		}
+		return _factory.Get();
 	}
 
 	bool D3D12Device::initialize()
