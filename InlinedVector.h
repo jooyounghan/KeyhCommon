@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "MemoryUtil.h"
 #include "AssertUtil.h"
 
@@ -7,10 +7,7 @@ namespace keyh
 	template<typename T, size_t Count>
 	class InlinedVector
 	{
-		static_assert(Count > 0, "InlinedVector inline capacity must be greater than zero.");
-
-	public:
-		static constexpr size_t kInlinedCapacity = Count;
+		KEYH_STATIC_ASSERT(Count > 0, "InlinedVector inline capacity must be greater than zero.");
 
 	public:
 		class Iterator

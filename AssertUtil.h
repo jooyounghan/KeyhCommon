@@ -30,6 +30,8 @@ namespace keyh
 {
 	DECLARE_DELEGATE(AssertDelegate, bool, const char*);
 
+#define KEYH_STATIC_ASSERT(condition, message) static_assert(condition, message)
+
 #define KEYH_ASSERT(condition, message) AssertUtil::check(condition, message)
 #define KEYH_ASSERT_ARGS(condition, format, ...) AssertUtil::check(condition, format, ##__VA_ARGS__)
 

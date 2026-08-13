@@ -31,7 +31,7 @@ namespace keyh
     template<typename T>
     T JsonUtil::TapeElement::parseImpl() const
     {
-        static_assert(sizeof(T) <= 7, "Type T must be 8 bytes or smaller.");
+        KEYH_STATIC_ASSERT(sizeof(T) <= 7, "Type T must be 8 bytes or smaller.");
         constexpr uint64_t mask = kInvalidUint64 >> (64 - (sizeof(T) * 8));
         uint64_t result = _value & mask;
 

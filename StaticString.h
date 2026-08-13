@@ -7,8 +7,8 @@ namespace keyh
 	class StaticString
 	{
 	private:
-		static constexpr size_t kSsoMask = 1ULL << 63;
-		static constexpr size_t kLengthMask = ~kSsoMask;
+		static constexpr size_t kHeapMask = size_t(1) << (sizeof(size_t) * 8 - 1);
+		static constexpr size_t kLengthMask = ~kHeapMask;
 		static T gNullChar;
 
 	public:
@@ -37,9 +37,9 @@ namespace keyh
 
 	private:
 		inline size_t getLength() const { return _stringInfo & kLengthMask; }
-		inline void setLength(size_t length) { _stringInfo = (_stringInfo & kSsoMask) | (length & kLengthMask); }
-		inline bool isSso() const { return (_stringInfo & kSsoMask) != 0; }
-		inline void setSso(bool sso) { _stringInfo = (_stringInfo & kLengthMask) | (sso ? kSsoMask : 0); }
+		inline void setLength(size_t length) { _stringInfo = (_stringInfo & kHeapMask) | (length & kLengthMask); }
+		inline bool isSso() const { return (_stringInfo & kHeapMask) != 0; }
+		inline void setSso(bool sso) { _stringInfo = (_stringInfo & kLengthMask) | (sso ? kHeapMask : 0); }
 
 	public:
 		inline const T* c_str() const { return isSso() ? _ssoBuffer : _heap; }
