@@ -256,6 +256,8 @@
     <ClInclude Include="HashMap.hpp" />
     <ClInclude Include="HashSet.h" />
     <ClInclude Include="HashSet.hpp" />
+    <ClInclude Include="InlinedVector.h" />
+    <ClInclude Include="InlinedVector.hpp" />
     <ClInclude Include="HashUtil.h" />
     <ClInclude Include="IBuffer.hpp" />
     <ClInclude Include="JsonDocument.h" />
