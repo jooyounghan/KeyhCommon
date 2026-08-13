@@ -31,6 +31,12 @@
     <Filter Include="소스 파일\Memory">
       <UniqueIdentifier>{afdbe222-a389-423f-9842-088dbaa3eb59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Pipeline">
+      <UniqueIdentifier>{e54969aa-e5b3-4435-874f-205519d40166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Pipeline">
+      <UniqueIdentifier>{8cfed0c9-6852-4719-b370-feb92daf2a23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RenderRhiPch.h">
@@ -63,6 +69,12 @@
     <ClInclude Include="IRhiBuffer.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="IRhiPipelineLayout.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiSampler.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RenderRhiPch.cpp">
@@ -94,6 +106,12 @@
     </ClCompile>
     <ClCompile Include="IRhiBuffer.cpp">
       <Filter>소스 파일\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiPipelineLayout.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiSampler.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

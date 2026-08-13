@@ -1,4 +1,7 @@
-﻿namespace keyh
+﻿
+#define DEFINE_FNV1A_HASH_DEFAULT_SPECIALIZATION(Type) template<> size_t FNV1aHash<Type>::operator()(const Type& value) const noexcept { return FNV1aHasher::hash(value); }
+
+namespace keyh
 {
 	template<typename Key>
 	size_t FNV1aHasher::hash(const Key& key) noexcept

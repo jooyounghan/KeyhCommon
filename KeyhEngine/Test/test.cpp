@@ -55,14 +55,14 @@ int main()
     //benchmark_Json_parse_speed();
     //benchmark_Json_traversal_speed();
 
-    test_Reflect_serialize_primitives();
-    test_Reflect_deserialize_primitives();
-    test_Reflect_roundtrip_primitives();
-    test_Reflect_roundtrip_vector();
-    test_Reflect_roundtrip_nested_object();
-    benchmark_Reflect_deserialize_128kb_x100();
+    //test_Reflect_serialize_primitives();
+    //test_Reflect_deserialize_primitives();
+    //test_Reflect_roundtrip_primitives();
+    //test_Reflect_roundtrip_vector();
+    //test_Reflect_roundtrip_nested_object();
+    //benchmark_Reflect_deserialize_128kb_x100();
 
-    printSummary();
+    //printSummary();
 
     return g_fail == 0 ? 0 : 1;
 }

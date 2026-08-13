@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "StaticString.h"
 #include "MemoryUtil.h"
 

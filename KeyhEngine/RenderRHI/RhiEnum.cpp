@@ -152,18 +152,79 @@ namespace keyh
 #pragma endregion
 
 #pragma region DescriptorType
-    RhiDescriptorTypeInfo::RhiDescriptorTypeInfo(const char* name, D3D12_DESCRIPTOR_RANGE_TYPE type)
-		: RhiDescriptorTypeInfoBase{ name, type }
+    D3D12DescriptorTypeInfo::D3D12DescriptorTypeInfo(const char* name, D3D12_DESCRIPTOR_RANGE_TYPE type)
+		: DescriptorTypeInfoBase{ name, type }
     {}
 
-    void RhiDescriptorTypeInfo::initializePlatformTable()
+    void D3D12DescriptorTypeInfo::initializePlatformTable()
     {
-		registerEntry(ERhiDescriptorType::UniformBuffer             , { "UniformBuffer", D3D12_DESCRIPTOR_RANGE_TYPE_CBV });
-		registerEntry(ERhiDescriptorType::StorageBufferReadOnly     , { "StorageBufferReadOnly", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
-		registerEntry(ERhiDescriptorType::StorageBufferReadWrite    , { "StorageBufferReadWrite", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
-		registerEntry(ERhiDescriptorType::SampledImage              , { "SampledImage", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
-		registerEntry(ERhiDescriptorType::StorageImage              , { "StorageImage", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
-		registerEntry(ERhiDescriptorType::Sampler                   , { "Sampler", D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER });
+		registerEntry(EDescriptorType::UniformBuffer             , { "UniformBuffer", D3D12_DESCRIPTOR_RANGE_TYPE_CBV });
+		registerEntry(EDescriptorType::StorageBufferReadOnly     , { "StorageBufferReadOnly", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
+		registerEntry(EDescriptorType::StorageBufferReadWrite    , { "StorageBufferReadWrite", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
+		registerEntry(EDescriptorType::SampledImage              , { "SampledImage", D3D12_DESCRIPTOR_RANGE_TYPE_SRV });
+		registerEntry(EDescriptorType::StorageImage              , { "StorageImage", D3D12_DESCRIPTOR_RANGE_TYPE_UAV });
+		registerEntry(EDescriptorType::Sampler                   , { "Sampler", D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER });
     }
+#pragma endregion
+
+#pragma region ShaderStage
+    D3D12ShaderStageInfo::D3D12ShaderStageInfo(const char* name, D3D12_SHADER_VISIBILITY visibility)
+		: ShaderStageInfoBase{ name, visibility }
+    {}
+
+    void D3D12ShaderStageInfo::initializePlatformTable()
+    {
+        registerEntry(EShaderStage::All         , { "All", D3D12_SHADER_VISIBILITY_ALL } );
+		registerEntry(EShaderStage::Vertex      , { "Vertex",  D3D12_SHADER_VISIBILITY_VERTEX });
+		registerEntry(EShaderStage::Pixel       , { "Pixel", D3D12_SHADER_VISIBILITY_PIXEL });
+		registerEntry(EShaderStage::Hull        , { "Hull", D3D12_SHADER_VISIBILITY_HULL });
+		registerEntry(EShaderStage::Domain      , { "Domain", D3D12_SHADER_VISIBILITY_DOMAIN });
+		registerEntry(EShaderStage::Geometry    , { "Geometry", D3D12_SHADER_VISIBILITY_GEOMETRY });
+    }
+#pragma endregion
+
+#pragma region Filter
+    D3D12FilterInfo::D3D12FilterInfo(const char* name, D3D12_FILTER filter)
+		: FilterInfoBase{ name, filter }
+    {}
+
+	void D3D12FilterInfo::initializePlatformTable()
+	{
+		registerEntry(EFilterType::MinMagMipPoint   , { "MinMagMipPoint", D3D12_FILTER_MIN_MAG_MIP_POINT });
+		registerEntry(EFilterType::MinMagMipLinear  , { "MinMagMipLinear", D3D12_FILTER_MIN_MAG_MIP_LINEAR });
+		registerEntry(EFilterType::Anisotropic      , { "Anisotropic", D3D12_FILTER_ANISOTROPIC });
+	}
+#pragma endregion
+
+#pragma region SamplerAddressMode
+    D3D12SamplerAddressModeInfo::D3D12SamplerAddressModeInfo(const char* name, D3D12_TEXTURE_ADDRESS_MODE addressMode)
+		: SamplerAddressModeInfoBase{ name, addressMode }
+    {}
+
+    void D3D12SamplerAddressModeInfo::initializePlatformTable()
+    {
+		registerEntry(ESamplerAddressMode::Wrap     , { "Wrap", D3D12_TEXTURE_ADDRESS_MODE_WRAP });
+		registerEntry(ESamplerAddressMode::Mirror   , { "Mirror", D3D12_TEXTURE_ADDRESS_MODE_MIRROR });
+		registerEntry(ESamplerAddressMode::Clamp    , { "Clamp", D3D12_TEXTURE_ADDRESS_MODE_CLAMP });
+		registerEntry(ESamplerAddressMode::Border   , { "Border", D3D12_TEXTURE_ADDRESS_MODE_BORDER });
+    }
+#pragma endregion
+
+#pragma region ComparisonFunction
+	D3D12ComparisonFunctionInfo::D3D12ComparisonFunctionInfo(const char* name, D3D12_COMPARISON_FUNC comparisonFunc)
+		: ComparisonFunctionInfoBase{ name, comparisonFunc }
+	{}
+
+	void D3D12ComparisonFunctionInfo::initializePlatformTable()
+	{
+		registerEntry(EComparisonFunction::Never        , { "Never", D3D12_COMPARISON_FUNC_NEVER });
+		registerEntry(EComparisonFunction::Less         , { "Less", D3D12_COMPARISON_FUNC_LESS });
+		registerEntry(EComparisonFunction::Equal        , { "Equal", D3D12_COMPARISON_FUNC_EQUAL });
+		registerEntry(EComparisonFunction::LessEqual    , { "LessEqual", D3D12_COMPARISON_FUNC_LESS_EQUAL });
+		registerEntry(EComparisonFunction::Greater      , { "Greater", D3D12_COMPARISON_FUNC_GREATER });
+		registerEntry(EComparisonFunction::NotEqual     , { "NotEqual", D3D12_COMPARISON_FUNC_NOT_EQUAL });
+		registerEntry(EComparisonFunction::GreaterEqual , { "GreaterEqual", D3D12_COMPARISON_FUNC_GREATER_EQUAL });
+		registerEntry(EComparisonFunction::Always       , { "Always", D3D12_COMPARISON_FUNC_ALWAYS });
+	}
 #pragma endregion
 }

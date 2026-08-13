@@ -324,32 +324,138 @@ namespace keyh
 #pragma endregion
 
 #pragma region DescriptorType
-    enum class ERhiDescriptorType
+    enum class EDescriptorType : uint8
     {
         UniformBuffer,
         StorageBufferReadOnly,
         StorageBufferReadWrite,
         SampledImage,
         StorageImage,
-
         Sampler,
         Count
     };
 
-	struct RhiDescriptorTypeInfoBase
+	struct DescriptorTypeInfoBase
 	{
 		FlyweightStringA _name;
         D3D12_DESCRIPTOR_RANGE_TYPE _type = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	};
 
-    struct RhiDescriptorTypeInfo : public RhiDescriptorTypeInfoBase, public EnumTable(ERhiDescriptorType, RhiDescriptorTypeInfoBase, ERhiDescriptorType::Count, RhiDescriptorTypeInfo)
+    struct D3D12DescriptorTypeInfo : public DescriptorTypeInfoBase, public EnumTable(EDescriptorType, DescriptorTypeInfoBase, EDescriptorType::Count, D3D12DescriptorTypeInfo)
     {
-        RhiDescriptorTypeInfo() = default;
-        RhiDescriptorTypeInfo(
+        D3D12DescriptorTypeInfo() = default;
+        D3D12DescriptorTypeInfo(
             const char* name
             , D3D12_DESCRIPTOR_RANGE_TYPE type
         );
         static void initializePlatformTable();
     };
 #pragma endregion
+
+#pragma region ShaderStage
+	enum class EShaderStage : uint8
+	{
+		Compute,
+		Vertex,
+		Pixel,
+		Hull,
+		Domain,
+		Geometry,
+        All = Compute,
+        Count
+	};
+	struct ShaderStageInfoBase
+	{
+		FlyweightStringA _name;
+		D3D12_SHADER_VISIBILITY _visibility = D3D12_SHADER_VISIBILITY_ALL;
+	};
+	struct D3D12ShaderStageInfo : public ShaderStageInfoBase, public EnumTable(EShaderStage, ShaderStageInfoBase, EShaderStage::Count, D3D12ShaderStageInfo)
+	{
+		D3D12ShaderStageInfo() = default;
+		D3D12ShaderStageInfo(
+			const char* name
+			, D3D12_SHADER_VISIBILITY visibility
+		);
+		static void initializePlatformTable();
+	};
+#pragma endregion
+
+#pragma region Filter
+	enum class EFilterType : uint8
+    {
+        MinMagMipPoint,
+        MinMagMipLinear,
+        Anisotropic,
+        Count
+    };
+
+	struct FilterInfoBase
+	{
+		FlyweightStringA _name;
+		D3D12_FILTER _filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	};
+
+	struct D3D12FilterInfo : public FilterInfoBase, public EnumTable(EFilterType, FilterInfoBase, EFilterType::Count, D3D12FilterInfo)
+	{
+		D3D12FilterInfo() = default;
+		D3D12FilterInfo(
+			const char* name
+			, D3D12_FILTER filter
+		);
+		static void initializePlatformTable();
+	};
+#pragma endregion
+
+#pragma region SamplerAddressMode
+	enum class ESamplerAddressMode : uint8
+	{
+		Wrap,
+		Mirror,
+		Clamp,
+		Border,
+		Count
+	};
+	struct SamplerAddressModeInfoBase
+	{
+		FlyweightStringA _name;
+		D3D12_TEXTURE_ADDRESS_MODE _addressMode = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	};
+	struct D3D12SamplerAddressModeInfo : public SamplerAddressModeInfoBase, public EnumTable(ESamplerAddressMode, SamplerAddressModeInfoBase, ESamplerAddressMode::Count, D3D12SamplerAddressModeInfo)
+	{
+		D3D12SamplerAddressModeInfo() = default;
+		D3D12SamplerAddressModeInfo(
+			const char* name
+			, D3D12_TEXTURE_ADDRESS_MODE addressMode
+		);
+		static void initializePlatformTable();
+	};
+#pragma endregion
+
+#pragma region ComparisonFunction
+	enum class EComparisonFunction : uint8
+	{
+		Never,
+		Less,
+		Equal,
+		LessEqual,
+		Greater,
+		NotEqual,
+		GreaterEqual,
+		Always,
+		Count
+	};
+	struct ComparisonFunctionInfoBase
+	{
+		FlyweightStringA _name;
+		D3D12_COMPARISON_FUNC _comparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	};
+	struct D3D12ComparisonFunctionInfo : public ComparisonFunctionInfoBase, public EnumTable(EComparisonFunction, ComparisonFunctionInfoBase, EComparisonFunction::Count, D3D12ComparisonFunctionInfo)
+	{
+		D3D12ComparisonFunctionInfo() = default;
+		D3D12ComparisonFunctionInfo(
+			const char* name
+			, D3D12_COMPARISON_FUNC comparisonFunc
+		);
+		static void initializePlatformTable();
+	};
 }
