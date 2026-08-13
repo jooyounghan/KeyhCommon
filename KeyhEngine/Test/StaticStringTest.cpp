@@ -1,4 +1,4 @@
-#include "TestCommon.h"
+﻿#include "TestCommon.h"
 #include "StaticStringTest.h"
 #include "StaticString.h"
 #include "StrUtil.h"
