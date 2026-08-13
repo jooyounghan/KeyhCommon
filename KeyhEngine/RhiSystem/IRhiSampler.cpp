@@ -1,4 +1,4 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiSampler.h"
 
 namespace keyh

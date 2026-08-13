@@ -1,5 +1,6 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiPipelineLayout.h"
+#include "IRhiDevice.h"
 
 namespace keyh
 {
@@ -117,7 +118,7 @@ namespace keyh
 		return flags;
 	}
 
-	D3D12PipelineLayout::D3D12PipelineLayout(ID3D12Device* device, const RhiPipelineLayoutDesc& desc)
+	D3D12PipelineLayout::D3D12PipelineLayout(D3D12Device* device, const RhiPipelineLayoutDesc& desc)
 		: IRhiPipelineLayout(desc)
 	{	
 		InlinedVector<D3D12_ROOT_PARAMETER, 64> rootParameters;
@@ -187,7 +188,7 @@ namespace keyh
 
 		if (SUCCEEDED(hr))
 		{
-			device->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(_rootSignature.GetAddressOf()));
+			device->getNativeDevice()->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(_rootSignature.GetAddressOf()));
 		}
 	}
 

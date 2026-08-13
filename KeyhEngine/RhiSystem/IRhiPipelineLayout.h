@@ -1,7 +1,9 @@
-﻿#include "IRhiSampler.h"
+﻿#pragma once
+#include "IRhiSampler.h"
 
 namespace keyh
 {
+	class D3D12Device;
 	struct RhiDescriptorBinding
 	{
 		uint32				_bindingSlot = 0;
@@ -56,7 +58,7 @@ namespace keyh
 	class D3D12PipelineLayout : public IRhiPipelineLayout
 	{
 	public:
-		D3D12PipelineLayout(ID3D12Device* device, const RhiPipelineLayoutDesc& desc);
+		D3D12PipelineLayout(D3D12Device* device, const RhiPipelineLayoutDesc& desc);
 		~D3D12PipelineLayout() override = default;
 
 	public:

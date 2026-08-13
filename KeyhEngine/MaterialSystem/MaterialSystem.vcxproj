@@ -169,7 +169,7 @@
     <ProjectReference Include="..\ReflectSystem\ReflectSystem.vcxproj">
       <Project>{761c4598-1bad-4437-9e24-e8673f0c9802}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\RenderRHI\RenderRHI.vcxproj">
+    <ProjectReference Include="..RhiSystemRhiSystem.vcxproj">
       <Project>{66accf7b-05be-4d44-a3db-8d984d900305}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -9,3 +9,5 @@
 #else
 #endif
 #pragma endregion
+
+#include "D3D12RhiEnum.h"

@@ -13,11 +13,6 @@ namespace keyh
 		uint32 _size = 0;
 		EHeapType _heapType = EHeapType::Default;
 		EHeapFlag _heapFlags = EHeapFlag::None;
-
-#if defined(KEYH_PLATFORM_WINDOWS)
-		D3D12_HEAP_DESC getD3D12HeapDesc() const;
-		D3D12_HEAP_FLAGS getD3D12HeapFlags() const;
-#endif
 	};
 
 	class IRhiMemoryHeap

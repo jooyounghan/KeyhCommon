@@ -1,4 +1,4 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiSwapChain.h"
 #include "IRhiDevice.h"
 
@@ -10,13 +10,13 @@ namespace keyh
 	}
 
 
-	D3D12SwapChain::D3D12SwapChain(const RHISwapChainDesc& desc, IDXGIFactory7* factory, IRhiCommandQueue* presentQueue)
+	D3D12SwapChain::D3D12SwapChain(const RHISwapChainDesc& desc, D3D12Device* device, IRhiCommandQueue* presentQueue)
 		: IRhiSwapChain(desc)
 	{
-		initialize(factory, presentQueue);
+		initialize(device, presentQueue);
 	}
 
-	bool D3D12SwapChain::initialize(IDXGIFactory7* factory, IRhiCommandQueue* presentQueue)
+	bool D3D12SwapChain::initialize(D3D12Device* device, IRhiCommandQueue* presentQueue)
 	{
 		const D3D12ResourceFormatInfo& formatInfo = D3D12ResourceFormatInfo::getInfo(_desc._format);
 
@@ -34,6 +34,7 @@ namespace keyh
 		swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
 		swapChainDesc.Flags = 0;
 
+		IDXGIFactory7* factory = device->getDxgiFactory();
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
 		HRESULT hr = factory->CreateSwapChainForHwnd(
 			nullptr,

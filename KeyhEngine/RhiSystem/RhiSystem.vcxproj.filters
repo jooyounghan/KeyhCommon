@@ -39,7 +39,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RenderRhiPch.h">
+    <ClInclude Include="RhiSystemPch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="RhiEnum.h">
@@ -66,6 +66,12 @@
     <ClInclude Include="IRhiMemoryHeap.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="D3D12RhiConvert.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12RhiEnum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="IRhiBuffer.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
@@ -77,7 +83,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RenderRhiPch.cpp">
+    <ClCompile Include="RhiSystemPch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="RhiEnum.cpp">
@@ -115,6 +121,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="RenderRHI.props" />
+    <None Include="RhiSystem.props" />
   </ItemGroup>
 </Project>

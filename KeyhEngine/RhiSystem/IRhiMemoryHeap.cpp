@@ -1,31 +1,14 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiMemoryHeap.h"
 #include "IRhiBuffer.h"
+#include "D3D12RhiConvert.h"
 
 namespace keyh
 {
-#if defined(KEYH_PLATFORM_WINDOWS)
-	D3D12_HEAP_DESC RhiHeapDesc::getD3D12HeapDesc() const
-	{
-		D3D12_HEAP_DESC desc{};
-
-		const D3D12HeapTypeInfo& typeInfo = D3D12HeapTypeInfo::getInfo(_heapType);
-
-		desc.SizeInBytes = _size;
-		desc.Alignment = 0;
-		desc.Properties.Type = typeInfo._heapType;
-		desc.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-		desc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
-		desc.Properties.CreationNodeMask = 1;
-		desc.Properties.VisibleNodeMask = 1;
-		desc.Flags = getD3D12HeapFlags();
-		return desc;
-	}
-
-	D3D12_HEAP_FLAGS RhiHeapDesc::getD3D12HeapFlags() const
+	static D3D12_HEAP_FLAGS toD3D12HeapFlags(const RhiHeapDesc& desc)
 	{
 		D3D12_HEAP_FLAGS flags = D3D12_HEAP_FLAG_NONE;
-		InfoList infoList = D3D12HeapFlagInfo::getInfoList(_heapFlags);
+		InfoList infoList = D3D12HeapFlagInfo::getInfoList(desc._heapFlags);
 		for (uint32 idx = 0; idx < infoList._count; ++idx)
 		{
 			const D3D12HeapFlagInfo* heapFlagInfo = infoList._items[idx];
@@ -36,7 +19,23 @@ namespace keyh
 		}
 		return flags;
 	}
-#endif
+
+	static D3D12_HEAP_DESC toD3D12HeapDesc(const RhiHeapDesc& desc)
+	{
+		D3D12_HEAP_DESC d3dDesc{};
+
+		const D3D12HeapTypeInfo& typeInfo = D3D12HeapTypeInfo::getInfo(desc._heapType);
+
+		d3dDesc.SizeInBytes = desc._size;
+		d3dDesc.Alignment = 0;
+		d3dDesc.Properties.Type = typeInfo._heapType;
+		d3dDesc.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		d3dDesc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		d3dDesc.Properties.CreationNodeMask = 1;
+		d3dDesc.Properties.VisibleNodeMask = 1;
+		d3dDesc.Flags = toD3D12HeapFlags(desc);
+		return d3dDesc;
+	}
 
 	IRhiMemoryHeap::IRhiMemoryHeap(const RhiHeapDesc& desc)
 		: _desc(desc)
@@ -47,7 +46,7 @@ namespace keyh
 		, IRhiMemoryHeap(desc)
 	{
 		ID3D12Device* d3d12Device = _device->getNativeDevice();
-        D3D12_HEAP_DESC heapDesc = _desc.getD3D12HeapDesc(); 
+        D3D12_HEAP_DESC heapDesc = toD3D12HeapDesc(desc); 
         d3d12Device->CreateHeap(&heapDesc, IID_PPV_ARGS(&_heap));
 	}
 
@@ -80,13 +79,13 @@ namespace keyh
 		uint32 requiredSize = 0;
 		if (isEnoughMemoryInHeap(_desc, desc, offset, requiredSize))
 		{
-			D3D12_RESOURCE_DESC resourceDesc = desc.getD3D12ResourceDesc();
+			D3D12_RESOURCE_DESC resourceDesc = toD3D12ResourceDesc(desc);
 			Microsoft::WRL::ComPtr<ID3D12Resource> resource;
 			const HRESULT hr = _device->getNativeDevice()->CreatePlacedResource(
 				_heap.Get(),
 				offset,
 				&resourceDesc,
-				desc.getD3D12ResourceStates(),
+				toD3D12ResourceStates(desc),
 				nullptr,
 				IID_PPV_ARGS(&resource)
 			);

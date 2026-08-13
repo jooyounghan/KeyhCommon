@@ -3,6 +3,7 @@
 
 namespace keyh
 {
+	class D3D12Device;
 	struct RhiBufferDesc
 	{
 		uint32 _width = 0;
@@ -14,11 +15,6 @@ namespace keyh
 		EResourceState _resourceStateFlags = EResourceState::Common;
 
 		uint32 getStride() const;
-
-#if defined(KEYH_PLATFORM_WINDOWS)
-		D3D12_RESOURCE_DESC		getD3D12ResourceDesc() const;
-		D3D12_RESOURCE_STATES	getD3D12ResourceStates() const;
-#endif
 	};
 
 	class IRhiBuffer
@@ -41,7 +37,7 @@ namespace keyh
 	class D3D12Buffer : public IRhiBuffer
 	{
 	public:
-		D3D12Buffer(ID3D12Device* device, const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default);
+		D3D12Buffer(D3D12Device* device, const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default);
 		D3D12Buffer(const RhiBufferDesc& desc, Microsoft::WRL::ComPtr<ID3D12Resource> resource);
 		~D3D12Buffer() override = default;
 

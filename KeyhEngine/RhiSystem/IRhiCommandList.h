@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "RhiEnum.h"
+
 namespace keyh
 {
 	class D3D12CommandPool;
@@ -17,13 +19,13 @@ namespace keyh
 		virtual void reset() = 0;
 
 	public:
-		virtual void setViewports(uint32_t count, const D3D12_VIEWPORT* viewports) = 0;
-		virtual void setScissorRects(uint32_t count, const D3D12_RECT* rects) = 0;
+		virtual void setViewports(uint32_t count, const RhiViewport* viewports) = 0;
+		virtual void setScissorRects(uint32_t count, const RhiRect* rects) = 0;
 
 	public:
-		virtual void setRenderTargets(uint32_t rtvCount, const D3D12_CPU_DESCRIPTOR_HANDLE* rtvHandles, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle) = 0;
-		virtual void clearRenderTargetView(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, const float colorRgba[4]) = 0;
-		virtual void clearDepthStencilView(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, float depth, uint8_t stencil) = 0;
+		virtual void setRenderTargets(uint32_t rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) = 0;
+		virtual void clearRenderTargetView(RhiCpuDescriptorHandle rtvHandle, const float colorRgba[4]) = 0;
+		virtual void clearDepthStencilView(RhiCpuDescriptorHandle dsvHandle, float depth, uint8_t stencil) = 0;
 
 	public:
 		virtual void drawInstanced(uint32_t vertexCountPerInstance, uint32_t instanceCount, uint32_t startVertexLocation, uint32_t startInstanceLocation) = 0;
@@ -51,13 +53,13 @@ namespace keyh
 		virtual void reset() override;
 
 	public:
-		virtual void setViewports(uint32_t count, const D3D12_VIEWPORT* viewports) override;
-		virtual void setScissorRects(uint32_t count, const D3D12_RECT* rects) override;
+		virtual void setViewports(uint32_t count, const RhiViewport* viewports) override;
+		virtual void setScissorRects(uint32_t count, const RhiRect* rects) override;
 
 	public:
-		virtual void setRenderTargets(uint32_t rtvCount, const D3D12_CPU_DESCRIPTOR_HANDLE* rtvHandles, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle) override;
-		virtual void clearRenderTargetView(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, const float colorRgba[4]) override;
-		virtual void clearDepthStencilView(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, float depth, uint8_t stencil) override;
+		virtual void setRenderTargets(uint32_t rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) override;
+		virtual void clearRenderTargetView(RhiCpuDescriptorHandle rtvHandle, const float colorRgba[4]) override;
+		virtual void clearDepthStencilView(RhiCpuDescriptorHandle dsvHandle, float depth, uint8_t stencil) override;
 
 	public:
 		virtual void drawInstanced(uint32_t vertexCountPerInstance, uint32_t instanceCount, uint32_t startVertexLocation, uint32_t startInstanceLocation) override;

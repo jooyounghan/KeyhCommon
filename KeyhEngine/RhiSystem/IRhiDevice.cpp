@@ -1,4 +1,4 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiDevice.h"
 #include "IRhiSwapChain.h"
 #include "IRhiCommandQueue.h"
@@ -69,12 +69,12 @@ namespace keyh
 	
 	Ptr<IRhiSwapChain> D3D12Device::createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue)
 	{
-		return makePtr<D3D12SwapChain>(desc, getDxgiFactory(), presentQueue);
+		return makePtr<D3D12SwapChain>(desc, this, presentQueue);
 	}
 	
 	Ptr<IRhiBuffer> D3D12Device::createBuffer(const RhiBufferDesc& desc, EHeapType heapType)
 	{
-		return makePtr<D3D12Buffer>(_device.Get(), desc, heapType);
+		return makePtr<D3D12Buffer>(this, desc, heapType);
 	}
 	
 	Ptr<IRhiTexture> D3D12Device::createTexture()

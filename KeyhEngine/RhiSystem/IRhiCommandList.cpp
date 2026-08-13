@@ -1,4 +1,4 @@
-﻿#include "RenderRhiPch.h"
+﻿#include "RhiSystemPch.h"
 #include "IRhiCommandList.h"
 #include "IRhiCommandPool.h"
 
@@ -32,48 +32,66 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::setViewports(uint32_t count, const D3D12_VIEWPORT* viewports)
+	void D3D12CommandList::setViewports(uint32_t count, const RhiViewport* viewports)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setViewports is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
-		//	_commandList->RSSetViewports(count, viewports);
+		//	InlinedVector<D3D12_VIEWPORT, 16> d3dViewports(count);
+		//	for (uint32_t i = 0; i < count; ++i)
+		//	{
+		//		d3dViewports[i] = { viewports[i].x, viewports[i].y, viewports[i].width, viewports[i].height, viewports[i].minDepth, viewports[i].maxDepth };
+		//	}
+		//	_commandList->RSSetViewports(count, d3dViewports.data());
 		//}
 	}
 
-	void D3D12CommandList::setScissorRects(uint32_t count, const D3D12_RECT* rects)
+	void D3D12CommandList::setScissorRects(uint32_t count, const RhiRect* rects)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setScissorRects is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
-		//	_commandList->RSSetScissorRects(count, rects);
+		//	InlinedVector<D3D12_RECT, 16> d3dRects(count);
+		//	for (uint32_t i = 0; i < count; ++i)
+		//	{
+		//		d3dRects[i] = { rects[i].left, rects[i].top, rects[i].right, rects[i].bottom };
+		//	}
+		//	_commandList->RSSetScissorRects(count, d3dRects.data());
 		//}
 	}
 
-	void D3D12CommandList::setRenderTargets(uint32_t rtvCount, const D3D12_CPU_DESCRIPTOR_HANDLE* rtvHandles, D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle)
+	void D3D12CommandList::setRenderTargets(uint32_t rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setRenderTargets is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
-		//	_commandList->OMSetRenderTargets(rtvCount, rtvHandles, FALSE, &dsvHandle);
+		//	InlinedVector<D3D12_CPU_DESCRIPTOR_HANDLE, 8> d3dRtvHandles(rtvCount);
+		//	for (uint32_t i = 0; i < rtvCount; ++i)
+		//	{
+		//		d3dRtvHandles[i] = { rtvHandles[i].ptr };
+		//	}
+		//	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvHandle{ dsvHandle.ptr };
+		//	_commandList->OMSetRenderTargets(rtvCount, d3dRtvHandles.data(), FALSE, &d3dDsvHandle);
 		//}
 	}
 
-	void D3D12CommandList::clearRenderTargetView(D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle, const float colorRgba[4])
+	void D3D12CommandList::clearRenderTargetView(RhiCpuDescriptorHandle rtvHandle, const float colorRgba[4])
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "clearRenderTargetView is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
-		//	_commandList->ClearRenderTargetView(rtvHandle, colorRgba, 0, nullptr);
+		//	D3D12_CPU_DESCRIPTOR_HANDLE d3dHandle{ rtvHandle.ptr };
+		//	_commandList->ClearRenderTargetView(d3dHandle, colorRgba, 0, nullptr);
 		//}
 	}
 
-	void D3D12CommandList::clearDepthStencilView(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle, float depth, uint8_t stencil)
+	void D3D12CommandList::clearDepthStencilView(RhiCpuDescriptorHandle dsvHandle, float depth, uint8_t stencil)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "clearDepthStencilView is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
-		//	_commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
+		//	D3D12_CPU_DESCRIPTOR_HANDLE d3dHandle{ dsvHandle.ptr };
+		//	_commandList->ClearDepthStencilView(d3dHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, depth, stencil, 0, nullptr);
 		//}
 	}
 
