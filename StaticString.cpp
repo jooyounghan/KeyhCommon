@@ -64,7 +64,6 @@ namespace keyh
 	StaticString<T>::StaticString(const StaticString& other) : _size(0), _capacityInfo(0)
 	{
 		_size = other._size;
-		_capacityInfo = other._capacityInfo;
 		const bool srcIsHeap = other.isHeapAllocated();
 		const size_t srcLength = other._size;
 
@@ -72,6 +71,7 @@ namespace keyh
 		{
 			const size_t heapCapacity = other.getHeapCapacity();
 			_heap = new T[heapCapacity];
+			setHeapAllocated(true);
 			setHeapCapacity(heapCapacity);
 		}
 		T* dstBuffer = srcIsHeap ? _heap : _ssoBuffer;
