@@ -1,6 +1,7 @@
 ﻿#include "test.h"
 
 #include "StaticStringTest.h"
+#include "InlinedVectorTest.h"
 #include "RefPtrTest.h"
 #include "WeakPtrTest.h"
 #include "ConcurrencyTest.h"
@@ -26,6 +27,9 @@ int main()
     //test_StaticString_clear_and_reuse();
     //test_StaticString_index_access();
     //test_StaticString_wchar();
+    test_InlinedVector_inline_and_heap_growth();
+    test_InlinedVector_copy_and_move();
+    test_InlinedVector_erase_and_shrink_to_fit();
 
     //test_RefPtr_basic();
     //test_RefPtr_copy();
