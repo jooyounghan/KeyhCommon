@@ -8,7 +8,7 @@ namespace keyh
 	T StaticString<T>::gNullChar = T();
 
 	template<typename T>
-	StaticString<T>::StaticString() : _stringInfo(0)
+	StaticString<T>::StaticString() : _size(0), _capacityInfo(0)
 	{
 		memset(_ssoBuffer, 0, sizeof(_ssoBuffer));
 	}
@@ -20,17 +20,19 @@ namespace keyh
 	}
 
 	template<typename T>
-	StaticString<T>::StaticString(const T* str) : _stringInfo(0)
+	StaticString<T>::StaticString(const T* str) : _size(0), _capacityInfo(0)
 	{
 		const size_t length = StrUtil::strlen(str);
-		setLength(length);
+		_size = length;
 
 		const bool ssoEnabled = length < StrUtil::kSsoCapacity;
-		setSso(ssoEnabled);
+		setHeapAllocated(!ssoEnabled);
 
 		if (ssoEnabled == false)
 		{
-			_heap = new T[length + 1];
+			const size_t heapCapacity = length + 1;
+			_heap = new T[heapCapacity];
+			setHeapCapacity(heapCapacity);
 		}
 
 		T* dstBuffer = ssoEnabled ? _ssoBuffer : _heap;
@@ -39,16 +41,18 @@ namespace keyh
 	}
 
 	template<typename T>
-	StaticString<T>::StaticString(const T* str, size_t length) : _stringInfo(0)
+	StaticString<T>::StaticString(const T* str, size_t length) : _size(0), _capacityInfo(0)
 	{
-		setLength(length);
+		_size = length;
 
 		const bool ssoEnabled = length < StrUtil::kSsoCapacity;
-		setSso(ssoEnabled);
+		setHeapAllocated(!ssoEnabled);
 
 		if (ssoEnabled == false)
 		{
-			_heap = new T[length + 1];
+			const size_t heapCapacity = length + 1;
+			_heap = new T[heapCapacity];
+			setHeapCapacity(heapCapacity);
 		}
 
 		T* dstBuffer = ssoEnabled ? _ssoBuffer : _heap;
@@ -57,18 +61,21 @@ namespace keyh
 	}
 
 	template<typename T>
-	StaticString<T>::StaticString(const StaticString& other) : _stringInfo(0)
+	StaticString<T>::StaticString(const StaticString& other) : _size(0), _capacityInfo(0)
 	{
-		_stringInfo = other._stringInfo;
-		const bool srcIsSso = other.isSso();
-		const size_t srcLength = other.length();
+		_size = other._size;
+		_capacityInfo = other._capacityInfo;
+		const bool srcIsHeap = other.isHeapAllocated();
+		const size_t srcLength = other._size;
 
-		if (srcIsSso == false)
+		if (srcIsHeap)
 		{
-			_heap = new T[srcLength + 1];
+			const size_t heapCapacity = other.getHeapCapacity();
+			_heap = new T[heapCapacity];
+			setHeapCapacity(heapCapacity);
 		}
-		T* dstBuffer = srcIsSso ? _ssoBuffer : _heap;
-		const T* srcBuffer = srcIsSso ? other._ssoBuffer : other._heap;
+		T* dstBuffer = srcIsHeap ? _heap : _ssoBuffer;
+		const T* srcBuffer = srcIsHeap ? other._heap : other._ssoBuffer;
 
 		std::memcpy(dstBuffer, srcBuffer, srcLength * sizeof(T));
 		dstBuffer[srcLength] = T();
@@ -86,19 +93,21 @@ namespace keyh
 	}
 
 	template<typename T>
-	StaticString<T>::StaticString(StaticString&& other) noexcept : _stringInfo(0)
+	StaticString<T>::StaticString(StaticString&& other) noexcept : _size(0), _capacityInfo(0)
 	{
-		_stringInfo = other._stringInfo;
-		other._stringInfo = 0;
+		_size = other._size;
+		_capacityInfo = other._capacityInfo;
+		other._size = 0;
+		other._capacityInfo = 0;
 
-		if (isSso())
-		{
-			std::memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::kSsoCapacity * sizeof(T));
-		}
-		else
+		if (isHeapAllocated())
 		{
 			_heap = other._heap;
 			other._heap = nullptr;
+		}
+		else
+		{
+			std::memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::kSsoCapacity * sizeof(T));
 		}
 	}
 
@@ -116,11 +125,11 @@ namespace keyh
 	template<typename T>
 	bool StaticString<T>::operator==(const StaticString& other) const
 	{
-		if (_stringInfo != other._stringInfo)
+		if (_size != other._size)
 			return false;
 
-		const T* lhsBuffer = isSso() ? _ssoBuffer : _heap;
-		const T* rhsBuffer = other.isSso() ? other._ssoBuffer : other._heap;
+		const T* lhsBuffer = isHeapAllocated() ? _heap : _ssoBuffer;
+		const T* rhsBuffer = other.isHeapAllocated() ? other._heap : other._ssoBuffer;
 		return StrUtil::strcmp(lhsBuffer, rhsBuffer) == 0;
 	}
 
@@ -133,13 +142,13 @@ namespace keyh
 	template<typename T>
 	T& StaticString<T>::operator[](size_t index)
 	{
-		if (index >= getLength())
+		if (index >= _size)
 		{
 			KEYH_ASSERT(false, "Index out of bounds");
 			return gNullChar;
 		}
 
-		T* buffer = isSso() ? _ssoBuffer : _heap;
+		T* buffer = isHeapAllocated() ? _heap : _ssoBuffer;
 		return buffer[index];
 	}
 
@@ -152,7 +161,8 @@ namespace keyh
 	template<typename T>
 	void StaticString<T>::swap(StaticString& other) noexcept
 	{
-		MemoryUtil::swap(_stringInfo, other._stringInfo);
+		MemoryUtil::swap(_size, other._size);
+		MemoryUtil::swap(_capacityInfo, other._capacityInfo);
 
 		char tempBytes[sizeof(_ssoBuffer)];
 		std::memcpy(tempBytes, &_ssoBuffer, sizeof(_ssoBuffer));
@@ -163,12 +173,13 @@ namespace keyh
 	template<typename T>
 	void StaticString<T>::clear()
 	{
-		if (getLength() > 0 && isSso() == false)
+		if (isHeapAllocated())
 		{
 			delete[] _heap;
 			_heap = nullptr;
 		}
-		_stringInfo = 0;
+		_size = 0;
+		_capacityInfo = 0;
 	}
 
 	template class StaticString<char>;
