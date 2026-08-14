@@ -1,7 +1,7 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiCommandPool.h"
-#include "IRhiDevice.h"
-#include "IRhiCommandList.h"
+#include "D3D12CommandPool.h"
+#include "D3D12Device.h"
+#include "D3D12CommandList.h"
 
 namespace keyh
 {

@@ -1,6 +1,6 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiDevice.h"
-#include "IRhiBuffer.h"
+#include "D3D12Device.h"
+#include "D3D12Buffer.h"
 #include "D3D12RhiConvert.h"
 
 namespace keyh

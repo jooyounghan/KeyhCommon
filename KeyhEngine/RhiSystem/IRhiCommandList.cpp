@@ -1,6 +1,6 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiCommandList.h"
-#include "IRhiCommandPool.h"
+#include "D3D12CommandList.h"
+#include "D3D12CommandPool.h"
 
 namespace keyh
 {

@@ -1,6 +1,6 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiSwapChain.h"
-#include "IRhiDevice.h"
+#include "D3D12SwapChain.h"
+#include "D3D12Device.h"
 
 namespace keyh
 {

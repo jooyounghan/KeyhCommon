@@ -1,9 +1,9 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiDevice.h"
-#include "IRhiSwapChain.h"
-#include "IRhiCommandQueue.h"
-#include "IRhiCommandPool.h"
-#include "IRhiBuffer.h"
+#include "D3D12Device.h"
+#include "D3D12SwapChain.h"
+#include "D3D12CommandQueue.h"
+#include "D3D12CommandPool.h"
+#include "D3D12Buffer.h"
 
 namespace keyh
 {

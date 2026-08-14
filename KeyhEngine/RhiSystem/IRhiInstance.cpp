@@ -1,9 +1,19 @@
 ﻿#include "RhiSystemPch.h"
 #include "IRhiInstance.h"
-#include "IRhiDevice.h"
+#include "D3D12Instance.h"
+#include "D3D12Device.h"
 
 namespace keyh
 {
+	Ptr<IRhiInstance> IRhiInstance::create()
+	{
+#if defined(KEYH_PLATFORM_WINDOWS)
+		return makePtr<IRhiInstance, D3D12Instance>();
+#else
+		return {};
+#endif
+	}
+
 #pragma region D3D12Instance
 	bool D3D12Instance::initialize()
 	{

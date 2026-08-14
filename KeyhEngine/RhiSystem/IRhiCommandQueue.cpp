@@ -1,6 +1,6 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiCommandQueue.h"
-#include "IRhiDevice.h"
+#include "D3D12CommandQueue.h"
+#include "D3D12Device.h"
 
 namespace keyh
 {

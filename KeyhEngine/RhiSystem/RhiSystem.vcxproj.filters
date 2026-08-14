@@ -66,6 +66,33 @@
     <ClInclude Include="IRhiMemoryHeap.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
+    <ClInclude Include="D3D12Buffer.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandList.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandPool.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandQueue.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Device.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Instance.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12MemoryHeap.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12PipelineLayout.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12SwapChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="D3D12RhiConvert.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>

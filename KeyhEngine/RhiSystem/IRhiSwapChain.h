@@ -5,7 +5,6 @@ namespace keyh
 {
 	class IRhiTexture;
 	class IRhiCommandQueue;
-	class D3D12Device;
 
 	struct RHISwapChainDesc
 	{
@@ -33,18 +32,6 @@ namespace keyh
 	//	virtual void			present() = 0;
 	//	virtual void			resize(uint32 width, uint32 height) = 0;
 	//	virtual IRhiTexture*	getBackBuffer() = 0;
-	};
-
-	class D3D12SwapChain : public IRhiSwapChain
-	{
-	public:
-		D3D12SwapChain(const RHISwapChainDesc& desc, D3D12Device* device, IRhiCommandQueue* presentQueue);
-		virtual ~D3D12SwapChain() override = default;
-
-	private:
-		Microsoft::WRL::ComPtr<IDXGISwapChain3> _swapChain;
-
-		bool initialize(D3D12Device* device, IRhiCommandQueue* presentQueue);
 	};
 }
 

@@ -1,6 +1,6 @@
 ﻿#include "RhiSystemPch.h"
-#include "IRhiPipelineLayout.h"
-#include "IRhiDevice.h"
+#include "D3D12PipelineLayout.h"
+#include "D3D12Device.h"
 
 namespace keyh
 {

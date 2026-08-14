@@ -155,6 +155,15 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="D3D12Buffer.h" />
+    <ClInclude Include="D3D12CommandList.h" />
+    <ClInclude Include="D3D12CommandPool.h" />
+    <ClInclude Include="D3D12CommandQueue.h" />
+    <ClInclude Include="D3D12Device.h" />
+    <ClInclude Include="D3D12Instance.h" />
+    <ClInclude Include="D3D12MemoryHeap.h" />
+    <ClInclude Include="D3D12PipelineLayout.h" />
+    <ClInclude Include="D3D12SwapChain.h" />
     <ClInclude Include="D3D12RhiConvert.h" />
     <ClInclude Include="D3D12RhiEnum.h" />
     <ClInclude Include="IRhiBuffer.h" />
