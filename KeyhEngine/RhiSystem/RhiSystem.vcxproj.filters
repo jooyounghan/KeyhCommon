@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\Command">
+      <UniqueIdentifier>{03d491bd-29fb-4fa7-a5b0-a570ae6b642a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Device">
+      <UniqueIdentifier>{c5b4e187-e2a4-4571-85aa-ff9c9caaf042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Device">
+      <UniqueIdentifier>{ceef12a3-53ab-4b8d-bd37-b74ff5894b81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Command">
+      <UniqueIdentifier>{33087fec-f071-4c16-8030-4c5cb4b9cefc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Memory">
+      <UniqueIdentifier>{1790a63f-aabd-4359-a881-061ab78bf1ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Memory">
+      <UniqueIdentifier>{afdbe222-a389-423f-9842-088dbaa3eb59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Pipeline">
+      <UniqueIdentifier>{e54969aa-e5b3-4435-874f-205519d40166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Pipeline">
+      <UniqueIdentifier>{8cfed0c9-6852-4719-b370-feb92daf2a23}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RhiSystemPch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RhiEnum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiDevice.h">
+      <Filter>헤더 파일\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiInstance.h">
+      <Filter>헤더 파일\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiCommandQueue.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiSwapChain.h">
+      <Filter>헤더 파일\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiCommandPool.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiCommandList.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiMemoryHeap.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Buffer.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandList.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandPool.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandQueue.h">
+      <Filter>헤더 파일\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Device.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Instance.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12MemoryHeap.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12PipelineLayout.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12SwapChain.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12RhiConvert.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12RhiEnum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiBuffer.h">
+      <Filter>헤더 파일\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiPipelineLayout.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiSampler.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="RhiSystemPch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RhiEnum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiDevice.cpp">
+      <Filter>소스 파일\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiInstance.cpp">
+      <Filter>소스 파일\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiSwapChain.cpp">
+      <Filter>소스 파일\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiCommandQueue.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiCommandPool.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiCommandList.cpp">
+      <Filter>소스 파일\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiMemoryHeap.cpp">
+      <Filter>소스 파일\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiBuffer.cpp">
+      <Filter>소스 파일\Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiPipelineLayout.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiSampler.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RhiSystem.props" />
+  </ItemGroup>
+</Project>

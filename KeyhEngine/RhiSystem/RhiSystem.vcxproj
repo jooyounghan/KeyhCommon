@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2c6ed981-4f90-4c4a-ad05-f1d776a2a9c6}</ProjectGuid>
-    <RootNamespace>MaterialSystem</RootNamespace>
+    <ProjectGuid>{66accf7b-05be-4d44-a3db-8d984d900305}</ProjectGuid>
+    <RootNamespace>RhiSystem</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -58,19 +58,19 @@
   <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="MaterialSystem.props" />
+    <Import Project="RhiSystem.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="MaterialSystem.props" />
+    <Import Project="RhiSystem.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="MaterialSystem.props" />
+    <Import Project="RhiSystem.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="MaterialSystem.props" />
+    <Import Project="RhiSystem.props" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -82,7 +82,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>RhiSystemPch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -103,7 +103,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>RhiSystemPch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -122,7 +122,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>RhiSystemPch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -143,7 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>MaterialSystemPch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>RhiSystemPch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -155,26 +155,56 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="MaterialSystemPch.h" />
+    <ClInclude Include="D3D12Buffer.h" />
+    <ClInclude Include="D3D12CommandList.h" />
+    <ClInclude Include="D3D12CommandPool.h" />
+    <ClInclude Include="D3D12CommandQueue.h" />
+    <ClInclude Include="D3D12Device.h" />
+    <ClInclude Include="D3D12Instance.h" />
+    <ClInclude Include="D3D12MemoryHeap.h" />
+    <ClInclude Include="D3D12PipelineLayout.h" />
+    <ClInclude Include="D3D12SwapChain.h" />
+    <ClInclude Include="D3D12RhiConvert.h" />
+    <ClInclude Include="D3D12RhiEnum.h" />
+    <ClInclude Include="IRhiBuffer.h" />
+    <ClInclude Include="IRhiCommandList.h" />
+    <ClInclude Include="IRhiCommandPool.h" />
+    <ClInclude Include="IRhiCommandQueue.h" />
+    <ClInclude Include="IRhiDevice.h" />
+    <ClInclude Include="IRhiInstance.h" />
+    <ClInclude Include="IRhiMemoryHeap.h" />
+    <ClInclude Include="IRhiPipelineLayout.h" />
+    <ClInclude Include="IRhiSampler.h" />
+    <ClInclude Include="IRhiSwapChain.h" />
+    <ClInclude Include="RhiSystemPch.h" />
+    <ClInclude Include="RhiEnum.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MaterialSystemPch.cpp">
+    <ClCompile Include="IRhiBuffer.cpp" />
+    <ClCompile Include="IRhiCommandList.cpp" />
+    <ClCompile Include="IRhiCommandPool.cpp" />
+    <ClCompile Include="IRhiCommandQueue.cpp" />
+    <ClCompile Include="IRhiDevice.cpp" />
+    <ClCompile Include="IRhiInstance.cpp" />
+    <ClCompile Include="IRhiMemoryHeap.cpp" />
+    <ClCompile Include="IRhiPipelineLayout.cpp" />
+    <ClCompile Include="IRhiSampler.cpp" />
+    <ClCompile Include="IRhiSwapChain.cpp" />
+    <ClCompile Include="RhiSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="RhiEnum.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReflectSystem\ReflectSystem.vcxproj">
-      <Project>{761c4598-1bad-4437-9e24-e8673f0c9802}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..RhiSystemRhiSystem.vcxproj">
-      <Project>{66accf7b-05be-4d44-a3db-8d984d900305}</Project>
+    <ProjectReference Include="..\CommonBase\CommonBase.vcxproj">
+      <Project>{295ebb3a-8079-45ba-a2f1-2115d709d868}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="MaterialSystem.props" />
+    <None Include="RhiSystem.props" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
