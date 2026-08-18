@@ -1,4 +1,5 @@
 ﻿#include "RhiSystemPch.h"
+#include "D3D12Device.h"
 #include "D3D12MemoryHeap.h"
 #include "D3D12Buffer.h"
 #include "D3D12RhiConvert.h"

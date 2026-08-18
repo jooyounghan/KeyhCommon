@@ -1,4 +1,5 @@
 ﻿#include "RhiSystemPch.h"
+#include "D3D12Device.h"
 #include "D3D12CommandList.h"
 #include "D3D12CommandPool.h"
 

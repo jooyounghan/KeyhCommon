@@ -9,7 +9,7 @@ namespace keyh
 	{
 	public:
 		D3D12CommandPool(D3D12Device* device, ECommandQueueType queueType);
-		~D3D12CommandPool() override = default;
+		virtual ~D3D12CommandPool() override = default;
 
 	public:
 		virtual IRhiCommandList* allocateCommandList() override;

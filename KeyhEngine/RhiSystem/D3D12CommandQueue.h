@@ -9,7 +9,7 @@ namespace keyh
 	{
 	public:
 		D3D12CommandQueue(D3D12Device* device, ECommandQueueType commandQueueType);
-		~D3D12CommandQueue() override = default;
+		virtual ~D3D12CommandQueue() override = default;
 
 	public:
 		virtual void executeCommandLists() override;

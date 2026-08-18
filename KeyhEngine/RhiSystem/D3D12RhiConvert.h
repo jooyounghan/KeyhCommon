@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 // Internal D3D12 conversion helpers — not part of the public RHI interface.
 // Include only from D3D12 implementation .cpp files.
 #include "IRhiBuffer.h"

@@ -10,7 +10,7 @@ namespace keyh
 	public:
 		D3D12Buffer(D3D12Device* device, const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default);
 		D3D12Buffer(const RhiBufferDesc& desc, Microsoft::WRL::ComPtr<ID3D12Resource> resource);
-		~D3D12Buffer() override = default;
+		virtual ~D3D12Buffer() override = default;
 
 	public:
 		virtual void* map() override;
