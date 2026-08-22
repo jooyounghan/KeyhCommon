@@ -1,6 +1,8 @@
 #include "CommonBasePch.h"
 #include "StringView.h"
 
+#include <cstring>
+
 namespace keyh
 {
 	template<typename T>
@@ -8,13 +10,13 @@ namespace keyh
 	{
 		KEYH_ASSERT(_data != nullptr, "StringView data is null");
 
-		if (_data == other._data)
-			return true;
-
 		if (_length != other._length)
 			return false;
 
-		return StrUtil::strcmp(_data, other._data) == 0;
+		if (_data == other._data)
+			return true;
+
+		return std::memcmp(_data, other._data, _length * sizeof(T)) == 0;
 	}
 
 	template<typename T>

@@ -83,15 +83,13 @@ namespace keyh
 	template<>
 	size_t FNV1aHash<FlyweightString<char>>::operator()(const FlyweightString<char>& value) const noexcept
 	{
-		//return value.getHash();
-		return FNV1aHasher::hash(value.getStringView());
+		return value.getHash();
 	}
 
 	template<>
 	size_t FNV1aHash<FlyweightString<wchar_t>>::operator()(const FlyweightString<wchar_t>& value) const noexcept
 	{
-		//return value.getHash();
-		return FNV1aHasher::hash(value.getStringView());
+		return value.getHash();
 	}
 }
 #pragma endregion}
