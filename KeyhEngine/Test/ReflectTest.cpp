@@ -36,6 +36,15 @@ namespace
         ReflectSerializer::deserializeObjectFromJson(root, obj);
         return true;
     }
+
+    static bool deserializeFromFile(const char* filePath, IReflectObject* obj)
+    {
+        File file;
+        if (!file.load(filePath))
+            return false;
+
+        return deserializeFromString(file.getStringBuffer(), file.getFileSize(), obj);
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -219,6 +228,48 @@ void test_Reflect_roundtrip_nested_object()
         CHECK(std::strcmp(dst._subObject._names[0].c_str(), "sub_alpha") == 0);
         CHECK(std::strcmp(dst._subObject._names[1].c_str(), "sub_beta")  == 0);
     }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// test_Reflect_large_object_file_roundtrip_compare
+//   Loads large_test_object.json into TestObject A, serializes A to
+//   large_test_object_test.json, loads that file into TestObject B, and checks
+//   that A and B are fully equal via reflection-based comparison.
+// ─────────────────────────────────────────────────────────────────────────────
+void test_Reflect_large_object_file_roundtrip_compare()
+{
+    printSection("Reflect - large object file round-trip compare");
+
+    const char* kSourceFilePath = "large_test_object.json";
+    const char* kRoundTripFilePath = "large_test_object_test.json";
+
+    TestObject sourceObj;
+    const bool loadedSource = deserializeFromFile(kSourceFilePath, &sourceObj);
+    CHECK(loadedSource);
+    if (!loadedSource)
+    {
+        std::printf("  [SKIP] Could not load %s\n", kSourceFilePath);
+        return;
+    }
+
+    const bool serialized = ReflectSerializer::serializeToJson(StringViewA(kRoundTripFilePath), &sourceObj);
+    CHECK(serialized);
+    if (!serialized)
+    {
+        std::printf("  [SKIP] Could not write %s\n", kRoundTripFilePath);
+        return;
+    }
+
+    TestObject roundTripObj;
+    const bool loadedRoundTrip = deserializeFromFile(kRoundTripFilePath, &roundTripObj);
+    CHECK(loadedRoundTrip);
+    if (!loadedRoundTrip)
+    {
+        std::printf("  [SKIP] Could not load %s\n", kRoundTripFilePath);
+        return;
+    }
+
+    CHECK(sourceObj.isEqual(&roundTripObj));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
