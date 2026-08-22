@@ -209,10 +209,7 @@ namespace keyh
 
 		for (uint32 i = 0; i < count && barrierCount < _countof(d3dBarriers); ++i)
 		{
-			if (toD3D12ResourceBarrier(barriers[i], d3dBarriers[barrierCount]))
-			{
-				++barrierCount;
-			}
+			d3dBarriers[barrierCount++] = toD3D12ResourceBarrier(barriers[i]);
 		}
 
 		if (barrierCount > 0)

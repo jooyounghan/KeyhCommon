@@ -202,12 +202,9 @@ namespace keyh
 		return d3dView;
 	}
 
-	inline bool toD3D12ResourceBarrier(const RhiResourceBarrier& barrier, D3D12_RESOURCE_BARRIER& outBarrier)
+	inline D3D12_RESOURCE_BARRIER toD3D12ResourceBarrier(const RhiResourceBarrier& barrier)
 	{
-		if (barrier._type != EResourceBarrierType::Transition)
-		{
-			return false;
-		}
+		KEYH_ASSERT(barrier._type == EResourceBarrierType::Transition, "Only Transition barriers are currently supported.");
 
 		ID3D12Resource* pResource = nullptr;
 		if (barrier._transition._target == EResourceBarrierTarget::Buffer && barrier._transition._buffer != nullptr)
@@ -219,19 +216,16 @@ namespace keyh
 			pResource = static_cast<D3D12Texture*>(barrier._transition._texture)->getNativeResource();
 		}
 
-		if (pResource == nullptr)
-		{
-			return false;
-		}
+		KEYH_ASSERT(pResource != nullptr, "Resource barrier target must have a valid native resource.");
 
-		outBarrier                        = {};
-		outBarrier.Type                   = D3D12ResourceBarrierTypeInfo::getInfo(barrier._type)._barrierType;
-		outBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-		outBarrier.Transition.pResource   = pResource;
-		outBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
-		outBarrier.Transition.StateAfter  = toD3D12ResourceStates(barrier._transition._stateAfter);
-		outBarrier.Transition.Subresource = barrier._transition._subresource;
-		return true;
+		D3D12_RESOURCE_BARRIER d3dBarrier               = {};
+		d3dBarrier.Type                                  = D3D12ResourceBarrierTypeInfo::getInfo(barrier._type)._barrierType;
+		d3dBarrier.Flags                                 = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		d3dBarrier.Transition.pResource                  = pResource;
+		d3dBarrier.Transition.StateBefore                = toD3D12ResourceStates(barrier._transition._stateBefore);
+		d3dBarrier.Transition.StateAfter                 = toD3D12ResourceStates(barrier._transition._stateAfter);
+		d3dBarrier.Transition.Subresource                = barrier._transition._subresource;
+		return d3dBarrier;
 	}
 
 	inline DXGI_SWAP_CHAIN_DESC1 toDXGISwapChainDesc1(const RHISwapChainDesc& desc)
