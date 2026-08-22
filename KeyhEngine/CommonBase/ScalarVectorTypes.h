@@ -7,6 +7,8 @@
 #if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && ((defined(_M_X64) && !defined(_M_ARM64EC)) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
 #include <xmmintrin.h>
 #define KEYH_SCALAR_VECTOR_SIMD_ENABLED 1
+#elif defined(KEYH_SCALAR_VECTOR_USE_SIMD)
+#error KEYH_SCALAR_VECTOR_USE_SIMD requires an SSE-capable x86/x64 target.
 #else
 #define KEYH_SCALAR_VECTOR_SIMD_ENABLED 0
 #endif
@@ -185,7 +187,15 @@ namespace keyh
 
         [[nodiscard]] float2 operator-() const noexcept
         {
-            return float2() - *this;
+#if KEYH_SCALAR_VECTOR_SIMD_ENABLED
+            const __m128 result = _mm_xor_ps(_mm_setr_ps(x, y, 0.0f, 0.0f), _mm_set1_ps(-0.0f));
+
+            float values[4];
+            _mm_storeu_ps(values, result);
+            return float2(values[0], values[1]);
+#else
+            return float2(-x, -y);
+#endif
         }
 
         [[nodiscard]] bool operator==(const float2& other) const noexcept
@@ -396,7 +406,15 @@ namespace keyh
 
         [[nodiscard]] float3 operator-() const noexcept
         {
-            return float3() - *this;
+#if KEYH_SCALAR_VECTOR_SIMD_ENABLED
+            const __m128 result = _mm_xor_ps(_mm_setr_ps(x, y, z, 0.0f), _mm_set1_ps(-0.0f));
+
+            float values[4];
+            _mm_storeu_ps(values, result);
+            return float3(values[0], values[1], values[2]);
+#else
+            return float3(-x, -y, -z);
+#endif
         }
 
         [[nodiscard]] float dot(const float3& other) const noexcept
@@ -405,9 +423,9 @@ namespace keyh
             const __m128 multiplied = _mm_mul_ps(
                 _mm_setr_ps(x, y, z, 0.0f),
                 _mm_setr_ps(other.x, other.y, other.z, 0.0f));
-            const __m128 y = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(1, 1, 1, 1));
-            const __m128 z = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(2, 2, 2, 2));
-            const __m128 summed = _mm_add_ss(_mm_add_ss(multiplied, y), z);
+            const __m128 shuffledY = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(1, 1, 1, 1));
+            const __m128 shuffledZ = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(2, 2, 2, 2));
+            const __m128 summed = _mm_add_ss(_mm_add_ss(multiplied, shuffledY), shuffledZ);
             return _mm_cvtss_f32(summed);
 #else
             return x * other.x + y * other.y + z * other.z;
@@ -659,7 +677,15 @@ namespace keyh
 
         [[nodiscard]] float4 operator-() const noexcept
         {
-            return float4() - *this;
+#if KEYH_SCALAR_VECTOR_SIMD_ENABLED
+            const __m128 result = _mm_xor_ps(_mm_setr_ps(x, y, z, w), _mm_set1_ps(-0.0f));
+
+            float values[4];
+            _mm_storeu_ps(values, result);
+            return float4(values[0], values[1], values[2], values[3]);
+#else
+            return float4(-x, -y, -z, -w);
+#endif
         }
 
         [[nodiscard]] bool operator==(const float4& other) const noexcept
