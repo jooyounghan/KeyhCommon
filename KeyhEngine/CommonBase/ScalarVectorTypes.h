@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AssertUtil.h"
 #include "CommonCore.h"
 
 #if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && (defined(_M_X64) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
@@ -31,12 +32,26 @@ namespace keyh
 
         [[nodiscard]] float& operator[](size_t index) noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            default:
+                KEYH_ASSERT(false, "float2 index out of bounds");
+                return y;
+            }
         }
 
         [[nodiscard]] const float& operator[](size_t index) const noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            default:
+                KEYH_ASSERT(false, "float2 index out of bounds");
+                return y;
+            }
         }
 
         [[nodiscard]] float2 operator+(const float2& other) const noexcept
@@ -226,12 +241,28 @@ namespace keyh
 
         [[nodiscard]] float& operator[](size_t index) noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default:
+                KEYH_ASSERT(false, "float3 index out of bounds");
+                return z;
+            }
         }
 
         [[nodiscard]] const float& operator[](size_t index) const noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default:
+                KEYH_ASSERT(false, "float3 index out of bounds");
+                return z;
+            }
         }
 
         [[nodiscard]] float3 operator+(const float3& other) const noexcept
@@ -370,13 +401,13 @@ namespace keyh
         [[nodiscard]] float dot(const float3& other) const noexcept
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
-            const __m128 result = _mm_mul_ps(
+            const __m128 multiplied = _mm_mul_ps(
                 _mm_setr_ps(x, y, z, 0.0f),
                 _mm_setr_ps(other.x, other.y, other.z, 0.0f));
-
-            float values[4];
-            _mm_storeu_ps(values, result);
-            return values[0] + values[1] + values[2];
+            const __m128 yzx = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(3, 0, 2, 1));
+            const __m128 zxy = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(3, 1, 0, 2));
+            const __m128 summed = _mm_add_ps(_mm_add_ps(multiplied, yzx), zxy);
+            return _mm_cvtss_f32(summed);
 #else
             return x * other.x + y * other.y + z * other.z;
 #endif
@@ -471,12 +502,30 @@ namespace keyh
 
         [[nodiscard]] float& operator[](size_t index) noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+            default:
+                KEYH_ASSERT(false, "float4 index out of bounds");
+                return w;
+            }
         }
 
         [[nodiscard]] const float& operator[](size_t index) const noexcept
         {
-            return (&x)[index];
+            switch (index)
+            {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            case 3: return w;
+            default:
+                KEYH_ASSERT(false, "float4 index out of bounds");
+                return w;
+            }
         }
 
         [[nodiscard]] float4 operator+(const float4& other) const noexcept
@@ -642,4 +691,14 @@ namespace keyh
             return float4(scalar) / value;
         }
     };
+
+    [[nodiscard]] inline float dot(const float3& left, const float3& right) noexcept
+    {
+        return left.dot(right);
+    }
+
+    [[nodiscard]] inline float3 cross(const float3& left, const float3& right) noexcept
+    {
+        return left.cross(right);
+    }
 }
