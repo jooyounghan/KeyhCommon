@@ -4,6 +4,7 @@
 using namespace keyh;
 
 #if defined(KEYH_PLATFORM_WINDOWS)
+#include <cstring>
 #include <dxcapi.h>
 #endif
 
@@ -185,4 +186,3 @@ void test_RhiSystem_d3d12_triangle_example()
 	delete commandList;
 #endif
 }
-
