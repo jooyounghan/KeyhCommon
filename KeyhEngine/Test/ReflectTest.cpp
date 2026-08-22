@@ -248,7 +248,7 @@ void test_Reflect_large_object_file_roundtrip_compare()
     CHECK(loadedSource);
     if (!loadedSource)
     {
-        std::printf("  [SKIP] Could not load %s\n", kSourceFilePath);
+        std::printf("  [FAIL] Could not load %s\n", kSourceFilePath);
         return;
     }
 
@@ -256,7 +256,7 @@ void test_Reflect_large_object_file_roundtrip_compare()
     CHECK(serialized);
     if (!serialized)
     {
-        std::printf("  [SKIP] Could not write %s\n", kRoundTripFilePath);
+        std::printf("  [FAIL] Could not write %s\n", kRoundTripFilePath);
         return;
     }
 
@@ -265,7 +265,7 @@ void test_Reflect_large_object_file_roundtrip_compare()
     CHECK(loadedRoundTrip);
     if (!loadedRoundTrip)
     {
-        std::printf("  [SKIP] Could not load %s\n", kRoundTripFilePath);
+        std::printf("  [FAIL] Could not load %s\n", kRoundTripFilePath);
         return;
     }
 
