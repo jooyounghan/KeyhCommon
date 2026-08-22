@@ -154,7 +154,7 @@
     <ProjectReference Include="..\MaterialSystem\MaterialSystem.vcxproj">
       <Project>{2c6ed981-4f90-4c4a-ad05-f1d776a2a9c6}</Project>
     </ProjectReference>
-    <ProjectReference Include="..RhiSystemRhiSystem.vcxproj">
+    <ProjectReference Include="..\RhiSystem\RhiSystem.vcxproj">
       <Project>{66accf7b-05be-4d44-a3db-8d984d900305}</Project>
     </ProjectReference>
   </ItemGroup>
