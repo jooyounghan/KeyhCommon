@@ -1,10 +1,127 @@
 ﻿#include "ReflectSystemPch.h"
 #include "ReflectSerializer.h"
 #include "JsonDocument.h"
+#include "File.h"
 #include "FileWriter.h"
 
 namespace keyh
 {
+static bool isWhitespace(const char c)
+{
+    return c == ' ' || c == '\n' || c == '\r' || c == '\t';
+}
+
+static void writeChar(IBuffer* buffer, const char c)
+{
+    buffer->writeBytes(&c, 1);
+}
+
+static void writeIndent(IBuffer* buffer, const size_t depth)
+{
+    constexpr char kIndent[] = "  ";
+    for (size_t i = 0; i < depth; ++i)
+        buffer->writeBytes(kIndent, sizeof(kIndent) - 1);
+}
+
+static bool writePrettyJson(FileWriter* writer, const char* jsonBuffer, const size_t jsonSize)
+{
+    bool inString = false;
+    bool escaped = false;
+    size_t indentDepth = 0;
+
+    for (size_t i = 0; i < jsonSize; ++i)
+    {
+        const char c = jsonBuffer[i];
+
+        if (inString)
+        {
+            writeChar(writer, c);
+            if (escaped)
+                escaped = false;
+            else if (c == '\\')
+                escaped = true;
+            else if (c == '"')
+                inString = false;
+            continue;
+        }
+
+        if (isWhitespace(c))
+            continue;
+
+        if (c == '"')
+        {
+            inString = true;
+            writeChar(writer, c);
+            continue;
+        }
+
+        if (c == '{' || c == '[')
+        {
+            const char closeToken = (c == '{') ? '}' : ']';
+            size_t nextIndex = i + 1;
+            while (nextIndex < jsonSize && isWhitespace(jsonBuffer[nextIndex]))
+                ++nextIndex;
+
+            if (nextIndex < jsonSize && jsonBuffer[nextIndex] == closeToken)
+            {
+                writeChar(writer, c);
+                writeChar(writer, closeToken);
+                i = nextIndex;
+                continue;
+            }
+
+            writeChar(writer, c);
+            writeChar(writer, '\n');
+            ++indentDepth;
+            writeIndent(writer, indentDepth);
+            continue;
+        }
+
+        if (c == '}' || c == ']')
+        {
+            writeChar(writer, '\n');
+            if (indentDepth > 0)
+                --indentDepth;
+            writeIndent(writer, indentDepth);
+            writeChar(writer, c);
+            continue;
+        }
+
+        if (c == ',')
+        {
+            writeChar(writer, c);
+            writeChar(writer, '\n');
+            writeIndent(writer, indentDepth);
+            continue;
+        }
+
+        if (c == ':')
+        {
+            writeChar(writer, c);
+            writeChar(writer, ' ');
+            continue;
+        }
+
+        writeChar(writer, c);
+    }
+
+    writeChar(writer, '\n');
+    return writer->flush();
+}
+
+static bool prettyFormatJsonFile(const StringViewA& filePath)
+{
+    File sourceFile;
+    if (!sourceFile.load(filePath.c_str()))
+        return false;
+
+    FileWriter writer;
+    if (!writer.open(filePath.c_str()))
+        return false;
+
+    return writePrettyJson(&writer, sourceFile.getStringBuffer(), sourceFile.getFileSize());
+}
+
 // =========================================================================
 // ReflectSerializer shared helpers
 // =========================================================================
@@ -67,7 +184,10 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
         return false;
     }
     serializeObjectToBuffer(&writer, reflectObject);
-    return writer.flush();
+    if (!writer.flush())
+        return false;
+
+    return prettyFormatJsonFile(filePath);
 }
 
 void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)
@@ -281,4 +401,3 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #pragma endregion
 
 }
-
