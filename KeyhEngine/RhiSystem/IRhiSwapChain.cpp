@@ -54,7 +54,7 @@ namespace keyh
 			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
 			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u. HRESULT: 0x%X", i, hr);
 
-			_backBuffers.emplace_back(new D3D12Texture(toRhiTextureDesc(_desc), keyh::move(backBufferResource)));
+			_backBuffers.emplace_back<D3D12Texture>(toRhiTextureDesc(_desc), keyh::move(backBufferResource));
 		}
 
 		return true;
@@ -85,13 +85,13 @@ namespace keyh
 			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
 			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u after resize. HRESULT: 0x%X", i, hr);
 
-			_backBuffers.emplace_back(new D3D12Texture(toRhiTextureDesc(_desc), keyh::move(backBufferResource)));
+      _backBuffers.emplace_back<D3D12Texture>(toRhiTextureDesc(_desc), keyh::move(backBufferResource));
 		}
 	}
 
 	IRhiTexture* D3D12SwapChain::getBackBuffer(uint32 index)
 	{
 		KEYH_ASSERT(index < _backBuffers.size(), "Back buffer index out of range.");
-		return _backBuffers[index].get();
+		return _backBuffers[index];
 	}
 }
