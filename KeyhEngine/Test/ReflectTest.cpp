@@ -270,10 +270,10 @@ void test_Reflect_large_object_file_roundtrip_compare()
     }
 
     // Serialize both objects to in-memory buffers and compare byte-for-byte.
-    // 256 KB is large enough to hold the TestObject schema serialized from
-    // large_test_object.json (the source file is ~128 KB and the schema covers
-    // only a subset of its fields).
-    static constexpr size_t kSerializeBufferSize = 256 * 1024;
+    // 2 MB is large enough to hold the TestObject schema serialized from
+    // large_test_object.json (the source file is ~512 KB and the schema covers
+    // all registered fields including the new Nested/Deep hierarchy).
+    static constexpr size_t kSerializeBufferSize = 2 * 1024 * 1024;
 
     ReflectBufferProxy srcBuffer;
     srcBuffer.allocate(kSerializeBufferSize);
@@ -300,19 +300,17 @@ void test_Reflect_large_object_file_roundtrip_compare()
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// benchmark_Reflect_deserialize_128kb_x100
+// benchmark_Reflect_deserialize_512kb_x100
 //   Measures the time taken to deserialize the large_test_object.json file
-//   (approximately 128 KB) 100 times using ReflectSerializer::deserializeFromJson.
+//   (approximately 512 KB) 100 times using ReflectSerializer::deserializeFromJson.
 //
-//   Since large_test_object.json does not match the TestObject schema (it has
-//   keys that TestObject doesn't register), unknown keys are silently skipped
-//   by deserializeObjectFromJson, which is the correct and expected behaviour.
-//   The benchmark still exercises the full parse + deserialize path on a
-//   realistically-sized file.
+//   large_test_object.json is structured to match the TestObject schema,
+//   including the new Nested (TestNestedObject) and Deep (TestDeepObject)
+//   hierarchy. All registered fields are exercised on each iteration.
 // ─────────────────────────────────────────────────────────────────────────────
-void benchmark_Reflect_deserialize_128kb_x100()
+void benchmark_Reflect_deserialize_512kb_x100()
 {
-    printSection("Reflect - deserialize 128 KB JSON x100 (benchmark)");
+    printSection("Reflect - deserialize 512 KB JSON x100 (benchmark)");
 
     const char* kFilePath = "large_test_object.json";
 
