@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "MemoryUtil.h"
 #include "AssertUtil.h"
 
@@ -102,10 +102,17 @@ namespace keyh
 		void swap(Vector& other) noexcept;
 
 	public:
-		inline T* data() { return static_cast<T*>(_data); }
-		inline const T* data() const { return static_cast<const T*>(_data); }
-		inline size_t size() const { return _size; }
-		inline size_t capacity() const { return _capacity; }
+		inline T*			data() { return static_cast<T*>(_data); }
+		inline const T*		data() const { return static_cast<const T*>(_data); }
+		inline size_t		size() const { return _size; }
+		inline size_t		capacity() const { return _capacity; }
+		inline bool			empty() const { return _size == 0; }
+
+	public:
+		inline T&			unsafeFront() { return (*this)[0]; }
+		inline const T&		unsafeFront() const { return (*this)[0]; }
+		inline T&			unsafeBack() { return (*this)[_size - 1]; }
+		inline const T&		unsafeBack() const { return (*this)[_size - 1]; }
 	};
 }
 #include "Vector.hpp"
