@@ -293,6 +293,10 @@ namespace keyh
 				psoDesc.RTVFormats[idx] = D3D12ResourceFormatInfo::getInfo(desc._renderTargetFormats[idx])._format;
 			}
 		}
+		else
+		{
+			KEYH_ASSERT(renderTargetCount == 0, "Render target formats must be provided when render target count is non-zero.");
+		}
 
 		psoDesc.DSVFormat          = D3D12ResourceFormatInfo::getInfo(desc._depthStencilFormat)._format;
 		psoDesc.SampleDesc.Count   = desc._sampleCount == 0 ? 1 : desc._sampleCount;
