@@ -23,7 +23,7 @@
       <AdditionalLibraryDirectories>$(RhiSystemVcpkgInstalledDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)' == 'Win32' Or '$(Platform)' == 'x64'">
+  <ItemDefinitionGroup Condition="'$(Platform)' == 'Win32' or '$(Platform)' == 'x64'">
     <ClCompile>
       <ForcedIncludeFiles>%(ForcedIncludeFiles);D3D12RhiEnum.h;</ForcedIncludeFiles>
     </ClCompile>
