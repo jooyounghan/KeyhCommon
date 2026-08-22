@@ -15,6 +15,17 @@
 
 namespace keyh
 {
+    [[noreturn]] inline void scalarVectorIndexOutOfBounds() noexcept
+    {
+        assert(false && "scalar vector index out of bounds");
+
+#if defined(_MSC_VER)
+        __assume(0);
+#elif defined(__GNUC__) || defined(__clang__)
+        __builtin_unreachable();
+#endif
+    }
+
     struct float2
     {
         float x = 0.0f;
@@ -40,8 +51,7 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             default:
-                assert(false && "float2 index out of bounds");
-                return y;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
@@ -52,8 +62,7 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             default:
-                assert(false && "float2 index out of bounds");
-                return y;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
@@ -258,8 +267,7 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             default:
-                assert(false && "float3 index out of bounds");
-                return z;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
@@ -271,8 +279,7 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             default:
-                assert(false && "float3 index out of bounds");
-                return z;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
@@ -528,8 +535,7 @@ namespace keyh
             case 2: return z;
             case 3: return w;
             default:
-                assert(false && "float4 index out of bounds");
-                return w;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
@@ -542,8 +548,7 @@ namespace keyh
             case 2: return z;
             case 3: return w;
             default:
-                assert(false && "float4 index out of bounds");
-                return w;
+                scalarVectorIndexOutOfBounds();
             }
         }
 
