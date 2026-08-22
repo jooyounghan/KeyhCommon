@@ -216,35 +216,43 @@ namespace keyh
 			return;
 		}
 
-		for (uint32 i = 0; i < count; ++i)
+		D3D12_RESOURCE_BARRIER d3dBarriers[D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT * 2];
+		uint32 barrierCount = 0;
+
+		for (uint32 i = 0; i < count && barrierCount < _countof(d3dBarriers); ++i)
 		{
 			const RhiResourceBarrier& barrier = barriers[i];
 			if (barrier._type == EResourceBarrierType::Transition)
 			{
-				D3D12_RESOURCE_BARRIER d3dBarrier = {};
-				d3dBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-				d3dBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
-				d3dBarrier.Transition.StateAfter  = toD3D12ResourceStates(barrier._transition._stateAfter);
-				d3dBarrier.Transition.Subresource = barrier._transition._subresource;
-
+				ID3D12Resource* pResource = nullptr;
 				if (barrier._transition._buffer != nullptr)
 				{
-					D3D12Buffer* d3d12Buffer = static_cast<D3D12Buffer*>(barrier._transition._buffer);
-					d3dBarrier.Transition.pResource = d3d12Buffer->getNativeResource();
+					pResource = static_cast<D3D12Buffer*>(barrier._transition._buffer)->getNativeResource();
 				}
 				else if (barrier._transition._texture != nullptr)
 				{
-					D3D12Texture* d3d12Texture = static_cast<D3D12Texture*>(barrier._transition._texture);
-					d3dBarrier.Transition.pResource = d3d12Texture->getNativeResource();
+					pResource = static_cast<D3D12Texture*>(barrier._transition._texture)->getNativeResource();
 				}
-				else
+
+				if (pResource == nullptr)
 				{
 					continue;
 				}
 
-				_commandList->ResourceBarrier(1, &d3dBarrier);
+				D3D12_RESOURCE_BARRIER& d3dBarrier = d3dBarriers[barrierCount++];
+				d3dBarrier                   = {};
+				d3dBarrier.Type              = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				d3dBarrier.Flags             = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				d3dBarrier.Transition.pResource   = pResource;
+				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
+				d3dBarrier.Transition.StateAfter  = toD3D12ResourceStates(barrier._transition._stateAfter);
+				d3dBarrier.Transition.Subresource = barrier._transition._subresource;
 			}
+		}
+
+		if (barrierCount > 0)
+		{
+			_commandList->ResourceBarrier(barrierCount, d3dBarriers);
 		}
 	}
 }
