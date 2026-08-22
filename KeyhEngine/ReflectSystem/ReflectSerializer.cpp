@@ -11,20 +11,27 @@ static bool isWhitespace(const char c)
     return c == ' ' || c == '\n' || c == '\r' || c == '\t';
 }
 
-static void writeChar(IBuffer* buffer, const char c)
+static void writeChar(Vector<char>* buffer, const char c)
 {
-    buffer->writeBytes(&c, 1);
+    buffer->push_back(c);
 }
 
-static void writeIndent(IBuffer* buffer, const size_t depth)
+static void writeIndent(Vector<char>* buffer, const size_t depth)
 {
-    constexpr char kIndent[] = "  ";
     for (size_t i = 0; i < depth; ++i)
-        buffer->writeBytes(kIndent, sizeof(kIndent) - 1);
+    {
+        buffer->push_back(' ');
+        buffer->push_back(' ');
+    }
 }
 
-static bool writePrettyJson(FileWriter* writer, const char* jsonBuffer, const size_t jsonSize)
+static bool writePrettyJson(Vector<char>* outputBuffer, const char* jsonBuffer, const size_t jsonSize)
 {
+    if (outputBuffer == nullptr || jsonBuffer == nullptr || jsonSize == 0)
+        return false;
+
+    outputBuffer->clear();
+
     bool inString = false;
     bool escaped = false;
     size_t indentDepth = 0;
@@ -35,7 +42,7 @@ static bool writePrettyJson(FileWriter* writer, const char* jsonBuffer, const si
 
         if (inString)
         {
-            writeChar(writer, c);
+            writeChar(outputBuffer, c);
             if (escaped)
                 escaped = false;
             else if (c == '\\')
@@ -51,7 +58,7 @@ static bool writePrettyJson(FileWriter* writer, const char* jsonBuffer, const si
         if (c == '"')
         {
             inString = true;
-            writeChar(writer, c);
+            writeChar(outputBuffer, c);
             continue;
         }
 
@@ -64,49 +71,54 @@ static bool writePrettyJson(FileWriter* writer, const char* jsonBuffer, const si
 
             if (nextIndex < jsonSize && jsonBuffer[nextIndex] == closeToken)
             {
-                writeChar(writer, c);
-                writeChar(writer, closeToken);
+                writeChar(outputBuffer, c);
+                writeChar(outputBuffer, closeToken);
                 i = nextIndex;
                 continue;
             }
 
-            writeChar(writer, c);
-            writeChar(writer, '\n');
+            writeChar(outputBuffer, c);
+            writeChar(outputBuffer, '\n');
             ++indentDepth;
-            writeIndent(writer, indentDepth);
+            writeIndent(outputBuffer, indentDepth);
             continue;
         }
 
         if (c == '}' || c == ']')
         {
-            writeChar(writer, '\n');
-            if (indentDepth > 0)
-                --indentDepth;
-            writeIndent(writer, indentDepth);
-            writeChar(writer, c);
+            if (indentDepth == 0)
+                return false;
+
+            writeChar(outputBuffer, '\n');
+            --indentDepth;
+            writeIndent(outputBuffer, indentDepth);
+            writeChar(outputBuffer, c);
             continue;
         }
 
         if (c == ',')
         {
-            writeChar(writer, c);
-            writeChar(writer, '\n');
-            writeIndent(writer, indentDepth);
+            writeChar(outputBuffer, c);
+            writeChar(outputBuffer, '\n');
+            writeIndent(outputBuffer, indentDepth);
             continue;
         }
 
         if (c == ':')
         {
-            writeChar(writer, c);
-            writeChar(writer, ' ');
+            writeChar(outputBuffer, c);
+            writeChar(outputBuffer, ' ');
             continue;
         }
 
-        writeChar(writer, c);
+        writeChar(outputBuffer, c);
     }
 
-    writeChar(writer, '\n');
-    return writer->flush();
+    if (inString || indentDepth != 0 || outputBuffer->empty())
+        return false;
+
+    writeChar(outputBuffer, '\n');
+    return true;
 }
 
 static bool prettyFormatJsonFile(const StringViewA& filePath)
@@ -115,11 +127,21 @@ static bool prettyFormatJsonFile(const StringViewA& filePath)
     if (!sourceFile.load(filePath.c_str()))
         return false;
 
-    FileWriter writer;
-    if (!writer.open(filePath.c_str()))
+    const size_t sourceSize = sourceFile.getFileSize();
+    if (sourceSize == 0)
         return false;
 
-    return writePrettyJson(&writer, sourceFile.getStringBuffer(), sourceFile.getFileSize());
+    Vector<char> sourceCopy;
+    sourceCopy.resize(sourceSize);
+    memcpy(sourceCopy.data(), sourceFile.getStringBuffer(), sourceSize);
+    sourceFile.unload();
+
+    Vector<char> prettyBuffer;
+    prettyBuffer.reserve(sourceSize + sourceSize / 2 + 16);
+    if (!writePrettyJson(&prettyBuffer, sourceCopy.data(), sourceCopy.size()))
+        return false;
+
+    return FileWriter::save(filePath.c_str(), prettyBuffer.data(), prettyBuffer.size());
 }
 
 // =========================================================================
