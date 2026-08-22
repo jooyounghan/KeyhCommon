@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <cstdlib>
 
 #include "CommonCore.h"
 
@@ -24,6 +25,8 @@ namespace keyh
 #elif defined(__GNUC__) || defined(__clang__)
         __builtin_unreachable();
 #endif
+
+        std::abort();
     }
 
     struct float2
@@ -445,12 +448,12 @@ namespace keyh
             const __m128 lhs = _mm_setr_ps(x, y, z, 0.0f);
             const __m128 rhs = _mm_setr_ps(other.x, other.y, other.z, 0.0f);
 
-            const __m128 lhsYzx = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 0, 2, 1));
-            const __m128 lhsZxy = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 1, 0, 2));
-            const __m128 rhsYzx = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 0, 2, 1));
-            const __m128 rhsZxy = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 1, 0, 2));
+            const __m128 lhsYZX = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 0, 2, 1));
+            const __m128 lhsZXY = _mm_shuffle_ps(lhs, lhs, _MM_SHUFFLE(3, 1, 0, 2));
+            const __m128 rhsYZX = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 0, 2, 1));
+            const __m128 rhsZXY = _mm_shuffle_ps(rhs, rhs, _MM_SHUFFLE(3, 1, 0, 2));
 
-            const __m128 result = _mm_sub_ps(_mm_mul_ps(lhsYzx, rhsZxy), _mm_mul_ps(lhsZxy, rhsYzx));
+            const __m128 result = _mm_sub_ps(_mm_mul_ps(lhsYZX, rhsZXY), _mm_mul_ps(lhsZXY, rhsYZX));
 
             float values[4];
             _mm_storeu_ps(values, result);
