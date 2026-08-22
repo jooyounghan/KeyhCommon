@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cassert>
+
 #include "CommonCore.h"
 
-#if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && (defined(_M_X64) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
+#if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && ((defined(_M_X64) && !defined(_M_ARM64EC)) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
 #include <xmmintrin.h>
 #define KEYH_SCALAR_VECTOR_SIMD_ENABLED 1
 #else
@@ -35,7 +37,9 @@ namespace keyh
             {
             case 0: return x;
             case 1: return y;
-            default: return y;
+            default:
+                assert(false && "float2 index out of bounds");
+                return y;
             }
         }
 
@@ -45,7 +49,9 @@ namespace keyh
             {
             case 0: return x;
             case 1: return y;
-            default: return y;
+            default:
+                assert(false && "float2 index out of bounds");
+                return y;
             }
         }
 
@@ -241,7 +247,9 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            default: return z;
+            default:
+                assert(false && "float3 index out of bounds");
+                return z;
             }
         }
 
@@ -252,7 +260,9 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            default: return z;
+            default:
+                assert(false && "float3 index out of bounds");
+                return z;
             }
         }
 
@@ -395,9 +405,9 @@ namespace keyh
             const __m128 multiplied = _mm_mul_ps(
                 _mm_setr_ps(x, y, z, 0.0f),
                 _mm_setr_ps(other.x, other.y, other.z, 0.0f));
-            const __m128 yzx = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(3, 0, 2, 1));
-            const __m128 zxy = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(3, 1, 0, 2));
-            const __m128 summed = _mm_add_ps(_mm_add_ps(multiplied, yzx), zxy);
+            const __m128 y = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(1, 1, 1, 1));
+            const __m128 z = _mm_shuffle_ps(multiplied, multiplied, _MM_SHUFFLE(2, 2, 2, 2));
+            const __m128 summed = _mm_add_ss(_mm_add_ss(multiplied, y), z);
             return _mm_cvtss_f32(summed);
 #else
             return x * other.x + y * other.y + z * other.z;
@@ -499,7 +509,9 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             case 3: return w;
-            default: return w;
+            default:
+                assert(false && "float4 index out of bounds");
+                return w;
             }
         }
 
@@ -511,7 +523,9 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             case 3: return w;
-            default: return w;
+            default:
+                assert(false && "float4 index out of bounds");
+                return w;
             }
         }
 
