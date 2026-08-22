@@ -1,6 +1,8 @@
 ﻿#include "RhiSystemPch.h"
 #include "D3D12SwapChain.h"
 #include "D3D12Device.h"
+#include "D3D12Buffer.h"
+#include "D3D12Texture.h"
 
 namespace keyh
 {
@@ -58,6 +60,67 @@ namespace keyh
 			return false;
 		}
 
+		_backBuffers.reserve(_desc._bufferCount);
+		for (uint32 i = 0; i < _desc._bufferCount; ++i)
+		{
+			Microsoft::WRL::ComPtr<ID3D12Resource> backBufferResource;
+			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
+			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u. HRESULT: 0x%X", i, hr);
+
+			RhiTextureDesc backBufferDesc;
+			backBufferDesc._width              = _desc._width;
+			backBufferDesc._height             = _desc._height;
+			backBufferDesc._format             = _desc._format;
+			backBufferDesc._dimension          = EResourceDimension::Texture2D;
+			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
+			backBufferDesc._resourceStateFlags = EResourceState::Common;
+
+			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+		}
+
 		return true;
+	}
+
+	void D3D12SwapChain::present()
+	{
+		const UINT syncInterval = _desc._enableVSync ? 1 : 0;
+		const HRESULT hr = _swapChain->Present(syncInterval, 0);
+		KEYH_ASSERT_ARGS(SUCCEEDED(hr), "SwapChain Present failed. HRESULT: 0x%X", hr);
+	}
+
+	void D3D12SwapChain::resize(uint32 width, uint32 height)
+	{
+		_backBuffers.clear();
+
+		_desc._width  = width;
+		_desc._height = height;
+
+		const D3D12ResourceFormatInfo& formatInfo = D3D12ResourceFormatInfo::getInfo(_desc._format);
+		HRESULT hr = _swapChain->ResizeBuffers(_desc._bufferCount, width, height, formatInfo._format, 0);
+		KEYH_ASSERT_ARGS(SUCCEEDED(hr), "SwapChain ResizeBuffers failed. HRESULT: 0x%X", hr);
+
+		_backBuffers.reserve(_desc._bufferCount);
+		for (uint32 i = 0; i < _desc._bufferCount; ++i)
+		{
+			Microsoft::WRL::ComPtr<ID3D12Resource> backBufferResource;
+			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
+			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u after resize. HRESULT: 0x%X", i, hr);
+
+			RhiTextureDesc backBufferDesc;
+			backBufferDesc._width              = width;
+			backBufferDesc._height             = height;
+			backBufferDesc._format             = _desc._format;
+			backBufferDesc._dimension          = EResourceDimension::Texture2D;
+			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
+			backBufferDesc._resourceStateFlags = EResourceState::Common;
+
+			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+		}
+	}
+
+	IRhiTexture* D3D12SwapChain::getBackBuffer(uint32 index)
+	{
+		KEYH_ASSERT(index < _backBuffers.size(), "Back buffer index out of range.");
+		return _backBuffers[index].get();
 	}
 }

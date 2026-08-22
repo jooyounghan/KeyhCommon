@@ -28,10 +28,10 @@ namespace keyh
 	public:
 		inline uint32			getBackBufferCount() { return _desc._bufferCount; }
 
-	//public:
-	//	virtual void			present() = 0;
-	//	virtual void			resize(uint32 width, uint32 height) = 0;
-	//	virtual IRhiTexture*	getBackBuffer() = 0;
+	public:
+		virtual void			present() = 0;
+		virtual void			resize(uint32 width, uint32 height) = 0;
+		virtual IRhiTexture*	getBackBuffer(uint32 index) = 0;
 	};
 }
 

@@ -37,6 +37,9 @@
     <Filter Include="소스 파일\Pipeline">
       <UniqueIdentifier>{8cfed0c9-6852-4719-b370-feb92daf2a23}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Pipeline\D3D12">
+      <UniqueIdentifier>{b1e4e2f7-3a7c-4d5b-9f2e-8c1a6d0e5f3a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="헤더 파일\Enum">
       <UniqueIdentifier>{f126ff0f-8d78-4ecd-aa32-3ebe6c035c28}</UniqueIdentifier>
     </Filter>
@@ -156,7 +159,13 @@
     <ClInclude Include="IRhiGraphicsPipeline.h">
       <Filter>헤더 파일\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="IRhiComputePipeline.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
     <ClInclude Include="D3D12GraphicsPipeline.h">
+      <Filter>헤더 파일\Pipeline\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12ComputePipeline.h">
       <Filter>헤더 파일\Pipeline\D3D12</Filter>
     </ClInclude>
   </ItemGroup>
@@ -208,6 +217,12 @@
     </ClCompile>
     <ClCompile Include="IRhiGraphicsPipeline.cpp">
       <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiComputePipeline.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D12ComputePipeline.cpp">
+      <Filter>소스 파일\Pipeline\D3D12</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

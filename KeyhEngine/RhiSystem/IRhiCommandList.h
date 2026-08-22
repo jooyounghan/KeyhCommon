@@ -4,6 +4,8 @@
 namespace keyh
 {
 	class IRhiSampler;
+	class IRhiGraphicsPipeline;
+	class IRhiComputePipeline;
 
 	class IRhiCommandList
 	{
@@ -22,6 +24,17 @@ namespace keyh
 		virtual void setViewports(uint32 count, const RhiViewport* viewports) = 0;
 		virtual void setScissorRects(uint32 count, const RhiRect* rects) = 0;
 		virtual void setSampler(uint32 slot, IRhiSampler* sampler) = 0;
+		virtual void setPrimitiveTopology(EPrimitiveTopologyType topology) = 0;
+
+	public:
+		virtual void setGraphicsPipeline(IRhiGraphicsPipeline* pipeline) = 0;
+		virtual void setComputePipeline(IRhiComputePipeline* pipeline) = 0;
+
+	public:
+		virtual void setVertexBuffers(uint32 startSlot, uint32 count, const RhiVertexBufferView* views) = 0;
+
+	public:
+		virtual void resourceBarrier(uint32 count, const RhiResourceBarrier* barriers) = 0;
 
 	public:
 		virtual void setRenderTargets(uint32 rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) = 0;

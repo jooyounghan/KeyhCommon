@@ -20,6 +20,7 @@ namespace keyh
 	struct RhiStaticSamplerDesc;
 	struct RhiFenceDesc;
 	struct RhiGraphicsPipelineDesc;
+	struct RhiComputePipelineDesc;
 
 	struct RhiAdapterInfo
 	{
@@ -56,7 +57,7 @@ namespace keyh
 		virtual Ptr<IRhiSampler>		createSampler(const RhiStaticSamplerDesc& desc) = 0;
 		virtual Ptr<IRhiFence>			createFence(const RhiFenceDesc& desc) = 0;
 		virtual Ptr<IRhiGraphicsPipeline> createGraphicsPipeline(const RhiGraphicsPipelineDesc& desc) = 0;
-		virtual Ptr<IRhiComputePipeline> createComputePipeline() = 0;
+		virtual Ptr<IRhiComputePipeline> createComputePipeline(const RhiComputePipelineDesc& desc) = 0;
 
 	public:
 		virtual void					allocateMemoryHeap() = 0;

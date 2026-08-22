@@ -3,6 +3,13 @@
 #include "D3D12CommandList.h"
 #include "D3D12CommandPool.h"
 #include "D3D12Sampler.h"
+#include "D3D12GraphicsPipeline.h"
+#include "D3D12ComputePipeline.h"
+#include "D3D12PipelineLayout.h"
+#include "D3D12Buffer.h"
+#include "D3D12Texture.h"
+#include "D3D12RhiEnum.h"
+#include "D3D12RhiConvert.h"
 
 namespace keyh
 {
@@ -135,5 +142,109 @@ namespace keyh
 		//{
 		//	_commandList->Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
 		//}
+	}
+
+	void D3D12CommandList::setPrimitiveTopology(EPrimitiveTopologyType topology)
+	{
+		D3D12_PRIMITIVE_TOPOLOGY d3dTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+		switch (topology)
+		{
+		case EPrimitiveTopologyType::Point:    d3dTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;    break;
+		case EPrimitiveTopologyType::Line:     d3dTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;     break;
+		case EPrimitiveTopologyType::Triangle: d3dTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
+		default:                               d3dTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;    break;
+		}
+		_commandList->IASetPrimitiveTopology(d3dTopology);
+	}
+
+	void D3D12CommandList::setGraphicsPipeline(IRhiGraphicsPipeline* pipeline)
+	{
+		if (pipeline == nullptr)
+		{
+			return;
+		}
+
+		D3D12GraphicsPipeline* d3d12Pipeline = static_cast<D3D12GraphicsPipeline*>(pipeline);
+		_commandList->SetPipelineState(d3d12Pipeline->getNativePipelineState());
+
+		D3D12PipelineLayout* d3d12Layout = static_cast<D3D12PipelineLayout*>(pipeline->getPipelineLayout());
+		if (d3d12Layout != nullptr)
+		{
+			_commandList->SetGraphicsRootSignature(d3d12Layout->getNativeRootSignature());
+		}
+	}
+
+	void D3D12CommandList::setComputePipeline(IRhiComputePipeline* pipeline)
+	{
+		if (pipeline == nullptr)
+		{
+			return;
+		}
+
+		D3D12ComputePipeline* d3d12Pipeline = static_cast<D3D12ComputePipeline*>(pipeline);
+		_commandList->SetPipelineState(d3d12Pipeline->getNativePipelineState());
+
+		D3D12PipelineLayout* d3d12Layout = static_cast<D3D12PipelineLayout*>(pipeline->getPipelineLayout());
+		if (d3d12Layout != nullptr)
+		{
+			_commandList->SetComputeRootSignature(d3d12Layout->getNativeRootSignature());
+		}
+	}
+
+	void D3D12CommandList::setVertexBuffers(uint32 startSlot, uint32 count, const RhiVertexBufferView* views)
+	{
+		if (views == nullptr || count == 0)
+		{
+			return;
+		}
+
+		D3D12_VERTEX_BUFFER_VIEW d3dViews[D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+		const uint32 clampedCount = count < D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT ? count : D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
+		for (uint32 i = 0; i < clampedCount; ++i)
+		{
+			d3dViews[i].BufferLocation = static_cast<D3D12_GPU_VIRTUAL_ADDRESS>(views[i]._bufferLocation);
+			d3dViews[i].SizeInBytes    = views[i]._sizeInBytes;
+			d3dViews[i].StrideInBytes  = views[i]._strideInBytes;
+		}
+		_commandList->IASetVertexBuffers(startSlot, clampedCount, d3dViews);
+	}
+
+	void D3D12CommandList::resourceBarrier(uint32 count, const RhiResourceBarrier* barriers)
+	{
+		if (barriers == nullptr || count == 0)
+		{
+			return;
+		}
+
+		for (uint32 i = 0; i < count; ++i)
+		{
+			const RhiResourceBarrier& barrier = barriers[i];
+			if (barrier._type == EResourceBarrierType::Transition)
+			{
+				D3D12_RESOURCE_BARRIER d3dBarrier = {};
+				d3dBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				d3dBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
+				d3dBarrier.Transition.StateAfter  = toD3D12ResourceStates(barrier._transition._stateAfter);
+				d3dBarrier.Transition.Subresource = barrier._transition._subresource;
+
+				if (barrier._transition._buffer != nullptr)
+				{
+					D3D12Buffer* d3d12Buffer = static_cast<D3D12Buffer*>(barrier._transition._buffer);
+					d3dBarrier.Transition.pResource = d3d12Buffer->getNativeResource();
+				}
+				else if (barrier._transition._texture != nullptr)
+				{
+					D3D12Texture* d3d12Texture = static_cast<D3D12Texture*>(barrier._transition._texture);
+					d3dBarrier.Transition.pResource = d3d12Texture->getNativeResource();
+				}
+				else
+				{
+					continue;
+				}
+
+				_commandList->ResourceBarrier(1, &d3dBarrier);
+			}
+		}
 	}
 }

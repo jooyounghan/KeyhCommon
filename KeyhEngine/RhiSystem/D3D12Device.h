@@ -39,7 +39,7 @@ namespace keyh
 		virtual Ptr<IRhiSampler>			createSampler(const RhiStaticSamplerDesc& desc) override;
 		virtual Ptr<IRhiFence>				createFence(const RhiFenceDesc& desc) override;
 		virtual Ptr<IRhiGraphicsPipeline>	createGraphicsPipeline(const RhiGraphicsPipelineDesc& desc) override;
-		virtual Ptr<IRhiComputePipeline>	createComputePipeline() override;
+		virtual Ptr<IRhiComputePipeline>	createComputePipeline(const RhiComputePipelineDesc& desc) override;
 
 	public:
 		virtual void allocateMemoryHeap() override;
