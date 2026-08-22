@@ -169,7 +169,8 @@ namespace keyh
 			{
 				uint64 pow = power10Map[decimalLength - 1];
 				uint64 leadingDigit = value / pow;
-				buffer->writeBytes(&leadingDigit, 1);
+				char leadingChar = '0' + static_cast<char>(leadingDigit);
+				buffer->writeBytes(&leadingChar, 1);
 				value -= pow * leadingDigit;
 				--decimalLength;
 			}
@@ -192,7 +193,7 @@ namespace keyh
 
 	void StrUtil::floatToStr(double value, IBuffer* buffer, size_t precision)
 	{
-		bool isNegative = value > 0;
+		bool isNegative = value < 0;
 		if (isnan(value)) return buffer->writeBytes(isNegative ? "-nan" : "nan", isNegative ? 4 : 3);
 		if (isinf(value)) return buffer->writeBytes(isNegative ? "-inf" : "inf", isNegative ? 4 : 3);
 
