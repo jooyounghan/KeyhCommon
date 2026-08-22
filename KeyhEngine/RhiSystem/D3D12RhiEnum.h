@@ -232,4 +232,109 @@ namespace keyh
         static void initializePlatformTable();
     };
 #pragma endregion
+
+#pragma region FillMode
+    struct FillModeInfoBase
+    {
+        FlyweightStringA  _name;
+        D3D12_FILL_MODE   _fillMode = D3D12_FILL_MODE_SOLID;
+    };
+
+    struct D3D12FillModeInfo : public FillModeInfoBase, public EnumTable(EFillMode, FillModeInfoBase, EFillMode::Count, D3D12FillModeInfo)
+    {
+        D3D12FillModeInfo() = default;
+        D3D12FillModeInfo(const char* name, D3D12_FILL_MODE fillMode);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region CullMode
+    struct CullModeInfoBase
+    {
+        FlyweightStringA  _name;
+        D3D12_CULL_MODE   _cullMode = D3D12_CULL_MODE_NONE;
+    };
+
+    struct D3D12CullModeInfo : public CullModeInfoBase, public EnumTable(ECullMode, CullModeInfoBase, ECullMode::Count, D3D12CullModeInfo)
+    {
+        D3D12CullModeInfo() = default;
+        D3D12CullModeInfo(const char* name, D3D12_CULL_MODE cullMode);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region BlendFactor
+    struct BlendFactorInfoBase
+    {
+        FlyweightStringA _name;
+        D3D12_BLEND      _blend = D3D12_BLEND_ZERO;
+    };
+
+    struct D3D12BlendFactorInfo : public BlendFactorInfoBase, public EnumTable(EBlendFactor, BlendFactorInfoBase, EBlendFactor::Count, D3D12BlendFactorInfo)
+    {
+        D3D12BlendFactorInfo() = default;
+        D3D12BlendFactorInfo(const char* name, D3D12_BLEND blend);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region BlendOp
+    struct BlendOpInfoBase
+    {
+        FlyweightStringA _name;
+        D3D12_BLEND_OP   _blendOp = D3D12_BLEND_OP_ADD;
+    };
+
+    struct D3D12BlendOpInfo : public BlendOpInfoBase, public EnumTable(EBlendOp, BlendOpInfoBase, EBlendOp::Count, D3D12BlendOpInfo)
+    {
+        D3D12BlendOpInfo() = default;
+        D3D12BlendOpInfo(const char* name, D3D12_BLEND_OP blendOp);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region LogicOp
+    struct LogicOpInfoBase
+    {
+        FlyweightStringA _name;
+        D3D12_LOGIC_OP   _logicOp = D3D12_LOGIC_OP_NOOP;
+    };
+
+    struct D3D12LogicOpInfo : public LogicOpInfoBase, public EnumTable(ELogicOp, LogicOpInfoBase, ELogicOp::Count, D3D12LogicOpInfo)
+    {
+        D3D12LogicOpInfo() = default;
+        D3D12LogicOpInfo(const char* name, D3D12_LOGIC_OP logicOp);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region StencilOp
+    struct StencilOpInfoBase
+    {
+        FlyweightStringA _name;
+        D3D12_STENCIL_OP _stencilOp = D3D12_STENCIL_OP_KEEP;
+    };
+
+    struct D3D12StencilOpInfo : public StencilOpInfoBase, public EnumTable(EStencilOp, StencilOpInfoBase, EStencilOp::Count, D3D12StencilOpInfo)
+    {
+        D3D12StencilOpInfo() = default;
+        D3D12StencilOpInfo(const char* name, D3D12_STENCIL_OP stencilOp);
+        static void initializePlatformTable();
+    };
+#pragma endregion
+
+#pragma region PrimitiveTopologyType
+    struct PrimitiveTopologyTypeInfoBase
+    {
+        FlyweightStringA               _name;
+        D3D12_PRIMITIVE_TOPOLOGY_TYPE  _topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
+    };
+
+    struct D3D12PrimitiveTopologyTypeInfo : public PrimitiveTopologyTypeInfoBase, public EnumTable(EPrimitiveTopologyType, PrimitiveTopologyTypeInfoBase, EPrimitiveTopologyType::Count, D3D12PrimitiveTopologyTypeInfo)
+    {
+        D3D12PrimitiveTopologyTypeInfo() = default;
+        D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType);
+        static void initializePlatformTable();
+    };
+#pragma endregion
 }

@@ -229,4 +229,130 @@ namespace keyh
 		registerEntry(EComparisonFunction::Always       , { "Always", D3D12_COMPARISON_FUNC_ALWAYS });
 	}
 #pragma endregion
+
+#pragma region FillMode
+	D3D12FillModeInfo::D3D12FillModeInfo(const char* name, D3D12_FILL_MODE fillMode)
+		: FillModeInfoBase{ name, fillMode }
+	{}
+
+	void D3D12FillModeInfo::initializePlatformTable()
+	{
+		registerEntry(EFillMode::Wireframe, { "Wireframe", D3D12_FILL_MODE_WIREFRAME });
+		registerEntry(EFillMode::Solid,     { "Solid",     D3D12_FILL_MODE_SOLID     });
+	}
+#pragma endregion
+
+#pragma region CullMode
+	D3D12CullModeInfo::D3D12CullModeInfo(const char* name, D3D12_CULL_MODE cullMode)
+		: CullModeInfoBase{ name, cullMode }
+	{}
+
+	void D3D12CullModeInfo::initializePlatformTable()
+	{
+		registerEntry(ECullMode::None,  { "None",  D3D12_CULL_MODE_NONE  });
+		registerEntry(ECullMode::Front, { "Front", D3D12_CULL_MODE_FRONT });
+		registerEntry(ECullMode::Back,  { "Back",  D3D12_CULL_MODE_BACK  });
+	}
+#pragma endregion
+
+#pragma region BlendFactor
+	D3D12BlendFactorInfo::D3D12BlendFactorInfo(const char* name, D3D12_BLEND blend)
+		: BlendFactorInfoBase{ name, blend }
+	{}
+
+	void D3D12BlendFactorInfo::initializePlatformTable()
+	{
+		registerEntry(EBlendFactor::Zero,          { "Zero",          D3D12_BLEND_ZERO           });
+		registerEntry(EBlendFactor::One,           { "One",           D3D12_BLEND_ONE            });
+		registerEntry(EBlendFactor::SrcColor,      { "SrcColor",      D3D12_BLEND_SRC_COLOR      });
+		registerEntry(EBlendFactor::InvSrcColor,   { "InvSrcColor",   D3D12_BLEND_INV_SRC_COLOR  });
+		registerEntry(EBlendFactor::SrcAlpha,      { "SrcAlpha",      D3D12_BLEND_SRC_ALPHA      });
+		registerEntry(EBlendFactor::InvSrcAlpha,   { "InvSrcAlpha",   D3D12_BLEND_INV_SRC_ALPHA  });
+		registerEntry(EBlendFactor::DstAlpha,      { "DstAlpha",      D3D12_BLEND_DEST_ALPHA     });
+		registerEntry(EBlendFactor::InvDstAlpha,   { "InvDstAlpha",   D3D12_BLEND_INV_DEST_ALPHA });
+		registerEntry(EBlendFactor::DstColor,      { "DstColor",      D3D12_BLEND_DEST_COLOR     });
+		registerEntry(EBlendFactor::InvDstColor,   { "InvDstColor",   D3D12_BLEND_INV_DEST_COLOR });
+		registerEntry(EBlendFactor::SrcAlphaSat,   { "SrcAlphaSat",   D3D12_BLEND_SRC_ALPHA_SAT  });
+		registerEntry(EBlendFactor::BlendFactor,   { "BlendFactor",   D3D12_BLEND_BLEND_FACTOR   });
+		registerEntry(EBlendFactor::InvBlendFactor,{ "InvBlendFactor",D3D12_BLEND_INV_BLEND_FACTOR });
+		registerEntry(EBlendFactor::Src1Color,     { "Src1Color",     D3D12_BLEND_SRC1_COLOR     });
+		registerEntry(EBlendFactor::InvSrc1Color,  { "InvSrc1Color",  D3D12_BLEND_INV_SRC1_COLOR });
+		registerEntry(EBlendFactor::Src1Alpha,     { "Src1Alpha",     D3D12_BLEND_SRC1_ALPHA     });
+		registerEntry(EBlendFactor::InvSrc1Alpha,  { "InvSrc1Alpha",  D3D12_BLEND_INV_SRC1_ALPHA });
+	}
+#pragma endregion
+
+#pragma region BlendOp
+	D3D12BlendOpInfo::D3D12BlendOpInfo(const char* name, D3D12_BLEND_OP blendOp)
+		: BlendOpInfoBase{ name, blendOp }
+	{}
+
+	void D3D12BlendOpInfo::initializePlatformTable()
+	{
+		registerEntry(EBlendOp::Add,        { "Add",        D3D12_BLEND_OP_ADD          });
+		registerEntry(EBlendOp::Subtract,   { "Subtract",   D3D12_BLEND_OP_SUBTRACT     });
+		registerEntry(EBlendOp::RevSubtract,{ "RevSubtract",D3D12_BLEND_OP_REV_SUBTRACT });
+		registerEntry(EBlendOp::Min,        { "Min",        D3D12_BLEND_OP_MIN          });
+		registerEntry(EBlendOp::Max,        { "Max",        D3D12_BLEND_OP_MAX          });
+	}
+#pragma endregion
+
+#pragma region LogicOp
+	D3D12LogicOpInfo::D3D12LogicOpInfo(const char* name, D3D12_LOGIC_OP logicOp)
+		: LogicOpInfoBase{ name, logicOp }
+	{}
+
+	void D3D12LogicOpInfo::initializePlatformTable()
+	{
+		registerEntry(ELogicOp::Clear,       { "Clear",       D3D12_LOGIC_OP_CLEAR        });
+		registerEntry(ELogicOp::Set,         { "Set",         D3D12_LOGIC_OP_SET          });
+		registerEntry(ELogicOp::Copy,        { "Copy",        D3D12_LOGIC_OP_COPY         });
+		registerEntry(ELogicOp::CopyInverted,{ "CopyInverted",D3D12_LOGIC_OP_COPY_INVERTED});
+		registerEntry(ELogicOp::Noop,        { "Noop",        D3D12_LOGIC_OP_NOOP         });
+		registerEntry(ELogicOp::Invert,      { "Invert",      D3D12_LOGIC_OP_INVERT       });
+		registerEntry(ELogicOp::And,         { "And",         D3D12_LOGIC_OP_AND          });
+		registerEntry(ELogicOp::Nand,        { "Nand",        D3D12_LOGIC_OP_NAND         });
+		registerEntry(ELogicOp::Or,          { "Or",          D3D12_LOGIC_OP_OR           });
+		registerEntry(ELogicOp::Nor,         { "Nor",         D3D12_LOGIC_OP_NOR          });
+		registerEntry(ELogicOp::Xor,         { "Xor",         D3D12_LOGIC_OP_XOR          });
+		registerEntry(ELogicOp::Equiv,       { "Equiv",       D3D12_LOGIC_OP_EQUIV        });
+		registerEntry(ELogicOp::AndReverse,  { "AndReverse",  D3D12_LOGIC_OP_AND_REVERSE  });
+		registerEntry(ELogicOp::AndInverted, { "AndInverted", D3D12_LOGIC_OP_AND_INVERTED });
+		registerEntry(ELogicOp::OrReverse,   { "OrReverse",   D3D12_LOGIC_OP_OR_REVERSE   });
+		registerEntry(ELogicOp::OrInverted,  { "OrInverted",  D3D12_LOGIC_OP_OR_INVERTED  });
+	}
+#pragma endregion
+
+#pragma region StencilOp
+	D3D12StencilOpInfo::D3D12StencilOpInfo(const char* name, D3D12_STENCIL_OP stencilOp)
+		: StencilOpInfoBase{ name, stencilOp }
+	{}
+
+	void D3D12StencilOpInfo::initializePlatformTable()
+	{
+		registerEntry(EStencilOp::Keep,    { "Keep",    D3D12_STENCIL_OP_KEEP     });
+		registerEntry(EStencilOp::Zero,    { "Zero",    D3D12_STENCIL_OP_ZERO     });
+		registerEntry(EStencilOp::Replace, { "Replace", D3D12_STENCIL_OP_REPLACE  });
+		registerEntry(EStencilOp::IncrSat, { "IncrSat", D3D12_STENCIL_OP_INCR_SAT });
+		registerEntry(EStencilOp::DecrSat, { "DecrSat", D3D12_STENCIL_OP_DECR_SAT });
+		registerEntry(EStencilOp::Invert,  { "Invert",  D3D12_STENCIL_OP_INVERT   });
+		registerEntry(EStencilOp::Incr,    { "Incr",    D3D12_STENCIL_OP_INCR     });
+		registerEntry(EStencilOp::Decr,    { "Decr",    D3D12_STENCIL_OP_DECR     });
+	}
+#pragma endregion
+
+#pragma region PrimitiveTopologyType
+	D3D12PrimitiveTopologyTypeInfo::D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
+		: PrimitiveTopologyTypeInfoBase{ name, topologyType }
+	{}
+
+	void D3D12PrimitiveTopologyTypeInfo::initializePlatformTable()
+	{
+		registerEntry(EPrimitiveTopologyType::Undefined, { "Undefined", D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED });
+		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT     });
+		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE      });
+		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE  });
+		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH     });
+	}
+#pragma endregion
 }
