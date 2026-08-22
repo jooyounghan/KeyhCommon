@@ -234,7 +234,7 @@ void test_Reflect_roundtrip_nested_object()
 // test_Reflect_large_object_file_roundtrip_compare
 //   Loads large_test_object.json into TestObject A, serializes A to
 //   large_test_object_test.json, loads that file into TestObject B, and checks
-//   that A and B are fully equal via reflection-based comparison.
+//   that the serialized JSON bytes of A and B are byte-for-byte identical.
 // ─────────────────────────────────────────────────────────────────────────────
 void test_Reflect_large_object_file_roundtrip_compare()
 {
@@ -269,7 +269,34 @@ void test_Reflect_large_object_file_roundtrip_compare()
         return;
     }
 
-    CHECK(sourceObj.isEqual(&roundTripObj));
+    // Serialize both objects to in-memory buffers and compare byte-for-byte.
+    // 256 KB is large enough to hold the TestObject schema serialized from
+    // large_test_object.json (the source file is ~128 KB and the schema covers
+    // only a subset of its fields).
+    static constexpr size_t kSerializeBufferSize = 256 * 1024;
+
+    ReflectBufferProxy srcBuffer;
+    srcBuffer.allocate(kSerializeBufferSize);
+    ReflectSerializer::serializeObjectToBuffer(&srcBuffer, &sourceObj);
+
+    ReflectBufferProxy rtBuffer;
+    rtBuffer.allocate(kSerializeBufferSize);
+    ReflectSerializer::serializeObjectToBuffer(&rtBuffer, &roundTripObj);
+
+    const bool sameSize = (srcBuffer.size() == rtBuffer.size());
+    CHECK(sameSize);
+    if (!sameSize)
+    {
+        std::printf("  [FAIL] Serialized sizes differ: source=%zu roundtrip=%zu\n",
+            srcBuffer.size(), rtBuffer.size());
+        return;
+    }
+
+    const bool sameContent = (std::memcmp(srcBuffer.getBuffer(), rtBuffer.getBuffer(), srcBuffer.size()) == 0);
+    CHECK(sameContent);
+    if (!sameContent)
+        std::printf("  [FAIL] Serialized file contents differ between %s and %s\n",
+            kSourceFilePath, kRoundTripFilePath);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
