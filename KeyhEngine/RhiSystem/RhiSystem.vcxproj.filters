@@ -55,6 +55,15 @@
     <Filter Include="헤더 파일\Pipeline\D3D12">
       <UniqueIdentifier>{a9db56bb-8f5f-420b-9275-2c9bf4169307}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Common">
+      <UniqueIdentifier>{0e6ecc64-dc0c-43d7-bfc1-c0b24b7774d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Common">
+      <UniqueIdentifier>{d8976331-7a6a-4604-af64-024d9cd38e58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Common\D3D12">
+      <UniqueIdentifier>{89568330-43c1-4b86-93ff-41a9560aabc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RhiSystemPch.h">
@@ -85,9 +94,6 @@
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
     <ClInclude Include="IRhiPipelineLayout.h">
-      <Filter>헤더 파일\Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="IRhiSampler.h">
       <Filter>헤더 파일\Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="RhiEnum.h">
@@ -123,17 +129,23 @@
     <ClInclude Include="D3D12CommandQueue.h">
       <Filter>헤더 파일\Command\D3D12</Filter>
     </ClInclude>
-    <ClInclude Include="D3D12Sampler.h">
-      <Filter>헤더 파일\Pipeline\D3D12</Filter>
-    </ClInclude>
     <ClInclude Include="D3D12PipelineLayout.h">
       <Filter>헤더 파일\Pipeline\D3D12</Filter>
     </ClInclude>
-    <ClInclude Include="IRhiDescriptorHeap.h">
-      <Filter>헤더 파일\Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="D3D12GlobalResourceHeap.h">
       <Filter>헤더 파일\Device\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Sampler.h">
+      <Filter>헤더 파일\Common\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiSampler.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiFence.h">
+      <Filter>헤더 파일\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiTexture.h">
+      <Filter>헤더 파일\Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -170,14 +182,11 @@
     <ClCompile Include="IRhiPipelineLayout.cpp">
       <Filter>소스 파일\Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="IRhiSampler.cpp">
-      <Filter>소스 파일\Pipeline</Filter>
-    </ClCompile>
-    <ClCompile Include="IRhiDescriptorHeap.cpp">
-      <Filter>소스 파일\Pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="D3D12GlobalResourceHeap.cpp">
       <Filter>소스 파일\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiSampler.cpp">
+      <Filter>소스 파일\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
