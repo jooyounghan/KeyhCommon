@@ -416,4 +416,14 @@ namespace keyh
 	};
 #pragma endregion
 
+#pragma region ResourceBarrierType
+	enum class EResourceBarrierType : uint8
+	{
+		Transition,
+		Aliasing,
+		UnorderedAccess,
+		Count
+	};
+#pragma endregion
+
 }

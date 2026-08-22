@@ -355,4 +355,17 @@ namespace keyh
 		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,     D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST }); // Default to 1 control point; callers requiring other patch sizes must set the topology directly.
 	}
 #pragma endregion
+
+#pragma region ResourceBarrierType
+	D3D12ResourceBarrierTypeInfo::D3D12ResourceBarrierTypeInfo(const char* name, D3D12_RESOURCE_BARRIER_TYPE barrierType)
+		: ResourceBarrierTypeInfoBase{ name, barrierType }
+	{}
+
+	void D3D12ResourceBarrierTypeInfo::initializePlatformTable()
+	{
+		registerEntry(EResourceBarrierType::Transition,      { "Transition",      D3D12_RESOURCE_BARRIER_TYPE_TRANSITION   });
+		registerEntry(EResourceBarrierType::Aliasing,        { "Aliasing",        D3D12_RESOURCE_BARRIER_TYPE_ALIASING     });
+		registerEntry(EResourceBarrierType::UnorderedAccess, { "UnorderedAccess", D3D12_RESOURCE_BARRIER_TYPE_UAV          });
+	}
+#pragma endregion
 }

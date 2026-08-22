@@ -6,16 +6,6 @@ namespace keyh
 	class IRhiBuffer;
 	class IRhiTexture;
 
-#pragma region ResourceBarrierType
-	enum class EResourceBarrierType : uint8
-	{
-		Transition,
-		Aliasing,
-		UnorderedAccess,
-		Count
-	};
-#pragma endregion
-
 #pragma region ResourceBarrierTarget
 	enum class EResourceBarrierTarget : uint8
 	{

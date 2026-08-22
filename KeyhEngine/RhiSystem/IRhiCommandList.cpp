@@ -233,7 +233,7 @@ namespace keyh
 
 				D3D12_RESOURCE_BARRIER& d3dBarrier = d3dBarriers[barrierCount++];
 				d3dBarrier                   = {};
-				d3dBarrier.Type              = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				d3dBarrier.Type              = D3D12ResourceBarrierTypeInfo::getInfo(barrier._type)._barrierType;
 				d3dBarrier.Flags             = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 				d3dBarrier.Transition.pResource   = pResource;
 				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);

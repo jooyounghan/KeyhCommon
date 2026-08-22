@@ -338,4 +338,19 @@ namespace keyh
         static void initializePlatformTable();
     };
 #pragma endregion
+
+#pragma region ResourceBarrierType
+    struct ResourceBarrierTypeInfoBase
+    {
+        FlyweightStringA          _name;
+        D3D12_RESOURCE_BARRIER_TYPE _barrierType = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    };
+
+    struct D3D12ResourceBarrierTypeInfo : public ResourceBarrierTypeInfoBase, public EnumTable(EResourceBarrierType, ResourceBarrierTypeInfoBase, EResourceBarrierType::Count, D3D12ResourceBarrierTypeInfo)
+    {
+        D3D12ResourceBarrierTypeInfo() = default;
+        D3D12ResourceBarrierTypeInfo(const char* name, D3D12_RESOURCE_BARRIER_TYPE barrierType);
+        static void initializePlatformTable();
+    };
+#pragma endregion
 }
