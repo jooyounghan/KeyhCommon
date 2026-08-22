@@ -119,7 +119,12 @@ void test_RhiSystem_d3d12_triangle_example()
 		return;
 	}
 
-	CHECK(instance->initialize());
+	const bool instanceInitialized = instance->initialize();
+	CHECK(instanceInitialized);
+	if (!instanceInitialized)
+	{
+		return;
+	}
 
 	const OwnerVector<IRhiDevice>& devices = instance->getDevices();
 	CHECK(devices.size() > 0);
@@ -179,7 +184,6 @@ void test_RhiSystem_d3d12_triangle_example()
 			commandList->setPrimitiveTopology(EPrimitiveTopologyType::Triangle);
 			commandList->drawInstanced(3, 1, 0, 0);
 			commandList->end();
-			CHECK(true);
 		}
 	}
 #endif
