@@ -10,7 +10,7 @@
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
@@ -36,7 +36,7 @@
 
 #define DECLARE_REFLECT_PROPERTY_SERIALIZER(Type)                                                                   \
     template<> bool ReflectPropertySerializer<Type>::isEqual(const Type& a, const Type& b);                                 \
-    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value);                   \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty);                   \
     template<> void ReflectPropertySerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value);             \
     template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
     template<> void ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
@@ -69,10 +69,10 @@
     }
 
     template<typename T>
-    void ReflectPropertySerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value)
+    void ReflectPropertySerializer<T, true>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
     {
         const IReflectObject* reflectObject = static_cast<const IReflectObject*>(&value);
-        ReflectSerializer::serializeObjectToBuffer(buffer, reflectObject);
+        ReflectSerializer::serializeObjectToBuffer(buffer, reflectObject, depth, pretty);
     }
 
     template<typename T>

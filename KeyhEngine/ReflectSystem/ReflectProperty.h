@@ -30,11 +30,10 @@ namespace keyh
 		virtual bool isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const override;
 
 	public:
-		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object) const override;
+		virtual void serializeToJson(IBuffer* buffer, const IReflectObject* object, size_t depth = 0, bool pretty = false) const override;
 		virtual void deserializeFromJson(const JsonValue& jsonValue, IReflectObject* object) const override;
 		virtual void serializeToBinary(IBuffer* buffer, const IReflectObject* object) const override;
 		virtual void deserializeFromBinary(const void* data, size_t size, IReflectObject* object) const override;
 	};
 }
 #include "ReflectProperty.hpp"
-

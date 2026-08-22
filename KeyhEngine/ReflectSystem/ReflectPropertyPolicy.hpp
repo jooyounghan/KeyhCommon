@@ -8,9 +8,9 @@
 	}
 
 	template<typename T>
-	void ReflectPropertyPolicy<T>::serializeToJson(IBuffer* buffer, const T& value)
+	void ReflectPropertyPolicy<T>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
 	{
-		return ReflectPropertySerializer<T>::serializeToJson(buffer, value);
+		return ReflectPropertySerializer<T>::serializeToJson(buffer, value, depth, pretty);
 	}
 
 	template<typename T>
@@ -48,15 +48,44 @@
 	}
 
 	template<typename ElementType>
-	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToJson(IBuffer* buffer, const Vector<ElementType>& value)
+	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToJson(IBuffer* buffer, const Vector<ElementType>& value, size_t depth, bool pretty)
 	{
 		buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+		if (pretty && value.empty() == false)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+		}
 		for (size_t i = 0; i < value.size(); ++i)
 		{
 			if (i > 0)
+			{
 				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+				if (pretty)
+				{
+					const char newline = '\n';
+					buffer->writeBytes(&newline, 1);
+				}
+			}
 
-			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, value[i]);
+			if (pretty)
+			{
+				for (size_t indent = 0; indent < depth + 1; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
+
+			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, value[i], depth + 1, pretty);
+		}
+		if (pretty && value.empty() == false)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+			for (size_t indent = 0; indent < depth; ++indent)
+			{
+				buffer->writeBytes("  ", 2);
+			}
 		}
 		buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
 	}
@@ -101,33 +130,93 @@
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
-	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
+	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value, size_t depth, bool pretty)
 	{
 		buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+		if (pretty && value.empty() == false)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+		}
 		bool isFirst = true;
 		for (const auto& bucket : value)
 		{
 			if (!isFirst)
+			{
 				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+				if (pretty)
+				{
+					const char newline = '\n';
+					buffer->writeBytes(&newline, 1);
+				}
+			}
 			isFirst = false;
 
+			if (pretty)
+			{
+				for (size_t indent = 0; indent < depth + 1; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
+
 			buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
+			if (pretty)
+			{
+				const char newline = '\n';
+				buffer->writeBytes(&newline, 1);
+				for (size_t indent = 0; indent < depth + 2; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
 
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes("k", 1);
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
-			ReflectPropertyPolicy<KeyType>::serializeToJson(buffer, bucket.key());
+			if (pretty)
+				buffer->writeBytes(" ", 1);
+			ReflectPropertyPolicy<KeyType>::serializeToJson(buffer, bucket.key(), depth + 2, pretty);
 
 			buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+			if (pretty)
+			{
+				const char newline = '\n';
+				buffer->writeBytes(&newline, 1);
+				for (size_t indent = 0; indent < depth + 2; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
 
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes("v", 1);
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
-			ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, bucket.value());
+			if (pretty)
+				buffer->writeBytes(" ", 1);
+			ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, bucket.value(), depth + 2, pretty);
 
+			if (pretty)
+			{
+				const char newline = '\n';
+				buffer->writeBytes(&newline, 1);
+				for (size_t indent = 0; indent < depth + 1; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
 			buffer->writeBytes(&ReflectionUtil::kObjectEnd, 1);
+		}
+		if (pretty && value.empty() == false)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+			for (size_t indent = 0; indent < depth; ++indent)
+			{
+				buffer->writeBytes("  ", 2);
+			}
 		}
 		buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
 	}

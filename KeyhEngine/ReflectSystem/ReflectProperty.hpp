@@ -38,9 +38,9 @@
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::serializeToJson(IBuffer* buffer, const IReflectObject* object) const
+	void ReflectProperty<ObjectType, ValueType>::serializeToJson(IBuffer* buffer, const IReflectObject* object, size_t depth, bool pretty) const
 	{
-		ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, getValueConstRef(object));
+		ReflectPropertyPolicy<ValueType>::serializeToJson(buffer, getValueConstRef(object), depth, pretty);
 	}
 
 	template<typename ObjectType, typename ValueType>

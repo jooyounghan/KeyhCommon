@@ -1,158 +1,25 @@
-﻿#include "ReflectSystemPch.h"
+#include "ReflectSystemPch.h"
 #include "ReflectSerializer.h"
-#include "JsonDocument.h"
-#include "File.h"
 #include "FileWriter.h"
 
 namespace keyh
 {
-static bool isWhitespace(const char c)
-{
-    return c == ' ' || c == '\n' || c == '\r' || c == '\t';
-}
-
-static void writeChar(Vector<char>* buffer, const char c)
-{
-    buffer->push_back(c);
-}
-
-static void writeIndent(Vector<char>* buffer, const size_t depth)
-{
-    for (size_t i = 0; i < depth; ++i)
-    {
-        buffer->push_back(' ');
-        buffer->push_back(' ');
-    }
-}
-
-static bool writePrettyJson(Vector<char>* outputBuffer, const char* jsonBuffer, const size_t jsonSize)
-{
-    if (outputBuffer == nullptr || jsonBuffer == nullptr || jsonSize == 0)
-        return false;
-
-    outputBuffer->clear();
-
-    bool inString = false;
-    bool escaped = false;
-    size_t indentDepth = 0;
-
-    for (size_t i = 0; i < jsonSize; ++i)
-    {
-        const char c = jsonBuffer[i];
-
-        if (inString)
-        {
-            writeChar(outputBuffer, c);
-            if (escaped)
-                escaped = false;
-            else if (c == '\\')
-                escaped = true;
-            else if (c == '"')
-                inString = false;
-            continue;
-        }
-
-        if (isWhitespace(c))
-            continue;
-
-        if (c == '"')
-        {
-            inString = true;
-            writeChar(outputBuffer, c);
-            continue;
-        }
-
-        if (c == '{' || c == '[')
-        {
-            const char closeToken = (c == '{') ? '}' : ']';
-            size_t nextIndex = i + 1;
-            while (nextIndex < jsonSize && isWhitespace(jsonBuffer[nextIndex]))
-                ++nextIndex;
-
-            if (nextIndex < jsonSize && jsonBuffer[nextIndex] == closeToken)
-            {
-                writeChar(outputBuffer, c);
-                writeChar(outputBuffer, closeToken);
-                i = nextIndex;
-                continue;
-            }
-
-            writeChar(outputBuffer, c);
-            writeChar(outputBuffer, '\n');
-            ++indentDepth;
-            writeIndent(outputBuffer, indentDepth);
-            continue;
-        }
-
-        if (c == '}' || c == ']')
-        {
-            if (indentDepth == 0)
-                return false;
-
-            writeChar(outputBuffer, '\n');
-            --indentDepth;
-            writeIndent(outputBuffer, indentDepth);
-            writeChar(outputBuffer, c);
-            continue;
-        }
-
-        if (c == ',')
-        {
-            writeChar(outputBuffer, c);
-            writeChar(outputBuffer, '\n');
-            writeIndent(outputBuffer, indentDepth);
-            continue;
-        }
-
-        if (c == ':')
-        {
-            writeChar(outputBuffer, c);
-            writeChar(outputBuffer, ' ');
-            continue;
-        }
-
-        writeChar(outputBuffer, c);
-    }
-
-    if (inString || indentDepth != 0 || outputBuffer->empty())
-        return false;
-
-    writeChar(outputBuffer, '\n');
-    return true;
-}
-
-static bool prettyFormatJsonFile(const StringViewA& filePath)
-{
-    File sourceFile;
-    if (!sourceFile.load(filePath.c_str()))
-        return false;
-
-    const size_t sourceSize = sourceFile.getFileSize();
-    if (sourceSize == 0)
-        return false;
-
-    Vector<char> sourceCopy;
-    sourceCopy.resize(sourceSize);
-    memcpy(sourceCopy.data(), sourceFile.getStringBuffer(), sourceSize);
-    sourceFile.unload();
-
-    Vector<char> prettyBuffer;
-    prettyBuffer.reserve(sourceSize + sourceSize / 2 + 16);
-    if (!writePrettyJson(&prettyBuffer, sourceCopy.data(), sourceCopy.size()))
-        return false;
-
-    return FileWriter::save(filePath.c_str(), prettyBuffer.data(), prettyBuffer.size());
-}
 
 // =========================================================================
 // ReflectSerializer shared helpers
 // =========================================================================
 
-void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectObject* reflectObject)
+void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectObject* reflectObject, size_t depth, bool pretty)
 {
     buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
 
     const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
+    if (pretty && properties.empty() == false)
+    {
+        const char newline = '\n';
+        buffer->writeBytes(&newline, 1);
+    }
+
     bool isFirst = true;
     for (const IReflectProperty* property : properties)
     {
@@ -160,16 +27,43 @@ void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectO
             continue;
 
         if (isFirst == false)
+        {
             buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+            if (pretty)
+            {
+                const char newline = '\n';
+                buffer->writeBytes(&newline, 1);
+            }
+        }
         isFirst = false;
+
+        if (pretty)
+        {
+            for (size_t indent = 0; indent < depth + 1; ++indent)
+            {
+                buffer->writeBytes("  ", 2);
+            }
+        }
 
         const FlyweightStringA& propertyName = property->getPropertyName();
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(propertyName.c_str(), propertyName.size());
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
+        if (pretty)
+            buffer->writeBytes(" ", 1);
 
-        property->serializeToJson(buffer, reflectObject);
+        property->serializeToJson(buffer, reflectObject, depth + 1, pretty);
+    }
+
+    if (pretty && isFirst == false)
+    {
+        const char newline = '\n';
+        buffer->writeBytes(&newline, 1);
+        for (size_t indent = 0; indent < depth; ++indent)
+        {
+            buffer->writeBytes("  ", 2);
+        }
     }
 
     buffer->writeBytes(&ReflectionUtil::kObjectEnd, 1);
@@ -205,11 +99,10 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
         KEYH_ASSERT_ARGS(false, "Failed to open file for writing: %s", filePath.c_str());
         return false;
     }
-    serializeObjectToBuffer(&writer, reflectObject);
+    serializeObjectToBuffer(&writer, reflectObject, 0, true);
     if (!writer.flush())
         return false;
-
-    return prettyFormatJsonFile(filePath);
+    return true;
 }
 
 void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)
@@ -253,19 +146,25 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #pragma region serializeToJson
 
 #define DEFINE_SERIALIZE_TO_JSON_SIGNED_INT(Type)                                                                \
-    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value) {            \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty) {            \
+        (void)depth;                                                                                             \
+        (void)pretty;                                                                                            \
         bool isNegative = static_cast<int64>(value) < 0;                                                        \
         uint64 absValue = isNegative ? static_cast<uint64>(-static_cast<int64>(value)) : static_cast<uint64>(value); \
         StrUtil::intToStr(isNegative, absValue, buffer);                                                        \
     }
 
 #define DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT(Type)                                                                \
-    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value) {            \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty) {            \
+        (void)depth;                                                                                             \
+        (void)pretty;                                                                                            \
         StrUtil::intToStr(false, static_cast<uint64>(value), buffer);                                            \
     }
 
 #define DEFINE_SERIALIZE_TO_JSON_FLOAT(Type)                                                                    \
-    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value) {            \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty) {            \
+        (void)depth;                                                                                             \
+        (void)pretty;                                                                                            \
         StrUtil::floatToStr(static_cast<double>(value), buffer);                                                \
     }
 
@@ -286,8 +185,10 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #undef DEFINE_SERIALIZE_TO_JSON_FLOAT
 
     template<>
-    void ReflectPropertySerializer<bool>::serializeToJson(IBuffer* buffer, const bool& value)
+    void ReflectPropertySerializer<bool>::serializeToJson(IBuffer* buffer, const bool& value, size_t depth, bool pretty)
     {
+        (void)depth;
+        (void)pretty;
         constexpr char kTrue[] = "true";
         constexpr char kFalse[] = "false";
         if (value)
@@ -297,16 +198,20 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     }
 
     template<>
-    void ReflectPropertySerializer<StaticStringA>::serializeToJson(IBuffer* buffer, const StaticStringA& value)
+    void ReflectPropertySerializer<StaticStringA>::serializeToJson(IBuffer* buffer, const StaticStringA& value, size_t depth, bool pretty)
     {
+        (void)depth;
+        (void)pretty;
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(value.c_str(), value.size());
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
     }
 
     template<>
-    void ReflectPropertySerializer<FlyweightStringA>::serializeToJson(IBuffer* buffer, const FlyweightStringA& value)
+    void ReflectPropertySerializer<FlyweightStringA>::serializeToJson(IBuffer* buffer, const FlyweightStringA& value, size_t depth, bool pretty)
     {
+        (void)depth;
+        (void)pretty;
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(value.c_str(), value.size());
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
