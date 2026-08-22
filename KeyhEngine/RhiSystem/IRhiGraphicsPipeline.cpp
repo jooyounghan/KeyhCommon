@@ -76,7 +76,14 @@ namespace keyh
 	D3D12GraphicsPipeline::D3D12GraphicsPipeline(D3D12Device* device, const RhiGraphicsPipelineDesc& desc)
 		: IRhiGraphicsPipeline(desc)
 	{
-		const uint32 renderTargetCount = desc._renderTargetFormats == nullptr ? 0 : desc._renderTargetCount;
+		if ((desc._renderTargetFormats == nullptr) != (desc._renderTargetCount == 0))
+		{
+			KEYH_ASSERT(false, "Render target formats and count must be specified together.");
+			return;
+		}
+
+		const uint32 renderTargetCount = desc._renderTargetCount;
+		KEYH_ASSERT(renderTargetCount <= D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT, "Render target count exceeds D3D12 maximum.");
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC pipelineStateDesc = {};
 		pipelineStateDesc.pRootSignature = desc._pipelineLayout != nullptr
@@ -91,9 +98,7 @@ namespace keyh
 		pipelineStateDesc.InputLayout = {};
 		pipelineStateDesc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 		pipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-		pipelineStateDesc.NumRenderTargets = renderTargetCount > D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT
-			? D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT
-			: renderTargetCount;
+		pipelineStateDesc.NumRenderTargets = renderTargetCount;
 
 		for (uint32 idx = 0; idx < pipelineStateDesc.NumRenderTargets; ++idx)
 		{

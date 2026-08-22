@@ -12,7 +12,10 @@ namespace keyh
 		~D3D12Fence() override;
 
 	public:
+		virtual void setTargetValue(uint64 value) override;
+		virtual void signalFromCpu(uint64 value) override;
 		virtual void waitForSignal(uint64 timeoutInNanoseconds) override;
+		virtual uint64 getCompletedValue() const override;
 
 	public:
 		inline ID3D12Fence* getNativeFence() const
@@ -23,5 +26,6 @@ namespace keyh
 	private:
 		Microsoft::WRL::ComPtr<ID3D12Fence> _fence;
 		HANDLE _event = nullptr;
+		uint64 _targetValue = 0;
 	};
 }

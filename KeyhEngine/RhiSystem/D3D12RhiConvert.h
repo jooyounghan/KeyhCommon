@@ -33,10 +33,10 @@ namespace keyh
 		return resourceDesc;
 	}
 
-	inline D3D12_RESOURCE_STATES toD3D12ResourceStates(const RhiBufferDesc& desc)
+	inline D3D12_RESOURCE_STATES toD3D12ResourceStates(EResourceState resourceStateFlags)
 	{
 		D3D12_RESOURCE_STATES states = D3D12_RESOURCE_STATE_COMMON;
-		InfoList infoList = D3D12ResourceStateInfo::getInfoList(desc._resourceStateFlags);
+		InfoList infoList = D3D12ResourceStateInfo::getInfoList(resourceStateFlags);
 		for (uint32 idx = 0; idx < infoList._count; ++idx)
 		{
 			const D3D12ResourceStateInfo* resourceStateInfo = infoList._items[idx];
@@ -48,8 +48,16 @@ namespace keyh
 		return states;
 	}
 
+	inline D3D12_RESOURCE_STATES toD3D12ResourceStates(const RhiBufferDesc& desc)
+	{
+		return toD3D12ResourceStates(desc._resourceStateFlags);
+	}
+
 	inline D3D12_RESOURCE_DESC toD3D12ResourceDesc(const RhiTextureDesc& desc)
 	{
+		KEYH_ASSERT(desc._depthOrArraySize <= UINT16_MAX, "Texture depth or array size exceeds D3D12 limits.");
+		KEYH_ASSERT(desc._mipLevels <= UINT16_MAX, "Texture mip level count exceeds D3D12 limits.");
+
 		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
 		InfoList infoList = D3D12ResourceFlagInfo::getInfoList(desc._resourceFlags);
 		for (uint32 idx = 0; idx < infoList._count; ++idx)
@@ -77,17 +85,7 @@ namespace keyh
 
 	inline D3D12_RESOURCE_STATES toD3D12ResourceStates(const RhiTextureDesc& desc)
 	{
-		D3D12_RESOURCE_STATES states = D3D12_RESOURCE_STATE_COMMON;
-		InfoList infoList = D3D12ResourceStateInfo::getInfoList(desc._resourceStateFlags);
-		for (uint32 idx = 0; idx < infoList._count; ++idx)
-		{
-			const D3D12ResourceStateInfo* resourceStateInfo = infoList._items[idx];
-			if (resourceStateInfo != nullptr)
-			{
-				states |= resourceStateInfo->_state;
-			}
-		}
-		return states;
+		return toD3D12ResourceStates(desc._resourceStateFlags);
 	}
 
 	inline D3D12_SAMPLER_DESC toD3D12SamplerDesc(const RhiStaticSamplerDesc& desc)
