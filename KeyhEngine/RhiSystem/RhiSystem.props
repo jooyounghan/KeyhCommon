@@ -17,11 +17,18 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RhiSystemVcpkgInstalledDir)include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles);RhiSystemPch.h;RhiEnum.h;IRhiInstance.h;IRhiDevice.h;</ForcedIncludeFiles>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);RhiSystemPch.h;RhiEnum.h;RhiResourceBarrier.h;IRhiBuffer.h;IRhiCommandList.h;IRhiCommandPool.h;IRhiCommandQueue.h;IRhiComputePipeline.h;IRhiDevice.h;IRhiFence.h;IRhiGraphicsPipeline.h;IRhiInstance.h;IRhiMemoryHeap.h;IRhiPipelineLayout.h;IRhiSampler.h;IRhiSwapChain.h;IRhiTexture.h;</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(RhiSystemVcpkgInstalledDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)' == 'Win32' Or '$(Platform)' == 'x64'">
+    <ClCompile>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);D3D12RhiEnum.h;</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->
-      <AdditionalLibraryDirectories>$(RhiSystemVcpkgInstalledDir)lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>d3d12.lib;dxgi.lib;dxcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
