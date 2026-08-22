@@ -328,12 +328,13 @@ namespace keyh
     {
         FlyweightStringA               _name;
         D3D12_PRIMITIVE_TOPOLOGY_TYPE  _topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED;
+        D3D_PRIMITIVE_TOPOLOGY         _topology     = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
     };
 
     struct D3D12PrimitiveTopologyTypeInfo : public PrimitiveTopologyTypeInfoBase, public EnumTable(EPrimitiveTopologyType, PrimitiveTopologyTypeInfoBase, EPrimitiveTopologyType::Count, D3D12PrimitiveTopologyTypeInfo)
     {
         D3D12PrimitiveTopologyTypeInfo() = default;
-        D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType);
+        D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D_PRIMITIVE_TOPOLOGY topology);
         static void initializePlatformTable();
     };
 #pragma endregion

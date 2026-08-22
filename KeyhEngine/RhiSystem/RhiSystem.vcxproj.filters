@@ -102,6 +102,9 @@
     <ClInclude Include="RhiEnum.h">
       <Filter>헤더 파일\Enum</Filter>
     </ClInclude>
+    <ClInclude Include="RhiResourceBarrier.h">
+      <Filter>헤더 파일\Enum</Filter>
+    </ClInclude>
     <ClInclude Include="D3D12RhiEnum.h">
       <Filter>헤더 파일\Enum\D3D12</Filter>
     </ClInclude>

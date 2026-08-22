@@ -12,7 +12,7 @@ namespace keyh
 		pipelineStateDesc.pRootSignature = desc._pipelineLayout != nullptr
 			? static_cast<D3D12PipelineLayout*>(desc._pipelineLayout)->getNativeRootSignature()
 			: nullptr;
-		pipelineStateDesc.CS = { desc._computeShader, desc._computeShaderSize };
+		pipelineStateDesc.CS = { desc._computeShader._data, desc._computeShader._sizeInBytes };
 		pipelineStateDesc.NodeMask = 0;
 		pipelineStateDesc.CachedPSO = {};
 		pipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;

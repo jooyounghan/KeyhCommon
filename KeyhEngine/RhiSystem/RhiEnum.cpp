@@ -342,17 +342,17 @@ namespace keyh
 #pragma endregion
 
 #pragma region PrimitiveTopologyType
-	D3D12PrimitiveTopologyTypeInfo::D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
-		: PrimitiveTopologyTypeInfoBase{ name, topologyType }
+	D3D12PrimitiveTopologyTypeInfo::D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D_PRIMITIVE_TOPOLOGY topology)
+		: PrimitiveTopologyTypeInfoBase{ name, topologyType, topology }
 	{}
 
 	void D3D12PrimitiveTopologyTypeInfo::initializePlatformTable()
 	{
-		registerEntry(EPrimitiveTopologyType::Undefined, { "Undefined", D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED });
-		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT     });
-		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE      });
-		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE  });
-		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH     });
+		registerEntry(EPrimitiveTopologyType::Undefined, { "Undefined", D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED, D3D_PRIMITIVE_TOPOLOGY_UNDEFINED    });
+		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT,     D3D_PRIMITIVE_TOPOLOGY_POINTLIST     });
+		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE,      D3D_PRIMITIVE_TOPOLOGY_LINELIST      });
+		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,  D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST  });
+		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,     D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST });
 	}
 #pragma endregion
 }

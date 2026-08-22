@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "IRhiGraphicsPipeline.h"
 
 namespace keyh
 {
@@ -6,9 +7,8 @@ namespace keyh
 
 	struct RhiComputePipelineDesc
 	{
-		IRhiPipelineLayout* _pipelineLayout  = nullptr;
-		const void*         _computeShader   = nullptr;
-		size_t              _computeShaderSize = 0;
+		IRhiPipelineLayout* _pipelineLayout = nullptr;
+		RhiShaderBytecode   _computeShader;
 	};
 
 	class IRhiComputePipeline

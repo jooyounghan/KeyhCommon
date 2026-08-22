@@ -188,6 +188,7 @@
     <ClInclude Include="IRhiTexture.h" />
     <ClInclude Include="RhiSystemPch.h" />
     <ClInclude Include="RhiEnum.h" />
+    <ClInclude Include="RhiResourceBarrier.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D12ComputePipeline.cpp" />
