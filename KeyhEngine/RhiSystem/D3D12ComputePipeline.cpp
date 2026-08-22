@@ -2,6 +2,7 @@
 #include "D3D12ComputePipeline.h"
 #include "D3D12Device.h"
 #include "D3D12PipelineLayout.h"
+#include "D3D12RhiConvert.h"
 
 namespace keyh
 {
@@ -12,7 +13,7 @@ namespace keyh
 		pipelineStateDesc.pRootSignature = desc._pipelineLayout != nullptr
 			? static_cast<D3D12PipelineLayout*>(desc._pipelineLayout)->getNativeRootSignature()
 			: nullptr;
-		pipelineStateDesc.CS = { desc._computeShader._data, desc._computeShader._sizeInBytes };
+		pipelineStateDesc.CS = toD3D12ShaderBytecode(desc._computeShader);
 		pipelineStateDesc.NodeMask = 0;
 		pipelineStateDesc.CachedPSO = {};
 		pipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
