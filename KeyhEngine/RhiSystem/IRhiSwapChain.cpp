@@ -1,8 +1,9 @@
 ﻿#include "RhiSystemPch.h"
 #include "D3D12SwapChain.h"
 #include "D3D12Device.h"
-#include "D3D12Buffer.h"
 #include "D3D12Texture.h"
+#include "D3D12RhiEnum.h"
+#include "D3D12RhiConvert.h"
 
 namespace keyh
 {
@@ -20,21 +21,7 @@ namespace keyh
 
 	bool D3D12SwapChain::initialize(D3D12Device* device, IRhiCommandQueue* presentQueue)
 	{
-		const D3D12ResourceFormatInfo& formatInfo = D3D12ResourceFormatInfo::getInfo(_desc._format);
-
-		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-		swapChainDesc.Width = _desc._width;
-		swapChainDesc.Height = _desc._height;
-		swapChainDesc.Format = formatInfo._format;
-		swapChainDesc.Stereo = FALSE;
-		swapChainDesc.SampleDesc.Count = 1;
-		swapChainDesc.SampleDesc.Quality = 0;
-		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-		swapChainDesc.BufferCount = _desc._bufferCount;
-		swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-		swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
-		swapChainDesc.Flags = 0;
+		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = toDXGISwapChainDesc1(_desc);
 
 		IDXGIFactory7* factory = device->getDxgiFactory();
 		Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
@@ -67,15 +54,7 @@ namespace keyh
 			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
 			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u. HRESULT: 0x%X", i, hr);
 
-			RhiTextureDesc backBufferDesc;
-			backBufferDesc._width              = _desc._width;
-			backBufferDesc._height             = _desc._height;
-			backBufferDesc._format             = _desc._format;
-			backBufferDesc._dimension          = EResourceDimension::Texture2D;
-			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
-			backBufferDesc._resourceStateFlags = EResourceState::Common;
-
-			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+			_backBuffers.emplace_back(new D3D12Texture(toRhiTextureDesc(_desc), keyh::move(backBufferResource)));
 		}
 
 		return true;
@@ -106,15 +85,7 @@ namespace keyh
 			hr = _swapChain->GetBuffer(i, IID_PPV_ARGS(&backBufferResource));
 			KEYH_ASSERT_ARGS(SUCCEEDED(hr), "Failed to get swap chain back buffer %u after resize. HRESULT: 0x%X", i, hr);
 
-			RhiTextureDesc backBufferDesc;
-			backBufferDesc._width              = width;
-			backBufferDesc._height             = height;
-			backBufferDesc._format             = _desc._format;
-			backBufferDesc._dimension          = EResourceDimension::Texture2D;
-			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
-			backBufferDesc._resourceStateFlags = EResourceState::Common;
-
-			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+			_backBuffers.emplace_back(new D3D12Texture(toRhiTextureDesc(_desc), keyh::move(backBufferResource)));
 		}
 	}
 

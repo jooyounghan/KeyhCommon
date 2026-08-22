@@ -6,8 +6,6 @@
 #include "D3D12GraphicsPipeline.h"
 #include "D3D12ComputePipeline.h"
 #include "D3D12PipelineLayout.h"
-#include "D3D12Buffer.h"
-#include "D3D12Texture.h"
 #include "D3D12RhiEnum.h"
 #include "D3D12RhiConvert.h"
 
@@ -194,9 +192,7 @@ namespace keyh
 		const uint32 clampedCount = count < D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT ? count : D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT;
 		for (uint32 i = 0; i < clampedCount; ++i)
 		{
-			d3dViews[i].BufferLocation = static_cast<D3D12_GPU_VIRTUAL_ADDRESS>(views[i]._bufferLocation);
-			d3dViews[i].SizeInBytes    = views[i]._sizeInBytes;
-			d3dViews[i].StrideInBytes  = views[i]._strideInBytes;
+			d3dViews[i] = toD3D12VertexBufferView(views[i]);
 		}
 		_commandList->IASetVertexBuffers(startSlot, clampedCount, d3dViews);
 	}
@@ -213,32 +209,9 @@ namespace keyh
 
 		for (uint32 i = 0; i < count && barrierCount < _countof(d3dBarriers); ++i)
 		{
-			const RhiResourceBarrier& barrier = barriers[i];
-			if (barrier._type == EResourceBarrierType::Transition)
+			if (toD3D12ResourceBarrier(barriers[i], d3dBarriers[barrierCount]))
 			{
-				ID3D12Resource* pResource = nullptr;
-				if (barrier._transition._target == EResourceBarrierTarget::Buffer && barrier._transition._buffer != nullptr)
-				{
-					pResource = static_cast<D3D12Buffer*>(barrier._transition._buffer)->getNativeResource();
-				}
-				else if (barrier._transition._target == EResourceBarrierTarget::Texture && barrier._transition._texture != nullptr)
-				{
-					pResource = static_cast<D3D12Texture*>(barrier._transition._texture)->getNativeResource();
-				}
-
-				if (pResource == nullptr)
-				{
-					continue;
-				}
-
-				D3D12_RESOURCE_BARRIER& d3dBarrier = d3dBarriers[barrierCount++];
-				d3dBarrier                   = {};
-				d3dBarrier.Type              = D3D12ResourceBarrierTypeInfo::getInfo(barrier._type)._barrierType;
-				d3dBarrier.Flags             = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				d3dBarrier.Transition.pResource   = pResource;
-				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
-				d3dBarrier.Transition.StateAfter  = toD3D12ResourceStates(barrier._transition._stateAfter);
-				d3dBarrier.Transition.Subresource = barrier._transition._subresource;
+				++barrierCount;
 			}
 		}
 
