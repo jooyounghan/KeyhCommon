@@ -109,7 +109,7 @@ void test_RhiSystem_d3d12_triangle_example()
 	printSection("RhiSystem - D3D12 triangle draw example");
 
 #if !defined(KEYH_PLATFORM_WINDOWS)
-	CHECK(true);
+	std::printf("  [SKIP] D3D12 example is only available on Windows.\n");
 	return;
 #else
 	Ptr<IRhiInstance> instance = IRhiInstance::create();
@@ -142,7 +142,7 @@ void test_RhiSystem_d3d12_triangle_example()
 		return;
 	}
 
-	IRhiCommandList* commandList = commandPool->allocateCommandList();
+	Ptr<IRhiCommandList> commandList(commandPool->allocateCommandList());
 	CHECK(commandList != nullptr);
 	if (commandList == nullptr)
 	{
@@ -182,7 +182,5 @@ void test_RhiSystem_d3d12_triangle_example()
 			CHECK(true);
 		}
 	}
-
-	delete commandList;
 #endif
 }
