@@ -147,6 +147,18 @@
     <ClInclude Include="IRhiTexture.h">
       <Filter>헤더 파일\Common</Filter>
     </ClInclude>
+    <ClInclude Include="D3D12Texture.h">
+      <Filter>헤더 파일\Common\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Fence.h">
+      <Filter>헤더 파일\Common\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiGraphicsPipeline.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12GraphicsPipeline.h">
+      <Filter>헤더 파일\Pipeline\D3D12</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="RhiSystemPch.cpp">
@@ -187,6 +199,15 @@
     </ClCompile>
     <ClCompile Include="IRhiSampler.cpp">
       <Filter>소스 파일\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiFence.cpp">
+      <Filter>소스 파일\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiTexture.cpp">
+      <Filter>소스 파일\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiGraphicsPipeline.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

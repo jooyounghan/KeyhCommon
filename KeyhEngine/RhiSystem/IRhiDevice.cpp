@@ -4,6 +4,10 @@
 #include "D3D12CommandQueue.h"
 #include "D3D12CommandPool.h"
 #include "D3D12Buffer.h"
+#include "D3D12Texture.h"
+#include "D3D12Sampler.h"
+#include "D3D12Fence.h"
+#include "D3D12GraphicsPipeline.h"
 #include "D3D12GlobalResourceHeap.h"
 
 namespace keyh
@@ -90,24 +94,24 @@ namespace keyh
 		return makePtr<D3D12Buffer>(this, desc, heapType);
 	}
 	
-	Ptr<IRhiTexture> D3D12Device::createTexture()
+	Ptr<IRhiTexture> D3D12Device::createTexture(const RhiTextureDesc& desc, EHeapType heapType)
 	{
-		return {};
+		return makePtr<D3D12Texture>(this, desc, heapType);
 	}
 	
-	Ptr<IRhiSampler> D3D12Device::createSampler()
+	Ptr<IRhiSampler> D3D12Device::createSampler(const RhiStaticSamplerDesc& desc)
 	{
-		return {};
+		return makePtr<D3D12Sampler>(this, desc);
 	}
 	
-	Ptr<IRhiFence> D3D12Device::createFence()
+	Ptr<IRhiFence> D3D12Device::createFence(const RhiFenceDesc& desc)
 	{
-		return {};
+		return makePtr<D3D12Fence>(this, desc);
 	}
 	
-	Ptr<IRhiGraphicsPipeline> D3D12Device::createGraphicsPipeline()
+	Ptr<IRhiGraphicsPipeline> D3D12Device::createGraphicsPipeline(const RhiGraphicsPipelineDesc& desc)
 	{
-		return {};
+		return makePtr<D3D12GraphicsPipeline>(this, desc);
 	}
 	
 	Ptr<IRhiComputePipeline> D3D12Device::createComputePipeline()
