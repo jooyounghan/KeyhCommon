@@ -270,12 +270,17 @@ void test_Reflect_large_object_file_roundtrip_compare()
     }
 
     // Serialize both objects to in-memory buffers and compare byte-for-byte.
+    // 256 KB is large enough to hold the TestObject schema serialized from
+    // large_test_object.json (the source file is ~128 KB and the schema covers
+    // only a subset of its fields).
+    static constexpr size_t kSerializeBufferSize = 256 * 1024;
+
     ReflectBufferProxy srcBuffer;
-    srcBuffer.allocate(65536);
+    srcBuffer.allocate(kSerializeBufferSize);
     ReflectSerializer::serializeObjectToBuffer(&srcBuffer, &sourceObj);
 
     ReflectBufferProxy rtBuffer;
-    rtBuffer.allocate(65536);
+    rtBuffer.allocate(kSerializeBufferSize);
     ReflectSerializer::serializeObjectToBuffer(&rtBuffer, &roundTripObj);
 
     const bool sameSize = (srcBuffer.size() == rtBuffer.size());
