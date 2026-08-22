@@ -56,7 +56,7 @@ namespace keyh
 	struct ReflectSerializer
 	{
 		// File-level API
-		static bool serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject);
+		static bool serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject, bool pretty = true);
 		static void deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject);
 
 		// Shared helpers (used internally and by ReflectPropertySerializer<T,true>)
