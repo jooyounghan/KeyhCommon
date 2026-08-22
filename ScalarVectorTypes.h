@@ -19,14 +19,13 @@ namespace keyh
     [[noreturn]] inline void scalarVectorIndexOutOfBounds() noexcept
     {
         assert(false && "scalar vector index out of bounds");
+        std::abort();
 
 #if defined(_MSC_VER)
         __assume(0);
 #elif defined(__GNUC__) || defined(__clang__)
         __builtin_unreachable();
 #endif
-
-        std::abort();
     }
 
     struct float2
