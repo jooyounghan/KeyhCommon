@@ -70,7 +70,7 @@ int main()
     //test_Reflect_roundtrip_vector();
     //test_Reflect_roundtrip_nested_object();
     //test_Reflect_large_object_file_roundtrip_compare();
-    //benchmark_Reflect_deserialize_128kb_x100();
+    //benchmark_Reflect_deserialize_512kb_x100();
 
     //printSummary();
 
