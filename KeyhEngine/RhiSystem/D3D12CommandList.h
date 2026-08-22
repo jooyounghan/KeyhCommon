@@ -17,20 +17,21 @@ namespace keyh
 		virtual void reset() override;
 
 	public:
-		virtual void setViewports(uint32_t count, const RhiViewport* viewports) override;
-		virtual void setScissorRects(uint32_t count, const RhiRect* rects) override;
+		virtual void setViewports(uint32 count, const RhiViewport* viewports) override;
+		virtual void setScissorRects(uint32 count, const RhiRect* rects) override;
+		virtual void setSampler(uint32 slot, IRhiSampler* sampler) override;
 
 	public:
-		virtual void setRenderTargets(uint32_t rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) override;
+		virtual void setRenderTargets(uint32 rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) override;
 		virtual void clearRenderTargetView(RhiCpuDescriptorHandle rtvHandle, const float colorRgba[4]) override;
 		virtual void clearDepthStencilView(RhiCpuDescriptorHandle dsvHandle, float depth, uint8_t stencil) override;
 
 	public:
-		virtual void drawInstanced(uint32_t vertexCountPerInstance, uint32_t instanceCount, uint32_t startVertexLocation, uint32_t startInstanceLocation) override;
-		virtual void drawIndexedInstanced(uint32_t indexCountPerInstance, uint32_t instanceCount, uint32_t startIndexLocation, int32_t baseVertexLocation, uint32_t startInstanceLocation) override;
+		virtual void drawInstanced(uint32 vertexCountPerInstance, uint32 instanceCount, uint32 startVertexLocation, uint32 startInstanceLocation) override;
+		virtual void drawIndexedInstanced(uint32 indexCountPerInstance, uint32 instanceCount, uint32 startIndexLocation, int32_t baseVertexLocation, uint32 startInstanceLocation) override;
 
 	public:
-		virtual void dispatch(uint32_t threadGroupCountX, uint32_t threadGroupCountY, uint32_t threadGroupCountZ) override;
+		virtual void dispatch(uint32 threadGroupCountX, uint32 threadGroupCountY, uint32 threadGroupCountZ) override;
 
 	public:
 		inline ID3D12GraphicsCommandList* getNativeCommandList() const { return _commandList.Get(); }

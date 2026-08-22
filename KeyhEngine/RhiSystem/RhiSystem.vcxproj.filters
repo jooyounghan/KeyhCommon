@@ -40,6 +40,21 @@
     <Filter Include="헤더 파일\Enum">
       <UniqueIdentifier>{f126ff0f-8d78-4ecd-aa32-3ebe6c035c28}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Enum\D3D12">
+      <UniqueIdentifier>{e9a6839b-a922-448a-9728-aff5697ebfb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Memory\D3D12">
+      <UniqueIdentifier>{e272edfd-0fdb-44b4-a3f5-d3dae3610b4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Device\D3D12">
+      <UniqueIdentifier>{767812a6-c384-43a9-92c5-c313112dc32c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Command\D3D12">
+      <UniqueIdentifier>{f514a5f0-c35c-4873-9ec9-a03fa3a28fdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Pipeline\D3D12">
+      <UniqueIdentifier>{a9db56bb-8f5f-420b-9275-2c9bf4169307}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RhiSystemPch.h">
@@ -66,24 +81,6 @@
     <ClInclude Include="IRhiMemoryHeap.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="D3D12Buffer.h">
-      <Filter>헤더 파일\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12CommandList.h">
-      <Filter>헤더 파일\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12CommandPool.h">
-      <Filter>헤더 파일\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12CommandQueue.h">
-      <Filter>헤더 파일\Command</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12MemoryHeap.h">
-      <Filter>헤더 파일\Memory</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12PipelineLayout.h">
-      <Filter>헤더 파일\Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="IRhiBuffer.h">
       <Filter>헤더 파일\Memory</Filter>
     </ClInclude>
@@ -93,23 +90,50 @@
     <ClInclude Include="IRhiSampler.h">
       <Filter>헤더 파일\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="D3D12Device.h">
-      <Filter>헤더 파일\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12Instance.h">
-      <Filter>헤더 파일\Device</Filter>
-    </ClInclude>
-    <ClInclude Include="D3D12SwapChain.h">
-      <Filter>헤더 파일\Device</Filter>
-    </ClInclude>
     <ClInclude Include="RhiEnum.h">
       <Filter>헤더 파일\Enum</Filter>
     </ClInclude>
     <ClInclude Include="D3D12RhiEnum.h">
-      <Filter>헤더 파일\Enum</Filter>
+      <Filter>헤더 파일\Enum\D3D12</Filter>
     </ClInclude>
     <ClInclude Include="D3D12RhiConvert.h">
-      <Filter>헤더 파일\Enum</Filter>
+      <Filter>헤더 파일\Enum\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Buffer.h">
+      <Filter>헤더 파일\Memory\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12MemoryHeap.h">
+      <Filter>헤더 파일\Memory\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Device.h">
+      <Filter>헤더 파일\Device\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Instance.h">
+      <Filter>헤더 파일\Device\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12SwapChain.h">
+      <Filter>헤더 파일\Device\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandList.h">
+      <Filter>헤더 파일\Command\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandPool.h">
+      <Filter>헤더 파일\Command\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12CommandQueue.h">
+      <Filter>헤더 파일\Command\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12Sampler.h">
+      <Filter>헤더 파일\Pipeline\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12PipelineLayout.h">
+      <Filter>헤더 파일\Pipeline\D3D12</Filter>
+    </ClInclude>
+    <ClInclude Include="IRhiDescriptorHeap.h">
+      <Filter>헤더 파일\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D12GlobalResourceHeap.h">
+      <Filter>헤더 파일\Device\D3D12</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +172,12 @@
     </ClCompile>
     <ClCompile Include="IRhiSampler.cpp">
       <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="IRhiDescriptorHeap.cpp">
+      <Filter>소스 파일\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D12GlobalResourceHeap.cpp">
+      <Filter>소스 파일\Device</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

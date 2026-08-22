@@ -4,6 +4,7 @@
 #include "D3D12CommandQueue.h"
 #include "D3D12CommandPool.h"
 #include "D3D12Buffer.h"
+#include "D3D12GlobalResourceHeap.h"
 
 namespace keyh
 {
@@ -40,17 +41,27 @@ namespace keyh
 				D3D_FEATURE_LEVEL_12_0
 		};
 
+		bool isDeviceCreated = false;
 		for (const D3D_FEATURE_LEVEL featureLevel : featureLevels)
 		{
 			hr = D3D12CreateDevice(_adapter.Get(), featureLevel, IID_PPV_ARGS(&_device));
 			if (SUCCEEDED(hr))
 			{
-				return true;
+				isDeviceCreated = true;
+				break;
 			}
 		}
 
-		KEYH_ASSERT_ARGS(false, "Failed to create D3D12 device. HRESULT: 0x%X", hr);
-		return false;
+		if (isDeviceCreated == false)
+		{
+			KEYH_ASSERT_ARGS(false, "Failed to create D3D12 device. HRESULT: 0x%X", hr);
+			return false;
+		}
+
+		_cbvSrvUavHeap = makePtr<D3D12GlobalResourceHeap>(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		_samplerHeap = makePtr<D3D12GlobalResourceHeap>(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 256);
+		
+		return true;
 	}
 	
 	D3D12Device::D3D12Device(Microsoft::WRL::ComPtr<IDXGIAdapter4> adapter)

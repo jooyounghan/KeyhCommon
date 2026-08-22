@@ -42,7 +42,7 @@ namespace keyh
 		virtual ~IRhiPipelineLayout() = default;
 
 	public:
-		inline size_t getHash() const { return 0; }
+		inline size_t getHash() const { return _hashValue; }
 		inline uint32 getBindingCount() const { return _bindingCount; };
 		inline uint32 getPushConstantCount() const { return _pushConstantCount; }
 		inline uint32 getStaticSamplerCount() const { return _staticSamplerCount; }

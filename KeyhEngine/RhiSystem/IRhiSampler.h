@@ -15,7 +15,17 @@ namespace keyh
 	};
 
 	class IRhiSampler
-	{};
+	{
+	public:
+		IRhiSampler(const RhiStaticSamplerDesc& desc);
+		virtual ~IRhiSampler() = default;
+
+	public:
+		inline size_t getHash() const { return _hashValue; }
+
+	protected:
+		size_t _hashValue = 0;
+	};
 }
 
 #pragma region FNV1aHash Specializations

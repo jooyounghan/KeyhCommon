@@ -49,12 +49,12 @@ namespace keyh
         {
             Derived::initializePlatformTable();
         }
-        inline static const Derived& getInfo(EnumType type) { return getTable()[static_cast<uint32_t>(type)]; }
+        inline static const Derived& getInfo(EnumType type) { return getTable()[static_cast<uint32>(type)]; }
 
     protected:
         static void registerEntry(EnumType type, Derived info)
         {
-            getTable()[static_cast<uint32_t>(type)] = keyh::move(info);
+            getTable()[static_cast<uint32>(type)] = keyh::move(info);
         }
 
     private:

@@ -3,7 +3,11 @@
 
 namespace keyh
 {
-
+	IRhiSampler::IRhiSampler(const RhiStaticSamplerDesc& desc)
+	{
+		FNV1aHash<RhiStaticSamplerDesc> hasher;
+		_hashValue = hasher(desc);
+	}
 }
 
 #pragma region FNV1aHash Specializations

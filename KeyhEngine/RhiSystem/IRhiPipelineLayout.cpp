@@ -38,7 +38,6 @@ namespace keyh
 			}
 		}
 
-		//FNV1aHash< EPipelineLayoutFlags> hasher;
 		return hash;
 	}
 
@@ -51,9 +50,9 @@ namespace keyh
 
 	}
 
-	inline void clearDenyFlag(D3D12_ROOT_SIGNATURE_FLAGS& flags, uint32_t activeStages, EShaderStage stage, D3D12_ROOT_SIGNATURE_FLAGS denyFlag)
+	inline void clearDenyFlag(D3D12_ROOT_SIGNATURE_FLAGS& flags, uint32 activeStages, EShaderStage stage, D3D12_ROOT_SIGNATURE_FLAGS denyFlag)
 	{
-		if (activeStages & static_cast<uint32_t>(stage))
+		if (activeStages & static_cast<uint32>(stage))
 		{
 			flags &= ~denyFlag;
 		}
@@ -69,21 +68,21 @@ namespace keyh
 			| D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS
 			| D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS;
 
-		uint32_t activeStages = 0;
+		uint32 activeStages = 0;
 
-		for (uint32_t i = 0; i < desc._bindingCount; ++i)
+		for (uint32 i = 0; i < desc._bindingCount; ++i)
 		{
-			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._bindings[i]._stageFlags)._visibility);
+			activeStages |= static_cast<uint32>(D3D12ShaderStageInfo::getInfo(desc._bindings[i]._stageFlags)._visibility);
 		}
 
-		for (uint32_t i = 0; i < desc._pushConstantCount; ++i)
+		for (uint32 i = 0; i < desc._pushConstantCount; ++i)
 		{
-			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._pushConstants[i]._stageFlags)._visibility);
+			activeStages |= static_cast<uint32>(D3D12ShaderStageInfo::getInfo(desc._pushConstants[i]._stageFlags)._visibility);
 		}
 
-		for (uint32_t i = 0; i < desc._staticSamplerCount; ++i)
+		for (uint32 i = 0; i < desc._staticSamplerCount; ++i)
 		{
-			activeStages |= static_cast<uint32_t>(D3D12ShaderStageInfo::getInfo(desc._staticSamplers[i]._stageFlags)._visibility);
+			activeStages |= static_cast<uint32>(D3D12ShaderStageInfo::getInfo(desc._staticSamplers[i]._stageFlags)._visibility);
 		}
 
 		clearDenyFlag(flags, activeStages, EShaderStage::Vertex, D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS);
@@ -94,7 +93,7 @@ namespace keyh
 		clearDenyFlag(flags, activeStages, EShaderStage::Amplification, D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS);
 		clearDenyFlag(flags, activeStages, EShaderStage::Mesh, D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS);
 
-		if (activeStages & static_cast<uint32_t>(EShaderStage::Vertex))
+		if (activeStages & static_cast<uint32>(EShaderStage::Vertex))
 		{
 			flags |= D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 		}
@@ -106,8 +105,8 @@ namespace keyh
 		: IRhiPipelineLayout(desc)
 	{	
 		InlinedVector<D3D12_ROOT_PARAMETER, 64> rootParameters;
-		uint32_t paramIndex = 0;
-		for (uint32_t idx = 0; idx < desc._pushConstantCount; ++idx)
+		uint32 paramIndex = 0;
+		for (uint32 idx = 0; idx < desc._pushConstantCount; ++idx)
 		{
 			const RhiPushConstantRange& pushConst = desc._pushConstants[idx];
 			D3D12_ROOT_PARAMETER& rootParameter = rootParameters.emplace_back();
@@ -120,7 +119,7 @@ namespace keyh
 		}
 
 		InlinedVector<D3D12_DESCRIPTOR_RANGE, 64> descriptorRanges;
-		for (uint32_t idx = 0; idx < desc._bindingCount; ++idx)
+		for (uint32 idx = 0; idx < desc._bindingCount; ++idx)
 		{
 			const RhiDescriptorBinding& binding = desc._bindings[idx];
 			D3D12_DESCRIPTOR_RANGE& descriptorRange = descriptorRanges.emplace_back();
@@ -139,7 +138,7 @@ namespace keyh
 		}
 
 		InlinedVector<D3D12_STATIC_SAMPLER_DESC, 64> staticSamplers;
-		for (uint32_t idx = 0; idx < desc._staticSamplerCount; ++idx)
+		for (uint32 idx = 0; idx < desc._staticSamplerCount; ++idx)
 		{
 			const RhiStaticSamplerDesc& samplerDesc = desc._staticSamplers[idx];
 			D3D12_STATIC_SAMPLER_DESC& staticSampler = staticSamplers.emplace_back();
@@ -158,7 +157,7 @@ namespace keyh
 			staticSampler.ShaderVisibility = D3D12ShaderStageInfo::getInfo(samplerDesc._stageFlags)._visibility;
 		}
 
-		uint32_t totalParamsCount = _bindingCount + _pushConstantCount;
+		uint32 totalParamsCount = _bindingCount + _pushConstantCount;
 		D3D12_ROOT_SIGNATURE_DESC rootSigDesc = {};
 		rootSigDesc.NumParameters = totalParamsCount;
 		rootSigDesc.pParameters = rootParameters.data();

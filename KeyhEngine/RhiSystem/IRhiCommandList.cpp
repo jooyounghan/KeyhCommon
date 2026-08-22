@@ -2,6 +2,7 @@
 #include "D3D12Device.h"
 #include "D3D12CommandList.h"
 #include "D3D12CommandPool.h"
+#include "D3D12Sampler.h"
 
 namespace keyh
 {
@@ -33,13 +34,13 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::setViewports(uint32_t count, const RhiViewport* viewports)
+	void D3D12CommandList::setViewports(uint32 count, const RhiViewport* viewports)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setViewports is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
 		//	InlinedVector<D3D12_VIEWPORT, 16> d3dViewports(count);
-		//	for (uint32_t i = 0; i < count; ++i)
+		//	for (uint32 i = 0; i < count; ++i)
 		//	{
 		//		d3dViewports[i] = { viewports[i].x, viewports[i].y, viewports[i].width, viewports[i].height, viewports[i].minDepth, viewports[i].maxDepth };
 		//	}
@@ -47,13 +48,13 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::setScissorRects(uint32_t count, const RhiRect* rects)
+	void D3D12CommandList::setScissorRects(uint32 count, const RhiRect* rects)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setScissorRects is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
 		//	InlinedVector<D3D12_RECT, 16> d3dRects(count);
-		//	for (uint32_t i = 0; i < count; ++i)
+		//	for (uint32 i = 0; i < count; ++i)
 		//	{
 		//		d3dRects[i] = { rects[i].left, rects[i].top, rects[i].right, rects[i].bottom };
 		//	}
@@ -61,13 +62,26 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::setRenderTargets(uint32_t rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle)
+	void D3D12CommandList::setSampler(uint32 slot, IRhiSampler* sampler)
+	{
+		if (sampler == nullptr)
+		{
+			return;
+		}
+
+		D3D12Sampler* d3d12Sampler = static_cast<D3D12Sampler*>(sampler);
+		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = d3d12Sampler->getGpuHandle();
+
+		_commandList->SetGraphicsRootDescriptorTable(slot, gpuHandle);
+	}
+
+	void D3D12CommandList::setRenderTargets(uint32 rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "setRenderTargets is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
 		//{
 		//	InlinedVector<D3D12_CPU_DESCRIPTOR_HANDLE, 8> d3dRtvHandles(rtvCount);
-		//	for (uint32_t i = 0; i < rtvCount; ++i)
+		//	for (uint32 i = 0; i < rtvCount; ++i)
 		//	{
 		//		d3dRtvHandles[i] = { rtvHandles[i].ptr };
 		//	}
@@ -96,7 +110,7 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::drawInstanced(uint32_t vertexCountPerInstance, uint32_t instanceCount, uint32_t startVertexLocation, uint32_t startInstanceLocation)
+	void D3D12CommandList::drawInstanced(uint32 vertexCountPerInstance, uint32 instanceCount, uint32 startVertexLocation, uint32 startInstanceLocation)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "drawInstanced is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
@@ -105,7 +119,7 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::drawIndexedInstanced(uint32_t indexCountPerInstance, uint32_t instanceCount, uint32_t startIndexLocation, int32_t baseVertexLocation, uint32_t startInstanceLocation)
+	void D3D12CommandList::drawIndexedInstanced(uint32 indexCountPerInstance, uint32 instanceCount, uint32 startIndexLocation, int32_t baseVertexLocation, uint32 startInstanceLocation)
 	{
 		//assert(_queueType == ECommandQueueType::Graphics && "drawIndexedInstanced is only valid on Graphics CommandList");
 		//if (_commandList && _queueType == ECommandQueueType::Graphics)
@@ -114,7 +128,7 @@ namespace keyh
 		//}
 	}
 
-	void D3D12CommandList::dispatch(uint32_t threadGroupCountX, uint32_t threadGroupCountY, uint32_t threadGroupCountZ)
+	void D3D12CommandList::dispatch(uint32 threadGroupCountX, uint32 threadGroupCountY, uint32 threadGroupCountZ)
 	{
 		//assert((_queueType == ECommandQueueType::Graphics || _queueType == ECommandQueueType::Compute) && "dispatch is only valid on Graphics or Compute CommandList");
 		//if (_commandList && (_queueType == ECommandQueueType::Graphics || _queueType == ECommandQueueType::Compute))

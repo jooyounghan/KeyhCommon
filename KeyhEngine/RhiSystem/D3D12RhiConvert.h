@@ -2,6 +2,7 @@
 // Internal D3D12 conversion helpers — not part of the public RHI interface.
 // Include only from D3D12 implementation .cpp files.
 #include "IRhiBuffer.h"
+#include "IRhiSampler.h"
 
 namespace keyh
 {
@@ -44,5 +45,25 @@ namespace keyh
 			}
 		}
 		return states;
+	}
+
+	inline D3D12_SAMPLER_DESC toD3D12SamplerDesc(const RhiStaticSamplerDesc& desc)
+	{
+		D3D12_SAMPLER_DESC samplerDesc = {};
+		
+		samplerDesc.Filter = D3D12FilterInfo::getInfo(desc._filter)._filter;
+		samplerDesc.AddressU = D3D12SamplerAddressModeInfo::getInfo(desc._addressU)._addressMode;
+		samplerDesc.AddressV = D3D12SamplerAddressModeInfo::getInfo(desc._addressV)._addressMode;
+		samplerDesc.AddressW = D3D12SamplerAddressModeInfo::getInfo(desc._addressW)._addressMode;
+		samplerDesc.MipLODBias = 0.0f;
+		samplerDesc.MaxAnisotropy = 1;
+		samplerDesc.ComparisonFunc = D3D12ComparisonFunctionInfo::getInfo(desc._comparisonFunc)._comparisonFunc;
+		samplerDesc.BorderColor[0] = 0.0f;
+		samplerDesc.BorderColor[1] = 0.0f;
+		samplerDesc.BorderColor[2] = 0.0f;
+		samplerDesc.BorderColor[3] = 0.0f;
+		samplerDesc.MinLOD = 0.0f;
+		samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
+		return samplerDesc;
 	}
 }

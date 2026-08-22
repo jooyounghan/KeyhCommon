@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "JsonDocument.h"
 #include "StrUtil.h"
 #include "Stack.h"
@@ -55,7 +55,7 @@ namespace keyh
 			return false;
 		}
 
-		tapeElements.emplace_back().setStringElement(quoteStart - jsonString + 1, static_cast<uint32_t>(quoteEnd - quoteStart - 1));
+		tapeElements.emplace_back().setStringElement(quoteStart - jsonString + 1, static_cast<uint32>(quoteEnd - quoteStart - 1));
 		return true;
 	}
 
