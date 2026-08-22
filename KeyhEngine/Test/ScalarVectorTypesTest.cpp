@@ -8,7 +8,7 @@ using namespace keyh;
 
 namespace
 {
-    volatile float g_scalarVectorBenchmarkSink = 0.0f;
+    volatile double g_scalarVectorBenchmarkSink = 0.0;
 
     template <typename Fn>
     double measureMilliseconds(Fn&& fn)
@@ -96,12 +96,13 @@ void benchmark_ScalarVectorTypes_arithmetic()
     {
         float2 current(1.0f, 2.0f);
         const float2 addValue(0.25f, 0.5f);
-        const float2 mulValue(1.0001f, 0.9999f);
-        const float2 divValue(1.00001f, 1.00002f);
+        const float2 mulValue(0.9999f, 0.9998f);
+        const float2 divValue(1.0001f, 1.0002f);
+        const float2 subValue(0.125f, 0.25f);
 
         for (int index = 0; index < kIterationCount; ++index)
         {
-            current = ((current + addValue) * mulValue) / divValue;
+            current = (((current + addValue) * mulValue) / divValue) - subValue;
             g_scalarVectorBenchmarkSink += current.x + current.y;
         }
     });
@@ -114,7 +115,7 @@ void benchmark_ScalarVectorTypes_arithmetic()
 
         for (int index = 0; index < kIterationCount; ++index)
         {
-            current = current + addValue;
+            current = (current + addValue) * 0.9999f;
             g_scalarVectorBenchmarkSink += current.dot(other);
 
             const float3 crossValue = current.cross(other);
@@ -126,11 +127,12 @@ void benchmark_ScalarVectorTypes_arithmetic()
     {
         float4 current(1.0f, 2.0f, 3.0f, 4.0f);
         const float4 addValue(0.5f, 0.75f, 1.0f, 1.25f);
-        const float4 mulValue(1.0001f, 0.9999f, 1.0002f, 0.9998f);
+        const float4 mulValue(0.9998f, 0.9997f, 0.9996f, 0.9995f);
+        const float4 subValue(0.2f, 0.3f, 0.4f, 0.5f);
 
         for (int index = 0; index < kIterationCount; ++index)
         {
-            current = (current + addValue) * mulValue;
+            current = ((current + addValue) * mulValue) - subValue;
             g_scalarVectorBenchmarkSink += current.x + current.y + current.z + current.w;
         }
     });
