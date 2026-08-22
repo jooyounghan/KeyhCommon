@@ -8,6 +8,7 @@
 #include "D3D12Sampler.h"
 #include "D3D12Fence.h"
 #include "D3D12GraphicsPipeline.h"
+#include "D3D12ComputePipeline.h"
 #include "D3D12GlobalResourceHeap.h"
 
 namespace keyh
@@ -114,9 +115,9 @@ namespace keyh
 		return makePtr<D3D12GraphicsPipeline>(this, desc);
 	}
 	
-	Ptr<IRhiComputePipeline> D3D12Device::createComputePipeline()
+	Ptr<IRhiComputePipeline> D3D12Device::createComputePipeline(const RhiComputePipelineDesc& desc)
 	{
-		return {};
+		return makePtr<D3D12ComputePipeline>(this, desc);
 	}
 
 	void D3D12Device::allocateMemoryHeap()

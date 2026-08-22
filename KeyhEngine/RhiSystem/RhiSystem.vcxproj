@@ -155,6 +155,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="D3D12ComputePipeline.h" />
     <ClInclude Include="D3D12Buffer.h" />
     <ClInclude Include="D3D12CommandList.h" />
     <ClInclude Include="D3D12CommandPool.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="IRhiCommandQueue.h" />
     <ClInclude Include="IRhiDevice.h" />
     <ClInclude Include="IRhiFence.h" />
+    <ClInclude Include="IRhiComputePipeline.h" />
     <ClInclude Include="IRhiGraphicsPipeline.h" />
     <ClInclude Include="IRhiInstance.h" />
     <ClInclude Include="IRhiMemoryHeap.h" />
@@ -188,8 +190,10 @@
     <ClInclude Include="RhiEnum.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D12ComputePipeline.cpp" />
     <ClCompile Include="D3D12GlobalResourceHeap.cpp" />
     <ClCompile Include="IRhiBuffer.cpp" />
+    <ClCompile Include="IRhiComputePipeline.cpp" />
     <ClCompile Include="IRhiCommandList.cpp" />
     <ClCompile Include="IRhiCommandPool.cpp" />
     <ClCompile Include="IRhiCommandQueue.cpp" />

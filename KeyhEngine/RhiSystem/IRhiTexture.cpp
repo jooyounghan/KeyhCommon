@@ -9,6 +9,11 @@ namespace keyh
 		: _desc(desc)
 	{}
 
+	D3D12Texture::D3D12Texture(const RhiTextureDesc& desc, Microsoft::WRL::ComPtr<ID3D12Resource> resource)
+		: IRhiTexture(desc)
+		, _resource(keyh::move(resource))
+	{}
+
 	D3D12Texture::D3D12Texture(D3D12Device* device, const RhiTextureDesc& desc, EHeapType heapType)
 		: IRhiTexture(desc)
 	{

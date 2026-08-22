@@ -20,6 +20,17 @@ namespace keyh
 		virtual void setViewports(uint32 count, const RhiViewport* viewports) override;
 		virtual void setScissorRects(uint32 count, const RhiRect* rects) override;
 		virtual void setSampler(uint32 slot, IRhiSampler* sampler) override;
+		virtual void setPrimitiveTopology(EPrimitiveTopologyType topology) override;
+
+	public:
+		virtual void setGraphicsPipeline(IRhiGraphicsPipeline* pipeline) override;
+		virtual void setComputePipeline(IRhiComputePipeline* pipeline) override;
+
+	public:
+		virtual void setVertexBuffers(uint32 startSlot, uint32 count, const RhiVertexBufferView* views) override;
+
+	public:
+		virtual void resourceBarrier(uint32 count, const RhiResourceBarrier* barriers) override;
 
 	public:
 		virtual void setRenderTargets(uint32 rtvCount, const RhiCpuDescriptorHandle* rtvHandles, RhiCpuDescriptorHandle dsvHandle) override;
