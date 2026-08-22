@@ -2,6 +2,7 @@
 
 #include "StaticStringTest.h"
 #include "InlinedVectorTest.h"
+#include "ScalarVectorTypesTest.h"
 #include "RefPtrTest.h"
 #include "WeakPtrTest.h"
 #include "ConcurrencyTest.h"
@@ -30,6 +31,10 @@ int main()
     test_InlinedVector_inline_and_heap_growth();
     test_InlinedVector_copy_and_move();
     test_InlinedVector_erase_and_shrink_to_fit();
+    test_ScalarVectorTypes_float2_basic();
+    test_ScalarVectorTypes_float3_basic();
+    test_ScalarVectorTypes_float4_basic();
+    benchmark_ScalarVectorTypes_arithmetic();
 
     //test_RefPtr_basic();
     //test_RefPtr_copy();

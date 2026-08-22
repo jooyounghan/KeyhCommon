@@ -165,6 +165,7 @@
     <ClCompile Include="JsonTest.cpp" />
     <ClCompile Include="ReflectTest.cpp" />
     <ClCompile Include="RefPtrTest.cpp" />
+    <ClCompile Include="ScalarVectorTypesTest.cpp" />
     <ClCompile Include="StaticStringTest.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="WeakPtrTest.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="JsonTest.h" />
     <ClInclude Include="ReflectTest.h" />
     <ClInclude Include="RefPtrTest.h" />
+    <ClInclude Include="ScalarVectorTypesTest.h" />
     <ClInclude Include="StaticStringTest.h" />
     <ClInclude Include="test.h" />
     <ClInclude Include="TestCommon.h" />
