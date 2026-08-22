@@ -272,9 +272,9 @@ namespace keyh
 		registerEntry(EBlendFactor::InvDstAlpha,   { "InvDstAlpha",   D3D12_BLEND_INV_DEST_ALPHA });
 		registerEntry(EBlendFactor::DstColor,      { "DstColor",      D3D12_BLEND_DEST_COLOR     });
 		registerEntry(EBlendFactor::InvDstColor,   { "InvDstColor",   D3D12_BLEND_INV_DEST_COLOR });
-		registerEntry(EBlendFactor::SrcAlphaSat,   { "SrcAlphaSat",   D3D12_BLEND_SRC_ALPHA_SAT  });
-		registerEntry(EBlendFactor::BlendFactor,   { "BlendFactor",   D3D12_BLEND_BLEND_FACTOR   });
-		registerEntry(EBlendFactor::InvBlendFactor,{ "InvBlendFactor",D3D12_BLEND_INV_BLEND_FACTOR });
+		registerEntry(EBlendFactor::SrcAlphaSat,      { "SrcAlphaSat",      D3D12_BLEND_SRC_ALPHA_SAT    });
+		registerEntry(EBlendFactor::ConstantColor,    { "ConstantColor",    D3D12_BLEND_BLEND_FACTOR     });
+		registerEntry(EBlendFactor::InvConstantColor, { "InvConstantColor", D3D12_BLEND_INV_BLEND_FACTOR });
 		registerEntry(EBlendFactor::Src1Color,     { "Src1Color",     D3D12_BLEND_SRC1_COLOR     });
 		registerEntry(EBlendFactor::InvSrc1Color,  { "InvSrc1Color",  D3D12_BLEND_INV_SRC1_COLOR });
 		registerEntry(EBlendFactor::Src1Alpha,     { "Src1Alpha",     D3D12_BLEND_SRC1_ALPHA     });

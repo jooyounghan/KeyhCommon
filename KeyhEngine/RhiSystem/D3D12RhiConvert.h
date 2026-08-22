@@ -149,7 +149,7 @@ namespace keyh
 		D3D12_BLEND_DESC blendDesc = {};
 		blendDesc.AlphaToCoverageEnable  = desc._alphaToCoverageEnable ? TRUE : FALSE;
 		blendDesc.IndependentBlendEnable = desc._independentBlendEnable ? TRUE : FALSE;
-		for (uint32 idx = 0; idx < D3D12_SIMULTANEOUS_RENDER_TARGET_COUNT; ++idx)
+		for (uint32 idx = 0; idx < RhiMaxRenderTargets; ++idx)
 		{
 			blendDesc.RenderTarget[idx] = toD3D12RenderTargetBlendDesc(desc._renderTarget[idx]);
 		}
