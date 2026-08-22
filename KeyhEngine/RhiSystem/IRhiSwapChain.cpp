@@ -75,7 +75,7 @@ namespace keyh
 			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
 			backBufferDesc._resourceStateFlags = EResourceState::Common;
 
-			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+			_backBuffers.emplace_back<D3D12Texture>(backBufferDesc, keyh::move(backBufferResource));
 		}
 
 		return true;
@@ -114,13 +114,13 @@ namespace keyh
 			backBufferDesc._resourceFlags      = EResourceFlag::RenderTarget;
 			backBufferDesc._resourceStateFlags = EResourceState::Common;
 
-			_backBuffers.emplace_back(new D3D12Texture(backBufferDesc, keyh::move(backBufferResource)));
+			_backBuffers.emplace_back<D3D12Texture>(backBufferDesc, keyh::move(backBufferResource));
 		}
 	}
 
 	IRhiTexture* D3D12SwapChain::getBackBuffer(uint32 index)
 	{
 		KEYH_ASSERT(index < _backBuffers.size(), "Back buffer index out of range.");
-		return _backBuffers[index].get();
+		return _backBuffers[index];
 	}
 }
