@@ -1,9 +1,11 @@
-#pragma once
+﻿#pragma once
 
 #include <cassert>
 #include <cstdlib>
 
 #include "CommonCore.h"
+
+//#define KEYH_SCALAR_VECTOR_USE_SIMD
 
 #if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && ((defined(_M_X64) && !defined(_M_ARM64EC)) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
 #include <xmmintrin.h>
