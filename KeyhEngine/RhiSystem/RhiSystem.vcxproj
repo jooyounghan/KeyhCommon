@@ -160,12 +160,15 @@
     <ClInclude Include="D3D12CommandPool.h" />
     <ClInclude Include="D3D12CommandQueue.h" />
     <ClInclude Include="D3D12Device.h" />
+    <ClInclude Include="D3D12Fence.h" />
     <ClInclude Include="D3D12GlobalResourceHeap.h" />
+    <ClInclude Include="D3D12GraphicsPipeline.h" />
     <ClInclude Include="D3D12Instance.h" />
     <ClInclude Include="D3D12MemoryHeap.h" />
     <ClInclude Include="D3D12PipelineLayout.h" />
     <ClInclude Include="D3D12Sampler.h" />
     <ClInclude Include="D3D12SwapChain.h" />
+    <ClInclude Include="D3D12Texture.h" />
     <ClInclude Include="D3D12RhiConvert.h" />
     <ClInclude Include="D3D12RhiEnum.h" />
     <ClInclude Include="IRhiBuffer.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="IRhiCommandQueue.h" />
     <ClInclude Include="IRhiDevice.h" />
     <ClInclude Include="IRhiFence.h" />
+    <ClInclude Include="IRhiGraphicsPipeline.h" />
     <ClInclude Include="IRhiInstance.h" />
     <ClInclude Include="IRhiMemoryHeap.h" />
     <ClInclude Include="IRhiPipelineLayout.h" />
@@ -190,11 +194,14 @@
     <ClCompile Include="IRhiCommandPool.cpp" />
     <ClCompile Include="IRhiCommandQueue.cpp" />
     <ClCompile Include="IRhiDevice.cpp" />
+    <ClCompile Include="IRhiFence.cpp" />
+    <ClCompile Include="IRhiGraphicsPipeline.cpp" />
     <ClCompile Include="IRhiInstance.cpp" />
     <ClCompile Include="IRhiMemoryHeap.cpp" />
     <ClCompile Include="IRhiPipelineLayout.cpp" />
     <ClCompile Include="IRhiSampler.cpp" />
     <ClCompile Include="IRhiSwapChain.cpp" />
+    <ClCompile Include="IRhiTexture.cpp" />
     <ClCompile Include="RhiSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

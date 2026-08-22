@@ -16,6 +16,10 @@ namespace keyh
 
 	struct RHISwapChainDesc;
 	struct RhiBufferDesc;
+	struct RhiTextureDesc;
+	struct RhiStaticSamplerDesc;
+	struct RhiFenceDesc;
+	struct RhiGraphicsPipelineDesc;
 
 	struct RhiAdapterInfo
 	{
@@ -48,10 +52,10 @@ namespace keyh
 		virtual Ptr<IRhiCommandPool>	createCommandPool(ECommandQueueType commandQueueType) = 0;
 		virtual Ptr<IRhiSwapChain>		createSwapChain(const RHISwapChainDesc& desc, IRhiCommandQueue* presentQueue) = 0;
 		virtual Ptr<IRhiBuffer>			createBuffer(const RhiBufferDesc& desc, EHeapType heapType = EHeapType::Default) = 0;
-		virtual Ptr<IRhiTexture>		createTexture() = 0;
-		virtual Ptr<IRhiSampler>		createSampler() = 0;
-		virtual Ptr<IRhiFence>			createFence() = 0;
-		virtual Ptr<IRhiGraphicsPipeline> createGraphicsPipeline() = 0;
+		virtual Ptr<IRhiTexture>		createTexture(const RhiTextureDesc& desc, EHeapType heapType = EHeapType::Default) = 0;
+		virtual Ptr<IRhiSampler>		createSampler(const RhiStaticSamplerDesc& desc) = 0;
+		virtual Ptr<IRhiFence>			createFence(const RhiFenceDesc& desc) = 0;
+		virtual Ptr<IRhiGraphicsPipeline> createGraphicsPipeline(const RhiGraphicsPipelineDesc& desc) = 0;
 		virtual Ptr<IRhiComputePipeline> createComputePipeline() = 0;
 
 	public:
