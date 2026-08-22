@@ -4,6 +4,7 @@
 #include "IRhiBuffer.h"
 #include "IRhiTexture.h"
 #include "IRhiSampler.h"
+#include "IRhiGraphicsPipeline.h"
 
 namespace keyh
 {
@@ -106,5 +107,76 @@ namespace keyh
 		samplerDesc.MinLOD = 0.0f;
 		samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
 		return samplerDesc;
+	}
+
+	inline D3D12_RASTERIZER_DESC toD3D12RasterizerDesc(const RhiRasterizerDesc& desc)
+	{
+		D3D12_RASTERIZER_DESC rasterizerDesc = {};
+		rasterizerDesc.FillMode              = D3D12FillModeInfo::getInfo(desc._fillMode)._fillMode;
+		rasterizerDesc.CullMode              = D3D12CullModeInfo::getInfo(desc._cullMode)._cullMode;
+		rasterizerDesc.FrontCounterClockwise = desc._frontCounterClockwise ? TRUE : FALSE;
+		rasterizerDesc.DepthBias             = desc._depthBias;
+		rasterizerDesc.DepthBiasClamp        = desc._depthBiasClamp;
+		rasterizerDesc.SlopeScaledDepthBias  = desc._slopeScaledDepthBias;
+		rasterizerDesc.DepthClipEnable       = desc._depthClipEnable ? TRUE : FALSE;
+		rasterizerDesc.MultisampleEnable     = desc._multisampleEnable ? TRUE : FALSE;
+		rasterizerDesc.AntialiasedLineEnable = desc._antialiasedLineEnable ? TRUE : FALSE;
+		rasterizerDesc.ForcedSampleCount     = desc._forcedSampleCount;
+		rasterizerDesc.ConservativeRaster    = desc._conservativeRasterEnable
+			? D3D12_CONSERVATIVE_RASTERIZATION_MODE_ON
+			: D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		return rasterizerDesc;
+	}
+
+	inline D3D12_RENDER_TARGET_BLEND_DESC toD3D12RenderTargetBlendDesc(const RhiRenderTargetBlendDesc& desc)
+	{
+		D3D12_RENDER_TARGET_BLEND_DESC rtBlendDesc = {};
+		rtBlendDesc.BlendEnable           = desc._blendEnable ? TRUE : FALSE;
+		rtBlendDesc.LogicOpEnable         = desc._logicOpEnable ? TRUE : FALSE;
+		rtBlendDesc.SrcBlend              = D3D12BlendFactorInfo::getInfo(desc._srcBlend)._blend;
+		rtBlendDesc.DestBlend             = D3D12BlendFactorInfo::getInfo(desc._destBlend)._blend;
+		rtBlendDesc.BlendOp               = D3D12BlendOpInfo::getInfo(desc._blendOp)._blendOp;
+		rtBlendDesc.SrcBlendAlpha         = D3D12BlendFactorInfo::getInfo(desc._srcBlendAlpha)._blend;
+		rtBlendDesc.DestBlendAlpha        = D3D12BlendFactorInfo::getInfo(desc._destBlendAlpha)._blend;
+		rtBlendDesc.BlendOpAlpha          = D3D12BlendOpInfo::getInfo(desc._blendOpAlpha)._blendOp;
+		rtBlendDesc.LogicOp               = D3D12LogicOpInfo::getInfo(desc._logicOp)._logicOp;
+		rtBlendDesc.RenderTargetWriteMask = static_cast<UINT8>(desc._renderTargetWriteMask);
+		return rtBlendDesc;
+	}
+
+	inline D3D12_BLEND_DESC toD3D12BlendDesc(const RhiBlendDesc& desc)
+	{
+		D3D12_BLEND_DESC blendDesc = {};
+		blendDesc.AlphaToCoverageEnable  = desc._alphaToCoverageEnable ? TRUE : FALSE;
+		blendDesc.IndependentBlendEnable = desc._independentBlendEnable ? TRUE : FALSE;
+		for (uint32 idx = 0; idx < RhiMaxRenderTargets; ++idx)
+		{
+			blendDesc.RenderTarget[idx] = toD3D12RenderTargetBlendDesc(desc._renderTarget[idx]);
+		}
+		return blendDesc;
+	}
+
+	inline D3D12_DEPTH_STENCILOP_DESC toD3D12DepthStencilOpDesc(const RhiDepthStencilOpDesc& desc)
+	{
+		D3D12_DEPTH_STENCILOP_DESC opDesc = {};
+		opDesc.StencilFailOp      = D3D12StencilOpInfo::getInfo(desc._stencilFailOp)._stencilOp;
+		opDesc.StencilDepthFailOp = D3D12StencilOpInfo::getInfo(desc._stencilDepthFailOp)._stencilOp;
+		opDesc.StencilPassOp      = D3D12StencilOpInfo::getInfo(desc._stencilPassOp)._stencilOp;
+		opDesc.StencilFunc        = D3D12ComparisonFunctionInfo::getInfo(desc._stencilFunc)._comparisonFunc;
+		return opDesc;
+	}
+
+	inline D3D12_DEPTH_STENCIL_DESC toD3D12DepthStencilDesc(const RhiDepthStencilDesc& desc)
+	{
+		D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
+		depthStencilDesc.DepthEnable      = desc._depthEnable ? TRUE : FALSE;
+		depthStencilDesc.DepthWriteMask   = desc._depthWriteEnable ? D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
+		depthStencilDesc.DepthFunc        = D3D12ComparisonFunctionInfo::getInfo(desc._depthFunc)._comparisonFunc;
+		depthStencilDesc.StencilEnable    = desc._stencilEnable ? TRUE : FALSE;
+		depthStencilDesc.StencilReadMask  = desc._stencilReadMask;
+		depthStencilDesc.StencilWriteMask = desc._stencilWriteMask;
+		depthStencilDesc.FrontFace        = toD3D12DepthStencilOpDesc(desc._frontFace);
+		depthStencilDesc.BackFace         = toD3D12DepthStencilOpDesc(desc._backFace);
+		return depthStencilDesc;
 	}
 }

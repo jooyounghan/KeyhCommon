@@ -260,6 +260,124 @@ namespace keyh
 	};
 #pragma endregion
 
+#pragma region FillMode
+	enum class EFillMode : uint8
+	{
+		Wireframe,
+		Solid,
+		Count
+	};
+#pragma endregion
+
+#pragma region CullMode
+	enum class ECullMode : uint8
+	{
+		None,
+		Front,
+		Back,
+		Count
+	};
+#pragma endregion
+
+#pragma region BlendFactor
+	enum class EBlendFactor : uint8
+	{
+		Zero,
+		One,
+		SrcColor,
+		InvSrcColor,
+		SrcAlpha,
+		InvSrcAlpha,
+		DstAlpha,
+		InvDstAlpha,
+		DstColor,
+		InvDstColor,
+		SrcAlphaSat,
+		ConstantColor,
+		InvConstantColor,
+		Src1Color,
+		InvSrc1Color,
+		Src1Alpha,
+		InvSrc1Alpha,
+		Count
+	};
+#pragma endregion
+
+#pragma region BlendOp
+	enum class EBlendOp : uint8
+	{
+		Add,
+		Subtract,
+		RevSubtract,
+		Min,
+		Max,
+		Count
+	};
+#pragma endregion
+
+#pragma region LogicOp
+	enum class ELogicOp : uint8
+	{
+		Clear,
+		Set,
+		Copy,
+		CopyInverted,
+		Noop,
+		Invert,
+		And,
+		Nand,
+		Or,
+		Nor,
+		Xor,
+		Equiv,
+		AndReverse,
+		AndInverted,
+		OrReverse,
+		OrInverted,
+		Count
+	};
+#pragma endregion
+
+#pragma region ColorWriteMask
+	enum class EColorWriteMask : uint8
+	{
+		None  = 0,
+		Red   = 1 << 0,
+		Green = 1 << 1,
+		Blue  = 1 << 2,
+		Alpha = 1 << 3,
+		All   = Red | Green | Blue | Alpha,
+		Max   = All
+	};
+#pragma endregion
+
+#pragma region StencilOp
+	enum class EStencilOp : uint8
+	{
+		Keep,
+		Zero,
+		Replace,
+		IncrSat,
+		DecrSat,
+		Invert,
+		Incr,
+		Decr,
+		Count
+	};
+#pragma endregion
+
+#pragma region PrimitiveTopologyType
+	enum class EPrimitiveTopologyType : uint8
+	{
+		Undefined,
+		Point,
+		Line,
+		Triangle,
+		Patch,
+		Count
+	};
+#pragma endregion
+
 #pragma region RhiViewport
 	struct RhiViewport
 	{
