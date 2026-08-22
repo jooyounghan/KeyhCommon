@@ -8,6 +8,14 @@
 
 namespace keyh
 {
+	inline D3D12_SHADER_BYTECODE toD3D12ShaderBytecode(const RhiShaderBytecode& desc)
+	{
+		D3D12_SHADER_BYTECODE shaderBytecode = {};
+		shaderBytecode.pShaderBytecode = desc._data;
+		shaderBytecode.BytecodeLength = desc._sizeInBytes;
+		return shaderBytecode;
+	}
+
 	inline D3D12_RESOURCE_DESC toD3D12ResourceDesc(const RhiBufferDesc& desc)
 	{
 		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;

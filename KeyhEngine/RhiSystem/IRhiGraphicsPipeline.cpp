@@ -26,11 +26,11 @@ namespace keyh
 		pipelineStateDesc.pRootSignature = desc._pipelineLayout != nullptr
 			? static_cast<D3D12PipelineLayout*>(desc._pipelineLayout)->getNativeRootSignature()
 			: nullptr;
-		pipelineStateDesc.VS = { desc._vertexShader._data, desc._vertexShader._sizeInBytes };
-		pipelineStateDesc.PS = { desc._pixelShader._data, desc._pixelShader._sizeInBytes };
-		pipelineStateDesc.HS = { desc._hullShader._data, desc._hullShader._sizeInBytes };
-		pipelineStateDesc.DS = { desc._domainShader._data, desc._domainShader._sizeInBytes };
-		pipelineStateDesc.GS = { desc._geometryShader._data, desc._geometryShader._sizeInBytes };
+		pipelineStateDesc.VS = toD3D12ShaderBytecode(desc._vertexShader);
+		pipelineStateDesc.PS = toD3D12ShaderBytecode(desc._pixelShader);
+		pipelineStateDesc.HS = toD3D12ShaderBytecode(desc._hullShader);
+		pipelineStateDesc.DS = toD3D12ShaderBytecode(desc._domainShader);
+		pipelineStateDesc.GS = toD3D12ShaderBytecode(desc._geometryShader);
 		pipelineStateDesc.BlendState = toD3D12BlendDesc(desc._blendDesc);
 		pipelineStateDesc.SampleMask = UINT32_MAX;
 		pipelineStateDesc.RasterizerState = toD3D12RasterizerDesc(desc._rasterizerDesc);
