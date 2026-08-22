@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "RhiEnum.h"
+#include "RhiResourceBarrier.h"
 
 namespace keyh
 {

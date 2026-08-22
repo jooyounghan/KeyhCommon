@@ -342,17 +342,30 @@ namespace keyh
 #pragma endregion
 
 #pragma region PrimitiveTopologyType
-	D3D12PrimitiveTopologyTypeInfo::D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
-		: PrimitiveTopologyTypeInfoBase{ name, topologyType }
+	D3D12PrimitiveTopologyTypeInfo::D3D12PrimitiveTopologyTypeInfo(const char* name, D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType, D3D_PRIMITIVE_TOPOLOGY topology)
+		: PrimitiveTopologyTypeInfoBase{ name, topologyType, topology }
 	{}
 
 	void D3D12PrimitiveTopologyTypeInfo::initializePlatformTable()
 	{
-		registerEntry(EPrimitiveTopologyType::Undefined, { "Undefined", D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED });
-		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT     });
-		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE      });
-		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE  });
-		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH     });
+		registerEntry(EPrimitiveTopologyType::Undefined, { "Undefined", D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED, D3D_PRIMITIVE_TOPOLOGY_UNDEFINED    });
+		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT,     D3D_PRIMITIVE_TOPOLOGY_POINTLIST     });
+		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE,      D3D_PRIMITIVE_TOPOLOGY_LINELIST      });
+		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,  D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST  });
+		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,     D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST }); // Default to 1 control point; callers requiring other patch sizes must set the topology directly.
+	}
+#pragma endregion
+
+#pragma region ResourceBarrierType
+	D3D12ResourceBarrierTypeInfo::D3D12ResourceBarrierTypeInfo(const char* name, D3D12_RESOURCE_BARRIER_TYPE barrierType)
+		: ResourceBarrierTypeInfoBase{ name, barrierType }
+	{}
+
+	void D3D12ResourceBarrierTypeInfo::initializePlatformTable()
+	{
+		registerEntry(EResourceBarrierType::Transition,      { "Transition",      D3D12_RESOURCE_BARRIER_TYPE_TRANSITION   });
+		registerEntry(EResourceBarrierType::Aliasing,        { "Aliasing",        D3D12_RESOURCE_BARRIER_TYPE_ALIASING     });
+		registerEntry(EResourceBarrierType::UnorderedAccess, { "UnorderedAccess", D3D12_RESOURCE_BARRIER_TYPE_UAV          });
 	}
 #pragma endregion
 }

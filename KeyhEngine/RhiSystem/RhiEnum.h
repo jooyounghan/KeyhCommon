@@ -416,7 +416,7 @@ namespace keyh
 	};
 #pragma endregion
 
-#pragma region RhiResourceBarrierType
+#pragma region ResourceBarrierType
 	enum class EResourceBarrierType : uint8
 	{
 		Transition,
@@ -426,46 +426,4 @@ namespace keyh
 	};
 #pragma endregion
 
-#pragma region RhiResourceBarrier
-	class IRhiBuffer;
-	class IRhiTexture;
-
-	struct RhiResourceBarrier
-	{
-		EResourceBarrierType _type = EResourceBarrierType::Transition;
-
-		struct TransitionBarrier
-		{
-			IRhiBuffer*		_buffer    = nullptr;
-			IRhiTexture*	_texture   = nullptr;
-			EResourceState  _stateBefore = EResourceState::Common;
-			EResourceState  _stateAfter  = EResourceState::Common;
-			uint32          _subresource = 0xFFFFFFFF;
-		} _transition;
-
-		static RhiResourceBarrier transitionBuffer(IRhiBuffer* buffer, EResourceState before, EResourceState after, uint32 subresource = 0xFFFFFFFF)
-		{
-			RhiResourceBarrier barrier;
-			barrier._type                    = EResourceBarrierType::Transition;
-			barrier._transition._buffer      = buffer;
-			barrier._transition._texture     = nullptr;
-			barrier._transition._stateBefore = before;
-			barrier._transition._stateAfter  = after;
-			barrier._transition._subresource = subresource;
-			return barrier;
-		}
-
-		static RhiResourceBarrier transitionTexture(IRhiTexture* texture, EResourceState before, EResourceState after, uint32 subresource = 0xFFFFFFFF)
-		{
-			RhiResourceBarrier barrier;
-			barrier._type                    = EResourceBarrierType::Transition;
-			barrier._transition._buffer      = nullptr;
-			barrier._transition._texture     = texture;
-			barrier._transition._stateBefore = before;
-			barrier._transition._stateAfter  = after;
-			barrier._transition._subresource = subresource;
-			return barrier;
-		}
-	};
-#pragma endregion
 }

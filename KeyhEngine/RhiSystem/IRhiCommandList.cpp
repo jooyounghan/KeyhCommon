@@ -146,15 +146,7 @@ namespace keyh
 
 	void D3D12CommandList::setPrimitiveTopology(EPrimitiveTopologyType topology)
 	{
-		D3D12_PRIMITIVE_TOPOLOGY d3dTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
-		switch (topology)
-		{
-		case EPrimitiveTopologyType::Point:    d3dTopology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;    break;
-		case EPrimitiveTopologyType::Line:     d3dTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;     break;
-		case EPrimitiveTopologyType::Triangle: d3dTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST; break;
-		default:                               d3dTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;    break;
-		}
-		_commandList->IASetPrimitiveTopology(d3dTopology);
+		_commandList->IASetPrimitiveTopology(D3D12PrimitiveTopologyTypeInfo::getInfo(topology)._topology);
 	}
 
 	void D3D12CommandList::setGraphicsPipeline(IRhiGraphicsPipeline* pipeline)
@@ -225,11 +217,11 @@ namespace keyh
 			if (barrier._type == EResourceBarrierType::Transition)
 			{
 				ID3D12Resource* pResource = nullptr;
-				if (barrier._transition._buffer != nullptr)
+				if (barrier._transition._target == EResourceBarrierTarget::Buffer && barrier._transition._buffer != nullptr)
 				{
 					pResource = static_cast<D3D12Buffer*>(barrier._transition._buffer)->getNativeResource();
 				}
-				else if (barrier._transition._texture != nullptr)
+				else if (barrier._transition._target == EResourceBarrierTarget::Texture && barrier._transition._texture != nullptr)
 				{
 					pResource = static_cast<D3D12Texture*>(barrier._transition._texture)->getNativeResource();
 				}
@@ -241,7 +233,7 @@ namespace keyh
 
 				D3D12_RESOURCE_BARRIER& d3dBarrier = d3dBarriers[barrierCount++];
 				d3dBarrier                   = {};
-				d3dBarrier.Type              = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				d3dBarrier.Type              = D3D12ResourceBarrierTypeInfo::getInfo(barrier._type)._barrierType;
 				d3dBarrier.Flags             = D3D12_RESOURCE_BARRIER_FLAG_NONE;
 				d3dBarrier.Transition.pResource   = pResource;
 				d3dBarrier.Transition.StateBefore = toD3D12ResourceStates(barrier._transition._stateBefore);
