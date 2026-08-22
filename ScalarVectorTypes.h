@@ -1,6 +1,5 @@
 #pragma once
 
-#include "AssertUtil.h"
 #include "CommonCore.h"
 
 #if defined(KEYH_SCALAR_VECTOR_USE_SIMD) && (defined(_M_X64) || defined(__SSE__) || (defined(_M_IX86_FP) && (_M_IX86_FP >= 1)))
@@ -36,9 +35,7 @@ namespace keyh
             {
             case 0: return x;
             case 1: return y;
-            default:
-                KEYH_ASSERT(false, "float2 index out of bounds");
-                return y;
+            default: return y;
             }
         }
 
@@ -48,9 +45,7 @@ namespace keyh
             {
             case 0: return x;
             case 1: return y;
-            default:
-                KEYH_ASSERT(false, "float2 index out of bounds");
-                return y;
+            default: return y;
             }
         }
 
@@ -246,9 +241,7 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            default:
-                KEYH_ASSERT(false, "float3 index out of bounds");
-                return z;
+            default: return z;
             }
         }
 
@@ -259,9 +252,7 @@ namespace keyh
             case 0: return x;
             case 1: return y;
             case 2: return z;
-            default:
-                KEYH_ASSERT(false, "float3 index out of bounds");
-                return z;
+            default: return z;
             }
         }
 
@@ -508,9 +499,7 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             case 3: return w;
-            default:
-                KEYH_ASSERT(false, "float4 index out of bounds");
-                return w;
+            default: return w;
             }
         }
 
@@ -522,9 +511,7 @@ namespace keyh
             case 1: return y;
             case 2: return z;
             case 3: return w;
-            default:
-                KEYH_ASSERT(false, "float4 index out of bounds");
-                return w;
+            default: return w;
             }
         }
 
