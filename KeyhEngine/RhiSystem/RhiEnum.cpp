@@ -352,7 +352,7 @@ namespace keyh
 		registerEntry(EPrimitiveTopologyType::Point,     { "Point",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT,     D3D_PRIMITIVE_TOPOLOGY_POINTLIST     });
 		registerEntry(EPrimitiveTopologyType::Line,      { "Line",      D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE,      D3D_PRIMITIVE_TOPOLOGY_LINELIST      });
 		registerEntry(EPrimitiveTopologyType::Triangle,  { "Triangle",  D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,  D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST  });
-		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,     D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST });
+		registerEntry(EPrimitiveTopologyType::Patch,     { "Patch",     D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,     D3D_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST }); // Default to 1 control point; callers requiring other patch sizes must set the topology directly.
 	}
 #pragma endregion
 }
