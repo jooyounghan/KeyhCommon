@@ -14,28 +14,30 @@ void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectO
     buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
 
     const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
-    if (pretty && properties.empty() == false)
-    {
-        const char newline = '\n';
-        buffer->writeBytes(&newline, 1);
-    }
-
     bool isFirst = true;
     for (const IReflectProperty* property : properties)
     {
         if (property == nullptr)
             continue;
 
-        if (isFirst == false)
+        if (pretty)
         {
-            buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
-            if (pretty)
+            if (isFirst)
             {
                 const char newline = '\n';
                 buffer->writeBytes(&newline, 1);
             }
+            else
+            {
+                buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+                const char newline = '\n';
+                buffer->writeBytes(&newline, 1);
+            }
         }
-        isFirst = false;
+        else if (isFirst == false)
+        {
+            buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+        }
 
         if (pretty)
         {
@@ -54,6 +56,7 @@ void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectO
             buffer->writeBytes(" ", 1);
 
         property->serializeToJson(buffer, reflectObject, depth + 1, pretty);
+        isFirst = false;
     }
 
     if (pretty && isFirst == false)
@@ -85,7 +88,7 @@ void ReflectSerializer::deserializeObjectFromJson(const JsonObject& jsonObject, 
 // ReflectSerializer file-level API
 // =========================================================================
 
-bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject)
+bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject, bool pretty)
 {
     if (reflectObject == nullptr)
     {
@@ -99,10 +102,8 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
         KEYH_ASSERT_ARGS(false, "Failed to open file for writing: %s", filePath.c_str());
         return false;
     }
-    serializeObjectToBuffer(&writer, reflectObject, 0, true);
-    if (!writer.flush())
-        return false;
-    return true;
+    serializeObjectToBuffer(&writer, reflectObject, 0, pretty);
+    return writer.flush();
 }
 
 void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)
