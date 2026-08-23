@@ -45,6 +45,20 @@ namespace
 
         return deserializeFromString(file.getStringBuffer(), file.getFileSize(), obj);
     }
+
+    static bool containsToken(const char* data, size_t size, const char* token)
+    {
+        const size_t tokenLen = std::strlen(token);
+        if (tokenLen == 0 || tokenLen > size)
+            return false;
+
+        for (size_t i = 0; i + tokenLen <= size; ++i)
+        {
+            if (std::memcmp(data + i, token, tokenLen) == 0)
+                return true;
+        }
+        return false;
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -149,7 +163,7 @@ void test_Reflect_roundtrip_primitives()
     // Serialize
     ReflectBufferProxy buffer;
     buffer.allocate(2048);
-    ReflectSerializer::serializeObjectToBuffer(&buffer, &src);
+    ReflectSerializer::serializeObjectToBuffer(&buffer, &src, 0, true);
 
     // Deserialize
     TestObject dst;
@@ -181,12 +195,14 @@ void test_Reflect_roundtrip_vector()
     // Serialize
     ReflectBufferProxy buffer;
     buffer.allocate(2048);
-    ReflectSerializer::serializeObjectToBuffer(&buffer, &src);
+    ReflectSerializer::serializeObjectToBuffer(&buffer, &src, 0, true);
 
     // Deserialize
     TestObject dst;
     const bool ok = deserializeFromString(buffer.getBuffer(), buffer.size(), &dst);
     CHECK(ok);
+
+    CHECK(containsToken(buffer.getBuffer(), buffer.size(), "\n  \""));
 
     CHECK(dst._names.size() == 3);
     if (dst._names.size() == 3)
@@ -214,12 +230,14 @@ void test_Reflect_roundtrip_nested_object()
     // Serialize
     ReflectBufferProxy buffer;
     buffer.allocate(4096);
-    ReflectSerializer::serializeObjectToBuffer(&buffer, &src);
+    ReflectSerializer::serializeObjectToBuffer(&buffer, &src, 0, true);
 
     // Deserialize
     TestObject dst;
     const bool ok = deserializeFromString(buffer.getBuffer(), buffer.size(), &dst);
     CHECK(ok);
+
+    CHECK(containsToken(buffer.getBuffer(), buffer.size(), "\n    \""));
 
     CHECK(dst._intValue == 5);
     CHECK(dst._subObject._names.size() == 2);
