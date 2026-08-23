@@ -13,7 +13,7 @@ namespace keyh
 		virtual ~IRhiCommandPool() = default;
 
 	public:
-		virtual IRhiCommandList* allocateCommandList() = 0;
+		virtual  Ptr<IRhiCommandList> allocateCommandList() = 0;
 		virtual void reset() = 0;
 
 	public:

@@ -12,7 +12,7 @@ namespace keyh
 		virtual ~D3D12CommandPool() override = default;
 
 	public:
-		virtual IRhiCommandList* allocateCommandList() override;
+		virtual Ptr<IRhiCommandList> allocateCommandList() override;
 		virtual void reset() override;
 
 	public:

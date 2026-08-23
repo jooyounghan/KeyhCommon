@@ -1,4 +1,4 @@
-#include "TestCommon.h"
+﻿#include "TestCommon.h"
 #include "RhiTriangleTest.h"
 
 using namespace keyh;
@@ -126,7 +126,7 @@ void test_RhiSystem_d3d12_triangle_example()
 		return;
 	}
 
-	const OwnerVector<IRhiDevice>& devices = instance->getDevices();
+	OwnerVector<IRhiDevice>& devices = instance->getDevices();
 	CHECK(devices.size() > 0);
 	if (devices.size() == 0)
 	{
@@ -147,7 +147,7 @@ void test_RhiSystem_d3d12_triangle_example()
 		return;
 	}
 
-	Ptr<IRhiCommandList> commandList(commandPool->allocateCommandList());
+	Ptr<IRhiCommandList> commandList = commandPool->allocateCommandList();
 	CHECK(commandList != nullptr);
 	if (commandList == nullptr)
 	{

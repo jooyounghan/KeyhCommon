@@ -20,9 +20,9 @@ namespace keyh
 		);
 	}
 
-	IRhiCommandList* D3D12CommandPool::allocateCommandList()
+	Ptr<IRhiCommandList> D3D12CommandPool::allocateCommandList()
 	{
-		return new D3D12CommandList(this, _queueType);
+		return makePtr<D3D12CommandList>(this, _queueType);
 	}
 
 	void D3D12CommandPool::reset()

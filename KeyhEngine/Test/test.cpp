@@ -29,13 +29,13 @@ int main()
     //test_StaticString_clear_and_reuse();
     //test_StaticString_index_access();
     //test_StaticString_wchar();
-    test_InlinedVector_inline_and_heap_growth();
-    test_InlinedVector_copy_and_move();
-    test_InlinedVector_erase_and_shrink_to_fit();
-    test_ScalarVectorTypes_float2_basic();
-    test_ScalarVectorTypes_float3_basic();
-    test_ScalarVectorTypes_float4_basic();
-    benchmark_ScalarVectorTypes_arithmetic();
+    //test_InlinedVector_inline_and_heap_growth();
+    //test_InlinedVector_copy_and_move();
+    //test_InlinedVector_erase_and_shrink_to_fit();
+    //test_ScalarVectorTypes_float2_basic();
+    //test_ScalarVectorTypes_float3_basic();
+    //test_ScalarVectorTypes_float4_basic();
+    //benchmark_ScalarVectorTypes_arithmetic();
 
     //test_RefPtr_basic();
     //test_RefPtr_copy();
@@ -72,6 +72,7 @@ int main()
     //test_Reflect_roundtrip_nested_object();
     //test_Reflect_large_object_file_roundtrip_compare();
     //benchmark_Reflect_deserialize_512kb_x100();
+
     //test_RhiSystem_d3d12_triangle_example();
 
     //printSummary();

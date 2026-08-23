@@ -17,7 +17,7 @@ namespace keyh
 		virtual bool initialize() = 0;
 
 	public:
-		inline const OwnerVector<IRhiDevice>& getDevices() const { return _devices; }
+		inline OwnerVector<IRhiDevice>& getDevices() { return _devices; }
 
 	protected:
 		OwnerVector<IRhiDevice>	_devices;
