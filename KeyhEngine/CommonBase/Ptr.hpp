@@ -1,7 +1,7 @@
 ﻿namespace keyh
 {
 	template<typename Base, typename Derived, typename ...Args>
-	Ptr<Base> makePtr(Args... args)
+	Ptr<Base> makePtr(Args&&... args)
 	{
 		TypeTrait::requireDerivedFrom<Derived, Base>();
 		return Ptr<Base>(new Derived(keyh::forward<Args>(args)...));
@@ -46,6 +46,7 @@
 	{
 		TypeTrait::requireDerivedFrom<U, T>();
 		_ptr = other._ptr;
+		other._ptr = nullptr;
 	}
 
 	template<typename T>
