@@ -6,7 +6,7 @@ namespace keyh
 	class Ptr;
 
 	template<typename Base, typename Derived = Base, typename ...Args>
-	Ptr<Base> makePtr(Args... args);
+	Ptr<Base> makePtr(Args&&... args);
 
 	template<typename T>
 	class Ptr
@@ -15,7 +15,7 @@ namespace keyh
 		friend class Ptr;
 
 		template<typename Base, typename Derived, typename ...Args>
-		friend Ptr<Base> makePtr(Args... args);
+		friend Ptr<Base> makePtr(Args&&... args);
 
 	public:
 		Ptr() = default;
