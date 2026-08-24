@@ -167,7 +167,9 @@
 			const ElementType* element = value[i];
 			if (element == nullptr)
 			{
+				buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 				buffer->writeBytes("null", 4);
+				buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 				continue;
 			}
 			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth + 1, pretty);
@@ -193,6 +195,12 @@
 		JsonArray jsonArray = json.getArrayValue();
 		for (JsonValue jsonValue = jsonArray.getFirstValue(); jsonValue.isValid(); jsonValue = jsonArray.getNextValue(jsonValue))
 		{
+			if (jsonValue.getValueType() == JsonUtil::TapeType::String && jsonValue.getStringValue() == "null")
+			{
+				value.push_back(Ptr<ElementType>(nullptr));
+				continue;
+			}
+
 			ElementType* element = value.template emplace_back<ElementType>();
 			ReflectPropertyPolicy<ElementType>::deserializeFromJson(jsonValue, *element);
 		}
