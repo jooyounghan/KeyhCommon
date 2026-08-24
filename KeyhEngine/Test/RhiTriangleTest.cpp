@@ -4,6 +4,8 @@
 using namespace keyh;
 
 #if defined(KEYH_PLATFORM_WINDOWS)
+#include "D3D12Buffer.h"
+#include <cstddef>
 #include <cstring>
 #include <dxcapi.h>
 #endif
@@ -11,32 +13,37 @@ using namespace keyh;
 namespace
 {
 #if defined(KEYH_PLATFORM_WINDOWS)
+	struct TriangleVertex
+	{
+		float _position[4];
+		float _color[4];
+	};
+
+	const TriangleVertex kTriangleVertices[] =
+	{
+		{ {  0.0f,  0.5f, 0.0f, 1.0f }, { 1.0f, 0.0f, 0.0f, 1.0f } },
+		{ {  0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f, 1.0f } },
+		{ { -0.5f, -0.5f, 0.0f, 1.0f }, { 0.0f, 0.0f, 1.0f, 1.0f } }
+	};
+
 	const char* kTriangleShaderSource = R"(
+struct VSInput
+{
+    float4 Position : ATTRIBUTE0;
+    float4 Color    : ATTRIBUTE1;
+};
+
 struct VSOutput
 {
     float4 Position : SV_Position;
     float4 Color    : COLOR0;
 };
 
-VSOutput VSMain(uint vertexId : SV_VertexID)
+VSOutput VSMain(VSInput input)
 {
-    const float2 positions[3] =
-    {
-        float2( 0.0f,  0.5f),
-        float2( 0.5f, -0.5f),
-        float2(-0.5f, -0.5f)
-    };
-
-    const float4 colors[3] =
-    {
-        float4(1.0f, 0.0f, 0.0f, 1.0f),
-        float4(0.0f, 1.0f, 0.0f, 1.0f),
-        float4(0.0f, 0.0f, 1.0f, 1.0f)
-    };
-
     VSOutput output;
-    output.Position = float4(positions[vertexId], 0.0f, 1.0f);
-    output.Color = colors[vertexId];
+    output.Position = input.Position;
+    output.Color = input.Color;
     return output;
 }
 
@@ -163,12 +170,53 @@ void test_RhiSystem_d3d12_triangle_example()
 
 	if (vertexCompileSucceeded && pixelCompileSucceeded)
 	{
+		RhiInputBindingDesc inputBindings[] =
+		{
+			{ 0, sizeof(TriangleVertex), EVertexInputRate::PerVertex, 1 }
+		};
+		RhiInputAttributeDesc inputAttributes[] =
+		{
+			{ 0, 0, EResourceFormat::R32G32B32A32_Float, static_cast<uint32>(offsetof(TriangleVertex, _position)) },
+			{ 1, 0, EResourceFormat::R32G32B32A32_Float, static_cast<uint32>(offsetof(TriangleVertex, _color)) }
+		};
+		RhiBufferDesc vertexBufferDesc = {};
+		vertexBufferDesc._width = sizeof(kTriangleVertices);
+		vertexBufferDesc._dimension = EResourceDimension::Buffer;
+		vertexBufferDesc._resourceStateFlags = EResourceState::VertexAndConstantBuffer;
+
+		Ptr<IRhiBuffer> vertexBuffer = device->createBuffer(vertexBufferDesc, EHeapType::Upload);
+		CHECK(vertexBuffer != nullptr);
+		if (vertexBuffer == nullptr)
+		{
+			return;
+		}
+
+		void* mappedVertexBuffer = vertexBuffer->map();
+		CHECK(mappedVertexBuffer != nullptr);
+		if (mappedVertexBuffer == nullptr)
+		{
+			return;
+		}
+
+		std::memcpy(mappedVertexBuffer, kTriangleVertices, sizeof(kTriangleVertices));
+		vertexBuffer->unmap();
+
+		D3D12Buffer* d3d12VertexBuffer = static_cast<D3D12Buffer*>(vertexBuffer.get());
+		RhiVertexBufferView vertexBufferView = {};
+		vertexBufferView._bufferLocation = static_cast<size_t>(d3d12VertexBuffer->getNativeResource()->GetGPUVirtualAddress());
+		vertexBufferView._sizeInBytes = sizeof(kTriangleVertices);
+		vertexBufferView._strideInBytes = sizeof(TriangleVertex);
+
 		EResourceFormat renderTargetFormat = EResourceFormat::R8G8B8A8_UNorm;
 		RhiGraphicsPipelineDesc pipelineDesc = {};
 		pipelineDesc._vertexShader._data = vertexShader->GetBufferPointer();
 		pipelineDesc._vertexShader._sizeInBytes = vertexShader->GetBufferSize();
 		pipelineDesc._pixelShader._data = pixelShader->GetBufferPointer();
 		pipelineDesc._pixelShader._sizeInBytes = pixelShader->GetBufferSize();
+		pipelineDesc._inputLayout._bindings = inputBindings;
+		pipelineDesc._inputLayout._bindingCount = static_cast<uint32>(_countof(inputBindings));
+		pipelineDesc._inputLayout._attributes = inputAttributes;
+		pipelineDesc._inputLayout._attributeCount = static_cast<uint32>(_countof(inputAttributes));
 		pipelineDesc._primitiveTopologyType = EPrimitiveTopologyType::Triangle;
 		pipelineDesc._renderTargetFormats = &renderTargetFormat;
 		pipelineDesc._renderTargetCount = 1;
@@ -182,6 +230,7 @@ void test_RhiSystem_d3d12_triangle_example()
 			commandList->begin();
 			commandList->setGraphicsPipeline(graphicsPipeline.get());
 			commandList->setPrimitiveTopology(EPrimitiveTopologyType::Triangle);
+			commandList->setVertexBuffers(0, 1, &vertexBufferView);
 			commandList->drawInstanced(3, 1, 0, 0);
 			commandList->end();
 		}

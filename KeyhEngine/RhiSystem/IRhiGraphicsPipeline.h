@@ -69,6 +69,37 @@ namespace keyh
 		RhiDepthStencilOpDesc _backFace       = {};
 	};
 
+	enum class EVertexInputRate : uint8
+	{
+		PerVertex,
+		PerInstance,
+		Count
+	};
+
+	struct RhiInputBindingDesc
+	{
+		uint32            _binding          = 0;
+		uint32            _strideInBytes    = 0;
+		EVertexInputRate  _inputRate        = EVertexInputRate::PerVertex;
+		uint32            _instanceStepRate = 1;
+	};
+
+	struct RhiInputAttributeDesc
+	{
+		uint32          _location       = 0;
+		uint32          _binding        = 0;
+		EResourceFormat _format         = EResourceFormat::Unknown;
+		uint32          _offsetInBytes  = 0;
+	};
+
+	struct RhiInputLayoutDesc
+	{
+		const RhiInputBindingDesc*   _bindings       = nullptr;
+		uint32                       _bindingCount   = 0;
+		const RhiInputAttributeDesc* _attributes     = nullptr;
+		uint32                       _attributeCount = 0;
+	};
+
 	struct RhiGraphicsPipelineDesc
 	{
 		IRhiPipelineLayout*       _pipelineLayout      = nullptr;
@@ -82,6 +113,7 @@ namespace keyh
 		RhiRasterizerDesc         _rasterizerDesc;
 		RhiBlendDesc              _blendDesc;
 		RhiDepthStencilDesc       _depthStencilDesc;
+		RhiInputLayoutDesc        _inputLayout;
 		EPrimitiveTopologyType    _primitiveTopologyType = EPrimitiveTopologyType::Triangle;
 		const EResourceFormat*    _renderTargetFormats   = nullptr;
 		uint32                    _renderTargetCount     = 0;
@@ -103,4 +135,3 @@ namespace keyh
 		RhiGraphicsPipelineDesc _desc;
 	};
 }
-
