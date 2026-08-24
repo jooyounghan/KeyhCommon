@@ -13,15 +13,45 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Parameter">
+      <UniqueIdentifier>{6fff58d9-c7d2-495a-a5ee-74891a516962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Parameter">
+      <UniqueIdentifier>{a6b7c504-7ae3-4513-9325-6dbc9b92ab32}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MaterialSystemPch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialLayout.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialParameterInfo.h">
+      <Filter>헤더 파일\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialParameter.h">
+      <Filter>헤더 파일\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialInfo.h">
+      <Filter>헤더 파일\Parameter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialLayout.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialParameter.cpp">
+      <Filter>소스 파일\Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialParameterInfo.cpp">
+      <Filter>소스 파일\Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialInfo.cpp">
+      <Filter>소스 파일\Parameter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

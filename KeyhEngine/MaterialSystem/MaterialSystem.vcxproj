@@ -155,9 +155,17 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MaterialInfo.h" />
+    <ClInclude Include="MaterialLayout.h" />
+    <ClInclude Include="MaterialParameter.h" />
+    <ClInclude Include="MaterialParameterInfo.h" />
     <ClInclude Include="MaterialSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MaterialInfo.cpp" />
+    <ClCompile Include="MaterialLayout.cpp" />
+    <ClCompile Include="MaterialParameter.cpp" />
+    <ClCompile Include="MaterialParameterInfo.cpp" />
     <ClCompile Include="MaterialSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
