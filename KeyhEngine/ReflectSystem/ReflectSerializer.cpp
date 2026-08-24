@@ -137,6 +137,15 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_IS_EQUAL(uint64)
     DEFINE_IS_EQUAL(float)
     DEFINE_IS_EQUAL(double)
+    DEFINE_IS_EQUAL(float2)
+    DEFINE_IS_EQUAL(float3)
+    DEFINE_IS_EQUAL(float4)
+    DEFINE_IS_EQUAL(int2)
+    DEFINE_IS_EQUAL(int3)
+    DEFINE_IS_EQUAL(int4)
+    DEFINE_IS_EQUAL(uint2)
+    DEFINE_IS_EQUAL(uint3)
+    DEFINE_IS_EQUAL(uint4)
     DEFINE_IS_EQUAL(bool)
     DEFINE_IS_EQUAL(StaticStringA)
     DEFINE_IS_EQUAL(FlyweightStringA)
@@ -185,6 +194,62 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #undef DEFINE_SERIALIZE_TO_JSON_SIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_FLOAT
+
+    namespace
+    {
+        template<typename ElementType>
+        inline void serializeScalarVectorComponent(IBuffer* buffer, ElementType value)
+        {
+            if constexpr (IsSame_v<ElementType, float>)
+            {
+                StrUtil::floatToStr(static_cast<double>(value), buffer);
+            }
+            else if constexpr (IsSame_v<ElementType, int32>)
+            {
+                const bool isNegative = static_cast<int64>(value) < 0;
+                const uint64 absValue = isNegative
+                    ? static_cast<uint64>(-static_cast<int64>(value))
+                    : static_cast<uint64>(value);
+                StrUtil::intToStr(isNegative, absValue, buffer);
+            }
+            else
+            {
+                StrUtil::intToStr(false, static_cast<uint64>(value), buffer);
+            }
+        }
+
+        template<typename VectorType, typename ElementType, size_t ComponentCount>
+        inline void serializeScalarVectorToJson(IBuffer* buffer, const VectorType& value)
+        {
+            buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+            for (size_t i = 0; i < ComponentCount; ++i)
+            {
+                if (i > 0)
+                    buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+                serializeScalarVectorComponent(buffer, static_cast<ElementType>(value[i]));
+            }
+            buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
+        }
+    }
+
+#define DEFINE_SERIALIZE_VECTOR_TO_JSON(Type, ElementType, ComponentCount)                                                                \
+    template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty) {   \
+        (void)depth;                                                                                                                       \
+        (void)pretty;                                                                                                                      \
+        serializeScalarVectorToJson<Type, ElementType, ComponentCount>(buffer, value);                                                    \
+    }
+
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(float2, float, 2)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(float3, float, 3)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(float4, float, 4)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(int2, int32, 2)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(int3, int32, 3)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(int4, int32, 4)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(uint2, uint32, 2)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(uint3, uint32, 3)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(uint4, uint32, 4)
+
+#undef DEFINE_SERIALIZE_VECTOR_TO_JSON
 
     template<>
     void ReflectPropertySerializer<bool>::serializeToJson(IBuffer* buffer, const bool& value, size_t depth, bool pretty)
@@ -253,6 +318,51 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #undef DEFINE_DESERIALIZE_FROM_JSON_INT
 #undef DEFINE_DESERIALIZE_FROM_JSON_FLOAT
 
+    namespace
+    {
+        template<typename ElementType>
+        inline ElementType deserializeScalarVectorComponent(const JsonValue& jsonValue)
+        {
+            if constexpr (IsSame_v<ElementType, float>)
+            {
+                return static_cast<ElementType>(jsonValue.getFloatValue());
+            }
+            else
+            {
+                return static_cast<ElementType>(jsonValue.getIntValue());
+            }
+        }
+
+        template<typename VectorType, typename ElementType, size_t ComponentCount>
+        inline void deserializeScalarVectorFromJson(const JsonValue& json, VectorType& value)
+        {
+            JsonArray jsonArray = json.getArrayValue();
+            size_t index = 0;
+            for (JsonValue jsonValue = jsonArray.getFirstValue(); jsonValue.isValid() && index < ComponentCount; jsonValue = jsonArray.getNextValue(jsonValue), ++index)
+            {
+                value[index] = deserializeScalarVectorComponent<ElementType>(jsonValue);
+            }
+        }
+    }
+
+#define DEFINE_DESERIALIZE_VECTOR_FROM_JSON(Type, ElementType, ComponentCount)                                               \
+    template<> void ReflectPropertySerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value)                \
+    {                                                                                                                         \
+        deserializeScalarVectorFromJson<Type, ElementType, ComponentCount>(json, value);                                    \
+    }
+
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float2, float, 2)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float3, float, 3)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float4, float, 4)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int2, int32, 2)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int3, int32, 3)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int4, int32, 4)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(uint2, uint32, 2)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(uint3, uint32, 3)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(uint4, uint32, 4)
+
+#undef DEFINE_DESERIALIZE_VECTOR_FROM_JSON
+
     template<>
     void ReflectPropertySerializer<bool>::deserializeFromJson(const JsonValue& json, bool& value)
     {
@@ -294,6 +404,15 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_SERIALIZE_TO_BINARY(uint64)
     DEFINE_SERIALIZE_TO_BINARY(float)
     DEFINE_SERIALIZE_TO_BINARY(double)
+    DEFINE_SERIALIZE_TO_BINARY(float2)
+    DEFINE_SERIALIZE_TO_BINARY(float3)
+    DEFINE_SERIALIZE_TO_BINARY(float4)
+    DEFINE_SERIALIZE_TO_BINARY(int2)
+    DEFINE_SERIALIZE_TO_BINARY(int3)
+    DEFINE_SERIALIZE_TO_BINARY(int4)
+    DEFINE_SERIALIZE_TO_BINARY(uint2)
+    DEFINE_SERIALIZE_TO_BINARY(uint3)
+    DEFINE_SERIALIZE_TO_BINARY(uint4)
     DEFINE_SERIALIZE_TO_BINARY(bool)
     DEFINE_SERIALIZE_TO_BINARY(StaticStringA)
     DEFINE_SERIALIZE_TO_BINARY(FlyweightStringA)
@@ -321,6 +440,15 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_DESERIALIZE_FROM_BINARY(uint64)
     DEFINE_DESERIALIZE_FROM_BINARY(float)
     DEFINE_DESERIALIZE_FROM_BINARY(double)
+    DEFINE_DESERIALIZE_FROM_BINARY(float2)
+    DEFINE_DESERIALIZE_FROM_BINARY(float3)
+    DEFINE_DESERIALIZE_FROM_BINARY(float4)
+    DEFINE_DESERIALIZE_FROM_BINARY(int2)
+    DEFINE_DESERIALIZE_FROM_BINARY(int3)
+    DEFINE_DESERIALIZE_FROM_BINARY(int4)
+    DEFINE_DESERIALIZE_FROM_BINARY(uint2)
+    DEFINE_DESERIALIZE_FROM_BINARY(uint3)
+    DEFINE_DESERIALIZE_FROM_BINARY(uint4)
     DEFINE_DESERIALIZE_FROM_BINARY(bool)
     DEFINE_DESERIALIZE_FROM_BINARY(StaticStringA)
     DEFINE_DESERIALIZE_FROM_BINARY(FlyweightStringA)

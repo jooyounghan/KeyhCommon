@@ -110,6 +110,103 @@
 	{}
 #pragma endregion
 
+#pragma region OwnerVector Policy
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<OwnerVector<ElementType>>::isEqual(const OwnerVector<ElementType>& a, const OwnerVector<ElementType>& b)
+	{
+		if (a.size() != b.size())
+			return false;
+
+		for (size_t i = 0; i < a.size(); ++i)
+		{
+			const ElementType* left = a[i];
+			const ElementType* right = b[i];
+			if (left == nullptr || right == nullptr)
+			{
+				if (left != right)
+					return false;
+				continue;
+			}
+
+			if (!ReflectPropertyPolicy<ElementType>::isEqual(*left, *right))
+				return false;
+		}
+		return true;
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<OwnerVector<ElementType>>::serializeToJson(IBuffer* buffer, const OwnerVector<ElementType>& value, size_t depth, bool pretty)
+	{
+		buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+		if (pretty && value.size() > 0)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+		}
+
+		for (size_t i = 0; i < value.size(); ++i)
+		{
+			if (i > 0)
+			{
+				buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+				if (pretty)
+				{
+					const char newline = '\n';
+					buffer->writeBytes(&newline, 1);
+				}
+			}
+
+			if (pretty)
+			{
+				for (size_t indent = 0; indent < depth + 1; ++indent)
+				{
+					buffer->writeBytes("  ", 2);
+				}
+			}
+
+			const ElementType* element = value[i];
+			if (element == nullptr)
+			{
+				buffer->writeBytes("null", 4);
+				continue;
+			}
+			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth + 1, pretty);
+		}
+
+		if (pretty && value.size() > 0)
+		{
+			const char newline = '\n';
+			buffer->writeBytes(&newline, 1);
+			for (size_t indent = 0; indent < depth; ++indent)
+			{
+				buffer->writeBytes("  ", 2);
+			}
+		}
+		buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value)
+	{
+		value.clear();
+
+		JsonArray jsonArray = json.getArrayValue();
+		for (JsonValue jsonValue = jsonArray.getFirstValue(); jsonValue.isValid(); jsonValue = jsonArray.getNextValue(jsonValue))
+		{
+			ElementType* element = value.template emplace_back<ElementType>();
+			ReflectPropertyPolicy<ElementType>::deserializeFromJson(jsonValue, *element);
+		}
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<OwnerVector<ElementType>>::serializeToBinary(IBuffer* buffer, const OwnerVector<ElementType>& value)
+	{}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value)
+	{}
+#pragma endregion
+
 #pragma region HashMap Policy
 	template<typename KeyType, typename ValueType, typename Hasher>
 	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
