@@ -4,6 +4,7 @@
 #include "IReflectProperty.h"
 #include "IReflectObject.h"
 #include "ReflectMetaObject.h"
+#include "ScalarVectorTypes.h"
 
 namespace keyh
 {
