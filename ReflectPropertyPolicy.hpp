@@ -208,11 +208,20 @@
 
 	template<typename ElementType>
 	void ReflectPropertyPolicy<OwnerVector<ElementType>>::serializeToBinary(IBuffer* buffer, const OwnerVector<ElementType>& value)
-	{}
+	{
+		(void)buffer;
+		(void)value;
+		KEYH_ASSERT(false, "OwnerVector binary serialization is not implemented.");
+	}
 
 	template<typename ElementType>
 	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value)
-	{}
+	{
+		(void)data;
+		(void)size;
+		(void)value;
+		KEYH_ASSERT(false, "OwnerVector binary deserialization is not implemented.");
+	}
 #pragma endregion
 
 #pragma region HashMap Policy
