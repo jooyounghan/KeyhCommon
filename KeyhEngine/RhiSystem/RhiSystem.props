@@ -25,7 +25,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)' == 'Win32' or '$(Platform)' == 'x64'">
     <ClCompile>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles);D3D12RhiEnum.h;</ForcedIncludeFiles>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);D3D12RhiEnum.h;D3D12RhiConvert.h;D3D12Buffer.h;D3D12CommandList.h;D3D12CommandPool.h;D3D12CommandQueue.h;D3D12ComputePipeline.h;D3D12Device.h;D3D12Fence.h;D3D12GlobalResourceHeap.h;D3D12GraphicsPipeline.h;D3D12Instance.h;D3D12MemoryHeap.h;D3D12PipelineLayout.h;D3D12Sampler.h;D3D12SwapChain.h;D3D12Texture.h;</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <!-- Windows SDK D3D12/DXGI libs are resolved via the platform SDK; dxcompiler comes from vcpkg directx-dxc -->
