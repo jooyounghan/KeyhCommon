@@ -16,4 +16,5 @@ namespace keyh
 		OwnerVector<MaterialParameterInfo> _materialParameterInfos;
 	};
 }
+#include "reflect_generated.inl"
 
