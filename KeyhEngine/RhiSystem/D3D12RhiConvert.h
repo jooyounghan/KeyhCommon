@@ -248,6 +248,7 @@ namespace keyh
 
 			KEYH_ASSERT(inputBinding != nullptr, "Each input attribute must reference a valid input binding.");
 			KEYH_ASSERT(inputAttribute._format != EResourceFormat::Unknown, "Input attributes must use a concrete resource format.");
+			KEYH_ASSERT(inputBinding->_inputRate != EVertexInputRate::PerInstance || inputBinding->_instanceStepRate > 0, "Per-instance input bindings must specify a non-zero step rate.");
 
 			D3D12_INPUT_ELEMENT_DESC& inputElement = outInputElements[idx];
 			inputElement.SemanticName         = kD3D12InputSemanticName;
@@ -255,9 +256,9 @@ namespace keyh
 			inputElement.Format               = D3D12ResourceFormatInfo::getInfo(inputAttribute._format)._format;
 			inputElement.InputSlot            = inputAttribute._binding;
 			inputElement.AlignedByteOffset    = inputAttribute._offsetInBytes;
-			inputElement.InputSlotClass       = toD3D12InputClassification(inputBinding != nullptr ? inputBinding->_inputRate : EVertexInputRate::PerVertex);
-			inputElement.InstanceDataStepRate = inputBinding != nullptr && inputBinding->_inputRate == EVertexInputRate::PerInstance
-				? (inputBinding->_instanceStepRate == 0 ? 1u : inputBinding->_instanceStepRate)
+			inputElement.InputSlotClass       = toD3D12InputClassification(inputBinding->_inputRate);
+			inputElement.InstanceDataStepRate = inputBinding->_inputRate == EVertexInputRate::PerInstance
+				? inputBinding->_instanceStepRate
 				: 0;
 		}
 
