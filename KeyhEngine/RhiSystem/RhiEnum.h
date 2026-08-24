@@ -54,15 +54,26 @@ namespace keyh
     protected:
         static void registerEntry(EnumType type, Derived info)
         {
-            getTable()[static_cast<uint32>(type)] = keyh::move(info);
+			getRawTableXXX()[static_cast<uint32>(type)] = keyh::move(info);
         }
 
-    private:
-        static Derived* getTable()
-        {
-            static Derived table[Count];
-            return table;
-        }
+	private:
+		static Derived* getRawTableXXX()
+		{
+			static Derived table[Count];
+			return table;
+		}
+
+		static Derived* getTable()
+		{
+			static const bool _isInitialized = []() -> bool
+				{
+					initializeTable();
+					return true;
+				}();
+
+			return getRawTableXXX();
+		}
     };
 
     template <typename EnumType, typename InfoType, uint32 Count, typename Derived>
@@ -76,20 +87,47 @@ namespace keyh
 
         inline static const Derived& getInfoByBitIndex(uint32 bitIndex) { return getTable()[bitIndex]; }
 
-        static InfoList<Derived, Count> getInfoList(EnumType combinedFlags);
+        static InfoList<Derived, Count> getInfoList(EnumType combinedFlags)
+        {
+            InfoList<Derived, Count> list;
+            uint32 mask = static_cast<uint32>(combinedFlags);
+
+            for (uint32 i = 0; i < Count; ++i)
+            {
+                uint32 bitValue = (1 << i);
+                if ((mask & bitValue) != 0)
+                {
+                    list._items[list._count] = &getTable()[i];
+                    list._count++;
+                }
+            }
+
+            return list;
+        }
 
     protected:
         static void registerEntry(EnumType type, Derived info)
         {
-            getTable()[getIndex(type)] = keyh::move(info);
+            getRawTableXXX()[getIndex(type)] = keyh::move(info);
         }
 
-    private:
-        static Derived* getTable()
-        {
-            static Derived table[Count];
-            return table;
-        }
+	private:
+		static Derived* getRawTableXXX()
+		{
+			static Derived table[Count];
+			return table;
+		}
+
+		static Derived* getTable()
+		{
+			static const bool _isInitialized = []() -> bool
+				{
+					initializeTable();
+					return true;
+				}();
+
+			return getRawTableXXX();
+		}
     };
 
 #define EnumTable(EnumType, InfoType, EnumCount, Derived)   \

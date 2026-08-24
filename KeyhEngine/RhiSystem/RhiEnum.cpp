@@ -3,25 +3,6 @@
 
 namespace keyh
 {
-    template<typename EnumType, typename InfoType, uint32 Count, typename Derived>
-    InfoList<Derived, Count> IEnumInfoTable<EnumType, InfoType, Count, Derived, true>::getInfoList(EnumType combinedFlags)
-    {
-        InfoList<Derived, Count> list;
-        uint32 mask = static_cast<uint32>(combinedFlags);
-
-        for (uint32 i = 0; i < Count; ++i)
-        {
-            uint32 bitValue = (1 << i);
-            if ((mask & bitValue) != 0)
-            {
-                list._items[list._count] = &getTable()[i];
-                list._count++;
-            }
-        }
-
-        return list;
-    }
-
 #pragma region ResourceFormat
 	D3D12ResourceFormatInfo::D3D12ResourceFormatInfo(
         const char* name
