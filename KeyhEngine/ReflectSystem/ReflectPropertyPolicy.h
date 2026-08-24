@@ -29,6 +29,18 @@ namespace keyh
 	};
 #pragma endregion
 
+#pragma region OwnerVector Policy
+	template<typename ElementType>
+	struct ReflectPropertyPolicy<OwnerVector<ElementType>>
+	{
+		static bool isEqual(const OwnerVector<ElementType>& a, const OwnerVector<ElementType>& b);
+		static void serializeToJson(IBuffer* buffer, const OwnerVector<ElementType>& value, size_t depth = 0, bool pretty = false);
+		static void deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value);
+		static void serializeToBinary(IBuffer* buffer, const OwnerVector<ElementType>& value);
+		static void deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value);
+	};
+#pragma endregion
+
 #pragma region HashMap Policy
 	template<typename KeyType, typename ValueType, typename Hasher>
 	struct ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>
