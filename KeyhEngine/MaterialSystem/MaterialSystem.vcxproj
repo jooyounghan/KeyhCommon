@@ -75,6 +75,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Message>Running Reflect Code Generator...</Message>
+      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
+    </PreBuildEvent>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -94,6 +98,10 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Message>Running Reflect Code Generator...</Message>
+      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
+    </PreBuildEvent>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -115,6 +123,10 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Message>Running Reflect Code Generator...</Message>
+      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
+    </PreBuildEvent>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
@@ -134,6 +146,10 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Message>Running Reflect Code Generator...</Message>
+      <Command>call "$(SolutionDir)Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
+    </PreBuildEvent>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -160,6 +176,9 @@
     <ClInclude Include="MaterialParameter.h" />
     <ClInclude Include="MaterialParameterInfo.h" />
     <ClInclude Include="MaterialSystemPch.h" />
+    <ClInclude Include="reflect_generated.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialInfo.cpp" />

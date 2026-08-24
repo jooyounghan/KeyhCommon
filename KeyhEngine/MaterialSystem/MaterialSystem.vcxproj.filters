@@ -38,6 +38,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="reflect_generated.inl">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
