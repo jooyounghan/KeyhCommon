@@ -32,10 +32,13 @@ namespace keyh
 
     struct float2
     {
-        float x = 0.0f;
-        float y = 0.0f;
+        union
+        {
+            struct { float x; float y; };
+            float e[2];
+        };
 
-        constexpr float2() noexcept = default;
+        constexpr float2() noexcept : x(0.0f), y(0.0f) {}
         constexpr explicit float2(float value) noexcept
             : x(value)
             , y(value)
@@ -50,24 +53,14 @@ namespace keyh
 
         float& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         float2 operator+(const float2& other) const noexcept
@@ -196,11 +189,13 @@ namespace keyh
 
     struct float3
     {
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
+        union
+        {
+            struct { float x; float y; float z; };
+            float e[3];
+        };
 
-        constexpr float3() noexcept = default;
+        constexpr float3() noexcept : x(0.0f), y(0.0f), z(0.0f) {}
         constexpr explicit float3(float value) noexcept
             : x(value)
             , y(value)
@@ -217,26 +212,14 @@ namespace keyh
 
         float& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         float3 operator+(const float3& other) const noexcept
@@ -378,12 +361,13 @@ namespace keyh
 
     struct alignas(16) float4
     {
-        float x = 0.0f;
-        float y = 0.0f;
-        float z = 0.0f;
-        float w = 0.0f;
+        union
+        {
+            struct { float x; float y; float z; float w; };
+            float e[4];
+        };
 
-        constexpr float4() noexcept = default;
+        constexpr float4() noexcept : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
         constexpr explicit float4(float value) noexcept
             : x(value)
             , y(value)
@@ -410,28 +394,14 @@ namespace keyh
 
         float& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default:
-                scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         float4 operator+(const float4& other) const noexcept
@@ -592,31 +562,26 @@ namespace keyh
 
     struct int2
     {
-        int32 x = 0;
-        int32 y = 0;
+        union
+        {
+            struct { int32 x; int32 y; };
+            int32 e[2];
+        };
 
-        constexpr int2() noexcept = default;
+        constexpr int2() noexcept : x(0), y(0) {}
         constexpr explicit int2(int32 value) noexcept : x(value), y(value) {}
         constexpr int2(int32 xValue, int32 yValue) noexcept : x(xValue), y(yValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const int2& other) const noexcept { return x == other.x && y == other.y; }
@@ -625,34 +590,26 @@ namespace keyh
 
     struct int3
     {
-        int32 x = 0;
-        int32 y = 0;
-        int32 z = 0;
+        union
+        {
+            struct { int32 x; int32 y; int32 z; };
+            int32 e[3];
+        };
 
-        constexpr int3() noexcept = default;
+        constexpr int3() noexcept : x(0), y(0), z(0) {}
         constexpr explicit int3(int32 value) noexcept : x(value), y(value), z(value) {}
         constexpr int3(int32 xValue, int32 yValue, int32 zValue) noexcept : x(xValue), y(yValue), z(zValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const int3& other) const noexcept { return x == other.x && y == other.y && z == other.z; }
@@ -661,37 +618,26 @@ namespace keyh
 
     struct int4
     {
-        int32 x = 0;
-        int32 y = 0;
-        int32 z = 0;
-        int32 w = 0;
+        union
+        {
+            struct { int32 x; int32 y; int32 z; int32 w; };
+            int32 e[4];
+        };
 
-        constexpr int4() noexcept = default;
+        constexpr int4() noexcept : x(0), y(0), z(0), w(0) {}
         constexpr explicit int4(int32 value) noexcept : x(value), y(value), z(value), w(value) {}
         constexpr int4(int32 xValue, int32 yValue, int32 zValue, int32 wValue) noexcept : x(xValue), y(yValue), z(zValue), w(wValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const int4& other) const noexcept { return x == other.x && y == other.y && z == other.z && w == other.w; }
@@ -700,31 +646,26 @@ namespace keyh
 
     struct uint2
     {
-        uint32 x = 0;
-        uint32 y = 0;
+        union
+        {
+            struct { uint32 x; uint32 y; };
+            uint32 e[2];
+        };
 
-        constexpr uint2() noexcept = default;
+        constexpr uint2() noexcept : x(0), y(0) {}
         constexpr explicit uint2(uint32 value) noexcept : x(value), y(value) {}
         constexpr uint2(uint32 xValue, uint32 yValue) noexcept : x(xValue), y(yValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 2) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const uint2& other) const noexcept { return x == other.x && y == other.y; }
@@ -733,34 +674,26 @@ namespace keyh
 
     struct uint3
     {
-        uint32 x = 0;
-        uint32 y = 0;
-        uint32 z = 0;
+        union
+        {
+            struct { uint32 x; uint32 y; uint32 z; };
+            uint32 e[3];
+        };
 
-        constexpr uint3() noexcept = default;
+        constexpr uint3() noexcept : x(0), y(0), z(0) {}
         constexpr explicit uint3(uint32 value) noexcept : x(value), y(value), z(value) {}
         constexpr uint3(uint32 xValue, uint32 yValue, uint32 zValue) noexcept : x(xValue), y(yValue), z(zValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 3) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const uint3& other) const noexcept { return x == other.x && y == other.y && z == other.z; }
@@ -769,37 +702,26 @@ namespace keyh
 
     struct uint4
     {
-        uint32 x = 0;
-        uint32 y = 0;
-        uint32 z = 0;
-        uint32 w = 0;
+        union
+        {
+            struct { uint32 x; uint32 y; uint32 z; uint32 w; };
+            uint32 e[4];
+        };
 
-        constexpr uint4() noexcept = default;
+        constexpr uint4() noexcept : x(0), y(0), z(0), w(0) {}
         constexpr explicit uint4(uint32 value) noexcept : x(value), y(value), z(value), w(value) {}
         constexpr uint4(uint32 xValue, uint32 yValue, uint32 zValue, uint32 wValue) noexcept : x(xValue), y(yValue), z(zValue), w(wValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            switch (index)
-            {
-            case 0: return x;
-            case 1: return y;
-            case 2: return z;
-            case 3: return w;
-            default: scalarVectorIndexOutOfBounds();
-            }
+            if (index >= 4) scalarVectorIndexOutOfBounds();
+            return e[index];
         }
 
         bool operator==(const uint4& other) const noexcept { return x == other.x && y == other.y && z == other.z && w == other.w; }
