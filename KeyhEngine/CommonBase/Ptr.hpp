@@ -46,6 +46,7 @@
 	{
 		TypeTrait::requireDerivedFrom<U, T>();
 		_ptr = other._ptr;
+		other._ptr = nullptr;
 	}
 
 	template<typename T>
