@@ -193,6 +193,80 @@ namespace keyh
 		return depthStencilDesc;
 	}
 
+	inline D3D12_INPUT_CLASSIFICATION toD3D12InputClassification(EVertexInputRate inputRate)
+	{
+		switch (inputRate)
+		{
+		case EVertexInputRate::PerVertex:
+			return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+		case EVertexInputRate::PerInstance:
+			return D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA;
+		default:
+			KEYH_ASSERT(false, "Unsupported vertex input rate.");
+			return D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+		}
+	}
+
+	inline const RhiInputBindingDesc* findRhiInputBindingDesc(const RhiInputLayoutDesc& desc, uint32 binding)
+	{
+		for (uint32 idx = 0; idx < desc._bindingCount; ++idx)
+		{
+			const RhiInputBindingDesc& inputBinding = desc._bindings[idx];
+			KEYH_ASSERT(inputBinding._binding < D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT, "Input binding index exceeds D3D12 maximum.");
+			if (inputBinding._binding == binding)
+			{
+				return &inputBinding;
+			}
+		}
+
+		return nullptr;
+	}
+
+	inline D3D12_INPUT_LAYOUT_DESC toD3D12InputLayoutDesc(
+		const RhiInputLayoutDesc& desc,
+		D3D12_INPUT_ELEMENT_DESC* outInputElements,
+		uint32 maxInputElementCount)
+	{
+		KEYH_ASSERT((desc._bindings == nullptr) == (desc._bindingCount == 0), "Input bindings and count must be specified together.");
+		KEYH_ASSERT((desc._attributes == nullptr) == (desc._attributeCount == 0), "Input attributes and count must be specified together.");
+		KEYH_ASSERT(desc._bindingCount <= D3D12_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT, "Input binding count exceeds D3D12 maximum.");
+		KEYH_ASSERT(desc._attributeCount <= maxInputElementCount, "Input attribute count exceeds the provided D3D12 input element capacity.");
+		KEYH_ASSERT(desc._attributeCount == 0 || outInputElements != nullptr, "D3D12 input element storage must be provided when input attributes are present.");
+
+		static constexpr const char* kD3D12InputSemanticName = "ATTRIBUTE";
+
+		for (uint32 idx = 0; idx < desc._bindingCount; ++idx)
+		{
+			const RhiInputBindingDesc& inputBinding = desc._bindings[idx];
+			KEYH_ASSERT(inputBinding._strideInBytes > 0, "Input bindings must specify a non-zero stride.");
+		}
+
+		for (uint32 idx = 0; idx < desc._attributeCount; ++idx)
+		{
+			const RhiInputAttributeDesc& inputAttribute = desc._attributes[idx];
+			const RhiInputBindingDesc* inputBinding = findRhiInputBindingDesc(desc, inputAttribute._binding);
+
+			KEYH_ASSERT(inputBinding != nullptr, "Each input attribute must reference a valid input binding.");
+			KEYH_ASSERT(inputAttribute._format != EResourceFormat::Unknown, "Input attributes must use a concrete resource format.");
+
+			D3D12_INPUT_ELEMENT_DESC& inputElement = outInputElements[idx];
+			inputElement.SemanticName         = kD3D12InputSemanticName;
+			inputElement.SemanticIndex        = inputAttribute._location;
+			inputElement.Format               = D3D12ResourceFormatInfo::getInfo(inputAttribute._format)._format;
+			inputElement.InputSlot            = inputAttribute._binding;
+			inputElement.AlignedByteOffset    = inputAttribute._offsetInBytes;
+			inputElement.InputSlotClass       = toD3D12InputClassification(inputBinding != nullptr ? inputBinding->_inputRate : EVertexInputRate::PerVertex);
+			inputElement.InstanceDataStepRate = inputBinding != nullptr && inputBinding->_inputRate == EVertexInputRate::PerInstance
+				? (inputBinding->_instanceStepRate == 0 ? 1u : inputBinding->_instanceStepRate)
+				: 0;
+		}
+
+		D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
+		inputLayoutDesc.pInputElementDescs = desc._attributeCount > 0 ? outInputElements : nullptr;
+		inputLayoutDesc.NumElements        = desc._attributeCount;
+		return inputLayoutDesc;
+	}
+
 	inline D3D12_VERTEX_BUFFER_VIEW toD3D12VertexBufferView(const RhiVertexBufferView& view)
 	{
 		D3D12_VERTEX_BUFFER_VIEW d3dView = {};
@@ -258,7 +332,10 @@ namespace keyh
 		return textureDesc;
 	}
 
-	inline D3D12_GRAPHICS_PIPELINE_STATE_DESC toD3D12GraphicsPipelineStateDesc(const RhiGraphicsPipelineDesc& desc)
+	inline D3D12_GRAPHICS_PIPELINE_STATE_DESC toD3D12GraphicsPipelineStateDesc(
+		const RhiGraphicsPipelineDesc& desc,
+		D3D12_INPUT_ELEMENT_DESC* outInputElements,
+		uint32 maxInputElementCount)
 	{
 		const uint32 renderTargetCount = desc._renderTargetCount;
 
@@ -275,7 +352,7 @@ namespace keyh
 		psoDesc.SampleMask            = UINT32_MAX;
 		psoDesc.RasterizerState       = toD3D12RasterizerDesc(desc._rasterizerDesc);
 		psoDesc.DepthStencilState     = toD3D12DepthStencilDesc(desc._depthStencilDesc);
-		psoDesc.InputLayout           = {};
+		psoDesc.InputLayout           = toD3D12InputLayoutDesc(desc._inputLayout, outInputElements, maxInputElementCount);
 		psoDesc.IBStripCutValue       = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
 		psoDesc.PrimitiveTopologyType = D3D12PrimitiveTopologyTypeInfo::getInfo(desc._primitiveTopologyType)._topologyType;
 		psoDesc.NumRenderTargets      = renderTargetCount;
