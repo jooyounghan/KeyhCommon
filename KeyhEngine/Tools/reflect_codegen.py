@@ -3,10 +3,11 @@
 KeyhEngine Reflect Code Generator
 ===================================
 Scans project header files for REFLECTIVE classes annotated with
-KEYH_REFLECT_PROPERTY / KEYH_REFLECT_PROPERTY_GROUP macros and generates
-one .inl file *per header* (named <HeaderBaseName>.reflect_generated.inl)
-containing keyh::ReflectObject<T>::initializeMetaObject() template
-specialisations that register each property with the reflection system.
+KEYH_REFLECT_PROPERTY / KEYH_REFLECT_PROPERTY_GROUP macros and KEYH_REFLECT_ENUM
+annotated enums, then generates one .inl file *per header* (named
+<HeaderBaseName>.reflect_generated.inl) containing:
+  - keyh::ReflectObject<T>::initializeMetaObject() template specialisations
+  - ReflectEnumTraits registrations for marked enums
 
 Usage
 -----
@@ -24,7 +25,8 @@ Auto-patching source headers
 -----------------------------
 By default the generator automatically appends
     #include "<HeaderBaseName>.reflect_generated.inl"
-to every header that contains a REFLECTIVE class (if not already present).
+to every header that contains a REFLECTIVE class or KEYH_REFLECT_ENUM
+(if not already present).
 Pass --no-patch-headers to disable this behaviour and manage the include
 manually.
 """
@@ -172,6 +174,103 @@ def _strip_line_comment(line):
             return line[:i]
         i += 1
     return line
+
+
+# ---------------------------------------------------------------------------
+# Enum parsing helpers
+# ---------------------------------------------------------------------------
+
+def _strip_block_comments(text):
+    """Remove C-style block comments from a string."""
+    return re.sub(r'/\*.*?\*/', '', text, flags=re.DOTALL)
+
+
+def _split_top_level_commas(text):
+    """Split a string by top-level commas (ignoring nested (), {}, [], <>)."""
+    parts = []
+    current = []
+    depth = 0
+
+    for ch in text:
+        if ch in '([{<':
+            depth += 1
+        elif ch in ')]}>':
+            depth = max(0, depth - 1)
+        elif ch == ',' and depth == 0:
+            part = ''.join(current).strip()
+            if part:
+                parts.append(part)
+            current = []
+            continue
+
+        current.append(ch)
+
+    tail = ''.join(current).strip()
+    if tail:
+        parts.append(tail)
+
+    return parts
+
+
+def _parse_enum_entries(enum_body):
+    """Extract enum entry identifiers from an enum body."""
+    cleaned = _strip_block_comments(enum_body)
+    cleaned_lines = [_strip_line_comment(line) for line in cleaned.split('\n')]
+    cleaned = '\n'.join(cleaned_lines)
+
+    entries = []
+    for token in _split_top_level_commas(cleaned):
+        # Remove trailing attributes or initializers from each entry token
+        token = token.strip()
+        if not token:
+            continue
+
+        m = re.match(r'^([A-Za-z_][A-Za-z0-9_]*)', token)
+        if not m:
+            continue
+
+        entries.append(m.group(1))
+
+    return entries
+
+
+def find_reflect_enums(filepath):
+    """
+    Scan one header file and return a list of (EnumName, [entry_names]) tuples
+    for every enum annotated with KEYH_REFLECT_ENUM.
+    """
+    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        content = f.read()
+
+    enums = []
+    pattern = re.compile(
+        r'KEYH_REFLECT_ENUM\b[\s\r\n]*enum(?:\s+class)?\s+([A-Za-z_][A-Za-z0-9_]*)\s*(?:\:\s*[^{};\n]+)?\s*\{',
+        re.MULTILINE
+    )
+
+    for match in pattern.finditer(content):
+        enum_name = match.group(1)
+        body_start = match.end()
+
+        depth = 1
+        i = body_start
+        while i < len(content) and depth > 0:
+            ch = content[i]
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+            i += 1
+
+        if depth != 0:
+            continue
+
+        enum_body = content[body_start:i - 1]
+        entries = _parse_enum_entries(enum_body)
+        if entries:
+            enums.append((enum_name, entries))
+
+    return enums
 
 
 # ---------------------------------------------------------------------------
@@ -334,15 +433,17 @@ def _safe_group_var(group_name):
     return 'sGroupName_' + re.sub(r'[^A-Za-z0-9_]', '_', group_name)
 
 
-def generate_inl_content(all_classes, source_filename, output_filename):
+def generate_inl_content(all_classes, all_enums, source_filename, output_filename):
     """
     Produce the full text of the generated .inl file for a single header.
 
     Parameters
     ----------
-    all_classes     : list of (class_name, properties, source_filepath)
-                      All entries must belong to *source_filename*.
-    source_filename : base name of the originating header (used in comment)
+    all_classes   : list of (class_name, properties, source_filepath)
+                    All entries must belong to one header.
+    all_enums     : list of (enum_name, entries, source_filepath)
+                    All entries must belong to one header.
+    source_filename : base name of the originating header
     output_filename : the .inl filename (used in the usage comment)
     """
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -352,7 +453,7 @@ def generate_inl_content(all_classes, source_filename, output_filename):
     lines.append('// Generated by KeyhEngine Reflect Code Generator')
     lines.append(f'// Generated at: {timestamp}')
     lines.append('//')
-    lines.append('// This file is automatically #include-d at the end of its REFLECTIVE header')
+    lines.append('// This file is automatically #include-d at the end of its REFLECTIVE/KEYH_REFLECT_ENUM header')
     lines.append('// by the code generator (reflect_codegen.py).  You do not need to include it')
     lines.append('// manually; re-run the generator (or let the pre-build event do it) and it')
     lines.append('// will be appended to the following header if not already present:')
@@ -364,6 +465,19 @@ def generate_inl_content(all_classes, source_filename, output_filename):
     lines.append('//              "$(ProjectDir)."</Command>')
     lines.append('//   </PreBuildEvent>')
     lines.append('')
+
+    for enum_name, entries, _ in all_enums:
+        if not entries:
+            continue
+
+        lines.append('namespace keyh')
+        lines.append('{')
+        lines.append(f'\tKEYH_REFLECT_ENUM_BEGIN({enum_name})')
+        for entry in entries:
+            lines.append(f'\t\tKEYH_REFLECT_ENUM_VALUE({enum_name}, {entry})')
+        lines.append('\tKEYH_REFLECT_ENUM_END()')
+        lines.append('}')
+        lines.append('')
 
     for class_name, properties, _ in all_classes:
         if not properties:
@@ -460,10 +574,7 @@ def patch_header_with_include(filepath, include_line):
 # ---------------------------------------------------------------------------
 
 def _inl_name_for_header(header_basename):
-    """Return the per-header .inl filename for a given header base name.
-
-    Example: 'MaterialInfo.h'  ->  'MaterialInfo.reflect_generated.inl'
-    """
+    """Return the per-header .inl filename for a given header base name."""
     stem = os.path.splitext(header_basename)[0]
     return f'{stem}.reflect_generated.inl'
 
@@ -471,7 +582,8 @@ def _inl_name_for_header(header_basename):
 def main():
     parser = argparse.ArgumentParser(
         description='KeyhEngine Reflect Code Generator – generates initializeMetaObject() '
-                    'specialisations for REFLECTIVE classes, one .inl file per header.'
+                    'specialisations for REFLECTIVE classes and enum trait mappings '
+                    'for KEYH_REFLECT_ENUM, one .inl file per header.'
     )
     parser.add_argument(
         '--project-dir', required=True,
@@ -479,7 +591,7 @@ def main():
     )
     parser.add_argument(
         '--output-dir', default=None,
-        help='Directory for the generated .inl files (default: same directory as each header).'
+        help='Directory for generated .inl files (default: same directory as each header).'
     )
     parser.add_argument(
         '--no-patch-headers', action='store_true',
@@ -515,13 +627,14 @@ def main():
         for fp in header_files:
             print(f'[Reflect]   {os.path.relpath(fp, project_dir)}')
 
-    # Group classes by source header
-    # header_filepath -> list of (class_name, properties, filepath)
-    classes_by_header = {}
+    # Group collected symbols by source header path.
+    classes_by_header = {}  # filepath -> [(class_name, properties, filepath), ...]
+    enums_by_header = {}    # filepath -> [(enum_name, entries, filepath), ...]
 
     for filepath in header_files:
         try:
             classes = find_reflective_classes(filepath)
+            enums = find_reflect_enums(filepath)
         except Exception as exc:
             print(f'[Reflect] Warning: could not parse {filepath}: {exc}', file=sys.stderr)
             continue
@@ -537,68 +650,83 @@ def main():
                         f'{class_name} - {len(properties)} property(ies)'
                     )
 
-    if not classes_by_header:
-        print('[Reflect] Done - no REFLECTIVE classes with annotated properties found.')
+        for enum_name, entries in enums:
+            if entries:
+                enums_by_header.setdefault(filepath, []).append(
+                    (enum_name, entries, filepath)
+                )
+                if args.verbose:
+                    print(
+                        f'[Reflect]   {os.path.basename(filepath)}: '
+                        f'{enum_name} - {len(entries)} enum value(s)'
+                    )
+
+    source_headers = sorted(set(classes_by_header.keys()) | set(enums_by_header.keys()))
+    if not source_headers:
+        print('[Reflect] Done - no REFLECTIVE classes or KEYH_REFLECT_ENUM enums found.')
         return
 
+    generated_files = []
     total_classes = 0
     total_props = 0
-    generated_files = []
-
+    total_enums = 0
+    total_enum_values = 0
     script_mtime = os.path.getmtime(os.path.abspath(__file__))
 
-    for header_path, class_list in classes_by_header.items():
+    for header_path in source_headers:
         header_basename = os.path.basename(header_path)
         output_name = _inl_name_for_header(header_basename)
         output_dir = global_output_dir if global_output_dir else os.path.dirname(header_path)
         output_path = os.path.join(output_dir, output_name)
 
-        # ------------------------------------------------------------------
-        # Up-to-date check per header: skip when the .inl is newer than both
-        # the source header and this script.
-        # ------------------------------------------------------------------
+        class_list = classes_by_header.get(header_path, [])
+        enum_list = enums_by_header.get(header_path, [])
+
+        # Per-header up-to-date check against this header + script timestamp.
+        is_up_to_date = False
         if os.path.isfile(output_path):
             output_mtime = os.path.getmtime(output_path)
             try:
                 header_mtime = os.path.getmtime(header_path)
             except FileNotFoundError:
                 header_mtime = 0.0
-            if max(header_mtime, script_mtime) <= output_mtime:
-                if args.verbose:
-                    print(f'[Reflect]   Up-to-date: {output_name}')
-                # Still auto-patch the header even when the .inl is up-to-date,
-                # in case a previous run generated without patching.
-                if not args.no_patch_headers:
-                    include_directive = f'#include "{output_name}"'
-                    patch_header_with_include(header_path, include_directive)
-                continue
+            is_up_to_date = max(header_mtime, script_mtime) <= output_mtime
 
-        content = generate_inl_content(class_list, header_basename, output_name)
+        if is_up_to_date:
+            if args.verbose:
+                print(f'[Reflect]   Up-to-date: {output_name}')
+            if not args.no_patch_headers:
+                include_directive = f'#include "{output_name}"'
+                patch_header_with_include(header_path, include_directive)
+            continue
 
+        content = generate_inl_content(class_list, enum_list, header_basename, output_name)
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(content)
 
         generated_files.append(output_name)
-        n_props = sum(len(props) for _, props, _ in class_list)
         total_classes += len(class_list)
-        total_props += n_props
-        if args.verbose:
-            print(f'[Reflect]   Generated {output_name} ({len(class_list)} class(es), {n_props} prop(s))')
+        total_props += sum(len(props) for _, props, _ in class_list)
+        total_enums += len(enum_list)
+        total_enum_values += sum(len(entries) for _, entries, _ in enum_list)
 
-        # ------------------------------------------------------------------
-        # Auto-patch: append #include "<name>.reflect_generated.inl" to the
-        # header that contains the REFLECTIVE class(es).
-        # ------------------------------------------------------------------
+        if args.verbose:
+            print(
+                f'[Reflect]   Generated {output_name} '
+                f'({len(class_list)} class(es), {sum(len(props) for _, props, _ in class_list)} prop(s), '
+                f'{len(enum_list)} enum(s), {sum(len(entries) for _, entries, _ in enum_list)} value(s))'
+            )
+
         if not args.no_patch_headers:
             include_directive = f'#include "{output_name}"'
-            if patch_header_with_include(header_path, include_directive):
-                if args.verbose:
-                    print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
+            if patch_header_with_include(header_path, include_directive) and args.verbose:
+                print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
 
     if generated_files:
         print(
             f'[Reflect] Done - generated {len(generated_files)} file(s) / '
-            f'{total_classes} class(es) / {total_props} property(ies): '
+            f'{total_classes} class(es) / {total_props} property(ies), '
+            f'{total_enums} enum(s) / {total_enum_values} value(s): '
             f'{", ".join(generated_files)}'
         )
     else:

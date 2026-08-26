@@ -2,6 +2,7 @@
 #include "ReflectTest.h"
 #include "test.h"
 #include "ReflectSerializer.h"
+#include "ReflectPropertyPolicy.h"
 #include "DynamicBuffer.h"
 #include "JsonDocument.h"
 #include "File.h"
@@ -9,6 +10,20 @@
 #include <chrono>
 #include <cstring>
 #include <cstdio>
+
+namespace keyh
+{
+    enum class EReflectEnumJsonTest
+    {
+        Int,
+        Float3
+    };
+
+    KEYH_REFLECT_ENUM_BEGIN(EReflectEnumJsonTest)
+        KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Int)
+        KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Float3)
+    KEYH_REFLECT_ENUM_END()
+}
 
 using namespace keyh;
 
@@ -315,6 +330,46 @@ void test_Reflect_large_object_file_roundtrip_compare()
     if (!sameContent)
         std::printf("  [FAIL] Serialized file contents differ between %s and %s\n",
             kSourceFilePath, kRoundTripFilePath);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// test_Reflect_enum_string_roundtrip
+//   Verifies that registered enums are serialized as string tokens and
+//   deserialized back from both string and integer JSON forms.
+// ─────────────────────────────────────────────────────────────────────────────
+void test_Reflect_enum_string_roundtrip()
+{
+    printSection("Reflect - enum string serialize/deserialize");
+
+    EReflectEnumJsonTest srcValue = EReflectEnumJsonTest::Float3;
+
+    ReflectBufferProxy buffer;
+    buffer.allocate(128);
+    ReflectPropertyPolicy<EReflectEnumJsonTest>::serializeToJson(&buffer, srcValue);
+
+    CHECK(containsToken(buffer.getBuffer(), buffer.size(), "\"Float3\""));
+
+    const char* stringJson = "{\"Value\":\"Int\"}";
+    JsonDocument stringDoc;
+    CHECK(stringDoc.buildFromJsonString(stringJson, std::strlen(stringJson)));
+    JsonObject stringRoot = stringDoc.getRootObject();
+    JsonKey stringKey = stringRoot.getFirstKey();
+    JsonValue stringValue = stringKey.getValue();
+
+    EReflectEnumJsonTest fromString = EReflectEnumJsonTest::Float3;
+    ReflectPropertyPolicy<EReflectEnumJsonTest>::deserializeFromJson(stringValue, fromString);
+    CHECK(fromString == EReflectEnumJsonTest::Int);
+
+    const char* intJson = "{\"Value\":1}";
+    JsonDocument intDoc;
+    CHECK(intDoc.buildFromJsonString(intJson, std::strlen(intJson)));
+    JsonObject intRoot = intDoc.getRootObject();
+    JsonKey intKey = intRoot.getFirstKey();
+    JsonValue intValue = intKey.getValue();
+
+    EReflectEnumJsonTest fromInt = EReflectEnumJsonTest::Int;
+    ReflectPropertyPolicy<EReflectEnumJsonTest>::deserializeFromJson(intValue, fromInt);
+    CHECK(fromInt == EReflectEnumJsonTest::Float3);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

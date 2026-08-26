@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "ReflectSerializer.h"
 
 namespace keyh
 {
@@ -79,7 +80,11 @@ namespace keyh
 		KEYH_REFLECT_PROPERTY(PropertyName = "Desc")
 		StaticStringA _description;
 
+		KEYH_REFLECT_PROPERTY(PropertyName = "ParameterType")
+		EMaterialParamType _parameterType = EMaterialParamType::Int;
+
 	};
 
 
 }
+#include "MaterialParameterInfo.reflect_generated.inl"
