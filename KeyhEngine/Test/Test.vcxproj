@@ -187,11 +187,6 @@
     <ClInclude Include="WeakPtrTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="test.reflect_generated.inl">
-      <FileType>Document</FileType>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Test.props" />
     <None Include="large_test_object.json" />
   </ItemGroup>
