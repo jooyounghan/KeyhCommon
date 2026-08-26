@@ -33,6 +33,106 @@
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
+    template<typename T>
+    bool ReflectPropertySerializer<T, false>::isEqual(const T& a, const T& b)
+    {
+        if constexpr (IsEnum_v<T>)
+        {
+            return a == b;
+        }
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
+    {
+        if constexpr (IsEnum_v<T>)
+        {
+            (void)depth;
+            (void)pretty;
+
+            if constexpr (ReflectEnumTraits<T>::kIsRegistered)
+            {
+                const char* enumName = ReflectEnumTraits<T>::toString(value);
+                if (enumName != nullptr)
+                {
+                    buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+                    buffer->writeBytes(enumName, StrUtil::strlen(enumName));
+                    buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+                    return;
+                }
+
+                KEYH_ASSERT_DEV_ARGS(false, "Enum value is not registered in ReflectEnumTraits. Fallback to integer output.");
+            }
+            else
+            {
+                KEYH_ASSERT_DEV_ARGS(false, "Enum type is not registered in ReflectEnumTraits. Fallback to integer output.");
+            }
+            const bool isNegative = static_cast<int64>(value) < 0;
+            const uint64 absValue = isNegative
+                ? static_cast<uint64>(-static_cast<int64>(value))
+                : static_cast<uint64>(value);
+            StrUtil::intToStr(isNegative, absValue, buffer);
+            return;
+        }
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::deserializeFromJson(const JsonValue& json, T& value)
+    {
+        if constexpr (IsEnum_v<T>)
+        {
+            if (json.getValueType() == JsonUtil::TapeType::String)
+            {
+                if constexpr (ReflectEnumTraits<T>::kIsRegistered)
+                {
+                    if (ReflectEnumTraits<T>::fromString(json.getStringValue(), value))
+                        return;
+                }
+
+                KEYH_ASSERT_ARGS(false, "Invalid enum string while deserializing JSON.");
+                return;
+            }
+
+            value = static_cast<T>(json.getIntValue());
+            return;
+        }
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::serializeToBinary(IBuffer* buffer, const T& value)
+    {
+        if constexpr (IsEnum_v<T>)
+        {
+            using RawType = typename std::underlying_type<T>::type;
+            const RawType rawValue = static_cast<RawType>(value);
+            buffer->writeBytes(&rawValue, sizeof(rawValue));
+            return;
+        }
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::deserializeFromBinary(const void* data, size_t size, T& value)
+    {
+        if constexpr (IsEnum_v<T>)
+        {
+            using RawType = typename std::underlying_type<T>::type;
+            if (size < sizeof(RawType))
+            {
+                KEYH_ASSERT_ARGS(false, "Insufficient enum binary payload. required=%zu, actual=%zu", sizeof(RawType), size);
+                return;
+            }
+            RawType rawValue = 0;
+            memcpy(&rawValue, data, sizeof(RawType));
+            value = static_cast<T>(rawValue);
+            return;
+        }
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
 
 #define DECLARE_REFLECT_PROPERTY_SERIALIZER(Type)                                                                   \
     template<> bool ReflectPropertySerializer<Type>::isEqual(const Type& a, const Type& b);                                 \
