@@ -13,6 +13,47 @@ namespace keyh
 	template<typename T>
 	struct ReflectPropertyPolicy;
 
+	template<typename EnumType>
+	struct ReflectEnumTraits
+	{
+		static constexpr bool kIsRegistered = false;
+		static const char* toString(EnumType) { return nullptr; }
+		static bool fromString(const StringViewA&, EnumType&) { return false; }
+	};
+
+	// Register Enum <-> string mapping for Reflect JSON serialization.
+	// Example:
+	// KEYH_REFLECT_ENUM_BEGIN(MyEnum)
+	//     KEYH_REFLECT_ENUM_VALUE(MyEnum, ValueA)
+	//     KEYH_REFLECT_ENUM_VALUE(MyEnum, ValueB)
+	// KEYH_REFLECT_ENUM_END(MyEnum)
+#define KEYH_REFLECT_ENUM_BEGIN(EnumType) \
+	template<> struct ReflectEnumTraits<EnumType> \
+	{ \
+		static constexpr bool kIsRegistered = true; \
+		static const char* toString(EnumType value) \
+		{ \
+			switch (value) \
+			{
+
+#define KEYH_REFLECT_ENUM_VALUE(EnumType, EnumValue) \
+			case EnumType::EnumValue: return #EnumValue;
+
+#define KEYH_REFLECT_ENUM_END(EnumType) \
+			default: return nullptr; \
+			} \
+		} \
+		static bool fromString(const StringViewA& name, EnumType& outValue) \
+		{
+
+#define KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EnumType, EnumValue) \
+			if (name == #EnumValue) { outValue = EnumType::EnumValue; return true; }
+
+#define KEYH_REFLECT_ENUM_END_FROM_STRING() \
+			return false; \
+		} \
+	};
+
 	// -----------------------------------------------------------------------
 	// ReflectPropertySerializer
 	// Primary template (non-ReflectObject types). Explicit specializations for

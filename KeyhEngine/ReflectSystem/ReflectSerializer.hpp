@@ -6,30 +6,89 @@
     template<typename T, bool IsReflectObject>
     bool ReflectPropertySerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
     {
+        if constexpr (IsEnum_v<T>)
+        {
+            return a == b;
+        }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
     void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
     {
+        if constexpr (IsEnum_v<T>)
+        {
+            (void)depth;
+            (void)pretty;
+
+            if constexpr (ReflectEnumTraits<T>::kIsRegistered)
+            {
+                const char* enumName = ReflectEnumTraits<T>::toString(value);
+                if (enumName != nullptr)
+                {
+                    buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+                    buffer->writeBytes(enumName, StrUtil::strlen(enumName));
+                    buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+                    return;
+                }
+            }
+
+            KEYH_ASSERT_ARGS(false, "Unregistered or unknown enum value for JSON serialization.");
+            const bool isNegative = static_cast<int64>(value) < 0;
+            const uint64 absValue = isNegative
+                ? static_cast<uint64>(-static_cast<int64>(value))
+                : static_cast<uint64>(value);
+            StrUtil::intToStr(isNegative, absValue, buffer);
+            return;
+        }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
     void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
     {
+        if constexpr (IsEnum_v<T>)
+        {
+            if (json.getValueType() == JsonUtil::TapeType::String)
+            {
+                if constexpr (ReflectEnumTraits<T>::kIsRegistered)
+                {
+                    if (ReflectEnumTraits<T>::fromString(json.getStringValue(), value))
+                        return;
+                }
+
+                KEYH_ASSERT_ARGS(false, "Invalid enum string while deserializing JSON.");
+                return;
+            }
+
+            value = static_cast<T>(json.getIntValue());
+            return;
+        }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
     void ReflectPropertySerializer<T, IsReflectObject>::serializeToBinary(IBuffer* buffer, const T& value)
     {
+        if constexpr (IsEnum_v<T>)
+        {
+            (void)buffer;
+            (void)value;
+            return;
+        }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T, bool IsReflectObject>
     void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
+        if constexpr (IsEnum_v<T>)
+        {
+            (void)data;
+            (void)size;
+            (void)value;
+            return;
+        }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
