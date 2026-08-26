@@ -11,7 +11,7 @@ namespace keyh
 		ReflectProperty(
 			const FlyweightStringA& propertyName
 			, const FlyweightStringA& groupName
-			, const ValueType& defaultValue
+			, ValueType defaultValue
 			, ReflectRefGetter<ObjectType, ValueType> refGetter
 			, ReflectConstGetter<ObjectType, ValueType> constGetter
 		);
