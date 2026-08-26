@@ -6,6 +6,36 @@
     template<typename T, bool IsReflectObject>
     bool ReflectPropertySerializer<T, IsReflectObject>::isEqual(const T& a, const T& b)
     {
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T, bool IsReflectObject>
+    void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
+    {
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T, bool IsReflectObject>
+    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
+    {
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T, bool IsReflectObject>
+    void ReflectPropertySerializer<T, IsReflectObject>::serializeToBinary(IBuffer* buffer, const T& value)
+    {
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T, bool IsReflectObject>
+    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
+    {
+        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+    }
+
+    template<typename T>
+    bool ReflectPropertySerializer<T, false>::isEqual(const T& a, const T& b)
+    {
         if constexpr (IsEnum_v<T>)
         {
             return a == b;
@@ -13,8 +43,8 @@
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
-    template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::serializeToJson(IBuffer* buffer, const T& value, size_t depth, bool pretty)
     {
         if constexpr (IsEnum_v<T>)
         {
@@ -48,8 +78,8 @@
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
-    template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromJson(const JsonValue& json, T& value)
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::deserializeFromJson(const JsonValue& json, T& value)
     {
         if constexpr (IsEnum_v<T>)
         {
@@ -71,8 +101,8 @@
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
-    template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::serializeToBinary(IBuffer* buffer, const T& value)
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::serializeToBinary(IBuffer* buffer, const T& value)
     {
         if constexpr (IsEnum_v<T>)
         {
@@ -84,8 +114,8 @@
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
-    template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
+    template<typename T>
+    void ReflectPropertySerializer<T, false>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
         if constexpr (IsEnum_v<T>)
         {

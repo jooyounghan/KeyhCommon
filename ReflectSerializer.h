@@ -23,6 +23,11 @@ namespace keyh
 		static bool fromString(const StringViewA&, EnumType&) { return false; }
 	};
 
+	// Marker for enum code generation:
+	// KEYH_REFLECT_ENUM
+	// enum class MyEnum { ... };
+#define KEYH_REFLECT_ENUM
+
 	// Register Enum <-> string mapping for Reflect JSON serialization.
 	// Must be used inside namespace keyh.
 	// Example:
@@ -76,6 +81,19 @@ namespace keyh
 	// -----------------------------------------------------------------------
 	template<typename T, bool IsReflectObject = IsReflectObject_v<T>>
 	struct ReflectPropertySerializer
+	{
+		friend struct ReflectPropertyPolicy<T>;
+
+	protected:
+		static bool isEqual(const T& a, const T& b);
+		static void serializeToJson(IBuffer* buffer, const T& value, size_t depth = 0, bool pretty = false);
+		static void deserializeFromJson(const JsonValue& json, T& value);
+		static void serializeToBinary(IBuffer* buffer, const T& value);
+		static void deserializeFromBinary(const void* data, size_t size, T& value);
+	};
+
+	template<typename T>
+	struct ReflectPropertySerializer<T, false>
 	{
 		friend struct ReflectPropertyPolicy<T>;
 
