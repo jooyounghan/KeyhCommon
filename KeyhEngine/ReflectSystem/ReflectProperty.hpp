@@ -4,11 +4,11 @@
 	ReflectProperty<ObjectType, ValueType>::ReflectProperty(
 		const FlyweightStringA& propertyName
 		, const FlyweightStringA& groupName
-		, const ValueType& defaultValue
+		, ValueType defaultValue
 		, ReflectRefGetter<ObjectType, ValueType> refGetter
 		, ReflectConstGetter<ObjectType, ValueType> constGetter
 	)
-		: IReflectProperty(propertyName, groupName), _defaultValue(defaultValue), _refGetter(refGetter), _constGetter(constGetter)
+		: IReflectProperty(propertyName, groupName), _defaultValue(keyh::move(defaultValue)), _refGetter(refGetter), _constGetter(constGetter)
 	{
 		TypeTrait::requireDerivedFrom<ObjectType, IReflectObject>();
 	}

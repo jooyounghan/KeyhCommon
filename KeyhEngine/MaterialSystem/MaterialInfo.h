@@ -16,4 +16,3 @@ namespace keyh
 		OwnerVector<MaterialParameterInfo> _materialParameterInfos;
 	};
 }
-

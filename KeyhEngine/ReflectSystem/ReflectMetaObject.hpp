@@ -4,12 +4,12 @@
 	void ReflectMetaObject::addReflectProperty(
 		const FlyweightStringA& propertyName
 		, const FlyweightStringA& groupName
-		, const PropertyType& defaultValue
+		, PropertyType defaultValue
 		, ReflectRefGetter<ObjectType, PropertyType> refGetter
 		, ReflectConstGetter<ObjectType, PropertyType> constGetter
 	)
 	{
-		IReflectProperty* property = _properties.emplace_back<ReflectProperty<ObjectType, PropertyType>>(propertyName, groupName, defaultValue, refGetter, constGetter);
+		IReflectProperty* property = _properties.emplace_back<ReflectProperty<ObjectType, PropertyType>>(propertyName, groupName, keyh::move(defaultValue), refGetter, constGetter);
 		_propertyMap.insert(propertyName, property);
 	}
 }

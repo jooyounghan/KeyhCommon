@@ -143,9 +143,6 @@
     <ClInclude Include="test.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="reflect_generated.inl">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="RhiTriangleTest.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
