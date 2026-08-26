@@ -17,4 +17,4 @@ namespace keyh
 	};
 }
 
-#include "reflect_generated.inl"
+#include "MaterialInfo.reflect_generated.inl"
