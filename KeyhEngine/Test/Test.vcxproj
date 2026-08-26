@@ -187,7 +187,7 @@
     <ClInclude Include="WeakPtrTest.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="reflect_generated.inl">
+    <ClInclude Include="test.reflect_generated.inl">
       <FileType>Document</FileType>
     </ClInclude>
   </ItemGroup>

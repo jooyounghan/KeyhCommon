@@ -176,7 +176,10 @@
     <ClInclude Include="MaterialParameter.h" />
     <ClInclude Include="MaterialParameterInfo.h" />
     <ClInclude Include="MaterialSystemPch.h" />
-    <ClInclude Include="reflect_generated.inl">
+    <ClInclude Include="MaterialParameterInfo.reflect_generated.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
+    <ClInclude Include="MaterialInfo.reflect_generated.inl">
       <FileType>Document</FileType>
     </ClInclude>
   </ItemGroup>

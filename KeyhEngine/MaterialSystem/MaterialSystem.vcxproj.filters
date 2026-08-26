@@ -38,7 +38,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="reflect_generated.inl">
+    <ClInclude Include="MaterialParameterInfo.reflect_generated.inl">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialInfo.reflect_generated.inl">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

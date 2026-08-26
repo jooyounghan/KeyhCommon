@@ -14,5 +14,4 @@ namespace keyh
 
 
 }
-
-#include "reflect_generated.inl"
+#include "MaterialParameterInfo.reflect_generated.inl"
