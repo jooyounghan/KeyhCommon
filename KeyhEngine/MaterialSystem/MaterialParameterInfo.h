@@ -3,6 +3,7 @@
 
 namespace keyh
 {
+	KEYH_REFLECT_ENUM
 	enum class EMaterialParamType
 	{
 		Int,
@@ -14,17 +15,6 @@ namespace keyh
 		Matrix4x4,
 		TextureReferencePath,
 	};
-
-	KEYH_REFLECT_ENUM_BEGIN(EMaterialParamType)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Int)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Int2)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Float)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Float2)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Float3)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Float4)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Matrix4x4)
-		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, TextureReferencePath)
-	KEYH_REFLECT_ENUM_END()
 
 	class REFLECTIVE(MaterialParameterInfo)
 	{
@@ -41,3 +31,4 @@ namespace keyh
 
 
 }
+#include "reflect_generated.inl"
