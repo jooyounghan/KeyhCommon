@@ -40,7 +40,6 @@
         {
             return a == b;
         }
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T>
@@ -48,9 +47,6 @@
     {
         if constexpr (IsEnum_v<T>)
         {
-            (void)depth;
-            (void)pretty;
-
             if constexpr (ReflectEnumTraits<T>::kIsRegistered)
             {
                 const char* enumName = ReflectEnumTraits<T>::toString(value);
@@ -75,7 +71,6 @@
             StrUtil::intToStr(isNegative, absValue, buffer);
             return;
         }
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T>
@@ -98,7 +93,6 @@
             value = static_cast<T>(json.getIntValue());
             return;
         }
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T>
@@ -111,7 +105,6 @@
             buffer->writeBytes(&rawValue, sizeof(rawValue));
             return;
         }
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
     template<typename T>
@@ -130,7 +123,6 @@
             value = static_cast<T>(rawValue);
             return;
         }
-        STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
 
 

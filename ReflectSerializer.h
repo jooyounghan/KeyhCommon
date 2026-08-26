@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <cstring>
 #include <type_traits>
 #include "JsonElement.h"
@@ -49,7 +49,7 @@ namespace keyh
 #define KEYH_REFLECT_ENUM_VALUE(EnumType, EnumValue) \
 			{ EnumType::EnumValue, #EnumValue },
 
-#define KEYH_REFLECT_ENUM_END() \
+#define KEYH_REFLECT_ENUM_END(EnumType) \
 		}; \
 		static const char* toString(EnumType value) \
 		{ \

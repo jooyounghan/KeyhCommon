@@ -286,7 +286,7 @@
 			}
 
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
-			buffer->writeBytes("k", 1);
+			buffer->writeBytes("Key", 3);
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
 			if (pretty)
@@ -305,7 +305,7 @@
 			}
 
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
-			buffer->writeBytes("v", 1);
+			buffer->writeBytes("Value", 5);
 			buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 			buffer->writeBytes(&ReflectionUtil::kValueBegin, 1);
 			if (pretty)
