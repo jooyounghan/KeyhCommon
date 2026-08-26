@@ -11,8 +11,6 @@
 #include <cstring>
 #include <cstdio>
 
-using namespace keyh;
-
 namespace keyh
 {
     enum class EReflectEnumJsonTest
@@ -24,11 +22,10 @@ namespace keyh
     KEYH_REFLECT_ENUM_BEGIN(EReflectEnumJsonTest)
         KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Int)
         KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Float3)
-        KEYH_REFLECT_ENUM_END(EReflectEnumJsonTest)
-        KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EReflectEnumJsonTest, Int)
-        KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EReflectEnumJsonTest, Float3)
-    KEYH_REFLECT_ENUM_END_FROM_STRING()
+    KEYH_REFLECT_ENUM_END()
 }
+
+using namespace keyh;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Internal helpers

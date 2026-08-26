@@ -1,4 +1,6 @@
 #pragma once
+#include <cstring>
+#include <type_traits>
 #include "JsonElement.h"
 #include "ReflectionUtil.h"
 #include "IReflectProperty.h"
@@ -22,34 +24,47 @@ namespace keyh
 	};
 
 	// Register Enum <-> string mapping for Reflect JSON serialization.
+	// Must be used inside namespace keyh.
 	// Example:
 	// KEYH_REFLECT_ENUM_BEGIN(MyEnum)
 	//     KEYH_REFLECT_ENUM_VALUE(MyEnum, ValueA)
 	//     KEYH_REFLECT_ENUM_VALUE(MyEnum, ValueB)
-	// KEYH_REFLECT_ENUM_END(MyEnum)
+	// KEYH_REFLECT_ENUM_END()
 #define KEYH_REFLECT_ENUM_BEGIN(EnumType) \
 	template<> struct ReflectEnumTraits<EnumType> \
 	{ \
 		static constexpr bool kIsRegistered = true; \
-		static const char* toString(EnumType value) \
+		struct Entry \
 		{ \
-			switch (value) \
-			{
+			EnumType _value; \
+			const char* _name; \
+		}; \
+		static constexpr Entry kEntries[] = {
 
 #define KEYH_REFLECT_ENUM_VALUE(EnumType, EnumValue) \
-			case EnumType::EnumValue: return #EnumValue;
+			{ EnumType::EnumValue, #EnumValue },
 
-#define KEYH_REFLECT_ENUM_END(EnumType) \
-			default: return nullptr; \
+#define KEYH_REFLECT_ENUM_END() \
+		}; \
+		static const char* toString(EnumType value) \
+		{ \
+			for (const Entry& entry : kEntries) \
+			{ \
+				if (entry._value == value) \
+					return entry._name; \
 			} \
+			return nullptr; \
 		} \
 		static bool fromString(const StringViewA& name, EnumType& outValue) \
-		{
-
-#define KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EnumType, EnumValue) \
-			if (name == #EnumValue) { outValue = EnumType::EnumValue; return true; }
-
-#define KEYH_REFLECT_ENUM_END_FROM_STRING() \
+		{ \
+			for (const Entry& entry : kEntries) \
+			{ \
+				if (name == entry._name) \
+				{ \
+					outValue = entry._value; \
+					return true; \
+				} \
+			} \
 			return false; \
 		} \
 	};

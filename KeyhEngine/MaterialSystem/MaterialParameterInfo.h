@@ -24,16 +24,7 @@ namespace keyh
 		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Float4)
 		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, Matrix4x4)
 		KEYH_REFLECT_ENUM_VALUE(EMaterialParamType, TextureReferencePath)
-		KEYH_REFLECT_ENUM_END(EMaterialParamType)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Int)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Int2)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Float)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Float2)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Float3)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Float4)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, Matrix4x4)
-		KEYH_REFLECT_ENUM_VALUE_FROM_STRING(EMaterialParamType, TextureReferencePath)
-	KEYH_REFLECT_ENUM_END_FROM_STRING()
+	KEYH_REFLECT_ENUM_END()
 
 	class REFLECTIVE(MaterialParameterInfo)
 	{

@@ -31,9 +31,13 @@
                     buffer->writeBytes(&ReflectionUtil::kQuote, 1);
                     return;
                 }
-            }
 
-            KEYH_ASSERT_ARGS(false, "Unregistered or unknown enum value for JSON serialization.");
+                KEYH_ASSERT_DEV_ARGS(false, "Enum value is not registered in ReflectEnumTraits. Fallback to integer output.");
+            }
+            else
+            {
+                KEYH_ASSERT_DEV_ARGS(false, "Enum type is not registered in ReflectEnumTraits. Fallback to integer output.");
+            }
             const bool isNegative = static_cast<int64>(value) < 0;
             const uint64 absValue = isNegative
                 ? static_cast<uint64>(-static_cast<int64>(value))
@@ -72,8 +76,9 @@
     {
         if constexpr (IsEnum_v<T>)
         {
-            (void)buffer;
-            (void)value;
+            using RawType = typename std::underlying_type<T>::type;
+            const RawType rawValue = static_cast<RawType>(value);
+            buffer->writeBytes(&rawValue, sizeof(rawValue));
             return;
         }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
@@ -84,9 +89,15 @@
     {
         if constexpr (IsEnum_v<T>)
         {
-            (void)data;
-            (void)size;
-            (void)value;
+            using RawType = typename std::underlying_type<T>::type;
+            if (size < sizeof(RawType))
+            {
+                KEYH_ASSERT_ARGS(false, "Insufficient enum binary payload. required=%zu, actual=%zu", sizeof(RawType), size);
+                return;
+            }
+            RawType rawValue = 0;
+            memcpy(&rawValue, data, sizeof(RawType));
+            value = static_cast<T>(rawValue);
             return;
         }
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
