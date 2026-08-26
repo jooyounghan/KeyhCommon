@@ -201,6 +201,17 @@ namespace keyh
 	constexpr bool IsIntegral_v = IsIntegralImpl<T>::value;
 #pragma endregion
 
+#pragma region IsEnum
+	template <typename T>
+	struct IsEnumImpl
+	{
+		static constexpr bool value = __is_enum(RemoveConstant_t<T>);
+	};
+
+	template <typename T>
+	constexpr bool IsEnum_v = IsEnumImpl<T>::value;
+#pragma endregion
+
 #pragma region IsArray
 	template <typename T>
 	struct IsArrayImpl
