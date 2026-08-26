@@ -22,7 +22,7 @@ namespace keyh
     KEYH_REFLECT_ENUM_BEGIN(EReflectEnumJsonTest)
         KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Int)
         KEYH_REFLECT_ENUM_VALUE(EReflectEnumJsonTest, Float3)
-    KEYH_REFLECT_ENUM_END()
+    KEYH_REFLECT_ENUM_END(EReflectEnumJsonTest)
 }
 
 using namespace keyh;

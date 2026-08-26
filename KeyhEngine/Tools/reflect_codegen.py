@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 KeyhEngine Reflect Code Generator
 ===================================
@@ -475,7 +475,7 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
         lines.append(f'\tKEYH_REFLECT_ENUM_BEGIN({enum_name})')
         for entry in entries:
             lines.append(f'\t\tKEYH_REFLECT_ENUM_VALUE({enum_name}, {entry})')
-        lines.append('\tKEYH_REFLECT_ENUM_END()')
+        lines.append(f'\tKEYH_REFLECT_ENUM_END({enum_name})')
         lines.append('}')
         lines.append('')
 

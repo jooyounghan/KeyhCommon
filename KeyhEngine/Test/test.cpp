@@ -72,8 +72,8 @@ int main()
     //test_Reflect_roundtrip_nested_object();
     //test_Reflect_large_object_file_roundtrip_compare();
     //benchmark_Reflect_deserialize_512kb_x100();
-
-    test_RhiSystem_d3d12_triangle_example();
+    test_Reflect_enum_string_roundtrip();
+    //test_RhiSystem_d3d12_triangle_example();
 
     //printSummary();
 
