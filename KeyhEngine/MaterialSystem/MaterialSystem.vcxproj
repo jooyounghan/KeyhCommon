@@ -171,16 +171,21 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="MaterialEnum.h" />
     <ClInclude Include="MaterialInfo.h" />
     <ClInclude Include="MaterialLayout.h" />
     <ClInclude Include="MaterialParameter.h" />
+    <ClInclude Include="MaterialParameterHolder.h" />
+    <ClInclude Include="MaterialParameterHolder.hpp" />
     <ClInclude Include="MaterialParameterInfo.h" />
     <ClInclude Include="MaterialSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MaterialEnum.cpp" />
     <ClCompile Include="MaterialInfo.cpp" />
     <ClCompile Include="MaterialLayout.cpp" />
     <ClCompile Include="MaterialParameter.cpp" />
+    <ClCompile Include="MaterialParameterHolder.cpp" />
     <ClCompile Include="MaterialParameterInfo.cpp" />
     <ClCompile Include="MaterialSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
