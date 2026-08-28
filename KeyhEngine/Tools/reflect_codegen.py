@@ -806,16 +806,16 @@ def main():
             if patch_header_with_include(header_path, include_directive) and args.verbose:
                 print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
 
-    cleanup_summary = f' Removed {removed_files} stale file(s) and {removed_includes} include(s).'
+    cleanup_summary = f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
     if generated_files:
         print(
             f'[Reflect] Done - generated {len(generated_files)} file(s) / '
             f'{total_classes} class(es) / {total_props} property(ies), '
             f'{total_enums} enum(s) / {total_enum_values} value(s): '
-            f'{", ".join(generated_files)}.{cleanup_summary}'
+            f'{", ".join(generated_files)}. {cleanup_summary}'
         )
     else:
-        print(f'[Reflect] Done - all generated files are up-to-date.{cleanup_summary}')
+        print(f'[Reflect] Done - all generated files are up-to-date. {cleanup_summary}')
 
 
 if __name__ == '__main__':
