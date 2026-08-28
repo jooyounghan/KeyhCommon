@@ -531,7 +531,7 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
 
 
 # ---------------------------------------------------------------------------
-# Header auto-patch: append #include directive when absent
+# Header auto-patch: manage generated #include directives
 # ---------------------------------------------------------------------------
 
 def patch_header_with_include(filepath, include_line):
@@ -564,6 +564,54 @@ def patch_header_with_include(filepath, include_line):
             f.write(content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
+        return False
+
+    return True
+
+
+def remove_header_include(filepath, include_line):
+    """Remove standalone occurrences of a generated *include_line* from a header."""
+    try:
+        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+            content = f.read()
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
+        return False
+
+    pattern = re.compile(rf'^[ \t]*{re.escape(include_line)}[ \t]*(?:\r?\n|$)', re.MULTILINE)
+    updated_content, count = pattern.subn('', content)
+    if not count:
+        return False
+
+    try:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(updated_content)
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
+        return False
+
+    return True
+
+
+def remove_generated_inl(filepath):
+    """Delete *filepath* only when it is a reflection generator output."""
+    if not os.path.isfile(filepath):
+        return False
+
+    try:
+        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+            is_generated = f.readline().strip() == '// AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.'
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not read generated file {filepath}: {exc}', file=sys.stderr)
+        return False
+
+    if not is_generated:
+        return False
+
+    try:
+        os.remove(filepath)
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not remove generated file {filepath}: {exc}', file=sys.stderr)
         return False
 
     return True
@@ -662,8 +710,44 @@ def main():
                     )
 
     source_headers = sorted(set(classes_by_header.keys()) | set(enums_by_header.keys()))
+    source_header_set = set(source_headers)
+    active_output_paths = {
+        os.path.join(
+            global_output_dir if global_output_dir else os.path.dirname(header_path),
+            _inl_name_for_header(os.path.basename(header_path))
+        )
+        for header_path in source_headers
+    }
+    removed_includes = 0
+    removed_files = 0
+
+    for header_path in header_files:
+        if header_path in source_header_set:
+            continue
+
+        output_name = _inl_name_for_header(os.path.basename(header_path))
+        output_path = os.path.join(
+            global_output_dir if global_output_dir else os.path.dirname(header_path),
+            output_name
+        )
+        include_directive = f'#include "{output_name}"'
+
+        if not args.no_patch_headers and remove_header_include(header_path, include_directive):
+            removed_includes += 1
+            if args.verbose:
+                print(f'[Reflect]   Patched {os.path.basename(header_path)} – removed {include_directive}')
+
+        # Do not remove an output name that is still generated for another header.
+        if output_path not in active_output_paths and remove_generated_inl(output_path):
+            removed_files += 1
+            if args.verbose:
+                print(f'[Reflect]   Removed stale {output_name}')
+
     if not source_headers:
-        print('[Reflect] Done - no REFLECTIVE classes or KEYH_REFLECT_ENUM enums found.')
+        print(
+            '[Reflect] Done - no REFLECTIVE classes or KEYH_REFLECT_ENUM enums found. '
+            f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
+        )
         return
 
     generated_files = []
@@ -722,15 +806,16 @@ def main():
             if patch_header_with_include(header_path, include_directive) and args.verbose:
                 print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
 
+    cleanup_summary = f' Removed {removed_files} stale file(s) and {removed_includes} include(s).'
     if generated_files:
         print(
             f'[Reflect] Done - generated {len(generated_files)} file(s) / '
             f'{total_classes} class(es) / {total_props} property(ies), '
             f'{total_enums} enum(s) / {total_enum_values} value(s): '
-            f'{", ".join(generated_files)}'
+            f'{", ".join(generated_files)}.{cleanup_summary}'
         )
     else:
-        print('[Reflect] Done - all generated files are up-to-date.')
+        print(f'[Reflect] Done - all generated files are up-to-date.{cleanup_summary}')
 
 
 if __name__ == '__main__':
