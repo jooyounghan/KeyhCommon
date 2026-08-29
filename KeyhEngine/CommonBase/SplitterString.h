@@ -30,7 +30,6 @@ namespace keyh
 		const StringViewA& operator[](size_t index) const;
 
 	public:
-		inline size_t count() const { return _tokens.size(); }
 		inline size_t size() const { return _tokens.size(); }
 		inline bool empty() const { return _tokens.empty(); }
 		inline const Vector<StringViewA>& getTokens() const { return _tokens; }
