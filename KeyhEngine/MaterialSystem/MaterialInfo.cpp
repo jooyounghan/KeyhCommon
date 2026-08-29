@@ -4,6 +4,8 @@
 
 namespace keyh
 {
+	KEYH_REFLECT_DEFINE_BODY(MaterialInfo)
+
 	void MaterialInfo::initialize()
 	{
 		_parameterBindings.clear();

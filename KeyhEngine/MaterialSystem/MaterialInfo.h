@@ -18,7 +18,7 @@ namespace keyh
 
 	class REFLECTIVE(MaterialInfo)
 	{
-		KEYH_REFLECT_BODY(MaterialInfo)
+		KEYH_REFLECT_DECLARE_BODY(MaterialInfo)
 
 	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "MaterialParameterInfos")

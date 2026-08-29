@@ -6,7 +6,7 @@ namespace keyh
     // Deepest level: holds a list of tags and a single integer counter.
     class REFLECTIVE(TestDeepObject)
     {
-        KEYH_REFLECT_BODY(TestDeepObject)
+        KEYH_REFLECT_DECLARE_BODY(TestDeepObject)
     public:
         KEYH_REFLECT_PROPERTY(PropertyName = "Tags")
         Vector<StaticStringA> _tags;
@@ -18,7 +18,7 @@ namespace keyh
     // Mid level: holds a list of labels, a nested TestDeepObject, and a float score.
     class REFLECTIVE(TestNestedObject)
     {
-        KEYH_REFLECT_BODY(TestNestedObject)
+        KEYH_REFLECT_DECLARE_BODY(TestNestedObject)
     public:
         KEYH_REFLECT_PROPERTY(PropertyName = "Labels")
         Vector<StaticStringA> _labels;
@@ -32,7 +32,7 @@ namespace keyh
 
     class REFLECTIVE(TestSubObject)
     {
-        KEYH_REFLECT_BODY(TestSubObject)
+        KEYH_REFLECT_DECLARE_BODY(TestSubObject)
     public:
         KEYH_REFLECT_PROPERTY(PropertyName = "Names")
             Vector<StaticStringA> _names;
@@ -40,7 +40,7 @@ namespace keyh
 
     class REFLECTIVE(TestObject)
     {
-        KEYH_REFLECT_BODY(TestObject)
+        KEYH_REFLECT_DECLARE_BODY(TestObject)
     public:
         KEYH_REFLECT_PROPERTY_GROUP("Group1")
         KEYH_REFLECT_PROPERTY(Default = 0)

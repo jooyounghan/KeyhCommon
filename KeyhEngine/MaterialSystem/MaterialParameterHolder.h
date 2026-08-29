@@ -6,6 +6,9 @@ namespace keyh
 	class IMaterialParameterHolder
 	{
 	public:
+		virtual ~IMaterialParameterHolder() = default;
+
+	public:
 		bool isSame(const IMaterialParameterHolder* materialParameterHolder);
 
 	public:

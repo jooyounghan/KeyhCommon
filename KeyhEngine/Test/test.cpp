@@ -15,6 +15,14 @@
 
 #include <iostream>
 
+namespace keyh
+{
+    KEYH_REFLECT_DEFINE_BODY(TestDeepObject)
+    KEYH_REFLECT_DEFINE_BODY(TestNestedObject)
+    KEYH_REFLECT_DEFINE_BODY(TestSubObject)
+    KEYH_REFLECT_DEFINE_BODY(TestObject)
+}
+
 int g_pass = 0;
 int g_fail = 0;
 
