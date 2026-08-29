@@ -7,7 +7,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles);CommonBasePch.h;CommonCore.h;AssertUtil.h;FileUtil.h;HashUtil.h;MathUtil.h;MemoryUtil.h;SimdUtil.h;StrUtil.h;StaticString.h;FlyweightString.h;SplitterString.h;Ptr.h;RefPtr.h;WeakPtr.h;HashMap.h;HashSet.h;Vector.h;OwnerVector.h;InlinedVector.h;IBuffer.h;StaticBuffer.h;DynamicBuffer.h;File.h;FileWriter.h;Delegate.h;</ForcedIncludeFiles>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);CommonBasePch.h;CommonCore.h;AssertUtil.h;FileUtil.h;HashUtil.h;MathUtil.h;MemoryUtil.h;SimdUtil.h;StrUtil.h;StringView.h;StaticString.h;FlyweightString.h;SplitterString.h;Ptr.h;RefPtr.h;WeakPtr.h;HashMap.h;HashSet.h;Vector.h;OwnerVector.h;InlinedVector.h;IBuffer.h;StaticBuffer.h;DynamicBuffer.h;File.h;FileWriter.h;Delegate.h;</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>

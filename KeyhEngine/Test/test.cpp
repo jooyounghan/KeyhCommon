@@ -11,6 +11,7 @@
 #include "JsonTest.h"
 #include "ReflectTest.h"
 #include "RhiTriangleTest.h"
+#include "StringViewTest.h"
 
 #include <iostream>
 
@@ -74,6 +75,14 @@ int main()
     //benchmark_Reflect_deserialize_512kb_x100();
     test_Reflect_enum_string_roundtrip();
     //test_RhiSystem_d3d12_triangle_example();
+
+    test_StringView_removePrefix();
+    test_StringView_removeSuffix();
+    test_StringView_trimStart();
+    test_StringView_trimEnd();
+    test_StringView_trim();
+    test_StringView_wchar();
+    test_SplitterString_with_trim();
 
     //printSummary();
 

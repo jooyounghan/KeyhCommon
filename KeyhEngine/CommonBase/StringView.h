@@ -26,6 +26,46 @@ namespace keyh
 		inline bool empty() const { return _length == 0; }
 
 	public:
+		inline void removePrefix(size_t count)
+		{
+			KEYH_ASSERT(count <= _length, "Index out of bounds");
+			_data += count;
+			_length -= count;
+		}
+
+		inline void removeSuffix(size_t count)
+		{
+			KEYH_ASSERT(count <= _length, "Index out of bounds");
+			_length -= count;
+		}
+
+		inline void trimStart()
+		{
+			size_t count = 0;
+			while (count < _length && StrUtil::isWhitespace(_data[count]))
+			{
+				++count;
+			}
+			removePrefix(count);
+		}
+
+		inline void trimEnd()
+		{
+			size_t count = 0;
+			while (count < _length && StrUtil::isWhitespace(_data[_length - 1 - count]))
+			{
+				++count;
+			}
+			removeSuffix(count);
+		}
+
+		inline void trim()
+		{
+			trimStart();
+			trimEnd();
+		}
+
+	public:
 		bool operator==(const StringView& other) const;
 		bool operator!=(const StringView& other) const;
 		const T& operator[](size_t index) const;
