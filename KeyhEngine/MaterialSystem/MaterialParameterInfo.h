@@ -7,7 +7,10 @@ namespace keyh
 
 	class REFLECTIVE(MaterialParameterInfo)
 	{
-		KEYH_REFLECT_BODY(MaterialParameterInfo)
+		KEYH_REFLECT_DECLARE_BODY(MaterialParameterInfo)
+
+	public:
+		virtual ~MaterialParameterInfo() override;
 
 	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
