@@ -168,6 +168,7 @@
     <ClCompile Include="RhiTriangleTest.cpp" />
     <ClCompile Include="ScalarVectorTypesTest.cpp" />
     <ClCompile Include="StaticStringTest.cpp" />
+    <ClCompile Include="StringViewTest.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="WeakPtrTest.cpp" />
   </ItemGroup>
@@ -182,6 +183,7 @@
     <ClInclude Include="RhiTriangleTest.h" />
     <ClInclude Include="ScalarVectorTypesTest.h" />
     <ClInclude Include="StaticStringTest.h" />
+    <ClInclude Include="StringViewTest.h" />
     <ClInclude Include="test.h" />
     <ClInclude Include="TestCommon.h" />
     <ClInclude Include="WeakPtrTest.h" />
