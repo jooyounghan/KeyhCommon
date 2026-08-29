@@ -9,6 +9,9 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialParameterInfo)
 
+	public:
+		virtual ~MaterialParameterInfo() override;
+
 	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
 		FlyweightStringA _parameterName;

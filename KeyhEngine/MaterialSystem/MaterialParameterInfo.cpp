@@ -6,6 +6,8 @@ namespace keyh
 {
 	KEYH_REFLECT_DEFINE_BODY(MaterialParameterInfo)
 
+	MaterialParameterInfo::~MaterialParameterInfo() = default;
+
 	void MaterialParameterInfo::initializeParameterHolder()
 	{
 		StringViewA defaultValueView(_defaultValue.c_str(), _defaultValue.size());
