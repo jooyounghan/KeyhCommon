@@ -285,6 +285,7 @@
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticBuffer.h" />
     <ClInclude Include="StaticString.h" />
+    <ClInclude Include="SplitterString.h" />
     <ClInclude Include="StringView.h" />
     <ClInclude Include="StrUtil.h" />
     <ClInclude Include="StrUtil.hpp" />
@@ -339,6 +340,7 @@
     <ClCompile Include="StaticArray.cpp" />
     <ClCompile Include="StaticBuffer.cpp" />
     <ClCompile Include="StaticString.cpp" />
+    <ClCompile Include="SplitterString.cpp" />
     <ClCompile Include="StringView.cpp" />
     <ClCompile Include="StrUtil.cpp" />
     <ClCompile Include="TypeCommon.cpp" />
