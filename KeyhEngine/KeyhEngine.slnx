@@ -13,7 +13,7 @@
     <Project Path="ReflectSystem/ReflectSystem.vcxproj" Id="761c4598-1bad-4437-9e24-e8673f0c9802">
       <BuildType Solution="DevRelease|*" Project="Release" />
     </Project>
-    <Project Path="TaskSystem/TaskSystem.vcxproj" Id="fc14504d-207b-4c6f-ad55-8ef14c7bbc47">
+    <Project Path="AppSystem/AppSystem.vcxproj" Id="fc14504d-207b-4c6f-ad55-8ef14c7bbc47">
       <BuildType Solution="DevRelease|*" Project="Release" />
     </Project>
   </Folder>

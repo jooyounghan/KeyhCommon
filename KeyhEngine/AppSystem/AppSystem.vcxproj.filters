@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TaskSystemPch.h">
+    <ClInclude Include="AppSystemPch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ResourcePathManager.h">
@@ -26,7 +26,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="TaskSystemPch.cpp">
+    <ClCompile Include="AppSystemPch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ResourcePathManager.cpp">
@@ -37,6 +37,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TaskSystem.props" />
+    <None Include="AppSystem.props" />
   </ItemGroup>
 </Project>

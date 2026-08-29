@@ -2,13 +2,13 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\CommonBase\CommonBase.props" Condition="'$(_CommonBasePropsImported)' != 'true'" />
   <PropertyGroup>
-    <_TaskSystemPropsImported>true</_TaskSystemPropsImported>
+    <_AppSystemPropsImported>true</_AppSystemPropsImported>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles);TaskSystemPch.h;CommandLineManager.h;ResourcePathManager.h;</ForcedIncludeFiles>
+      <ForcedIncludeFiles>%(ForcedIncludeFiles);AppSystemPch.h;CommandLineManager.h;ResourcePathManager.h;</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
 </Project>
