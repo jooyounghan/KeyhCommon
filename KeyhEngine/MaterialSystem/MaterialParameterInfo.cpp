@@ -17,28 +17,28 @@ namespace keyh
 			}
 			case MaterialParameterType::Int2:
 			{
-				SplitterStringA splitter(defaultValueView, ",");
-				_parameterHolder = makePtr<MaterialParameterHolder<int2>>();
+				//SplitterStringA splitter(defaultValueView, ",");
+				//_parameterHolder = makePtr<MaterialParameterHolder<int2>>();
 				break;
 			}
 			case MaterialParameterType::Float:
 			{
-				_parameterHolder = makePtr<MaterialParameterHolder<float>>();
+				//_parameterHolder = makePtr<MaterialParameterHolder<float>>();
 				break;
 			}
 			case MaterialParameterType::Float2:
 			{
-				_parameterHolder = makePtr<MaterialParameterHolder<float2>>();
+				//_parameterHolder = makePtr<MaterialParameterHolder<float2>>();
 				break;
 			}
 			case MaterialParameterType::Float3:
 			{
-				_parameterHolder = makePtr<MaterialParameterHolder<float3>>();
+				//_parameterHolder = makePtr<MaterialParameterHolder<float3>>();
 				break;
 			}
 			case MaterialParameterType::Float4:
 			{
-				_parameterHolder = makePtr<MaterialParameterHolder<float4>>();
+				//_parameterHolder = makePtr<MaterialParameterHolder<float4>>();
 				break;
 			}
 			case MaterialParameterType::Transform:
@@ -48,7 +48,7 @@ namespace keyh
 			}
 			case MaterialParameterType::ReferencedPath_Texture:
 			{
-				_parameterHolder = makePtr<MaterialParamaterHolderRefencedPath_Texture>();
+				//_parameterHolder = makePtr<MaterialParamaterHolderRefencedPath_Texture>();
 				break;
 			}
 			default:

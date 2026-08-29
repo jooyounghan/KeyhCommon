@@ -2,6 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\MaterialSystem\MaterialSystem.props" Condition="'$(_MaterialSystemPropsImported)' != 'true'" />
   <Import Project="..\RhiSystem\RhiSystem.props" Condition="'$(_RhiSystemPropsImported)' != 'true'" />
+  <Import Project="..\TaskSystem\TaskSystem.props" Condition="'$(_TaskSystemPropsImported)' != 'true'" />
   <PropertyGroup>
     <_TestPropsImported>true</_TestPropsImported>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>

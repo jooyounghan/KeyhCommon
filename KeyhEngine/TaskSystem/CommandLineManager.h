@@ -10,11 +10,21 @@ namespace keyh
         template<typename Target>
 		using Hasher = FNV1aHash<Target>;
 
-        HashSet<StaticStringA, Hasher<StaticStringA>>                  _commandLineSet;
-		HashMap<StaticStringA, StaticStringA, Hasher<StaticStringA>>   _commandLineWithArgMap;
+        using CommandLineSet = HashSet<StaticStringA, Hasher<StaticStringA>>;
+		using CommandLineWithArgMap = HashMap<StaticStringA, StaticStringA, Hasher<StaticStringA>>;
+
+        CommandLineSet                  _commandLineSet;
+		CommandLineWithArgMap           _commandLineWithArgMap;
+
+    public:		
+        bool                    isCommandLinePresent(const StaticStringA& command) const;
+		const StaticStringA&    getCommandLineArgument(const StaticStringA& command) const;
 
     public:
-		bool isCommandLinePresent(const StringViewA& command) const;
+		inline bool 			isCommandLinesRegistered() const { return _commandLineSet.size() > 0 || _commandLineWithArgMap.size() > 0; }
+
+    public:
+		void registerCommandLines(int argc, char* argv[]);
 	};
 }
 

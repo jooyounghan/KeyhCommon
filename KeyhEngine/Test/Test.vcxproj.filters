@@ -161,5 +161,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Test.props" />
+    <None Include="large_test_object.json" />
   </ItemGroup>
 </Project>

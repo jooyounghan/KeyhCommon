@@ -1,4 +1,4 @@
-#define HASHSET_TEMPLATE_TYPE template<typename Key, typename Hasher>
+﻿#define HASHSET_TEMPLATE_TYPE template<typename Key, typename Hasher>
 #define HASHSET_CLASS HashSet<Key, Hasher>
 
 namespace keyh
@@ -73,7 +73,7 @@ namespace keyh
 	HASHSET_TEMPLATE_TYPE
 	HASHSET_CLASS::InsertResult HASHSET_CLASS::makeInsertResult(Bucket* bucket, HashUtil::InsertStatus status)
 	{
-		return InsertResult(bucket->key(), status);
+		return InsertResult(status);
 	}
 
 	HASHSET_TEMPLATE_TYPE

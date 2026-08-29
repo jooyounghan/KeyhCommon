@@ -22,8 +22,15 @@ using namespace keyh;
 
 
 
-int main()
+int main(int argc, char* argv[])
 {
+    CommandLineManager& commandLineManager = CommandLineManager::getInstance();
+    commandLineManager.registerCommandLines(argc, argv);
+
+    ResourcePathManager& resourcePathManager = ResourcePathManager::getInstance();
+    resourcePathManager.initializeResourcePaths();
+
+
     //test_StaticString_create_and_length();
     //test_StaticString_copy();
     //test_StaticString_move();

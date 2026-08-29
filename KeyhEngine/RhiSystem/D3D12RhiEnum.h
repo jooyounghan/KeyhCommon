@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "RhiEnum.h"
 
 namespace keyh
@@ -6,13 +6,13 @@ namespace keyh
 #pragma region ResourceFormat
     struct ResourceFormatInfoBase
     {
-        FlyweightStringA    _name;
-        unsigned int        _bytesPerPixel;
-        unsigned int        _blockSize;
-        bool                _isDepthFormat;
-        bool                _isCompressed;
-        DXGI_FORMAT         _format = DXGI_FORMAT_UNKNOWN;
-        DXGI_FORMAT         _srgbFormat = DXGI_FORMAT_UNKNOWN;
+        FlyweightStringA    _name           = FlyweightStringA::Empty;
+        unsigned int        _bytesPerPixel  = 0;
+        unsigned int        _blockSize      = 0;
+        bool                _isDepthFormat  = false;
+        bool                _isCompressed   = false;
+        DXGI_FORMAT         _format         = DXGI_FORMAT_UNKNOWN;
+        DXGI_FORMAT         _srgbFormat     = DXGI_FORMAT_UNKNOWN;
     };
 
     struct D3D12ResourceFormatInfo : public ResourceFormatInfoBase, public EnumTable(EResourceFormat, ResourceFormatInfoBase, EResourceFormat::Count, D3D12ResourceFormatInfo)

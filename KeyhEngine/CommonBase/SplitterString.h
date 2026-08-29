@@ -10,10 +10,6 @@ namespace keyh
 	class SplitterString
 	{
 	public:
-		SplitterString() = default;
-		~SplitterString() = default;
-
-	public:
 		SplitterString(const StringView<T>& string, const char* delimiter);
 
 	private:

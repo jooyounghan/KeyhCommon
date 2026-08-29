@@ -5,6 +5,9 @@
 namespace keyh
 {
 	template<typename T>
+	const StaticString<T> StaticString<T>::Empty = StaticString<T>();
+
+	template<typename T>
 	T StaticString<T>::gNullChar = T();
 
 	template<typename T>
