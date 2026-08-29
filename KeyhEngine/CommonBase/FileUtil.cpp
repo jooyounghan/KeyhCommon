@@ -26,7 +26,11 @@ namespace keyh
 			char searchPath[MAX_PATH];
 			const size_t dirPathLength = strlen(dirPath);
 			const char* separator = (dirPathLength > 0 && (dirPath[dirPathLength - 1] == '\\' || dirPath[dirPathLength - 1] == '/')) ? "*" : "\\*";
-			if (sprintf_s(searchPath, "%s%s", dirPath, separator) < 0)
+			if (dirPathLength + strlen(separator) >= sizeof(searchPath))
+			{
+				return entries;
+			}
+			if (sprintf_s(searchPath, sizeof(searchPath), "%s%s", dirPath, separator) < 0)
 			{
 				return entries;
 			}
@@ -70,7 +74,7 @@ namespace keyh
 				}
 
 				struct stat st;
-				if (stat(entryPath, &st) == 0 && (S_ISDIR(st.st_mode) == directory))
+				if (stat(entryPath, &st) == 0 && ((S_ISDIR(st.st_mode) != 0) == directory))
 				{
 					entries.emplace_back(entry->d_name);
 				}
