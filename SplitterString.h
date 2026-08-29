@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CommonCore.h"
 
 #include "StringView.h"
@@ -6,6 +6,7 @@
 
 namespace keyh
 {
+	template<typename T>
 	class SplitterString
 	{
 	public:
@@ -13,25 +14,28 @@ namespace keyh
 		~SplitterString() = default;
 
 	public:
-		SplitterString(const utf8* string, size_t length, const char* delimiter);
+		SplitterString(const StringView<T>& string, const char* delimiter);
 
 	private:
-		Vector<StringViewA> _tokens;
+		Vector<StringView<T>> _tokens;
 
-	public:
-		void split(const utf8* string, size_t length, const char* delimiter);
+	private:
+		void split(const StringView<T>& string, const char* delimiter);
 		void clear();
 
 	public:
-		inline Vector<StringViewA>::ConstIterator begin() const { return _tokens.begin(); }
-		inline Vector<StringViewA>::ConstIterator end() const { return _tokens.end(); }
+		inline Vector<StringView<T>>::ConstIterator begin() const { return _tokens.begin(); }
+		inline Vector<StringView<T>>::ConstIterator end() const { return _tokens.end(); }
 
 	public:
-		const StringViewA& operator[](size_t index) const;
+		const StringView<T>& operator[](size_t index) const;
 
 	public:
 		inline size_t size() const { return _tokens.size(); }
 		inline bool empty() const { return _tokens.empty(); }
-		inline const Vector<StringViewA>& getTokens() const { return _tokens; }
+		inline const Vector<StringView<T>>& getTokens() const { return _tokens; }
 	};
+
+	using SplitterStringA = SplitterString<char>;
+	using SplitterStringW = SplitterString<wchar_t>;
 }

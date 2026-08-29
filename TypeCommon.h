@@ -3,7 +3,7 @@
 
 namespace keyh
 {
-	using utf8 = unsigned char;
+	using utf8 = char;
 	using byte = unsigned char;
 	using uint8 = unsigned char;
 	using uint16 = unsigned short;

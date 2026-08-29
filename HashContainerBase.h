@@ -216,8 +216,8 @@ namespace keyh
 		}
 
 	private:
-		alignas(Key)	uint8	_keyStorage[sizeof(Key)];
-		alignas(Value)	uint8	_valueStorage[sizeof(Value)];
+		alignas(Key)	uint8	_keyStorage[sizeof(Key)]{};
+		alignas(Value)	uint8	_valueStorage[sizeof(Value)]{};
 
 	public:
 		Key& key() noexcept { return *reinterpret_cast<Key*>(_keyStorage); }

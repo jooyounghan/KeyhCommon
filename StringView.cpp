@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "StringView.h"
 
 #include <cstring>
@@ -16,7 +16,7 @@ namespace keyh
 		if (_data == other._data)
 			return true;
 
-		return std::memcmp(_data, other._data, _length * sizeof(T)) == 0;
+		return memcmp(_data, other._data, _length * sizeof(T)) == 0;
 	}
 
 	template<typename T>

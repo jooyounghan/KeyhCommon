@@ -36,7 +36,7 @@ namespace keyh
 		}
 
 		T* dstBuffer = ssoEnabled ? _ssoBuffer : _heap;
-		std::memcpy(dstBuffer, str, length * sizeof(T));
+		memcpy(dstBuffer, str, length * sizeof(T));
 		dstBuffer[length] = T();
 	}
 
@@ -56,7 +56,7 @@ namespace keyh
 		}
 
 		T* dstBuffer = ssoEnabled ? _ssoBuffer : _heap;
-		std::memcpy(dstBuffer, str, length * sizeof(T));
+		memcpy(dstBuffer, str, length * sizeof(T));
 		dstBuffer[length] = T();
 	}
 
@@ -77,7 +77,7 @@ namespace keyh
 		T* dstBuffer = srcIsHeap ? _heap : _ssoBuffer;
 		const T* srcBuffer = srcIsHeap ? other._heap : other._ssoBuffer;
 
-		std::memcpy(dstBuffer, srcBuffer, srcLength * sizeof(T));
+		memcpy(dstBuffer, srcBuffer, srcLength * sizeof(T));
 		dstBuffer[srcLength] = T();
 	}
 
@@ -107,7 +107,7 @@ namespace keyh
 		}
 		else
 		{
-			std::memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::kSsoCapacity * sizeof(T));
+			memcpy(_ssoBuffer, other._ssoBuffer, StrUtil::kSsoCapacity * sizeof(T));
 		}
 	}
 
@@ -165,9 +165,9 @@ namespace keyh
 		MemoryUtil::swap(_capacityInfo, other._capacityInfo);
 
 		char tempBytes[sizeof(_ssoBuffer)];
-		std::memcpy(tempBytes, &_ssoBuffer, sizeof(_ssoBuffer));
-		std::memcpy(&_ssoBuffer, &other._ssoBuffer, sizeof(_ssoBuffer));
-		std::memcpy(&other._ssoBuffer, tempBytes, sizeof(_ssoBuffer));
+		memcpy(tempBytes, &_ssoBuffer, sizeof(_ssoBuffer));
+		memcpy(&_ssoBuffer, &other._ssoBuffer, sizeof(_ssoBuffer));
+		memcpy(&other._ssoBuffer, tempBytes, sizeof(_ssoBuffer));
 	}
 
 	template<typename T>
