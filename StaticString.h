@@ -12,6 +12,9 @@ namespace keyh
 		static T gNullChar;
 
 	public:
+		static const StaticString Empty;
+
+	public:
 		StaticString();
 		~StaticString();
 

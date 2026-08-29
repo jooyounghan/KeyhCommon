@@ -10,14 +10,6 @@ namespace keyh
 	}
 
 	template<typename T>
-	static StringView<T> trim(const T* data, size_t length)
-	{
-		StringView<T> stringView(data, length);
-		stringView.trim();
-		return stringView;
-	}
-
-	template<typename T>
 	void SplitterString<T>::split(const StringView<T>& string, const char* delimiter)
 	{
 		clear();
@@ -30,7 +22,9 @@ namespace keyh
 		const size_t delimiterLength = delimiter != nullptr ? StrUtil::strlen(delimiter) : 0;
 		if (delimiterLength == 0 || delimiterLength > length)
 		{
-			_tokens.emplace_back(trim(string.data(), length));
+			StringView<T> trimmedString(string.data(), length);
+			trimmedString.trim();
+			_tokens.emplace_back(trimmedString);
 			return;
 		}
 
@@ -44,13 +38,17 @@ namespace keyh
 				continue;
 			}
 
-			_tokens.emplace_back(trim(stringData + tokenBegin, offset - tokenBegin));
+			StringView<T> token(stringData + tokenBegin, offset - tokenBegin);
+			token.trim();
+			_tokens.emplace_back(token);
 
 			offset += delimiterLength;
 			tokenBegin = offset;
 		}
 
-		_tokens.emplace_back(trim(stringData + tokenBegin, length - tokenBegin));
+		StringView<T> token(stringData + tokenBegin, length - tokenBegin);
+		token.trim();
+		_tokens.emplace_back(token);
 	}
 
 	template<typename T>

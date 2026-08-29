@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
 	template<typename Derived>
 	template<typename Key, typename ...Args>
@@ -154,7 +154,7 @@ namespace keyh
 	template<typename Self, typename Key>
 	auto HashContainerBase<Derived>::findImplInternal(Self* self, const Key& key, size_t* hashCache)
 	{
-		if (self->_capacity == 0)
+		if (self->_capacity == 0 && hashCache == nullptr)
 			return self->makeFindResult(nullptr, false);
 
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
