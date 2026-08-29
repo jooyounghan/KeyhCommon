@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
     ResourcePathManager& resourcePathManager = ResourcePathManager::getInstance();
     resourcePathManager.initializeResourcePaths();
 
-
+    MaterialManager materialManager;
     //test_StaticString_create_and_length();
     //test_StaticString_copy();
     //test_StaticString_move();

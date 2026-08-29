@@ -2,6 +2,7 @@
 #include "IBuffer.h"
 namespace keyh
 {
+	constexpr size_t kMaxPathLength = 260;
 	constexpr size_t kBuffer128Bytes = 128;
 	constexpr size_t kBuffer256Bytes = 256;
 	constexpr size_t kBuffer1KBytes = 1024;

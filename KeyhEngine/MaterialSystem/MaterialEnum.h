@@ -16,7 +16,6 @@ namespace keyh
 	};
 
     constexpr uint32 kReferencePathSize = sizeof(uint32);
-	constexpr uint32 kReferencePathMaxLength = 256;
     constexpr uint32 getParamTypeGpuMemorySize(MaterialParameterType type)
     {
         switch (type)

@@ -20,9 +20,6 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialInfo)
 
-	public:
-		virtual ~MaterialInfo() override;
-
 	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "MaterialParameterInfos")
 		OwnerVector<MaterialParameterInfo> _materialParameterInfos;

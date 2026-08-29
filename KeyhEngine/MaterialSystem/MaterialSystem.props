@@ -13,7 +13,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-	  <ForcedIncludeFiles>%(ForcedIncludeFiles);MaterialSystemPch.h;</ForcedIncludeFiles>
+	  <ForcedIncludeFiles>%(ForcedIncludeFiles);MaterialSystemPch.h;MaterialManager.h</ForcedIncludeFiles>
 	</ClCompile>
   </ItemDefinitionGroup>
 </Project>

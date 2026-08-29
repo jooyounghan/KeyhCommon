@@ -70,8 +70,8 @@ namespace keyh
 		inline void						setPath(const utf8* value, size_t size) { _path.write(value, size); }
 
 	protected:
-		StaticBuffer<utf8, kReferencePathMaxLength> _path;
-		uint32										_resourceAllocatedIndex = 0;
+		StaticBuffer<utf8, kMaxPathLength>	_path;
+		uint32								_resourceAllocatedIndex = 0;
 	};
 }
 
