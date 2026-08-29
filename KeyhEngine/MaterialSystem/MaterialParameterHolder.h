@@ -37,6 +37,9 @@ namespace keyh
 		static_assert(IsValidMaterialType<T>::Value, "Unsupported MaterialParameter type.");
 
 	public:
+		MaterialParameterHolder(T defaultValue);
+
+	public:
 		virtual MaterialParameterType	getType() const override;
 		virtual const void*				getReadPtr() const override { return &_value; }
 		virtual void*					getWritePtr() override { return &_value; }

@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "FNV1aHasher.h"
 
 namespace keyh
@@ -16,7 +16,7 @@ namespace keyh
 		for (size_t i = 0; i < blocks; ++i)
 		{
 			size_t blockValue;
-			std::memcpy(&blockValue, ptr, kSizeOfSizeT);
+			memcpy(&blockValue, ptr, kSizeOfSizeT);
 
 			hashValue ^= blockValue;
 			hashValue *= FNV1aHasher::kHashPrime;
@@ -48,7 +48,7 @@ namespace keyh
 		for (size_t i = 0; i < blocks; ++i)
 		{
 			size_t blockValue;
-			std::memcpy(&blockValue, ptr, kSizeOfSizeT);
+			memcpy(&blockValue, ptr, kSizeOfSizeT);
 
 			hashValue ^= blockValue;
 			hashValue *= FNV1aHasher::kHashPrime;

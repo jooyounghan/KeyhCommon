@@ -18,10 +18,25 @@
     <ClInclude Include="TaskSystemPch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ResourcePathManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TaskSystemPch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ResourcePathManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandLineManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TaskSystem.props" />
   </ItemGroup>
 </Project>

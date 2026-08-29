@@ -37,6 +37,8 @@ namespace keyh
 		static const char* skipWhiteSpace(const char* start, const char* end);
 
 		inline static bool isWhitespace(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
+		inline static bool isWhitespace(wchar_t c) { return c == L' ' || c == L'\t' || c == L'\n' || c == L'\r'; }
+
 		inline static bool isDigit(char c) { return '0' <= c && c <= '9'; }
 #pragma endregion
 	};

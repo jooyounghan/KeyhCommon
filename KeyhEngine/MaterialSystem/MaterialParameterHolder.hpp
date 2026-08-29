@@ -1,5 +1,12 @@
 ﻿namespace keyh
 {
+	template<typename T>
+	MaterialParameterHolder<T>::MaterialParameterHolder(T defaultValue) 
+		: _value(keyh::move(defaultValue))
+	{
+	
+	}
+
 	template <>
 	MaterialParameterType MaterialParameterHolder<int>::getType() const
 	{

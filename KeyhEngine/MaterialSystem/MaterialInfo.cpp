@@ -20,7 +20,7 @@ namespace keyh
 				totalSize += spaceLeft;
 			}
 
-			_parameterBindings.insert(paramInfo->getParameterName(), MaterialParameterBinding{ totalSize, paramInfo });
+			_parameterBindings.insert(paramInfo->getParameterName(), MaterialParameterBinding{ totalSize, paramInfo->getParameterHolder()});
 			totalSize += paramSize;
 		}
 	}

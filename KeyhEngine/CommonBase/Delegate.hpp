@@ -1,4 +1,4 @@
-#define DELEGATE_TEMPLATE_TYPE template<typename ReturnType, typename ...Args>
+﻿#define DELEGATE_TEMPLATE_TYPE template<typename ReturnType, typename ...Args>
 #define DELEGATE_CLASS Delegate<ReturnType(Args...)>
 
 namespace keyh
@@ -8,7 +8,7 @@ namespace keyh
         : _instancePtr(other._instancePtr)
         , _stubFunc(other._stubFunc)
     {
-        std::memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
+        memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
         other.reset();
     }
 
@@ -18,7 +18,7 @@ namespace keyh
         if (this != &other)
         {
             _instancePtr = other._instancePtr;
-            std::memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
+            memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
             _stubFunc = other._stubFunc;
 
             other.reset();
@@ -36,7 +36,7 @@ namespace keyh
         }
 
         _instancePtr = nullptr;
-        std::memset(_methodStorage, 0, sizeof(_methodStorage));
+        memset(_methodStorage, 0, sizeof(_methodStorage));
         _stubFunc = nullptr;
     }
 
@@ -47,7 +47,7 @@ namespace keyh
         using MemberPtrType = ReturnType(TargetClass::*)(Args...);
 
         _instancePtr = instance;
-        std::memcpy(_methodStorage, &method, sizeof(MemberPtrType));
+        memcpy(_methodStorage, &method, sizeof(MemberPtrType));
 
         _stubFunc = [](void* instance, const uint8* methodStorage, Args&&... args) -> ReturnType {
             const MemberPtrType& restoredMethod = *reinterpret_cast<const MemberPtrType*>(methodStorage);
@@ -68,7 +68,7 @@ namespace keyh
         if constexpr (IsConvertible_v<RawF, FuncPtrType>)
         {
             FuncPtrType funcPtr = static_cast<FuncPtrType>(callable);
-            std::memcpy(_methodStorage, &funcPtr, sizeof(FuncPtrType));
+            memcpy(_methodStorage, &funcPtr, sizeof(FuncPtrType));
 
             _stubFunc = [](void*, const uint8* methodStorage, Args&&... args) -> ReturnType {
                 const FuncPtrType& restoredFunc = *reinterpret_cast<const FuncPtrType*>(methodStorage);

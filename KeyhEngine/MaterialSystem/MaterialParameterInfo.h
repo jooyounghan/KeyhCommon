@@ -29,8 +29,9 @@ namespace keyh
 		void initializeParameterHolder();
 
     public:
-		inline const FlyweightStringA&	getParameterName() const { return _parameterName; }
-		inline uint32					getGpuMemorySize() const { return getParamTypeGpuMemorySize(_parameterType); }
+		inline const FlyweightStringA&		getParameterName() const { return _parameterName; }
+		inline uint32						getGpuMemorySize() const { return getParamTypeGpuMemorySize(_parameterType); }
+		inline IMaterialParameterHolder*	getParameterHolder() const { return _parameterHolder.get(); }
 	};
 }
 #include "MaterialParameterInfo.reflect_generated.inl"

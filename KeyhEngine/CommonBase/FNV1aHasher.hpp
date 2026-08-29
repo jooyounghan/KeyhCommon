@@ -16,7 +16,7 @@ namespace keyh
 		for (size_t i = 0; i < blocks; ++i)
 		{
 			size_t blockValue;
-			std::memcpy(&blockValue, data, kSizeOfSizeT);
+			memcpy(&blockValue, data, kSizeOfSizeT);
 
 			hash ^= blockValue;
 			hash *= FNV1aHasher::kHashPrime;

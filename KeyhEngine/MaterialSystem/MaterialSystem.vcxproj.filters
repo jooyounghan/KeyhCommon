@@ -45,6 +45,9 @@
     <ClInclude Include="MaterialParameterHolder.hpp">
       <Filter>헤더 파일\Parameter</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
@@ -66,6 +69,9 @@
       <Filter>소스 파일\Parameter</Filter>
     </ClCompile>
     <ClCompile Include="MaterialEnum.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -155,9 +155,13 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CommandLineManager.h" />
+    <ClInclude Include="ResourcePathManager.h" />
     <ClInclude Include="TaskSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CommandLineManager.cpp" />
+    <ClCompile Include="ResourcePathManager.cpp" />
     <ClCompile Include="TaskSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
