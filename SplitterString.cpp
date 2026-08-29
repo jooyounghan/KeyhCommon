@@ -12,19 +12,9 @@ namespace keyh
 	template<typename T>
 	static StringView<T> trim(const T* data, size_t length)
 	{
-		size_t start = 0;
-		while (start < length && StrUtil::isWhitespace(data[start]))
-		{
-			++start;
-		}
-
-		size_t end = length;
-		while (end > start && StrUtil::isWhitespace(data[end - 1]))
-		{
-			--end;
-		}
-
-		return StringView<T>(data + start, end - start);
+		StringView<T> stringView(data, length);
+		stringView.trim();
+		return stringView;
 	}
 
 	template<typename T>
@@ -32,7 +22,7 @@ namespace keyh
 	{
 		clear();
 		const size_t length = string.size();
-		if (string == nullptr || length == 0)
+		if (string.data() == nullptr || length == 0)
 		{
 			return;
 		}
