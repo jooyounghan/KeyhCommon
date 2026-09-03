@@ -154,7 +154,7 @@
 	template<typename Self, typename Key>
 	auto HashContainerBase<Derived>::findImplInternal(Self* self, const Key& key, size_t* hashCache)
 	{
-		if (self->_capacity == 0 && hashCache == nullptr)
+		if (self->_capacity == 0)
 			return self->makeFindResult(nullptr, false);
 
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
