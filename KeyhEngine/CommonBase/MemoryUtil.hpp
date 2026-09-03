@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
     template<typename T>
     constexpr T* MemoryUtil::addressOf(T& arg) noexcept

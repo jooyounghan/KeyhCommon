@@ -5,6 +5,9 @@ namespace keyh
 	KEYH_REFLECT_ENUM
 		enum class MaterialParameterType : uint8
 	{
+		BitFlag8,
+		BitFlag16,
+        BitFlag32,
 		Int,
 		Int2,
 		Float,

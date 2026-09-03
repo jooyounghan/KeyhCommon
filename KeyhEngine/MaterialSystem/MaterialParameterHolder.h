@@ -3,6 +3,27 @@
 
 namespace keyh
 {
+	/*
+	* MaterialParameterReference는 실제 데이터를 가지고 있는 형태가 아니라
+	* 데이터에 대한 View를 지원하는 Interface이다.
+	* MaterialParameter Holder는 MaterialParameter Reference를 상속받으며, 
+	* Holder가 실제 데이터를 가지고 있고 해당 데이터를 MaterialParameter Reference를 통해 View로 제공한다. 
+	* 개발용 데이터는 Holder를 사용하고, 
+	* Release용 데이터는 MaterialParameterReference를 관리하는 Material에 대한 View로 구성된 Reference를 사용한다.
+	* 
+	* Shader Cache : 매터리얼을 빌드한 결과를 캐싱하는 바이너리 파일
+	* MaterialParameter Cache : 매터리얼 파라미터에 대한 결과를 캐싱하는 바이너리 파일
+	* Shader Cache + MaterialParameter Cache = Material Cache
+	* 
+	* Material.hlsl, Material.material은 개발용 데이터로,
+	* MaterialCache를 먼저 읽고, 이가 없을 경우 개발용 데이터를 직접 읽어서 
+	* MaterialCache를 생성하게 끔 처리한다.
+	* 그리고 필요시 MaterialCache를 Export한다.
+
+
+	*/
+
+
 	class IMaterialParameterHolder
 	{
 	public:
@@ -57,6 +78,41 @@ namespace keyh
 		inline T&		getValue() { return _value; }
 		inline const T& getValue() const { return _value; }
 	};
+
+	class IMaterialParameterHolder_BitFlag : public IMaterialParameterHolder
+	{
+	public:
+		virtual ~IMaterialParameterHolder_BitFlag() = default;
+
+		virtual void	setValue(uint8 index, bool flag) = 0;
+		virtual bool	getValue(uint8 index) const = 0;
+		virtual size_t	getBitCount() const = 0;
+	};
+
+	template<size_t BitCount>
+	class MaterialParameterHolder_BitFlag : public IMaterialParameterHolder_BitFlag
+	{
+		static_assert(BitCount == 8 || BitCount == 16 || BitCount == 32, "BitCount must be 8, 16, or 32.");
+		static constexpr size_t Size = BitCount / 8;
+
+	public:
+		inline virtual const void*		getReadPtr() const override { return &_bitFlags; }
+		inline virtual void*			getWritePtr() override { return &_bitFlags; }
+		inline virtual size_t			getMemorySize() const override { return Size; }
+		virtual MaterialParameterType	getType() const override;
+
+	public:
+		virtual void			setValue(uint8 index, bool flag) override;
+		virtual bool			getValue(uint8 index) const override;
+		inline virtual size_t	getBitCount() const override { return BitCount; }
+
+	protected:
+		uint8 _bitFlags[Size] = { 0 };
+	};
+
+	using MaterialParameterHolder_BitFlag8 = MaterialParameterHolder_BitFlag<8>;
+	using MaterialParameterHolder_BitFlag16 = MaterialParameterHolder_BitFlag<16>;
+	using MaterialParameterHolder_BitFlag32 = MaterialParameterHolder_BitFlag<32>;
 
 	class MaterialParamaterHolderRefencedPath_Texture : public IMaterialParameterHolder
 	{

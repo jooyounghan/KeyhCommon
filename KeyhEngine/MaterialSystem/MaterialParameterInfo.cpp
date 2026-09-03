@@ -4,9 +4,20 @@
 
 namespace keyh
 {
+	KEYH_REFLECT_DEFINE_BODY(MaterialBitFlagParameterInfo)
 	KEYH_REFLECT_DEFINE_BODY(MaterialParameterInfo)
 
-	MaterialParameterInfo::~MaterialParameterInfo() = default;
+	template<typename BitFlag>
+	static Ptr<IMaterialParameterHolder> createBitFlagHolder(const Vector<MaterialBitFlagParameterInfo>& bitFlagInfos)
+	{
+		Ptr<IMaterialParameterHolder> parameterHolder = makePtr<BitFlag>();
+		IMaterialParameterHolder_BitFlag* bitFlagHolder = static_cast<IMaterialParameterHolder_BitFlag*>(parameterHolder.get());
+		for (const MaterialBitFlagParameterInfo& bitFlagInfo : bitFlagInfos)
+		{
+			bitFlagHolder->setValue(bitFlagInfo._bitIndex, bitFlagInfo._defaultValue);
+		}
+		return parameterHolder;
+	}
 
 	void MaterialParameterInfo::initializeParameterHolder()
 	{
@@ -14,6 +25,21 @@ namespace keyh
 
 		switch (_parameterType)
 		{
+			case MaterialParameterType::BitFlag8:
+			{
+				_parameterHolder = createBitFlagHolder<MaterialParameterHolder_BitFlag8>(_bitFlagInfos);
+				break;
+			}
+			case MaterialParameterType::BitFlag16:
+			{
+				_parameterHolder = createBitFlagHolder<MaterialParameterHolder_BitFlag16>(_bitFlagInfos);
+				break;
+			}
+			case MaterialParameterType::BitFlag32:
+			{
+				_parameterHolder = createBitFlagHolder<MaterialParameterHolder_BitFlag32>(_bitFlagInfos);
+				break;
+			}
 			case MaterialParameterType::Int:
 			{
 				_parameterHolder = makePtr<MaterialParameterHolder<int>>(StrUtil::strToInt<int>(_defaultValue.c_str()));

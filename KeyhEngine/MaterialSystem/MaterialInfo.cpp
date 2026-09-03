@@ -4,6 +4,27 @@
 
 namespace keyh
 {
+	MaterialParameterBinding::MaterialParameterBinding(
+		uint32 offset
+		, const IMaterialParameterHolder* holder
+	)
+		: _offset_bitIndex(offset << 8)
+		, _parameterHolder(holder)
+	{
+	
+	}
+
+	MaterialParameterBinding::MaterialParameterBinding(
+		uint32 offset
+		, uint32 bitIndex
+		, const IMaterialParameterHolder* holder
+	)
+		: _offset_bitIndex((offset << 8) | (bitIndex & 0xFF))
+		, _parameterHolder(holder)
+	{
+	
+	}
+
 	KEYH_REFLECT_DEFINE_BODY(MaterialInfo)
 
 	void MaterialInfo::initialize()

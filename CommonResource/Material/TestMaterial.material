@@ -1,0 +1,81 @@
+{
+  "MaterialParameterInfos": [
+    {
+      "Name": "TestBitFlagParameter",
+      "Type": "BitFlag8",
+      "DefaultValue": "",
+      "Desc": "Test Bit Flag Parameter Description",
+      "BitFlagInfo": [
+        {
+          "Name": "Bit Flag Name0",
+          "BitIndex": 0,
+          "DefaultValue": true,
+          "Desc": "Bit Flag Description0"
+        },
+        {
+          "Name": "Bit Flag Name1",
+          "BitIndex": 1,
+          "DefaultValue": false,
+          "Desc": "Bit Flag Description1"
+        },
+        {
+          "Name": "Bit Flag Name2",
+          "BitIndex": 2,
+          "DefaultValue": true,
+          "Desc": "Bit Flag Description2"
+        },
+        {
+          "Name": "Bit Flag Name3",
+          "BitIndex": 3,
+          "DefaultValue": false,
+          "Desc": "Bit Flag Description3"
+        },
+        {
+          "Name": "Bit Flag Name4",
+          "BitIndex": 4,
+          "DefaultValue": true,
+          "Desc": "Bit Flag Description4"
+        },
+        {
+          "Name": "Bit Flag Name5",
+          "BitIndex": 5,
+          "DefaultValue": false,
+          "Desc": "Bit Flag Description5"
+        },
+        {
+          "Name": "Bit Flag Name6",
+          "BitIndex": 6,
+          "DefaultValue": true,
+          "Desc": "Bit Flag Description6"
+        },
+        {
+          "Name": "Bit Flag Name7",
+          "BitIndex": 7,
+          "DefaultValue": false,
+          "Desc": "Bit Flag Description7"
+        }
+      ]
+    },
+    {
+      "Name": "TestParameter",
+      "Type": "Float",
+      "DefaultValue": "0.0",
+      "Desc": "Test Parameter Description",
+      "BitFlagInfo": []
+    },
+    {
+      "Name": "TestParameter",
+      "Type": "Float",
+      "DefaultValue": "0.0",
+      "Desc": "Test Parameter Description",
+      "BitFlagInfo": []
+    },
+    {
+      "Name": "TestParameter",
+      "Type": "Float",
+      "DefaultValue": "0.0",
+      "Desc": "Test Parameter Description",
+      "BitFlagInfo": []
+    }
+  ]
+}

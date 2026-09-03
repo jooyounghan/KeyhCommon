@@ -124,7 +124,7 @@ namespace keyh
 			else if (entry->d_type == DT_UNKNOWN)
 			{
 				char entryPath[PATH_MAX];
-				const int result = snprintf(entryPath, sizeof(entryPath), "%s%s%s", dirPath, dirPath[0] != '\0' && dirPath[strlen(dirPath) - 1] == '/' ? "" : "/", entry->d_name);
+				const int result = snprintf(entryPath, sizeof(entryPath), "%s%s%s", dirPath, dirPath[0] != '\0' && dirPath[strlen(dirPath) - 1] == '\\' ? "" : "\\", entry->d_name);
 				if (result < 0 || result >= static_cast<int>(sizeof(entryPath)))
 				{
 					continue;

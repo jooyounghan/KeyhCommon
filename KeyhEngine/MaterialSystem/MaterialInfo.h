@@ -10,8 +10,18 @@ namespace keyh
 
 	struct MaterialParameterBinding
 	{
-		uint32								_offset = 0;
+	public:
+		MaterialParameterBinding(uint32 offset, const IMaterialParameterHolder* holder);
+		MaterialParameterBinding(uint32 offset, uint32 bitIndex, const IMaterialParameterHolder* holder);
+
+	private:
+		uint32								_offset_bitIndex = 0;
 		const IMaterialParameterHolder*		_parameterHolder = nullptr;
+
+	public:
+		uint32							getOffset() const { return _offset_bitIndex >> 8; }
+		uint32							getBitIndex() const { return _offset_bitIndex & 0xFF; }
+		const IMaterialParameterHolder* getParameterHolder() const { return _parameterHolder; }
 	};
 
 	using MaterialParameterBindingMap = HashMap<FlyweightStringA, MaterialParameterBinding>;
@@ -20,7 +30,7 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialInfo)
 
-	private:
+	public:
 		KEYH_REFLECT_PROPERTY(PropertyName = "MaterialParameterInfos")
 		OwnerVector<MaterialParameterInfo> _materialParameterInfos;
 
