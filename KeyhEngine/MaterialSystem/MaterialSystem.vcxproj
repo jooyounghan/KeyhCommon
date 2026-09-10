@@ -172,23 +172,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="MaterialEnum.h" />
-    <ClInclude Include="MaterialInfo.h" />
+    <ClInclude Include="MaterialDefinition.h" />
     <ClInclude Include="MaterialLayout.h" />
     <ClInclude Include="MaterialManager.h" />
     <ClInclude Include="MaterialParameter.h" />
     <ClInclude Include="MaterialParameterHolder.h" />
     <ClInclude Include="MaterialParameterHolder.hpp" />
-    <ClInclude Include="MaterialParameterInfo.h" />
+    <ClInclude Include="MaterialParameterDefinition.h" />
+    <ClInclude Include="MaterialParameterView.h" />
     <ClInclude Include="MaterialSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialEnum.cpp" />
-    <ClCompile Include="MaterialInfo.cpp" />
+    <ClCompile Include="MaterialDefinition.cpp" />
     <ClCompile Include="MaterialLayout.cpp" />
     <ClCompile Include="MaterialManager.cpp" />
     <ClCompile Include="MaterialParameter.cpp" />
     <ClCompile Include="MaterialParameterHolder.cpp" />
-    <ClCompile Include="MaterialParameterInfo.cpp" />
+    <ClCompile Include="MaterialParameterDefinition.cpp" />
+    <ClCompile Include="MaterialParameterView.cpp" />
     <ClCompile Include="MaterialSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

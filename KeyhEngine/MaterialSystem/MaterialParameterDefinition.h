@@ -5,9 +5,9 @@ namespace keyh
 {
 	class IMaterialParameterHolder;
 
-	class REFLECTIVE(MaterialBitFlagParameterInfo)
+	class REFLECTIVE(MaterialBitFlagDefinition)
 	{
-		KEYH_REFLECT_DECLARE_BODY(MaterialBitFlagParameterInfo)
+		KEYH_REFLECT_DECLARE_BODY(MaterialBitFlagDefinition)
 
 	public:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
@@ -20,9 +20,9 @@ namespace keyh
 			StaticStringA _description;
 	};
 
-	class REFLECTIVE(MaterialParameterInfo)
+	class REFLECTIVE(MaterialParameterDefinition)
 	{
-		KEYH_REFLECT_DECLARE_BODY(MaterialParameterInfo)
+		KEYH_REFLECT_DECLARE_BODY(MaterialParameterDefinition)
 
 	public:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
@@ -37,19 +37,9 @@ namespace keyh
 		KEYH_REFLECT_PROPERTY(PropertyName = "Desc")
 		StaticStringA _description;
 
-		KEYH_REFLECT_PROPERTY(PropertyName = "BitFlagInfo")
-		Vector<MaterialBitFlagParameterInfo> _bitFlagInfos;
-
-	protected:
-		Ptr<IMaterialParameterHolder> _parameterHolder;
-
-	public:
-		void initializeParameterHolder();
-
     public:
 		inline const FlyweightStringA&		getParameterName() const { return _parameterName; }
 		inline uint32						getGpuMemorySize() const { return getParamTypeGpuMemorySize(_parameterType); }
-		inline IMaterialParameterHolder*	getParameterHolder() const { return _parameterHolder.get(); }
 	};
 }
-#include "MaterialParameterInfo.reflect_generated.inl"
+#include "MaterialParameterDefinition.reflect_generated.inl"

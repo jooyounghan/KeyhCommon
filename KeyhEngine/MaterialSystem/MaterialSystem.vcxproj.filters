@@ -19,6 +19,12 @@
     <Filter Include="헤더 파일\Parameter">
       <UniqueIdentifier>{a6b7c504-7ae3-4513-9325-6dbc9b92ab32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Parameter\Dev">
+      <UniqueIdentifier>{e35f6e3a-e21c-4a5c-be30-301384ae2c6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Parameter\Dev">
+      <UniqueIdentifier>{32082394-9726-4ebb-9c2e-d24d01452ff0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MaterialSystemPch.h">
@@ -27,13 +33,7 @@
     <ClInclude Include="MaterialLayout.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MaterialParameterInfo.h">
-      <Filter>헤더 파일\Parameter</Filter>
-    </ClInclude>
     <ClInclude Include="MaterialParameter.h">
-      <Filter>헤더 파일\Parameter</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialInfo.h">
       <Filter>헤더 파일\Parameter</Filter>
     </ClInclude>
     <ClInclude Include="MaterialParameterHolder.h">
@@ -48,6 +48,15 @@
     <ClInclude Include="MaterialManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialParameterView.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialDefinition.h">
+      <Filter>헤더 파일\Parameter\Dev</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialParameterDefinition.h">
+      <Filter>헤더 파일\Parameter\Dev</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
@@ -59,12 +68,6 @@
     <ClCompile Include="MaterialParameter.cpp">
       <Filter>소스 파일\Parameter</Filter>
     </ClCompile>
-    <ClCompile Include="MaterialParameterInfo.cpp">
-      <Filter>소스 파일\Parameter</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialInfo.cpp">
-      <Filter>소스 파일\Parameter</Filter>
-    </ClCompile>
     <ClCompile Include="MaterialParameterHolder.cpp">
       <Filter>소스 파일\Parameter</Filter>
     </ClCompile>
@@ -73,6 +76,15 @@
     </ClCompile>
     <ClCompile Include="MaterialManager.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialParameterView.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialParameterDefinition.cpp">
+      <Filter>소스 파일\Parameter\Dev</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialDefinition.cpp">
+      <Filter>소스 파일\Parameter\Dev</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
