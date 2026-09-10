@@ -393,7 +393,7 @@ def find_reflective_classes(filepath):
     Scan one header file and return a list of (ClassName, [properties]) tuples
     for every class/struct decorated with REFLECTIVE(ClassName).
     """
-    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+    with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
         content = f.read()
 
     lines = content.split('\n')
