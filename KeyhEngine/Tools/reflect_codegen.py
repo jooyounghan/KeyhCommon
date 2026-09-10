@@ -554,7 +554,7 @@ def patch_header_with_include(filepath, include_line):
     newline_match = re.search(r'\r\n|\n|\r', content)
     newline = newline_match.group(0) if newline_match else '\n'
     generated_include_pattern = re.compile(
-        r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r?\n|$)',
+        r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r\n|\n|\r|$)',
         re.MULTILINE
     )
     lines = content.splitlines(keepends=True)
@@ -625,7 +625,7 @@ def remove_header_include(filepath, include_line):
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
         return False
 
-    pattern = re.compile(rf'^[ \t]*{re.escape(include_line)}[ \t]*(?:\r?\n|$)', re.MULTILINE)
+    pattern = re.compile(rf'^[ \t]*{re.escape(include_line)}[ \t]*(?:\r\n|\n|\r|$)', re.MULTILINE)
     updated_content, count = pattern.subn('', content)
     if not count:
         return False
