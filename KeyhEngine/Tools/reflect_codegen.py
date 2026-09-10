@@ -545,7 +545,7 @@ def patch_header_with_include(filepath, include_line):
     expected state (or the file could not be read/written).
     """
     try:
-        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
             content = f.read()
     except OSError as exc:
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
