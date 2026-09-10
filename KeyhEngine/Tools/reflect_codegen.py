@@ -538,7 +538,8 @@ def patch_header_with_include(filepath, include_line):
     """
     Remove stale generated .inl includes from *filepath* and ensure that the
     current *include_line* (e.g. '#include "reflect_generated.inl"') exists
-    exactly once at the end of the file.
+    exactly once, preserving an already-correct final generated include when
+    possible.
 
     Returns True when the file was modified, False when it was already in the
     expected state (or the file could not be read/written).
@@ -550,35 +551,56 @@ def patch_header_with_include(filepath, include_line):
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
         return False
 
-    newline = '\r\n' if '\r\n' in content else '\n'
+    newline_match = re.search(r'\r\n|\n|\r', content)
+    newline = newline_match.group(0) if newline_match else '\n'
     generated_include_pattern = re.compile(
         r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r?\n|$)',
         re.MULTILINE
     )
+    lines = content.splitlines(keepends=True)
+    generated_include_indexes = []
+    current_include_indexes = []
+
+    for index, line in enumerate(lines):
+        match = generated_include_pattern.fullmatch(line)
+        if not match:
+            continue
+
+        generated_include_indexes.append(index)
+        if match.group(1) == include_line:
+            current_include_indexes.append(index)
+
+    preserved_include_index = None
+    if current_include_indexes and generated_include_indexes:
+        last_generated_index = generated_include_indexes[-1]
+        last_current_index = current_include_indexes[-1]
+        if last_current_index == last_generated_index:
+            preserved_include_index = last_current_index
+
     kept_lines = []
     include_present = False
     modified = False
 
-    for line in content.splitlines(keepends=True):
+    for index, line in enumerate(lines):
         match = generated_include_pattern.fullmatch(line)
         if not match:
             kept_lines.append(line)
             continue
 
-        matched_include = match.group(1)
-        if matched_include == include_line and not include_present:
+        if index == preserved_include_index:
             include_present = True
-            continue
-
-        modified = True
+            kept_lines.append(line)
+        else:
+            modified = True
 
     updated_content = ''.join(kept_lines)
 
-    if updated_content and not updated_content.endswith(('\n', '\r')):
-        updated_content += newline
-    updated_content += include_line + newline
-
-    if not include_present or updated_content != content:
+    if not include_present:
+        if updated_content and not updated_content.endswith(('\n', '\r')):
+            updated_content += newline
+        updated_content += include_line + newline
+        modified = True
+    elif updated_content != content:
         modified = True
 
     if not modified:
