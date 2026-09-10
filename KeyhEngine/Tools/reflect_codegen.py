@@ -536,11 +536,12 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
 
 def patch_header_with_include(filepath, include_line):
     """
-    Append *include_line* (e.g. '#include "reflect_generated.inl"') to the
-    end of *filepath* if it is not already present anywhere in the file.
+    Remove stale generated .inl includes from *filepath* and ensure that the
+    current *include_line* (e.g. '#include "reflect_generated.inl"') exists
+    exactly once at the end of the file.
 
-    Returns True when the file was modified, False when the line was already
-    present (or the file could not be read/written).
+    Returns True when the file was modified, False when it was already in the
+    expected state (or the file could not be read/written).
     """
     try:
         with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
@@ -549,19 +550,45 @@ def patch_header_with_include(filepath, include_line):
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
         return False
 
-    # Already present anywhere in the file → skip
-    if include_line in content:
+    newline = '\r\n' if '\r\n' in content else '\n'
+    generated_include_pattern = re.compile(
+        r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r?\n|$)',
+        re.MULTILINE
+    )
+    kept_lines = []
+    include_present = False
+    modified = False
+
+    for line in content.splitlines(keepends=True):
+        match = generated_include_pattern.fullmatch(line)
+        if not match:
+            kept_lines.append(line)
+            continue
+
+        matched_include = match.group(1)
+        if matched_include == include_line and not include_present:
+            kept_lines.append(include_line + newline)
+            include_present = True
+            if line != include_line + newline:
+                modified = True
+            continue
+
+        modified = True
+
+    updated_content = ''.join(kept_lines)
+
+    if not include_present:
+        if updated_content and not updated_content.endswith(('\n', '\r')):
+            updated_content += newline
+        updated_content += include_line + newline
+        modified = True
+
+    if not modified:
         return False
-
-    # Ensure the file ends with a newline before appending
-    if content and not content.endswith('\n'):
-        content += '\n'
-
-    content += include_line + '\n'
 
     try:
         with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(content)
+            f.write(updated_content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
         return False
