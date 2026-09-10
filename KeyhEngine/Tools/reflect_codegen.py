@@ -538,8 +538,7 @@ def patch_header_with_include(filepath, include_line):
     """
     Remove stale generated .inl includes from *filepath* and ensure that the
     current *include_line* (e.g. '#include "reflect_generated.inl"') exists
-    exactly once, preserving an already-correct final generated include when
-    possible.
+    exactly once, preserving an existing matching include when possible.
 
     Returns True when the file was modified, False when it was already in the
     expected state (or the file could not be read/written).
@@ -558,7 +557,6 @@ def patch_header_with_include(filepath, include_line):
         re.MULTILINE
     )
     lines = content.splitlines(keepends=True)
-    generated_include_indexes = []
     current_include_indexes = []
 
     for index, line in enumerate(lines):
@@ -566,16 +564,10 @@ def patch_header_with_include(filepath, include_line):
         if not match:
             continue
 
-        generated_include_indexes.append(index)
         if match.group(1) == include_line:
             current_include_indexes.append(index)
 
-    preserved_include_index = None
-    if current_include_indexes and generated_include_indexes:
-        last_generated_index = generated_include_indexes[-1]
-        last_current_index = current_include_indexes[-1]
-        if last_current_index == last_generated_index:
-            preserved_include_index = last_current_index
+    preserved_include_index = current_include_indexes[0] if current_include_indexes else None
 
     kept_lines = []
     include_present = False
