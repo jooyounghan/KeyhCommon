@@ -567,20 +567,18 @@ def patch_header_with_include(filepath, include_line):
 
         matched_include = match.group(1)
         if matched_include == include_line and not include_present:
-            kept_lines.append(include_line + newline)
             include_present = True
-            if line != include_line + newline:
-                modified = True
             continue
 
         modified = True
 
     updated_content = ''.join(kept_lines)
 
-    if not include_present:
-        if updated_content and not updated_content.endswith(('\n', '\r')):
-            updated_content += newline
-        updated_content += include_line + newline
+    if updated_content and not updated_content.endswith(('\n', '\r')):
+        updated_content += newline
+    updated_content += include_line + newline
+
+    if not include_present or updated_content != content:
         modified = True
 
     if not modified:
