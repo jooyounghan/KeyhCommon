@@ -239,7 +239,7 @@ def find_reflect_enums(filepath):
     Scan one header file and return a list of (EnumName, [entry_names]) tuples
     for every enum annotated with KEYH_REFLECT_ENUM.
     """
-    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+    with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
         content = f.read()
 
     enums = []
@@ -393,7 +393,7 @@ def find_reflective_classes(filepath):
     Scan one header file and return a list of (ClassName, [properties]) tuples
     for every class/struct decorated with REFLECTIVE(ClassName).
     """
-    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+    with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
         content = f.read()
 
     lines = content.split('\n')
@@ -536,32 +536,90 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
 
 def patch_header_with_include(filepath, include_line):
     """
-    Append *include_line* (e.g. '#include "reflect_generated.inl"') to the
-    end of *filepath* if it is not already present anywhere in the file.
+    Remove stale generated .inl includes from *filepath* and ensure that the
+    current *include_line* (e.g. '#include "reflect_generated.inl"') exists
+    exactly once, preserving an existing matching include when possible.
 
-    Returns True when the file was modified, False when the line was already
-    present (or the file could not be read/written).
+    Returns True when the file was modified, False when it was already in the
+    expected state (or the file could not be read/written).
     """
     try:
-        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
             content = f.read()
     except OSError as exc:
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
         return False
 
-    # Already present anywhere in the file → skip
-    if include_line in content:
+    newline_match = re.search(r'\r\n|\n|\r', content)
+    newline = newline_match.group(0) if newline_match else '\n'
+    generated_include_pattern = re.compile(
+        r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r\n|\n|\r|$)',
+        re.MULTILINE
+    )
+    lines = content.splitlines(keepends=True)
+    generated_include_indexes = []
+    current_include_indexes = []
+
+    for index, line in enumerate(lines):
+        match = generated_include_pattern.fullmatch(line)
+        if not match:
+            continue
+
+        generated_include_indexes.append(index)
+        if match.group(1) == include_line:
+            current_include_indexes.append(index)
+
+    preserved_include_index = current_include_indexes[0] if current_include_indexes else None
+    replacement_include_index = (
+        generated_include_indexes[0]
+        if preserved_include_index is None and generated_include_indexes
+        else None
+    )
+
+    kept_lines = []
+    include_present = False
+    modified = False
+
+    for index, line in enumerate(lines):
+        match = generated_include_pattern.fullmatch(line)
+        if not match:
+            kept_lines.append(line)
+            continue
+
+        if index == preserved_include_index:
+            include_present = True
+            kept_lines.append(line)
+        elif index == replacement_include_index:
+            line_newline = newline
+            if line.endswith('\r\n'):
+                line_newline = '\r\n'
+            elif line.endswith('\n'):
+                line_newline = '\n'
+            elif line.endswith('\r'):
+                line_newline = '\r'
+
+            include_present = True
+            kept_lines.append(include_line + line_newline)
+            modified = True
+        else:
+            modified = True
+
+    updated_content = ''.join(kept_lines)
+
+    if not include_present:
+        if updated_content and not updated_content.endswith(('\n', '\r')):
+            updated_content += newline
+        updated_content += include_line + newline
+        modified = True
+    elif updated_content != content:
+        modified = True
+
+    if not modified:
         return False
 
-    # Ensure the file ends with a newline before appending
-    if content and not content.endswith('\n'):
-        content += '\n'
-
-    content += include_line + '\n'
-
     try:
-        with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(content)
+        with open(filepath, 'w', encoding='utf-8', newline='') as f:
+            f.write(updated_content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
         return False
@@ -572,19 +630,19 @@ def patch_header_with_include(filepath, include_line):
 def remove_header_include(filepath, include_line):
     """Remove standalone occurrences of a generated *include_line* from a header."""
     try:
-        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
             content = f.read()
     except OSError as exc:
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
         return False
 
-    pattern = re.compile(rf'^[ \t]*{re.escape(include_line)}[ \t]*(?:\r?\n|$)', re.MULTILINE)
+    pattern = re.compile(rf'^[ \t]*{re.escape(include_line)}[ \t]*(?:\r\n|\n|\r|$)', re.MULTILINE)
     updated_content, count = pattern.subn('', content)
     if not count:
         return False
 
     try:
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, 'w', encoding='utf-8', newline='') as f:
             f.write(updated_content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
