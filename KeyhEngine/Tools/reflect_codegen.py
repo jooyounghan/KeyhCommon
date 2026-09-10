@@ -239,7 +239,7 @@ def find_reflect_enums(filepath):
     Scan one header file and return a list of (EnumName, [entry_names]) tuples
     for every enum annotated with KEYH_REFLECT_ENUM.
     """
-    with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+    with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
         content = f.read()
 
     enums = []
@@ -607,7 +607,7 @@ def patch_header_with_include(filepath, include_line):
         return False
 
     try:
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, 'w', encoding='utf-8', newline='') as f:
             f.write(updated_content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
@@ -619,7 +619,7 @@ def patch_header_with_include(filepath, include_line):
 def remove_header_include(filepath, include_line):
     """Remove standalone occurrences of a generated *include_line* from a header."""
     try:
-        with open(filepath, 'r', encoding='utf-8', errors='replace') as f:
+        with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
             content = f.read()
     except OSError as exc:
         print(f'[Reflect] Warning: could not read {filepath} for patching: {exc}', file=sys.stderr)
@@ -631,7 +631,7 @@ def remove_header_include(filepath, include_line):
         return False
 
     try:
-        with open(filepath, 'w', encoding='utf-8') as f:
+        with open(filepath, 'w', encoding='utf-8', newline='') as f:
             f.write(updated_content)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
