@@ -557,6 +557,7 @@ def patch_header_with_include(filepath, include_line):
         re.MULTILINE
     )
     lines = content.splitlines(keepends=True)
+    generated_include_indexes = []
     current_include_indexes = []
 
     for index, line in enumerate(lines):
@@ -564,10 +565,16 @@ def patch_header_with_include(filepath, include_line):
         if not match:
             continue
 
+        generated_include_indexes.append(index)
         if match.group(1) == include_line:
             current_include_indexes.append(index)
 
     preserved_include_index = current_include_indexes[0] if current_include_indexes else None
+    replacement_include_index = (
+        generated_include_indexes[0]
+        if preserved_include_index is None and generated_include_indexes
+        else None
+    )
 
     kept_lines = []
     include_present = False
@@ -582,6 +589,18 @@ def patch_header_with_include(filepath, include_line):
         if index == preserved_include_index:
             include_present = True
             kept_lines.append(line)
+        elif index == replacement_include_index:
+            line_newline = newline
+            if line.endswith('\r\n'):
+                line_newline = '\r\n'
+            elif line.endswith('\n'):
+                line_newline = '\n'
+            elif line.endswith('\r'):
+                line_newline = '\r'
+
+            include_present = True
+            kept_lines.append(include_line + line_newline)
+            modified = True
         else:
             modified = True
 
