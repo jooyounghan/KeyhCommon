@@ -30,30 +30,15 @@ namespace keyh
 		inline const void*				getData() const { return _data; }
 	};
 
-	class REFLECTIVE(MaterialParameterBitFlagView)
-	{
-		KEYH_REFLECT_DECLARE_BODY(MaterialParameterBitFlagView)
-
-	private:
-		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
-		FlyweightStringA _bitFlagName;
-
-		KEYH_REFLECT_PROPERTY(PropertyName = "Offset")
-		uint32 _bitOffset;
-
-	public:
-		inline const FlyweightStringA& getBitFlagName() const { return _bitFlagName; }
-		inline const uint32 getBitOffset() const { return _bitOffset; }
-	};
-
 	class REFLECTIVE(MaterialParameterView)
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialParameterView)
 
-	private:
-		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
-		FlyweightStringA _parameterName;
+#ifdef KEYH_DEV
+			friend class MaterialDefinition;
+#endif
 
+	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Type")
 		MaterialParameterType _parameterType;
 
@@ -61,9 +46,9 @@ namespace keyh
 		uint32 _offset;
 
 	public:
-		inline const FlyweightStringA& getParameterName() const { return _parameterName; }
-		inline MaterialParameterType getParameterType() const { return _parameterType; }
-		inline uint32 getOffset() const { return _offset; }
+		inline MaterialParameterType	getParameterType() const { return _parameterType; }
+		inline uint32					getOffset() const { return _offset; }
 	};
 }
 
+#include "MaterialParameterView.reflect_generated.inl"

@@ -1,7 +1,9 @@
 ﻿#include "MaterialSystemPch.h"
 #include "MaterialDefinition.h"
 #include "MaterialParameterDefinition.h"
-#include "StrUtil.h"
+
+#include "MaterialLayout.h"
+#include "MaterialParameterView.h"
 
 namespace keyh
 {
@@ -96,5 +98,21 @@ namespace keyh
 			void* dest = gpuDefaultMemoryBlockBuffer + paramViewDesc._offset;
 			deserializeMaterialParameterValue(materialParameterDef, static_cast<byte*>(dest));
 		}
+	}
+
+	void MaterialDefinition::initializeMaterialLayout(MaterialLayout& materialLayout) const
+	{
+		for (const MaterialBitFlagViewDesc& bitFlagViewDesc : _materialBitFlagViewDescs)
+		{
+			materialLayout._materialBitFlagViews.insert(bitFlagViewDesc._materialBitFlagName, bitFlagViewDesc._bitOffset);
+		}
+		for (const MaterialParameterViewDesc& paramViewDesc : _materialParameterViewDescs)
+		{
+			MaterialParameterViews::InsertResult insertResult = materialLayout._materialParameterViews.insert(paramViewDesc._materialParameterName, MaterialParameterView());
+			MaterialParameterView& materialParameterView = insertResult.value();
+			materialParameterView._offset = paramViewDesc._offset;
+			materialParameterView._parameterType = paramViewDesc._parameterType;
+		}
+		materialLayout._gpuMaterialMemoryBlock = _gpuDefaultMemoryBlock;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿#pragma once
 namespace keyh
 {
-	class MaterialInfo;
+	class MaterialLayout;
 
 	class MaterialManager
 	{
@@ -9,15 +9,14 @@ namespace keyh
 		MaterialManager();
 		~MaterialManager();
 
-	private:
-		Vector<StaticStringA> _materialDirectoryPaths;
-	
-
 	public:
-		using MaterialInfoMap = HashMap<FlyweightStringA, Ptr<MaterialInfo>>;
+		using MaterialLayoutMap = HashMap<FlyweightStringA, Ptr<MaterialLayout>>;
 
 	private:
-		MaterialInfoMap _materialInfos;
+		MaterialLayoutMap _materialLayouts;
+
+	private:
+		Vector<StaticStringA> _materialDirectoryPaths;	
 	};
 }
 

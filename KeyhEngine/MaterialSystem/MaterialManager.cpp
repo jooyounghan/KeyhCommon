@@ -1,7 +1,14 @@
 ﻿#include "MaterialSystemPch.h"
 #include "MaterialManager.h"
+
+#ifdef PA_DEV
 #include "MaterialDefinition.h"
 #include "MaterialParameterDefinition.h"
+#endif
+
+#include "MaterialLayout.h"
+#include "MaterialParameterView.h"
+
 #include <string>
 
 namespace keyh
@@ -19,26 +26,20 @@ namespace keyh
 	}
 
 #if defined KEYH_DEV
-	static const void loadMaterialFilesFromDirectoryPath(const StaticStringA& directoryPath, MaterialManager::MaterialInfoMap& materialInfos)
+	static const void importMaterialDefinitions(const Vector<StaticStringA>& directoryPaths, MaterialManager::MaterialLayoutMap& materialLayouts)
 	{
-		Vector<StaticStringA> commonMaterialFiles = FileUtil::getFileList(directoryPath.c_str(), "material");
-		for (const StaticStringA& materialFile : commonMaterialFiles)
+		for (const StaticStringA& directoryPath : directoryPaths)
 		{
-			StaticBufferA<kMaxPathLength> materialFilePath;
-			materialFilePath.write(directoryPath.c_str(), directoryPath.size());
-			materialFilePath.write("\\", 1);
-			materialFilePath.write(materialFile.c_str(), materialFile.size());
-
-			MaterialManager::MaterialInfoMap::InsertResult insertResult = materialInfos.insert(materialFile, makePtr<MaterialInfo>());
-			if (insertResult.isDenied())
+			Vector<StaticStringA> materialFiles = FileUtil::getFileList(directoryPath.c_str(), "material");
+			for (const StaticStringA& materialFile : materialFiles)
 			{
-				KEYH_ASSERT_ARGS(false, "Material file already exists: {}", materialFilePath.getBuffer());
-				continue;
-			}
+				StaticBufferA<kMaxPathLength> materialFilePath;
+				materialFilePath.write(directoryPath.c_str(), directoryPath.size());
+				materialFilePath.write("\\", 1);
+				materialFilePath.write(materialFile.c_str(), materialFile.size());
 
-			MaterialInfo* insertedMaterialInfo = insertResult.value().get();
-			ReflectSerializer::deserializeFromJson(materialFilePath.getBuffer(), insertedMaterialInfo);
-			insertedMaterialInfo->initialize();
+				StaticStringA fileStem = FileUtil::getFileStem(materialFile);
+			}
 		}
 	}
 #endif
@@ -49,7 +50,15 @@ namespace keyh
 		const StaticStringA& commonResourcePath = resourcePathManager.getCommonResourcePath();
 		const StaticStringA& commonMaterialDirectoryPath = addMaterialDirectoryPathsFromFolder(commonResourcePath, _materialDirectoryPaths);
 
-//#pragma region Material Definition Create Test
+		const StaticStringA& projectResourcePath = resourcePathManager.getProjectResourcePath();
+		const StaticStringA& projectMaterialDirectoryPath = addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
+
+#if defined(KEYH_DEV)
+		// DEV일 때는 XML을 통해서 
+		importMaterialDefinitions(_materialDirectoryPaths, _materialLayouts);
+#endif
+
+#pragma region Material Definition Create Test
 //		MaterialDefinition test;
 //		{
 //			MaterialParameterDefinition* materialParameterInfo = test._materialParameterDefinitions.emplace_back();
@@ -83,16 +92,8 @@ namespace keyh
 //		StringViewA materialFilePathView(materialFilePath.getBuffer(), materialFilePath.size());
 //	
 //		ReflectSerializer::serializeToJson(materialFilePathView, &test, true);
-//#pragma endregion
-//
-//#if defined(KEYH_DEV)
-//		// DEV일 때는 XML을 통해서 
-//		loadMaterialFilesFromDirectoryPath(commonMaterialDirectoryPath, _materialInfos);
-//
-//		const StaticStringA& projectResourcePath = resourcePathManager.getProjectResourcePath();
-//		const StaticStringA& projectMaterialDirectoryPath = addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
-//		loadMaterialFilesFromDirectoryPath(projectMaterialDirectoryPath, _materialInfos);
-//#endif
+#pragma endregion
+
 	}
 
 	MaterialManager::~MaterialManager()

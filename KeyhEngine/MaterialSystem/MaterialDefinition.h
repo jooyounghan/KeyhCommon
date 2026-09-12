@@ -1,9 +1,11 @@
 ﻿#pragma once
+#include "MaterialEnum.h"
 
 namespace keyh
 {
 	class MaterialBitFlagDefinition;
 	class MaterialParameterDefinition;
+	class MaterialLayout;
 
 	struct MaterialBitFlagViewDesc
 	{
@@ -44,6 +46,7 @@ namespace keyh
 
 	public:
 		void initialize();
+		void initializeMaterialLayout(MaterialLayout& materialLayout) const;
 	};
 }
 
