@@ -1,5 +1,6 @@
 ﻿#include "CommonBasePch.h"
 #include "FileUtil.h"
+#include "HashMap.h"
 
 #if defined(KEYH_PLATFORM_WINDOWS)
 #include <windows.h>
@@ -195,6 +196,79 @@ namespace keyh
 			});
 
 		return entries;
+	}
+
+	struct FilePathEntry
+	{
+		StaticStringA _filePath;
+		StaticStringA _binaryFilePath;
+	};
+	using FileNameMap = HashMap<StaticStringA, FilePathEntry>;
+
+	static void updateFileNameMap(const utf8* path, const utf8* extension, FileNameMap& fileNameMap, bool isBinary)
+	{
+		Vector<StaticStringA> files = FileUtil::getFileList(path, extension);
+		for (const StaticStringA& file : files)
+		{
+			StaticBufferA<kMaxPathLength> fullPath;
+			fullPath.write(path, strlen(path));
+			fullPath.write("\\", 1);
+			fullPath.write(file.c_str(), file.size());
+
+			StaticStringA fileStem = FileUtil::getFileStem(file);
+
+			FileNameMap::InsertResult insertResult = fileNameMap.insert(fileStem, FilePathEntry(), false);
+			FilePathEntry& filePathEntry = insertResult.value();
+
+			if (isBinary)
+			{
+				filePathEntry._binaryFilePath = StaticStringA(fullPath.getBuffer(), fullPath.size());
+			}
+			else
+			{
+				filePathEntry._filePath = StaticStringA(fullPath.getBuffer(), fullPath.size());
+			}
+		}
+	}
+
+	Vector<FileEntry> FileUtil::collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension)
+	{
+		Vector<FileEntry> rebuildFileList;
+
+		HashMap<StaticStringA, FilePathEntry> fileNameMap;
+		updateFileNameMap(rawPath, rawExtension, fileNameMap, false);
+		updateFileNameMap(binaryPath, binaryExtension, fileNameMap, true);
+
+		const StaticStringA extension(rawExtension, strlen(rawExtension));
+
+		for (const HashBucket<StaticStringA, FilePathEntry>& bucket : fileNameMap)
+		{
+			const FilePathEntry& filePathEntry = bucket.value();
+			const bool isRawFileExist = !filePathEntry._filePath.empty();
+			const bool isRebuildNeeded = isRawFileExist && (filePathEntry._binaryFilePath.empty() || getFileTimeStamp(filePathEntry._filePath.c_str()) > getFileTimeStamp(filePathEntry._binaryFilePath.c_str()));
+
+			if (isRebuildNeeded == false)
+				continue;
+
+			const StaticStringA& fileStem = bucket.key();
+
+			StaticBufferA<kMaxPathLength> rebuildFilePath;
+			rebuildFilePath.write(rawPath, strlen(rawPath));
+			rebuildFilePath.write("\\", 1);
+			rebuildFilePath.write(fileStem.c_str(), fileStem.size());
+			rebuildFilePath.write(".", 1);
+			rebuildFilePath.write(extension.c_str(), extension.size());
+			StaticStringA rebuildFile(rebuildFilePath.getBuffer(), rebuildFilePath.size());
+
+			FileEntry fileEntry;
+			fileEntry._fileStem = fileStem;
+			fileEntry._fileExtension = extension;
+			fileEntry._fileFullPath = rebuildFile;
+
+			rebuildFileList.push_back(keyh::move(fileEntry));
+		}
+
+		return rebuildFileList;
 	}
 
 	StaticStringA FileUtil::getFileStem(const StaticStringA& fileName)

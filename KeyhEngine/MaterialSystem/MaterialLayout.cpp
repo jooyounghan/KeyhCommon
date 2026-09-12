@@ -3,6 +3,8 @@
 
 namespace keyh
 {
+	KEYH_REFLECT_DEFINE_BODY(MaterialLayout)
+
 	void MaterialLayout::updateMaterialBitFlag(const FlyweightStringA& bitFlagName, bool value)
 	{
 		MaterialBitFlagViews::FindResult findResult = _materialBitFlagViews.find(bitFlagName);

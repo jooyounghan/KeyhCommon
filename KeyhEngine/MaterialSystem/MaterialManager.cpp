@@ -1,7 +1,7 @@
 ﻿#include "MaterialSystemPch.h"
 #include "MaterialManager.h"
 
-#ifdef PA_DEV
+#ifdef KEYH_DEV
 #include "MaterialDefinition.h"
 #include "MaterialParameterDefinition.h"
 #endif
@@ -25,79 +25,101 @@ namespace keyh
 		return materialDirectoryPaths.emplace_back(materialDirectoryPath.getBuffer(), materialDirectoryPath.size());
 	}
 
-#if defined KEYH_DEV
-	static const void importMaterialDefinitions(const Vector<StaticStringA>& directoryPaths, MaterialManager::MaterialLayoutMap& materialLayouts)
+	static StaticStringA getMaterialBinaryPath(const StaticStringA& materialDirectoryPath)
 	{
-		for (const StaticStringA& directoryPath : directoryPaths)
-		{
-			Vector<StaticStringA> materialFiles = FileUtil::getFileList(directoryPath.c_str(), "material");
-			for (const StaticStringA& materialFile : materialFiles)
-			{
-				StaticBufferA<kMaxPathLength> materialFilePath;
-				materialFilePath.write(directoryPath.c_str(), directoryPath.size());
-				materialFilePath.write("\\", 1);
-				materialFilePath.write(materialFile.c_str(), materialFile.size());
-
-				StaticStringA fileStem = FileUtil::getFileStem(materialFile);
-			}
-		}
+		constexpr const utf8	kMaterialBinaryPath[] = "\\Binary";
+		constexpr size_t		kMaterialBinaryPathLength = sizeof(kMaterialBinaryPath) - 1;
+		StaticBufferA<kMaxPathLength> materialBinaryFilePath;
+		materialBinaryFilePath.write(materialDirectoryPath.c_str(), materialDirectoryPath.size());
+		materialBinaryFilePath.write(kMaterialBinaryPath, kMaterialBinaryPathLength);
+		return StaticStringA(materialBinaryFilePath.getBuffer(), materialBinaryFilePath.size());
 	}
-#endif
 
 	MaterialManager::MaterialManager()
 	{
 		ResourcePathManager& resourcePathManager = ResourcePathManager::getInstance();
 		const StaticStringA& commonResourcePath = resourcePathManager.getCommonResourcePath();
-		const StaticStringA& commonMaterialDirectoryPath = addMaterialDirectoryPathsFromFolder(commonResourcePath, _materialDirectoryPaths);
+		addMaterialDirectoryPathsFromFolder(commonResourcePath, _materialDirectoryPaths);
 
 		const StaticStringA& projectResourcePath = resourcePathManager.getProjectResourcePath();
-		const StaticStringA& projectMaterialDirectoryPath = addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
+		addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
+
+		importMaterialLayout(_materialDirectoryPaths);
 
 #if defined(KEYH_DEV)
 		// DEV일 때는 XML을 통해서 
-		importMaterialDefinitions(_materialDirectoryPaths, _materialLayouts);
+		importMaterialDefinitions(_materialDirectoryPaths);
 #endif
-
-#pragma region Material Definition Create Test
-//		MaterialDefinition test;
-//		{
-//			MaterialParameterDefinition* materialParameterInfo = test._materialParameterDefinitions.emplace_back();
-//			materialParameterInfo->_parameterName = "TestBitFlagParameter";
-//			materialParameterInfo->_parameterType = MaterialParameterType::BitFlag8;
-//			materialParameterInfo->_description = "Test Bit Flag Parameter Description";
-//			for (uint32 idx = 0; idx < 8; ++idx)
-//			{
-//				MaterialBitFlagDefinition& bitFlagInfo = materialParameterInfo->_bitFlagDefinitions.emplace_back();
-//				bitFlagInfo._bitIndex = idx;
-//				bitFlagInfo._parameterName = ("Bit Flag Name" + std::to_string(idx)).c_str();
-//				bitFlagInfo._defaultValue = idx % 2 == 0;
-//				bitFlagInfo._description = ("Bit Flag Description" + std::to_string(idx)).c_str();
-//			}
-//		}
-//
-//
-//		for (uint32 idx = 0; idx < 3; ++idx)
-//		{
-//			MaterialParameterInfo* materialParameterInfo = test._materialParameterInfos.emplace_back();
-//			materialParameterInfo->_parameterName = "TestParameter";
-//			materialParameterInfo->_parameterType = MaterialParameterType::Float;
-//			materialParameterInfo->_description = "Test Parameter Description";
-//			materialParameterInfo->_defaultValue = "0.0";
-//		}
-//
-//		StaticBufferA<kMaxPathLength> materialFilePath;
-//		materialFilePath.write(commonMaterialDirectoryPath.c_str(), commonMaterialDirectoryPath.size());
-//		materialFilePath.write("\\TestMaterial.material", sizeof("\\TestMaterial.material") - 1);
-//
-//		StringViewA materialFilePathView(materialFilePath.getBuffer(), materialFilePath.size());
-//	
-//		ReflectSerializer::serializeToJson(materialFilePathView, &test, true);
-#pragma endregion
-
 	}
 
 	MaterialManager::~MaterialManager()
 	{
 	}
+
+	void MaterialManager::importMaterialLayout(const Vector<StaticStringA>& directoryPaths)
+	{
+		for (const StaticStringA& directoryPath : directoryPaths)
+		{
+			const StaticStringA materialBinaryPath = getMaterialBinaryPath(directoryPath);
+
+			Vector<StaticStringA> materialBinaryFiles = FileUtil::getFileList(materialBinaryPath.c_str(), "kem");
+			for (const StaticStringA& materialBinaryFile : materialBinaryFiles)
+			{
+				StaticBufferA<kMaxPathLength> materialBinaryFilePath;
+				materialBinaryFilePath.write(materialBinaryPath.c_str(), materialBinaryPath.size());
+				materialBinaryFilePath.write("\\", 1);
+				materialBinaryFilePath.write(materialBinaryFile.c_str(), materialBinaryFile.size());
+
+				StaticStringA fileStem = FileUtil::getFileStem(materialBinaryFile);
+
+				MaterialLayoutMap::FindResult findResult = _materialLayouts.find(fileStem);
+				if (findResult.isFound() == true)
+				{
+					KEYH_ASSERT_DEV_ARGS(false, "MaterialLayout already exists for file: %s", materialBinaryFilePath.getBuffer());
+					continue;
+				}
+
+				Ptr<MaterialLayout> materialLayout = makePtr<MaterialLayout>();
+
+				StringViewA materialBinaryFilePathView(materialBinaryFilePath.getBuffer(), materialBinaryFilePath.size());
+				ReflectSerializer::deserializeFromJson(materialBinaryFilePathView, materialLayout.get());
+
+				_materialLayouts.insert(fileStem, keyh::move(materialLayout));
+			}
+		}
+	}
+
+#if defined KEYH_DEV
+	void MaterialManager::importMaterialDefinitions(const Vector<StaticStringA>& directoryPaths)
+	{
+		for (const StaticStringA& directoryPath : directoryPaths)
+		{
+			const StaticStringA materialBinaryPath = getMaterialBinaryPath(directoryPath);
+
+			const Vector<FileEntry> rebuildMateiralFileEntries = FileUtil::collectRebuildFileEntry(directoryPath.c_str(), "material", materialBinaryPath.c_str(), "kem");
+
+			for (const FileEntry& materialFileEntry : rebuildMateiralFileEntries)
+			{
+				const StaticStringA& materialFilePath = materialFileEntry._fileFullPath;
+				const StaticStringA& materialFileStem = materialFileEntry._fileStem;
+
+				MaterialDefinition materialDefinition;
+
+				StringViewA materialFilePathView(materialFilePath.c_str(), materialFilePath.size());
+				ReflectSerializer::deserializeFromJson(materialFilePathView, &materialDefinition);
+
+				materialDefinition.initialize();
+
+				Ptr<MaterialLayout> materialLayout = makePtr<MaterialLayout>();
+				materialDefinition.initializeMaterialLayout(materialLayout.get());
+
+				// Need To Export MaterialLayout To Binary File
+
+				_materialLayouts.insert(materialFileStem, keyh::move(materialLayout));
+			}
+		}
+	}
+#endif
+
 
 }

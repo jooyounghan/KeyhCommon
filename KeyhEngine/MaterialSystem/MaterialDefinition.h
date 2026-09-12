@@ -25,6 +25,10 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialDefinition)
 
+#ifdef KEYH_DEV
+			friend class MaterialManager;
+#endif
+
 	private:
 		KEYH_REFLECT_PROPERTY(PropertyName = "MaterialName")
 		FlyweightStringA _materialName;
@@ -46,7 +50,7 @@ namespace keyh
 
 	public:
 		void initialize();
-		void initializeMaterialLayout(MaterialLayout& materialLayout) const;
+		void initializeMaterialLayout(MaterialLayout* materialLayout) const;
 	};
 }
 

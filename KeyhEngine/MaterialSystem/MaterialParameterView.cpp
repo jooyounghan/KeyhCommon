@@ -3,6 +3,8 @@
 
 namespace keyh
 {
+	KEYH_REFLECT_DEFINE_BODY(MaterialParameterView)
+
 #define CREATE_UPDATE_DESC(FunctionName, ParameterType, DataType) \
 	MaterialParameterUpdateDesc MaterialParameterUpdateDesc::FunctionName(const FlyweightStringA& parameterName, const DataType* data) \
 	{ \

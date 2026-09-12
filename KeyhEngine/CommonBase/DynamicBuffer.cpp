@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "DynamicBuffer.h"
 
 namespace keyh
@@ -45,4 +45,5 @@ namespace keyh
 
 	template class DynamicBuffer<char>;
 	template class DynamicBuffer<wchar_t>;
+	template class DynamicBuffer<byte>;
 }

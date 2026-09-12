@@ -9,6 +9,10 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialBitFlagDefinition)
 
+#ifdef KEYH_DEV
+			friend class MaterialManager;
+#endif
+
 	public:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
 			FlyweightStringA _parameterName;
@@ -24,6 +28,9 @@ namespace keyh
 	{
 		KEYH_REFLECT_DECLARE_BODY(MaterialParameterDefinition)
 
+#ifdef KEYH_DEV
+			friend class MaterialManager;
+#endif
 	public:
 		KEYH_REFLECT_PROPERTY(PropertyName = "Name")
 		FlyweightStringA _parameterName;

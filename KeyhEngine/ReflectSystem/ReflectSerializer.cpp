@@ -149,6 +149,14 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_IS_EQUAL(bool)
     DEFINE_IS_EQUAL(StaticStringA)
     DEFINE_IS_EQUAL(FlyweightStringA)
+
+	template<> bool ReflectPropertySerializer<DynamicBuffer<byte>>::isEqual(const DynamicBuffer<byte>& a, const DynamicBuffer<byte>& b)
+	{
+		if (a.size() != b.size())
+			return false;
+
+		return memcmp(a.getBuffer(), b.getBuffer(), a.size()) == 0;
+	}
 #undef DEFINE_IS_EQUAL
 
 // =========================================================================
@@ -284,6 +292,16 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
     }
 
+    template<>
+	void ReflectPropertySerializer<DynamicBuffer<byte>>::serializeToJson(IBuffer* buffer, const DynamicBuffer<byte>& value, size_t depth, bool pretty)
+	{
+		(void)depth;
+		(void)pretty;
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+        buffer->writeBytes(value.getBuffer(), value.size());
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+	}
+
 #pragma endregion
 
 // =========================================================================
@@ -383,6 +401,14 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
         value = FlyweightStringA(stringView);
     }
 
+    template<>
+    void ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromJson(const JsonValue& json, DynamicBuffer<byte>& value)
+    {
+        StringViewA stringView = json.getStringValue();
+		value.allocate(stringView.size());
+        memcpy(value.getBuffer(), stringView.data(), stringView.size());
+    }
+
 #pragma endregion
 
 // =========================================================================
@@ -416,6 +442,7 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_SERIALIZE_TO_BINARY(bool)
     DEFINE_SERIALIZE_TO_BINARY(StaticStringA)
     DEFINE_SERIALIZE_TO_BINARY(FlyweightStringA)
+    DEFINE_SERIALIZE_TO_BINARY(DynamicBuffer<byte>)
 
 #undef DEFINE_SERIALIZE_TO_BINARY
 
@@ -452,7 +479,7 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_DESERIALIZE_FROM_BINARY(bool)
     DEFINE_DESERIALIZE_FROM_BINARY(StaticStringA)
     DEFINE_DESERIALIZE_FROM_BINARY(FlyweightStringA)
-
+	DEFINE_DESERIALIZE_FROM_BINARY(DynamicBuffer<byte>)
 #undef DEFINE_DESERIALIZE_FROM_BINARY
 
 #pragma endregion

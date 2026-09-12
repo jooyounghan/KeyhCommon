@@ -1,81 +1,79 @@
 {
-  "MaterialParameterInfos": [
+  "MaterialName": "",
+  "MaterialBitFlagDefinitions": [
     {
-      "Name": "TestBitFlagParameter",
-      "Type": "BitFlag8",
-      "DefaultValue": "",
-      "Desc": "Test Bit Flag Parameter Description",
-      "BitFlagInfo": [
-        {
-          "Name": "Bit Flag Name0",
-          "BitIndex": 0,
-          "DefaultValue": true,
-          "Desc": "Bit Flag Description0"
-        },
-        {
-          "Name": "Bit Flag Name1",
-          "BitIndex": 1,
-          "DefaultValue": false,
-          "Desc": "Bit Flag Description1"
-        },
-        {
-          "Name": "Bit Flag Name2",
-          "BitIndex": 2,
-          "DefaultValue": true,
-          "Desc": "Bit Flag Description2"
-        },
-        {
-          "Name": "Bit Flag Name3",
-          "BitIndex": 3,
-          "DefaultValue": false,
-          "Desc": "Bit Flag Description3"
-        },
-        {
-          "Name": "Bit Flag Name4",
-          "BitIndex": 4,
-          "DefaultValue": true,
-          "Desc": "Bit Flag Description4"
-        },
-        {
-          "Name": "Bit Flag Name5",
-          "BitIndex": 5,
-          "DefaultValue": false,
-          "Desc": "Bit Flag Description5"
-        },
-        {
-          "Name": "Bit Flag Name6",
-          "BitIndex": 6,
-          "DefaultValue": true,
-          "Desc": "Bit Flag Description6"
-        },
-        {
-          "Name": "Bit Flag Name7",
-          "BitIndex": 7,
-          "DefaultValue": false,
-          "Desc": "Bit Flag Description7"
-        }
-      ]
+      "Name": "Bit Flag Name0",
+      "BitIndex": 0,
+      "DefaultValue": true,
+      "Desc": "Bit Flag Description0"
     },
     {
-      "Name": "TestParameter",
-      "Type": "Float",
-      "DefaultValue": "0.0",
-      "Desc": "Test Parameter Description",
-      "BitFlagInfo": []
+      "Name": "Bit Flag Name1",
+      "BitIndex": 1,
+      "DefaultValue": false,
+      "Desc": "Bit Flag Description1"
     },
     {
-      "Name": "TestParameter",
-      "Type": "Float",
-      "DefaultValue": "0.0",
-      "Desc": "Test Parameter Description",
-      "BitFlagInfo": []
+      "Name": "Bit Flag Name2",
+      "BitIndex": 2,
+      "DefaultValue": true,
+      "Desc": "Bit Flag Description2"
     },
     {
-      "Name": "TestParameter",
+      "Name": "Bit Flag Name3",
+      "BitIndex": 3,
+      "DefaultValue": false,
+      "Desc": "Bit Flag Description3"
+    },
+    {
+      "Name": "Bit Flag Name4",
+      "BitIndex": 4,
+      "DefaultValue": true,
+      "Desc": "Bit Flag Description4"
+    },
+    {
+      "Name": "Bit Flag Name5",
+      "BitIndex": 5,
+      "DefaultValue": false,
+      "Desc": "Bit Flag Description5"
+    },
+    {
+      "Name": "Bit Flag Name6",
+      "BitIndex": 6,
+      "DefaultValue": true,
+      "Desc": "Bit Flag Description6"
+    },
+    {
+      "Name": "Bit Flag Name7",
+      "BitIndex": 7,
+      "DefaultValue": false,
+      "Desc": "Bit Flag Description7"
+    }
+  ],
+  "MaterialParameterDefinitions": [
+    {
+      "Name": "TestParameter1",
       "Type": "Float",
-      "DefaultValue": "0.0",
-      "Desc": "Test Parameter Description",
-      "BitFlagInfo": []
+      "DefaultValue": "1.1",
+      "Desc": "Test Parameter Description"
+    },
+    {
+      "Name": "TestParameter2",
+      "Type": "Float3",
+      "DefaultValue": "1.23, 4.56, 7.89",
+      "Desc": "Test Parameter Description"
+    },
+    {
+      "Name": "TestParameter3",
+      "Type": "Int",
+      "DefaultValue": "123",
+      "Desc": "Test Parameter Description"
+    },
+    {
+      "Name": "TestParameter4",
+      "Type": "Int2",
+      "DefaultValue": "456, 789",
+      "Desc": "Test Parameter Description"
     }
   ]
 }
