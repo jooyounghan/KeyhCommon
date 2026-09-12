@@ -3,6 +3,11 @@
   <PropertyGroup>
     <_CommonBasePropsImported>true</_CommonBasePropsImported>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <CommonBaseInheritedPreprocessorDefinitions></CommonBaseInheritedPreprocessorDefinitions>
+    <CommonBaseInheritedPreprocessorDefinitions Condition="'$(Configuration)' == 'Debug'">KEYH_DEBUG;KEYH_DEV;</CommonBaseInheritedPreprocessorDefinitions>
+    <CommonBaseInheritedPreprocessorDefinitions Condition="'$(Configuration)' == 'DevRelease'">KEYH_DEV;</CommonBaseInheritedPreprocessorDefinitions>
+    <CommonBaseInheritedPreprocessorDefinitions Condition="'$(CommonBaseInheritedPreprocessorDefinitions)' == '' and '$(Configuration)' == 'Release' and $([System.String]::Copy('$(CurrentSolutionConfigurationContents)').Contains('&lt;SolutionConfiguration&gt;DevRelease|'))">KEYH_DEV;</CommonBaseInheritedPreprocessorDefinitions>
+    <PublicPreprocessorDefinitions>$(CommonBaseInheritedPreprocessorDefinitions)$(PublicPreprocessorDefinitions)</PublicPreprocessorDefinitions>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

@@ -17,6 +17,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);$(RhiSystemVcpkgInstalledDir)include;%(AdditionalIncludeDirectories);</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(PublicPreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ForcedIncludeFiles>%(ForcedIncludeFiles);RhiSystemPch.h;RhiEnum.h;RhiResourceBarrier.h;IRhiBuffer.h;IRhiCommandList.h;IRhiCommandPool.h;IRhiCommandQueue.h;IRhiComputePipeline.h;IRhiDevice.h;IRhiFence.h;IRhiGraphicsPipeline.h;IRhiInstance.h;IRhiMemoryHeap.h;IRhiPipelineLayout.h;IRhiSampler.h;IRhiSwapChain.h;IRhiTexture.h;</ForcedIncludeFiles>
     </ClCompile>
     <Link>

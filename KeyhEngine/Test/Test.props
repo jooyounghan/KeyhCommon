@@ -9,6 +9,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(PublicPreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
 	  <ForcedIncludeFiles>%(ForcedIncludeFiles);</ForcedIncludeFiles>
 	</ClCompile>
   </ItemDefinitionGroup>
