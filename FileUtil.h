@@ -2,12 +2,20 @@
 #include "CommonCore.h"
 #include "StaticString.h"
 #include "Vector.h"
+
 namespace keyh
 {
 	enum class EntryType
 	{
 		Directory,
 		File
+	};
+
+	struct FileEntry
+	{
+		StaticStringA _fileStem;
+		StaticStringA _fileExtension;
+		StaticStringA _fileFullPath;
 	};
 
 	struct FileUtil
@@ -18,6 +26,8 @@ namespace keyh
 
 		static Vector<StaticStringA> getDirectoryList(const char* dirPath);
 		static Vector<StaticStringA> getFileList(const char* dirPath, const char* extension = nullptr);
+
+		static Vector<FileEntry> collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension);
 
 		static StaticStringA getFileStem(const StaticStringA& fileName);
 
