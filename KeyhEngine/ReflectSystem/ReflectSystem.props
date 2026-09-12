@@ -8,6 +8,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>$(PublicPreprocessorDefinitions);%(PreprocessorDefinitions)</PreprocessorDefinitions>
 	  <ForcedIncludeFiles>%(ForcedIncludeFiles);ReflectSystemPch.h;ReflectionUtil.h;IReflectProperty.h;IReflectObject.h;ReflectMetaObject.h;ReflectObject.h;ReflectProperty.h;ReflectPropertyPolicy.h;ReflectSerializer.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
