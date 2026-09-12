@@ -197,6 +197,15 @@ namespace keyh
 		return entries;
 	}
 
+	StaticStringA FileUtil::getFileStem(const StaticStringA& fileName)
+	{
+		const utf8* fileNameBuffer = fileName.c_str();
+		const char* dot = StrUtil::findNext(fileNameBuffer, fileNameBuffer + fileName.length(), '.');
+
+		dot = (dot != nullptr) ? dot : fileNameBuffer + fileName.length();
+		StaticStringA stem(fileNameBuffer, static_cast<size_t>(dot - fileNameBuffer));
+		return stem;
+	}
 
 	uint64 FileUtil::getFileTimeStamp(const char* filePath)
 	{

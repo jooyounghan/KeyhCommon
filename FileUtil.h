@@ -19,6 +19,8 @@ namespace keyh
 		static Vector<StaticStringA> getDirectoryList(const char* dirPath);
 		static Vector<StaticStringA> getFileList(const char* dirPath, const char* extension = nullptr);
 
+		static StaticStringA getFileStem(const StaticStringA& fileName);
+
 		static uint64 getFileTimeStamp(const char* filePath);
 	};
 

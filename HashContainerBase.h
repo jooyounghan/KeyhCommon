@@ -378,6 +378,7 @@ namespace keyh
 	public:
 		inline size_t capacity() const noexcept { return _capacity; }
 		inline size_t size() const noexcept { return _size; }
+		inline bool empty() const noexcept { return _size == 0; }
 
 	public:
 		Iterator begin();
