@@ -231,7 +231,7 @@ namespace keyh
 		}
 	}
 
-	Vector<FileEntry> FileUtil::collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension)
+	Vector<FileEntry> FileUtil::collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension, bool forceCollect)
 	{
 		Vector<FileEntry> rebuildFileList;
 
@@ -247,7 +247,7 @@ namespace keyh
 			const bool isRawFileExist = !filePathEntry._filePath.empty();
 			const bool isRebuildNeeded = isRawFileExist && (filePathEntry._binaryFilePath.empty() || getFileTimeStamp(filePathEntry._filePath.c_str()) > getFileTimeStamp(filePathEntry._binaryFilePath.c_str()));
 
-			if (isRebuildNeeded == false)
+			if (isRebuildNeeded == false && forceCollect == false)
 				continue;
 
 			const StaticStringA& fileStem = bucket.key();

@@ -3,11 +3,10 @@
 
 #ifdef KEYH_DEV
 #include "MaterialDefinition.h"
-#include "MaterialParameterDefinition.h"
 #endif
 
 #include "MaterialLayout.h"
-#include "MaterialParameterView.h"
+#include "MaterialLayoutRegistry.h"
 
 #include <string>
 
@@ -37,12 +36,24 @@ namespace keyh
 
 	MaterialManager::MaterialManager()
 	{
+#pragma region set ForceRebuildMaterialLayout
+		CommandLineManager& commandLineManager = CommandLineManager::getInstance();
+		if (commandLineManager.isCommandLinesRegistered() == false)
+		{
+			KEYH_ASSERT_DEV(false, "Command lines are not registered. Please call CommandLineManager::registerCommandLines() before initializing resource paths.");
+			return;
+		}
+		_forceRebuildMaterialLayout = commandLineManager.isCommandLinePresent("ForceRebuildMaterialLayout");
+#pragma endregion
+
+#pragma region set MaterialDirectoryPaths
 		ResourcePathManager& resourcePathManager = ResourcePathManager::getInstance();
 		const StaticStringA& commonResourcePath = resourcePathManager.getCommonResourcePath();
 		addMaterialDirectoryPathsFromFolder(commonResourcePath, _materialDirectoryPaths);
 
 		const StaticStringA& projectResourcePath = resourcePathManager.getProjectResourcePath();
 		addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
+#pragma endregion
 
 		importMaterialLayout(_materialDirectoryPaths);
 
@@ -58,6 +69,26 @@ namespace keyh
 
 	void MaterialManager::importMaterialLayout(const Vector<StaticStringA>& directoryPaths)
 	{
+		_materialLayoutRegistry = makePtr<MaterialLayoutRegistry>();
+
+#pragma region Load MaterialLayoutRegistry
+		for (const StaticStringA& directoryPath : directoryPaths)
+		{
+			constexpr const utf8	kMaterialLayoutRegistryPath[] = "\\MaterialLayoutRegistry.json";
+			constexpr size_t		kMaterialLayoutRegistryPathLength = sizeof(kMaterialLayoutRegistryPath) - 1;
+
+			StaticBufferA<kMaxPathLength> materialLayoutRegistryFilePath;
+			materialLayoutRegistryFilePath.write(directoryPath.c_str(), directoryPath.size());
+			materialLayoutRegistryFilePath.write(kMaterialLayoutRegistryPath, kMaterialLayoutRegistryPathLength);
+			StringViewA materialLayoutRegistryFilePathView(materialLayoutRegistryFilePath.getBuffer(), materialLayoutRegistryFilePath.size());
+
+			MaterialLayoutRegistry materialLayoutRegistry;
+			ReflectSerializer::deserializeFromJson(materialLayoutRegistryFilePathView, &materialLayoutRegistry);
+
+			_materialLayoutRegistry->mergeMaterialGroupTables(materialLayoutRegistry.getMaterialGroupTables());
+		}
+#pragma endregion
+
 		for (const StaticStringA& directoryPath : directoryPaths)
 		{
 			const StaticStringA materialBinaryPath = getMaterialBinaryPath(directoryPath);
@@ -96,7 +127,7 @@ namespace keyh
 		{
 			const StaticStringA materialBinaryPath = getMaterialBinaryPath(directoryPath);
 
-			const Vector<FileEntry> rebuildMateiralFileEntries = FileUtil::collectRebuildFileEntry(directoryPath.c_str(), "material", materialBinaryPath.c_str(), "kem");
+			const Vector<FileEntry> rebuildMateiralFileEntries = FileUtil::collectRebuildFileEntry(directoryPath.c_str(), "material", materialBinaryPath.c_str(), "kem", _forceRebuildMaterialLayout);
 
 			for (const FileEntry& materialFileEntry : rebuildMateiralFileEntries)
 			{

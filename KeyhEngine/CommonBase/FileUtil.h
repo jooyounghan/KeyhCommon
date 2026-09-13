@@ -27,7 +27,7 @@ namespace keyh
 		static Vector<StaticStringA> getDirectoryList(const char* dirPath);
 		static Vector<StaticStringA> getFileList(const char* dirPath, const char* extension = nullptr);
 
-		static Vector<FileEntry> collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension);
+		static Vector<FileEntry> collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension, bool forceCollect);
 
 		static StaticStringA getFileStem(const StaticStringA& fileName);
 
