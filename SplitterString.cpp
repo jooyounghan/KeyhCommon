@@ -13,7 +13,7 @@ namespace keyh
 	void SplitterString<T>::split(const StringView<T>& string, const char* delimiter)
 	{
 		clear();
-		const size_t length = string.size();
+		const size_t length = string.length();
 		if (string.data() == nullptr || length == 0)
 		{
 			return;
