@@ -27,13 +27,13 @@ void test_StaticString_create_and_length()
     StaticString<char> shortString(kShortText);
     CHECK(!shortString.empty());
     CHECK(shortString.length() == 5);
-    CHECK(shortString.size() == 5);
+    CHECK(shortString.size() == 5 * sizeof(char));
     CHECK(std::strcmp(shortString.c_str(), kShortText) == 0);
 
     StaticString<char> longString(kLongText);
     CHECK(!longString.empty());
     CHECK(longString.length() == std::strlen(kLongText));
-    CHECK(longString.size() == std::strlen(kLongText));
+    CHECK(longString.size() == std::strlen(kLongText) * sizeof(char));
     CHECK(std::strcmp(longString.c_str(), kLongText) == 0);
 }
 
@@ -117,10 +117,12 @@ void test_StaticString_wchar()
 
     StaticString<wchar_t> shortString(kShortWideText);
     CHECK(shortString.length() == 5);
+    CHECK(shortString.size() == 5 * sizeof(wchar_t));
     CHECK(std::wcscmp(shortString.c_str(), kShortWideText) == 0);
 
     StaticString<wchar_t> longString(kLongWideText);
     CHECK(longString.length() == std::wcslen(kLongWideText));
+    CHECK(longString.size() == std::wcslen(kLongWideText) * sizeof(wchar_t));
     CHECK(std::wcscmp(longString.c_str(), kLongWideText) == 0);
 
     StaticString<wchar_t> copied(longString);
