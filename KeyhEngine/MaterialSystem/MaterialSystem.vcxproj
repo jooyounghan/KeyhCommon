@@ -179,6 +179,7 @@
     <ClInclude Include="MaterialParameterDefinition.h" />
     <ClInclude Include="MaterialParameterView.h" />
     <ClInclude Include="MaterialSystemPch.h" />
+    <ClInclude Include="ShaderCompiler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialEnum.cpp" />
@@ -194,6 +195,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ShaderCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppSystem\AppSystem.vcxproj">

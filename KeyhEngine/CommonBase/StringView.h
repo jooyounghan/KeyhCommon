@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "StrUtil.h"
 
 namespace keyh
@@ -22,7 +22,7 @@ namespace keyh
 		inline const T* data() const { return _data; }
 		inline const T* c_str() const { return _data; }
 		inline size_t length() const { return _length; }
-		inline size_t size() const { return _length; }
+		inline size_t size() const { return _length * sizeof(T); }
 		inline bool empty() const { return _length == 0; }
 
 	public:

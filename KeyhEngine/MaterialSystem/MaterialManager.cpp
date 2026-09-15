@@ -55,6 +55,7 @@ namespace keyh
 		addMaterialDirectoryPathsFromFolder(projectResourcePath, _materialDirectoryPaths);
 #pragma endregion
 
+		importMaterialLayoutRegistry(_materialDirectoryPaths);
 		importMaterialLayout(_materialDirectoryPaths);
 
 #if defined(KEYH_DEV)
@@ -67,11 +68,9 @@ namespace keyh
 	{
 	}
 
-	void MaterialManager::importMaterialLayout(const Vector<StaticStringA>& directoryPaths)
+	void MaterialManager::importMaterialLayoutRegistry(const Vector<StaticStringA>& directoryPaths)
 	{
 		_materialLayoutRegistry = makePtr<MaterialLayoutRegistry>();
-
-#pragma region Load MaterialLayoutRegistry
 		for (const StaticStringA& directoryPath : directoryPaths)
 		{
 			constexpr const utf8	kMaterialLayoutRegistryPath[] = "\\MaterialLayoutRegistry.json";
@@ -85,10 +84,12 @@ namespace keyh
 			MaterialLayoutRegistry materialLayoutRegistry;
 			ReflectSerializer::deserializeFromJson(materialLayoutRegistryFilePathView, &materialLayoutRegistry);
 
-			_materialLayoutRegistry->mergeMaterialGroupTables(materialLayoutRegistry.getMaterialGroupTables());
+			_materialLayoutRegistry->mergeMaterialGroupTables(materialLayoutRegistry.getMaterialGroupTables());	
 		}
-#pragma endregion
+	}
 
+	void MaterialManager::importMaterialLayout(const Vector<StaticStringA>& directoryPaths)
+	{
 		for (const StaticStringA& directoryPath : directoryPaths)
 		{
 			const StaticStringA materialBinaryPath = getMaterialBinaryPath(directoryPath);

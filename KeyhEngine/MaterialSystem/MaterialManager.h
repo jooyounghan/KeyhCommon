@@ -24,6 +24,7 @@ namespace keyh
 		Vector<StaticStringA> _materialDirectoryPaths;	
 
 	private:
+		void importMaterialLayoutRegistry(const Vector<StaticStringA>& directoryPaths);
 		void importMaterialLayout(const Vector<StaticStringA>& directoryPaths);
 #if defined KEYH_DEV
 		void importMaterialDefinitions(const Vector<StaticStringA>& directoryPaths);

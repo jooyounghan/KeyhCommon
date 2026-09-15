@@ -25,6 +25,12 @@
     <Filter Include="헤더 파일\Material">
       <UniqueIdentifier>{b4b5c644-8d05-4786-b328-e6a1ea3d0fa4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{0fb927a8-3610-4921-b2d9-33ef1b2929a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Shader">
+      <UniqueIdentifier>{370922bd-fe3d-4c47-b63a-add6a08d00ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MaterialSystemPch.h">
@@ -51,6 +57,9 @@
     <ClInclude Include="MaterialLayoutRegistry.h">
       <Filter>헤더 파일\Material</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderCompiler.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
@@ -76,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="MaterialLayoutRegistry.cpp">
       <Filter>소스 파일\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderCompiler.cpp">
+      <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
