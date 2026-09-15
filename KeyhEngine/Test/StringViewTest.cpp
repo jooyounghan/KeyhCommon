@@ -13,6 +13,7 @@ void test_StringView_removePrefix()
     StringViewA sv("hello world");
     sv.removePrefix(6);
     CHECK(sv.length() == 5);
+    CHECK(sv.size() == 5 * sizeof(char));
     CHECK(sv == StringViewA("world"));
 
     sv.removePrefix(0);
@@ -31,6 +32,7 @@ void test_StringView_removeSuffix()
     StringViewA sv("hello world");
     sv.removeSuffix(6);
     CHECK(sv.length() == 5);
+    CHECK(sv.size() == 5 * sizeof(char));
     CHECK(sv == StringViewA("hello"));
 
     sv.removeSuffix(0);
@@ -125,14 +127,17 @@ void test_StringView_wchar()
     sv.trim();
     CHECK(sv == StringViewW(L"wide world"));
     CHECK(sv.length() == 10);
+    CHECK(sv.size() == 10 * sizeof(wchar_t));
 
     sv.removePrefix(5);
     CHECK(sv == StringViewW(L"world"));
     CHECK(sv.length() == 5);
+    CHECK(sv.size() == 5 * sizeof(wchar_t));
 
     sv.removeSuffix(2);
     CHECK(sv == StringViewW(L"wor"));
     CHECK(sv.length() == 3);
+    CHECK(sv.size() == 3 * sizeof(wchar_t));
 }
 
 void test_SplitterString_with_trim()

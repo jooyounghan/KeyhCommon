@@ -18,7 +18,7 @@ namespace keyh
 		inline constexpr size_t kVirtualMaterialPathCount = sizeof(kVirtualMaterialPath) / sizeof(wchar_t) - 1;
 
 		StaticStringW fileNameW = StaticStringW(pFilename);
-		StringViewW fileNameView(fileNameW.c_str(), fileNameW.size());
+		StringViewW fileNameView(fileNameW.c_str(), fileNameW.length());
 
 		if (fileNameView == StringViewW(kVirtualMaterialPath, kVirtualMaterialPathCount))
 		{

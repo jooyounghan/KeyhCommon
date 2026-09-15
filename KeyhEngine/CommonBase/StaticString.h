@@ -48,7 +48,7 @@ namespace keyh
 	public:
 		inline const T* c_str() const { return isHeapAllocated() ? _heap : _ssoBuffer; }
 		inline size_t length() const { return _size; }
-		inline size_t size() const { return _size; }
+		inline size_t size() const { return _size * sizeof(T); }
 		inline size_t capacity() const { return isHeapAllocated() ? getHeapCapacity() : StrUtil::kSsoCapacity; }
 		inline bool empty() const { return _size == 0; }
 
