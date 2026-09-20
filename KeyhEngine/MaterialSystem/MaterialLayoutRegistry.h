@@ -20,3 +20,4 @@ namespace keyh
 	};
 }
 
+#include "MaterialLayoutRegistry.reflect_generated.inl"

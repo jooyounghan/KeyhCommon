@@ -4,6 +4,12 @@
 	// Window를 위한 클래스로 설계
 	
 #ifdef KEYH_PLATFORM_WINDOWS
+	struct ShaderBinaryData
+	{
+		Microsoft::WRL::ComPtr<IDxcBlob> _shaderCacheBlob;
+		Microsoft::WRL::ComPtr<IDxcBlob> _rootSignatureCacheBlob;
+	};
+
 	class ShaderCompiler
 	{
 	public:
@@ -21,7 +27,16 @@
 		static IDxcIncludeHandler* getDefaultIncludeHandler() { return _defaultIncludeHandler.Get(); }
 
 	public:
-		void initialize();
+		void				initialize();
+		ShaderBinaryData	compileShader(
+			const FlyweightStringW& shaderSource
+			, EShaderStage shaderStage
+			, const FlyweightStringW& entryPoint
+			, const FlyweightStringW& shaderCompileVersion
+#ifdef KEYH_DEV	
+			, bool isDevShader = false
+#endif
+		);
 	};
 #endif
 }
