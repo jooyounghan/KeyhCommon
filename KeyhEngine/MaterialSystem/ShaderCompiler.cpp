@@ -33,8 +33,8 @@ namespace keyh
 		StaticBuffer<wchar_t, 16> targetProfileBuffer;
 		targetProfileBuffer.write(shaderProfiles[shaderTypeIndex], shaderProfileLength);
         targetProfileBuffer.write(shaderCompileVersion.c_str(), shaderCompileVersion.size());
-        std::wstring targetProfile = shaderProfiles[shaderTypeIndex] + std::wstring(shaderCompileVersion.c_str(), shaderCompileVersion.c_str() + shaderCompileVersion.length());
-        return targetProfile;
+        
+        return StaticStringW(targetProfileBuffer.getBuffer(), targetProfileBuffer.size());
     }
 
 }

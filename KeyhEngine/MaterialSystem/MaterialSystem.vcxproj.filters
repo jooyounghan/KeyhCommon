@@ -60,6 +60,9 @@
     <ClInclude Include="ShaderCompiler.h">
       <Filter>헤더 파일\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="MaterialIncludeHandler.h">
+      <Filter>헤더 파일\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MaterialSystemPch.cpp">
@@ -87,6 +90,9 @@
       <Filter>소스 파일\Material</Filter>
     </ClCompile>
     <ClCompile Include="ShaderCompiler.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialIncludeHandler.cpp">
       <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>

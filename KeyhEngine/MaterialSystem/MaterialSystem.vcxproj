@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="MaterialEnum.h" />
     <ClInclude Include="MaterialDefinition.h" />
+    <ClInclude Include="MaterialIncludeHandler.h" />
     <ClInclude Include="MaterialLayoutRegistry.h" />
     <ClInclude Include="MaterialLayout.h" />
     <ClInclude Include="MaterialManager.h" />
@@ -184,6 +185,7 @@
   <ItemGroup>
     <ClCompile Include="MaterialEnum.cpp" />
     <ClCompile Include="MaterialDefinition.cpp" />
+    <ClCompile Include="MaterialIncludeHandler.cpp" />
     <ClCompile Include="MaterialLayoutRegistry.cpp" />
     <ClCompile Include="MaterialLayout.cpp" />
     <ClCompile Include="MaterialManager.cpp" />
