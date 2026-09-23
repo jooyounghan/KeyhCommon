@@ -1,0 +1,16 @@
+The package installs headers under:
+  include/keyhcommon
+
+CMake usage:
+  find_package(KeyhCommon CONFIG REQUIRED)
+  target_link_libraries(your-target PRIVATE KeyhCommon::KeyhCommon)
+
+To link individual libraries instead:
+  target_link_libraries(your-target PRIVATE
+      KeyhCommon::CommonBase
+      KeyhCommon::ReflectSystem
+      KeyhCommon::AppSystem)
+
+For MSBuild consumers using vcpkg integration, add the required libraries to
+AdditionalDependencies:
+  CommonBase.lib;ReflectSystem.lib;AppSystem.lib
