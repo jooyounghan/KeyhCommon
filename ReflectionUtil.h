@@ -1,0 +1,35 @@
+﻿#pragma once
+namespace keyh
+{
+	class IReflectObject;
+
+	// Plain function-pointer types used for reflection property accessors.
+	// Stateless lambdas (no captures) are implicitly convertible to these types,
+	// so generated initializeMetaObject() code can pass lambdas directly.
+	// Example:
+	//   [](MyClass& obj) -> int&             { return obj._value; }   // ReflectRefGetter
+	//   [](const MyClass& obj) -> const int& { return obj._value; }   // ReflectConstGetter
+
+	template<typename ObjectType, typename PropertyType>
+	using ReflectRefGetter = PropertyType& (*)(ObjectType&);
+
+	template<typename ObjectType, typename PropertyType>
+	using ReflectConstGetter = const PropertyType& (*)(const ObjectType&);
+
+#pragma region ReflectObject Trait
+	template <typename T>
+	constexpr bool IsReflectObject_v = IsDerivedFrom_v<T, IReflectObject>;
+#pragma endregion
+
+	struct ReflectionUtil
+	{
+		static constexpr char kObjectBegin = '{';
+		static constexpr char kObjectEnd = '}';
+		static constexpr char kArrayBegin = '[';
+		static constexpr char kArrayEnd = ']';
+		static constexpr char kDelimiter = ',';
+		static constexpr char kQuote = '"';
+		static constexpr char kValueBegin = ':';
+
+	};
+}

@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\ReflectObject">
+      <UniqueIdentifier>{6690c0e1-fc62-4835-a490-ad97bb75b5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectObject">
+      <UniqueIdentifier>{76f0837d-5f98-4fd1-96d8-44a7d7abcdfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectProperty">
+      <UniqueIdentifier>{4f679f50-59bc-4b74-9c51-9f43bc628301}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ReflectProperty">
+      <UniqueIdentifier>{0245bede-77f8-46a6-95c5-e3748932b7a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ReflectionUtil">
+      <UniqueIdentifier>{7ba8e5dc-8ee0-460e-8160-3d1e8dd1f2be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ReflectionUtil">
+      <UniqueIdentifier>{8d571207-47a6-4c68-bc25-7ae90b153778}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ReflectSystemPch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectMetaObject.h">
+      <Filter>헤더 파일\ReflectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="IReflectProperty.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectObject.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectProperty.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectSerializer.h">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectSerializer.hpp">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectProperty.hpp">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectionUtil.h">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectMetaObject.hpp">
+      <Filter>헤더 파일\ReflectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="IReflectObject.h">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectObject.hpp">
+      <Filter>헤더 파일\ReflectProperty</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectPropertyPolicy.h">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="ReflectPropertyPolicy.hpp">
+      <Filter>헤더 파일\ReflectionUtil</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ReflectSystemPch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectMetaObject.cpp">
+      <Filter>소스 파일\ReflectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="IReflectProperty.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectObject.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectProperty.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectSerializer.cpp">
+      <Filter>소스 파일\ReflectionUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="IReflectObject.cpp">
+      <Filter>소스 파일\ReflectProperty</Filter>
+    </ClCompile>
+    <ClCompile Include="ReflectPropertyPolicy.cpp">
+      <Filter>소스 파일\ReflectionUtil</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReflectSystem.props" />
+  </ItemGroup>
+</Project>
