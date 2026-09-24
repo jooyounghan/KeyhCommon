@@ -11,13 +11,13 @@ namespace keyh
 		ReflectProperty(
 			const FlyweightStringA& propertyName
 			, const FlyweightStringA& groupName
-			, ValueType defaultValue
+			, ReflectDefaultChecker<ValueType> defaultChecker
 			, ReflectRefGetter<ObjectType, ValueType> refGetter
 			, ReflectConstGetter<ObjectType, ValueType> constGetter
 		);
 
 	protected:
-		ValueType									_defaultValue;
+		ReflectDefaultChecker<ValueType>			_defaultChecker = nullptr;
 		ReflectRefGetter<ObjectType, ValueType>		_refGetter = nullptr;
 		ReflectConstGetter<ObjectType, ValueType>	_constGetter = nullptr;
 
