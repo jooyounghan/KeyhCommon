@@ -1,0 +1,23 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="DevRelease" />
+    <BuildType Name="Release" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/CommonBase/">
+    <Project Path="CommonBase/CommonBase.vcxproj" Id="295ebb3a-8079-45ba-a2f1-2115d709d868" />
+  </Folder>
+  <Folder Name="/EngineCore/">
+    <Project Path="ReflectSystem/ReflectSystem.vcxproj" Id="761c4598-1bad-4437-9e24-e8673f0c9802">
+      <BuildType Solution="DevRelease|*" Project="Release" />
+    </Project>
+    <Project Path="AppSystem/AppSystem.vcxproj" Id="fc14504d-207b-4c6f-ad55-8ef14c7bbc47">
+      <BuildType Solution="DevRelease|*" Project="Release" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+</Solution>
