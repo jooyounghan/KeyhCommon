@@ -50,14 +50,14 @@ function Get-PortTreeHash([string]$repoRootPath, [string]$portDirectory) {
                 throw ('Unable to hash file: ' + $file.FullName)
             }
 
-            $relativePath = (Get-RepoRelativePath $repoRootPath $file.FullName).Replace('\', '/')
+            $relativePath = (Get-RepoRelativePath $portDirectory $file.FullName).Replace('\', '/')
             & git -C $repoRootPath update-index --add --cacheinfo ('100644,' + $blobHash + ',' + $relativePath) | Out-Null
             if ($LASTEXITCODE -ne 0) {
                 throw ('Unable to add file to temporary git index: ' + $relativePath)
             }
         }
 
-        $treeHash = (& git -C $repoRootPath write-tree --prefix=ports/keyhcommon).Trim()
+        $treeHash = (& git -C $repoRootPath write-tree).Trim()
         if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($treeHash)) {
             throw 'Unable to compute git tree hash for ports/keyhcommon.'
         }
