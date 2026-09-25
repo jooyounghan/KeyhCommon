@@ -104,7 +104,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <UpdatePortfileRefCommand>call "$(ProjectDir)..\..\ports\update_portfile_ref.bat"</UpdatePortfileRefCommand>
+    <UpdatePortRegistryMetadataCommand>call "$(ProjectDir)..\Tools\update_portfile_ref.bat"</UpdatePortRegistryMetadataCommand>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -125,8 +125,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,8 +150,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|Win32'">
@@ -175,8 +175,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -199,8 +199,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -225,8 +225,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">
@@ -251,8 +251,8 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
     <PostBuildEvent>
-      <Command>$(UpdatePortfileRefCommand)</Command>
-      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
+      <Command>$(UpdatePortRegistryMetadataCommand)</Command>
+      <Message>Sync keyhcommon vcpkg registry metadata with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
