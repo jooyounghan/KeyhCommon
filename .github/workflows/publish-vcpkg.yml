@@ -1,0 +1,58 @@
+name: Publish vcpkg registry
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
+      - name: Test registry metadata preparation
+        run: python3 -m unittest discover -s KeyhCommon/Tools/tests -v
+
+  publish:
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-vcpkg-main
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Test the latest main before publishing
+        run: python3 -m unittest discover -s KeyhCommon/Tools/tests -v
+      - name: Prepare immutable registry revision
+        run: python3 KeyhCommon/Tools/update_portfile_ref.py
+      - name: Commit and publish registry metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- ports/keyhcommon versions
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Publish keyhcommon vcpkg revision"
+            git push origin HEAD:main
+          fi
+          {
+            echo '### Published KeyhCommon registry baseline'
+            echo '```text'
+            git rev-parse HEAD
+            echo '```'
+            echo 'In KeyhEngine, update the KeyhCommon registries[].baseline to this commit, then run vcpkg install.'
+            echo 'Alternatively, run vcpkg x-update-baseline followed by vcpkg install to update all configured registries.'
+          } >> "$GITHUB_STEP_SUMMARY"

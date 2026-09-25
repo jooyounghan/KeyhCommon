@@ -131,8 +131,7 @@ def main() -> int:
     baseline_path = repo_root / "versions" / "baseline.json"
 
     if not (repo_root / ".git").exists():
-        print("[vcpkg registry] Skip: extracted package sources are not a registry checkout.")
-        return 0
+        raise RuntimeError("Publication requires a registry Git checkout, not extracted package sources.")
 
     for required_path in (portfile_path, vcpkg_json_path, versions_path, baseline_path):
         if not required_path.exists():
@@ -141,19 +140,17 @@ def main() -> int:
     head_result = run_git(repo_root, "rev-parse", "--verify", "HEAD", check=False)
     head_sha = head_result.stdout.strip()
     if head_result.returncode != 0 or not re.fullmatch(r"[0-9A-Fa-f]{40}", head_sha):
-        print("[vcpkg registry] Skip: repository HEAD commit is unavailable or invalid.")
-        return 0
+        raise RuntimeError("Repository HEAD commit is unavailable or invalid.")
 
     source_status = run_git(
         repo_root, "--no-optional-locks", "status", "--porcelain", "--untracked-files=all", "--", *SOURCE_PATHS
     ).stdout
     if source_status:
-        print(
-            "[vcpkg registry] Warning: uncommitted source changes; registry metadata was NOT updated.\n"
-            "Commit the source changes first, then run KeyhCommon/Tools/update_portfile_ref.bat again.\n"
+        raise RuntimeError(
+            "Uncommitted source changes; registry metadata was NOT updated.\n"
+            "Commit the source changes before preparing a publication.\n"
             + source_status
         )
-        return 0
 
     portfile_bytes = portfile_path.read_bytes()
     portfile_encoding, use_direct_text_encoding = detect_text_encoding(portfile_bytes)
@@ -277,10 +274,9 @@ def main() -> int:
     print(f"[vcpkg registry] Synced versions/k-/keyhcommon.json to git-tree {tree_hash} for version {version_label}")
     print(f"[vcpkg registry] Synced versions/baseline.json to version {version_label}")
     print(
-        "[vcpkg registry] This is a local update, NOT a publication. Commit ports/keyhcommon and versions\n"
-        "together, then push both the source and registry commits (do not squash them together).\n"
-        "Set KeyhEngine's KeyhCommon registries[].baseline to the published registry commit, "
-        "then run vcpkg install."
+        "[vcpkg registry] Metadata prepared. The publish-vcpkg workflow commits and pushes\n"
+        "ports/keyhcommon and versions together after source changes reach main.\n"
+        "Consumers must update the KeyhCommon registry baseline before running vcpkg install."
     )
     return 0
 

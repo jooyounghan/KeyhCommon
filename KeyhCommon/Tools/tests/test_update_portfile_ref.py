@@ -171,11 +171,11 @@ class UpdatePortfileRefTests(unittest.TestCase):
         with self.portfile.open("a", encoding="utf-8") as stream:
             stream.write(text)
 
-    def assert_skipped(self, root=None):
+    def assert_rejected(self, root=None):
         before = self.metadata(root)
-        result = self.run_updater(root)
+        result = self.run_updater(root, success=False)
         self.assertEqual(self.metadata(root), before)
-        self.assertRegex((result.stdout + result.stderr).lower(), r"skip|warning")
+        self.assertIn("[vcpkg registry] Error:", result.stderr)
 
     def test_unchanged_registry_and_metadata_only_commit_are_noops(self):
         before = self.metadata()
@@ -199,7 +199,7 @@ class UpdatePortfileRefTests(unittest.TestCase):
         self.assertEqual(self.current_ref(), head)
         self.assert_registered(1)
 
-    def test_dirty_source_and_license_skip_without_writes(self):
+    def test_dirty_source_and_license_fail_without_writes(self):
         for path in ("KeyhCommon/source.h", "LICENSE"):
             for staged in (False, True):
                 with self.subTest(path=path, staged=staged):
@@ -208,26 +208,26 @@ class UpdatePortfileRefTests(unittest.TestCase):
                         stream.write("Uncommitted change\n")
                     if staged:
                         self.git("add", "--", path)
-                    self.assert_skipped()
+                    self.assert_rejected()
 
-    def test_untracked_source_skips_without_writes(self):
+    def test_untracked_source_fails_without_writes(self):
         (self.repo / "KeyhCommon/untracked.h").write_text(
             "// untracked\n", encoding="utf-8"
         )
-        self.assert_skipped()
+        self.assert_rejected()
 
-    def test_untracked_license_skips_without_writes(self):
+    def test_untracked_license_fails_without_writes(self):
         self.git("rm", "LICENSE")
         self.commit("Remove license")
         (self.repo / "LICENSE").write_text("Untracked license\n", encoding="utf-8")
-        self.assert_skipped()
+        self.assert_rejected()
 
-    def test_dirty_source_skips_even_with_pending_port_edits(self):
+    def test_dirty_source_fails_even_with_pending_port_edits(self):
         self.change_port()
         (self.repo / "KeyhCommon/source.h").write_text(
             "// dirty source\n", encoding="utf-8"
         )
-        self.assert_skipped()
+        self.assert_rejected()
 
     def test_port_edit_bumps_revision_without_changing_source_ref(self):
         self.change_port()
@@ -376,17 +376,17 @@ class UpdatePortfileRefTests(unittest.TestCase):
                 self.run_updater()
                 self.assertEqual(self.metadata(), before)
 
-    def test_extracted_sources_outside_git_skip(self):
+    def test_extracted_sources_outside_git_fail(self):
         extracted = self.area / "extracted"
         shutil.copytree(self.repo, extracted, ignore=shutil.ignore_patterns(".git"))
-        self.assert_skipped(extracted)
+        self.assert_rejected(extracted)
 
-    def test_extracted_sources_inside_parent_git_repository_skip(self):
+    def test_extracted_sources_inside_parent_git_repository_fail(self):
         self.init_repository(self.area)
         self.git("commit", "--quiet", "--allow-empty", "-m", "Parent", repo=self.area)
         extracted = self.area / "extracted"
         shutil.copytree(self.repo, extracted, ignore=shutil.ignore_patterns(".git"))
-        self.assert_skipped(extracted)
+        self.assert_rejected(extracted)
         self.assertEqual(self.git("ls-files", repo=self.area), "")
 
     def test_shallow_boundary_does_not_force_metadata_only_ref_update(self):
