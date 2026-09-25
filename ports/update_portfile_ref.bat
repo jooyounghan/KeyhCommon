@@ -11,9 +11,22 @@ if not exist "%PORTFILE_PATH%" (
     exit /b 1
 )
 
-for /f %%I in ('git -C "%REPO_ROOT%" rev-parse HEAD 2^>nul') do set "HEAD_SHA=%%I"
+for /f %%I in ('git -C "%REPO_ROOT%" rev-parse --verify HEAD 2^>nul') do set "HEAD_SHA=%%I"
 if not defined HEAD_SHA (
     echo [vcpkg REF] Error: failed to resolve repository HEAD commit.
+    exit /b 1
+)
+if "%HEAD_SHA:~39,1%"=="" (
+    echo [vcpkg REF] Error: invalid HEAD commit hash.
+    exit /b 1
+)
+if not "%HEAD_SHA:~40,1%"=="" (
+    echo [vcpkg REF] Error: invalid HEAD commit hash.
+    exit /b 1
+)
+echo %HEAD_SHA%| findstr /R /I "^[0-9A-F][0-9A-F]*$" >nul
+if errorlevel 1 (
+    echo [vcpkg REF] Error: invalid HEAD commit hash.
     exit /b 1
 )
 
@@ -24,9 +37,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "$isUtf8Bom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF);" ^
   "$isUtf16Le = ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFF -and $bytes[1] -eq 0xFE);" ^
   "$isUtf16Be = ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFE -and $bytes[1] -eq 0xFF);" ^
-  "$useDirectTextEncoding = $isUtf8Bom -or $isUtf16Le -or $isUtf16Be;" ^
+  "$isUtf8NoBom = $false;" ^
+  "if (-not $isUtf8Bom -and -not $isUtf16Le -and -not $isUtf16Be) { try { $utf8 = New-Object System.Text.UTF8Encoding($false, $true); $utf8RoundTrip = $utf8.GetBytes($utf8.GetString($bytes)); if ($utf8RoundTrip.Length -eq $bytes.Length) { $same = $true; for ($i = 0; $i -lt $bytes.Length; $i++) { if ($bytes[$i] -ne $utf8RoundTrip[$i]) { $same = $false; break } }; if ($same) { $isUtf8NoBom = $true } } } catch { $isUtf8NoBom = $false } }" ^
+  "$useDirectTextEncoding = $isUtf8Bom -or $isUtf8NoBom -or $isUtf16Le -or $isUtf16Be;" ^
   "$encoding = [System.Text.Encoding]::GetEncoding(28591);" ^
-  "if ($isUtf8Bom) { $encoding = New-Object System.Text.UTF8Encoding($true) } elseif ($isUtf16Le) { $encoding = [System.Text.Encoding]::Unicode } elseif ($isUtf16Be) { $encoding = [System.Text.Encoding]::BigEndianUnicode }" ^
+  "if ($isUtf8Bom) { $encoding = New-Object System.Text.UTF8Encoding($true) } elseif ($isUtf8NoBom) { $encoding = New-Object System.Text.UTF8Encoding($false) } elseif ($isUtf16Le) { $encoding = [System.Text.Encoding]::Unicode } elseif ($isUtf16Be) { $encoding = [System.Text.Encoding]::BigEndianUnicode }" ^
   "$content = if ($useDirectTextEncoding) { [System.IO.File]::ReadAllText($path, $encoding) } else { $encoding.GetString($bytes) };" ^
   "$regex = '(?m)^(\s*REF\s+"")([0-9A-Fa-f]{40})(""\s*)$';" ^
   "$match = [regex]::Match($content, $regex);" ^
