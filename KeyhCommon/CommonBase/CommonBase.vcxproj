@@ -126,6 +126,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -150,6 +151,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|Win32'">
@@ -174,6 +176,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -197,6 +200,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -222,6 +226,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">
@@ -247,6 +252,7 @@
     </Manifest>
     <PostBuildEvent>
       <Command>$(UpdatePortfileRefCommand)</Command>
+      <Message>Sync keyhcommon portfile REF with repository HEAD</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

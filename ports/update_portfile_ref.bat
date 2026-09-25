@@ -4,6 +4,7 @@ setlocal EnableExtensions
 set "SCRIPT_DIR=%~dp0"
 for %%I in ("%SCRIPT_DIR%..") do set "REPO_ROOT=%%~fI"
 set "PORTFILE_PATH=%SCRIPT_DIR%keyhcommon\portfile.cmake"
+set "PS_PORTFILE_PATH=%PORTFILE_PATH:'=''%"
 
 if not exist "%PORTFILE_PATH%" (
     echo [vcpkg REF] Error: portfile not found: "%PORTFILE_PATH%"
@@ -17,7 +18,7 @@ if not defined HEAD_SHA (
 )
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$path = '%PORTFILE_PATH%';" ^
+  "$path = '%PS_PORTFILE_PATH%';" ^
   "$sha = '%HEAD_SHA%';" ^
   "$bytes = [System.IO.File]::ReadAllBytes($path);" ^
   "$isUtf8Bom = ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF);" ^
