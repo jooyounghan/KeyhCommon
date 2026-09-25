@@ -143,12 +143,14 @@ if (-not $refMatch.Success) {
 }
 
 $currentRef = $refMatch.Groups[2].Value
-$updatedPortfileContent = [regex]::Replace($portfileContent, $refRegex, ('$1' + $headSha + '$3'), 1)
-if ($useDirectTextEncoding) {
-    [System.IO.File]::WriteAllText($portfilePath, $updatedPortfileContent, $portfileEncoding)
-}
-else {
-    [System.IO.File]::WriteAllBytes($portfilePath, $portfileEncoding.GetBytes($updatedPortfileContent))
+if ($currentRef -ine $headSha) {
+    $updatedPortfileContent = [regex]::Replace($portfileContent, $refRegex, ('$1' + $headSha + '$3'), 1)
+    if ($useDirectTextEncoding) {
+        [System.IO.File]::WriteAllText($portfilePath, $updatedPortfileContent, $portfileEncoding)
+    }
+    else {
+        [System.IO.File]::WriteAllBytes($portfilePath, $portfileEncoding.GetBytes($updatedPortfileContent))
+    }
 }
 
 $manifest = Read-Json $vcpkgJsonPath
@@ -208,10 +210,16 @@ if ($null -ne $baselineDocument.default) {
     }
 }
 
-$defaultEntries['keyhcommon'] = [pscustomobject][ordered]@{
-    baseline = $versionString
-    'port-version' = $portVersion
+$keyhcommonBaselineEntry = [ordered]@{}
+if ($null -ne $defaultEntries['keyhcommon']) {
+    foreach ($property in $defaultEntries['keyhcommon'].PSObject.Properties) {
+        $keyhcommonBaselineEntry[$property.Name] = $property.Value
+    }
 }
+
+$keyhcommonBaselineEntry['baseline'] = $versionString
+$keyhcommonBaselineEntry['port-version'] = $portVersion
+$defaultEntries['keyhcommon'] = [pscustomobject]$keyhcommonBaselineEntry
 
 $updatedBaselineDocumentProperties = [ordered]@{}
 foreach ($property in $baselineDocument.PSObject.Properties) {
