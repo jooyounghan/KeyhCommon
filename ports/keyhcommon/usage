@@ -17,6 +17,39 @@ For MSBuild consumers using vcpkg integration, add the required libraries to
 AdditionalDependencies:
   CommonBase.lib;ReflectSystem.lib;AppSystem.lib
 
+Reflection code generation tools are installed alongside the matching library:
+  tools/keyhcommon/reflect_codegen.py
+  tools/keyhcommon/run_reflect_codegen.bat
+
+Python 3 must be available on PATH; it is not bundled with the package.
+For MSBuild consumers, replace the old project-local generator in the pre-build
+event with the installed wrapper (after vcpkg has installed the package):
+  call "$(KeyhCommonInstalledTripletDir)\tools\keyhcommon\run_reflect_codegen.bat" "$(ProjectDir)."
+Define KeyhCommonInstalledTripletDir as an absolute path to the installed triplet
+directory, for example C:\path\to\KeyhEngine\vcpkg_installed\x64-windows for a
+manifest install, or C:\path\to\vcpkg\installed\x64-windows for a classic install.
+Use the triplet and installation root actually selected by your build. This is
+a consumer-defined property, not one automatically supplied by vcpkg.
+The first argument is the directory containing the headers to scan. An optional
+second argument selects the output directory; the wrapper defaults to the first.
+
+CMake consumers can use KeyhCommon_TOOLS_DIR and KeyhCommon_REFLECT_CODEGEN
+after find_package(KeyhCommon CONFIG REQUIRED). For example:
+  find_package(Python3 REQUIRED COMPONENTS Interpreter)
+  add_custom_target(your-reflection-codegen
+      COMMAND "${Python3_EXECUTABLE}" "${KeyhCommon_REFLECT_CODEGEN}"
+          --project-dir "${CMAKE_CURRENT_SOURCE_DIR}"
+      VERBATIM)
+  add_dependencies(your-target your-reflection-codegen)
+Without --output-dir, the Python script writes each .inl next to its header.
+The generator updates generated #include directives in the source headers.
+
+When switching from an older generator, remove its generated reflection .inl
+files and regenerate them with the packaged tool before compiling. Replace all
+old generator invocations so they cannot overwrite the new output.
+The package does not automatically enable code generation in consumer projects.
+Registry publication scripts, tests, and Python caches are not installed.
+
 To use this repository as a custom registry, add it to your
 vcpkg-configuration.json and declare "keyhcommon" in your project's
 vcpkg.json dependencies.
