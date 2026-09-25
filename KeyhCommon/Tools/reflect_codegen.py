@@ -30,12 +30,18 @@ to every header that contains a REFLECTIVE class or KEYH_REFLECT_ENUM
 (if not already present).
 Pass --no-patch-headers to disable this behaviour and manage the include
 manually.
+
+For Visual Studio projects, the generator also adds a generated-source glob
+and a pre-compile MSBuild target to the project's .vcxproj, and places current
+generated sources in the generated filter in its .vcxproj.filters file.
 """
 
 import re
 import os
 import sys
 import argparse
+import html
+import uuid
 from datetime import datetime
 
 
@@ -702,6 +708,99 @@ def remove_generated_inl(filepath):
     return True
 
 
+def patch_project_for_generated_sources(project_dir, generated_sources):
+    """Make generated reflection .cpp files discoverable and visible in VS."""
+    project_files = [name for name in os.listdir(project_dir) if name.endswith('.vcxproj')]
+    if len(project_files) != 1:
+        return False
+
+    project_path = os.path.join(project_dir, project_files[0])
+    filters_path = project_path + '.filters'
+    try:
+        with open(project_path, 'r', encoding='utf-8', newline='') as f:
+            project_text = f.read()
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not read {project_path}: {exc}', file=sys.stderr)
+        return False
+
+    marker = 'KeyhCommonCompileGeneratedReflection'
+    if marker not in project_text:
+        newline_match = re.search(r'\r\n|\n|\r', project_text)
+        newline = newline_match.group(0) if newline_match else '\n'
+        target = newline.join([
+            '  <ItemGroup>',
+            '    <ClCompile Include="**\\generated\\*.reflect_generated.cpp">',
+            '      <PrecompiledHeader>NotUsing</PrecompiledHeader>',
+            '    </ClCompile>',
+            '  </ItemGroup>',
+            '  <Target Name="KeyhCommonCompileGeneratedReflection" BeforeTargets="ClCompile">',
+            '    <ItemGroup>',
+            '      <ClCompile Include="$(MSBuildProjectDirectory)\\**\\generated\\*.reflect_generated.cpp" Exclude="@(ClCompile)">',
+            '        <PrecompiledHeader>NotUsing</PrecompiledHeader>',
+            '      </ClCompile>',
+            '    </ItemGroup>',
+            '  </Target>',
+            '</Project>',
+        ])
+        project_text = re.sub(r'</Project\s*>', target, project_text, count=1)
+        try:
+            with open(project_path, 'w', encoding='utf-8', newline='') as f:
+                f.write(project_text)
+        except OSError as exc:
+            print(f'[Reflect] Warning: could not update {project_path}: {exc}', file=sys.stderr)
+            return False
+
+    if not os.path.isfile(filters_path):
+        return True
+
+    try:
+        with open(filters_path, 'r', encoding='utf-8', newline='') as f:
+            filters_text = f.read()
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not read {filters_path}: {exc}', file=sys.stderr)
+        return False
+
+    newline_match = re.search(r'\r\n|\n|\r', filters_text)
+    newline = newline_match.group(0) if newline_match else '\n'
+    folder_name = 'generated'
+    escaped_folder = html.escape(folder_name, quote=True)
+    if not re.search(r'<Filter\s+Include="generated"\s*>', filters_text):
+        unique_id = uuid.uuid5(uuid.NAMESPACE_URL, os.path.abspath(project_path) + ':generated')
+        filter_entry = newline.join([
+            f'    <Filter Include="{escaped_folder}">',
+            f'      <UniqueIdentifier>{{{unique_id}}}</UniqueIdentifier>',
+            '    </Filter>',
+        ])
+        filters_text = re.sub(r'(<ItemGroup[^>]*>)', r'\1' + newline + filter_entry, filters_text, count=1)
+
+    # Refresh only generator-owned ClCompile filter entries.
+    generated_entry = re.compile(
+        r'^[ \t]*<ClCompile Include="[^"]*\.reflect_generated\.cpp"\s*>.*?^[ \t]*</ClCompile>[ \t]*(?:\r\n|\n|\r)?',
+        re.MULTILINE | re.DOTALL,
+    )
+    filters_text = generated_entry.sub('', filters_text)
+    entries = []
+    for source_path in sorted(generated_sources):
+        relative_path = os.path.relpath(source_path, project_dir).replace(os.sep, '\\')
+        escaped_path = html.escape(relative_path, quote=True)
+        entries.extend([
+            f'    <ClCompile Include="{escaped_path}">',
+            f'      <Filter>{escaped_folder}</Filter>',
+            '    </ClCompile>',
+        ])
+    if entries:
+        entry_text = newline.join(entries)
+        filters_text = re.sub(r'(</ItemGroup>)', entry_text + newline + r'\1', filters_text, count=1)
+
+    try:
+        with open(filters_path, 'w', encoding='utf-8', newline='') as f:
+            f.write(filters_text)
+    except OSError as exc:
+        print(f'[Reflect] Warning: could not update {filters_path}: {exc}', file=sys.stderr)
+        return False
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -726,9 +825,8 @@ def _output_dir_for_header(header_path, global_output_dir):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='KeyhCommon Reflect Code Generator – generates initializeMetaObject() '
-                    'specialisations for REFLECTIVE classes and enum trait mappings '
-                    'for KEYH_REFLECT_ENUM, one .inl file per header.'
+        description='KeyhCommon Reflect Code Generator – generates reflection declarations, '
+                    'definitions, and enum trait mappings in a generated/ directory.'
     )
     parser.add_argument(
         '--project-dir', required=True,
@@ -850,6 +948,7 @@ def main():
                 print(f'[Reflect]   Removed stale {os.path.basename(cpp_path)}')
 
     if not source_headers:
+        patch_project_for_generated_sources(project_dir, [])
         print(
             '[Reflect] Done - no REFLECTIVE classes or KEYH_REFLECT_ENUM enums found. '
             f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
@@ -926,6 +1025,18 @@ def main():
             include_directive = f'#include "{include_path}"'
             if patch_header_with_include(header_path, include_directive) and args.verbose:
                 print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
+
+    generated_sources = []
+    for root, dirs, files in os.walk(project_dir):
+        dirs[:] = [name for name in dirs if name.lower() not in {'.git', '.vs', 'vcpkg_installed'}]
+        generated_sources.extend(
+            os.path.join(root, name)
+            for name in files
+            if name.endswith('.reflect_generated.cpp')
+            and os.path.basename(root).lower() == 'generated'
+        )
+    if patch_project_for_generated_sources(project_dir, generated_sources) and args.verbose:
+        print('[Reflect]   Updated Visual Studio project for generated reflection sources')
 
     cleanup_summary = f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
     if generated_files:
