@@ -160,7 +160,8 @@ if ([string]::IsNullOrWhiteSpace($versionString)) {
 }
 
 $portVersion = 0
-if ($null -ne $manifest.'port-version') {
+$manifestHasPortVersion = $null -ne $manifest.PSObject.Properties['port-version']
+if ($manifestHasPortVersion) {
     $portVersion = [int]$manifest.'port-version'
 }
 
@@ -186,11 +187,14 @@ foreach ($entry in $existingEntries) {
     [void]$filteredEntries.Add($entry)
 }
 
-$updatedEntry = [pscustomobject][ordered]@{
+$updatedEntryProperties = [ordered]@{
     'git-tree' = $treeHash
     'version-string' = $versionString
-    'port-version' = $portVersion
 }
+if ($manifestHasPortVersion) {
+    $updatedEntryProperties['port-version'] = $portVersion
+}
+$updatedEntry = [pscustomobject]$updatedEntryProperties
 
 $updatedVersionsDocumentProperties = [ordered]@{}
 foreach ($property in $versionsDocument.PSObject.Properties) {
@@ -218,7 +222,12 @@ if ($null -ne $defaultEntries['keyhcommon']) {
 }
 
 $keyhcommonBaselineEntry['baseline'] = $versionString
-$keyhcommonBaselineEntry['port-version'] = $portVersion
+if ($manifestHasPortVersion) {
+    $keyhcommonBaselineEntry['port-version'] = $portVersion
+}
+else {
+    $null = $keyhcommonBaselineEntry.Remove('port-version')
+}
 $defaultEntries['keyhcommon'] = [pscustomobject]$keyhcommonBaselineEntry
 
 $updatedBaselineDocumentProperties = [ordered]@{}
@@ -238,5 +247,10 @@ else {
     Write-Host ('[vcpkg registry] Updated REF: ' + $currentRef + ' -> ' + $headSha)
 }
 
-Write-Host ('[vcpkg registry] Synced versions/k-/keyhcommon.json to git-tree ' + $treeHash + ' for version ' + $versionString + '#' + $portVersion)
-Write-Host ('[vcpkg registry] Synced versions/baseline.json to version ' + $versionString + '#' + $portVersion)
+$versionLabel = $versionString
+if ($manifestHasPortVersion) {
+    $versionLabel += ('#' + $portVersion)
+}
+
+Write-Host ('[vcpkg registry] Synced versions/k-/keyhcommon.json to git-tree ' + $treeHash + ' for version ' + $versionLabel)
+Write-Host ('[vcpkg registry] Synced versions/baseline.json to version ' + $versionLabel)
