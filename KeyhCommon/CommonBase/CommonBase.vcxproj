@@ -229,6 +229,11 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup>
+    <PostBuildEvent>
+      <Command>call "$(ProjectDir)..\..\ports\update_portfile_ref.bat"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ArenaAllocator.h" />
     <ClInclude Include="ArenaAllocator.hpp" />
