@@ -15,7 +15,7 @@ if not errorlevel 1 (
 ) else (
     where python >nul 2>nul
     if errorlevel 1 (
-        echo [vcpkg registry] Error: Python launcher was not found.
+        echo [vcpkg registry] Error: Neither py nor python was found.
         exit /b 1
     )
     python "%PYTHON_SCRIPT%"

@@ -46,6 +46,10 @@ def get_version_field_info(value: dict) -> tuple[str, str] | None:
     return None
 
 
+def has_default_port_version(value: dict) -> bool:
+    return "port-version" not in value or value.get("port-version") in (0, "0", None)
+
+
 def run_git(repo_root: Path, *args: str, env: dict[str, str] | None = None, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["git", "-C", str(repo_root), *args],
@@ -131,7 +135,7 @@ def main() -> int:
 
     version_field_name, version_value = version_field
     manifest_has_port_version = "port-version" in manifest
-    port_version = int(manifest.get("port-version", 0))
+    port_version_value = manifest.get("port-version")
 
     tree_hash = get_port_tree_hash(repo_root, port_dir)
 
@@ -139,12 +143,12 @@ def main() -> int:
     filtered_entries: list[dict] = []
     for entry in versions_document.get("versions", []):
         entry_version_field = get_version_field_info(entry)
-        entry_port_version = int(entry.get("port-version", 0))
+        same_port_version = entry.get("port-version") == port_version_value if manifest_has_port_version else has_default_port_version(entry)
         if (
             entry_version_field is not None
             and entry_version_field[0] == version_field_name
             and entry_version_field[1] == version_value
-            and entry_port_version == port_version
+            and same_port_version
         ):
             continue
         filtered_entries.append(entry)
@@ -154,7 +158,7 @@ def main() -> int:
         version_field_name: version_value,
     }
     if manifest_has_port_version:
-        updated_entry["port-version"] = port_version
+        updated_entry["port-version"] = port_version_value
 
     updated_versions_document = {key: value for key, value in versions_document.items() if key != "versions"}
     updated_versions_document["versions"] = [updated_entry, *filtered_entries]
@@ -165,7 +169,7 @@ def main() -> int:
     keyhcommon_baseline_entry = dict(default_entries.get("keyhcommon", {}))
     keyhcommon_baseline_entry["baseline"] = version_value
     if manifest_has_port_version:
-        keyhcommon_baseline_entry["port-version"] = port_version
+        keyhcommon_baseline_entry["port-version"] = port_version_value
     else:
         keyhcommon_baseline_entry.pop("port-version", None)
     default_entries["keyhcommon"] = keyhcommon_baseline_entry
@@ -179,7 +183,7 @@ def main() -> int:
     else:
         print(f"[vcpkg registry] Updated REF: {current_ref} -> {head_sha}")
 
-    version_label = version_value if not manifest_has_port_version else f"{version_value}#{port_version}"
+    version_label = version_value if not manifest_has_port_version else f"{version_value}#{port_version_value}"
     print(f"[vcpkg registry] Synced versions/k-/keyhcommon.json to git-tree {tree_hash} for version {version_label}")
     print(f"[vcpkg registry] Synced versions/baseline.json to version {version_label}")
     return 0
