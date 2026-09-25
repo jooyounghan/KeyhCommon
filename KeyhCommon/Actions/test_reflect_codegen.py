@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[2]
 TOOLS = REPO / "KeyhCommon/Tools"
 HEADER = "KEYH_REFLECT_ENUM\nenum class State { Idle, Running };\n"
 
