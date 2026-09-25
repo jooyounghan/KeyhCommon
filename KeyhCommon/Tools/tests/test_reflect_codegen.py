@@ -76,8 +76,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
     def run_batch(self, *args):
         command = f'call "{self.tools / "run_reflect_codegen.bat"}"'
         command += "".join(f' "{arg}"' for arg in args)
+        # cmd.exe requires literal quotes, not subprocess's CRT list escaping.
+        comspec = os.environ.get("COMSPEC", "cmd.exe")
         return subprocess.run(
-            [os.environ.get("COMSPEC", "cmd.exe"), "/d", "/v:off", "/c", command],
+            f'"{comspec}" /d /v:off /c {command}',
             cwd=self.cwd, env=self.env, capture_output=True, text=True,
         )
 
