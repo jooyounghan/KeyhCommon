@@ -16,15 +16,7 @@ if not defined HEAD_SHA (
     echo [vcpkg REF] Error: failed to resolve repository HEAD commit.
     exit /b 1
 )
-if "%HEAD_SHA:~39,1%"=="" (
-    echo [vcpkg REF] Error: invalid HEAD commit hash.
-    exit /b 1
-)
-if not "%HEAD_SHA:~40,1%"=="" (
-    echo [vcpkg REF] Error: invalid HEAD commit hash.
-    exit /b 1
-)
-echo %HEAD_SHA%| findstr /R /I "^[0-9A-F][0-9A-F]*$" >nul
+powershell -NoProfile -ExecutionPolicy Bypass -Command "if ('%HEAD_SHA%' -notmatch '^[0-9A-Fa-f]{40}$') { exit 1 }"
 if errorlevel 1 (
     echo [vcpkg REF] Error: invalid HEAD commit hash.
     exit /b 1
