@@ -48,6 +48,7 @@ namespace keyh
 	template<typename KeyType, typename ValueType, typename Hasher>
 	struct ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>
 	{
+		static bool isDefault(const HashMap<KeyType, ValueType, Hasher>& value);
 		static bool isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b);
 		static void serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value);

@@ -1,4 +1,5 @@
-﻿namespace keyh
+﻿#include "ReflectPropertyPolicy.h"
+namespace keyh
 {
 #pragma region Base
 	template<typename T>
@@ -243,6 +244,12 @@
 #pragma endregion
 
 #pragma region HashMap Policy
+	template<typename KeyType, typename ValueType, typename Hasher>
+	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isDefault(const HashMap<KeyType, ValueType, Hasher>& value)
+	{
+		return value.size() == 0;
+	}
+
 	template<typename KeyType, typename ValueType, typename Hasher>
 	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
 	{
