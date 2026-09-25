@@ -87,8 +87,8 @@ def get_port_tree_hash(repo_root: Path, port_dir: Path, overrides: dict[str, byt
 
     try:
         run_git(repo_root, "read-tree", "--empty", env=env)
-        run_git(repo_root, "read-tree", "--empty", env=env)
         run_git(repo_root, "add", "--all", "--force", "--", "ports/keyhcommon", env=env)
+        for relative_path, content in (overrides or {}).items():
             normalized_relative_path = relative_path.replace("\\", "/")
             path_in_repo = f"ports/keyhcommon/{normalized_relative_path}"
             blob_hash = hash_blob(repo_root, content, path_in_repo, env)
