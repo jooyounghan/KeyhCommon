@@ -76,8 +76,15 @@ endforeach()
 
 file(INSTALL
     "${KEYHCOMMON_PROJECT_ROOT}/Tools/reflect_codegen.py"
-    "${KEYHCOMMON_PROJECT_ROOT}/Tools/run_reflect_codegen.bat"
     DESTINATION "${CURRENT_PACKAGES_DIR}/tools/${PORT}"
+)
+
+# Git source archives can contain LF even when the checkout uses CRLF.
+configure_file(
+    "${KEYHCOMMON_PROJECT_ROOT}/Tools/run_reflect_codegen.bat"
+    "${CURRENT_PACKAGES_DIR}/tools/${PORT}/run_reflect_codegen.bat"
+    @ONLY
+    NEWLINE_STYLE CRLF
 )
 
 file(INSTALL
@@ -87,11 +94,6 @@ file(INSTALL
 
 file(INSTALL
     "${CMAKE_CURRENT_LIST_DIR}/KeyhCommonConfig.cmake"
-    DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}"
-)
-
-file(INSTALL
-    "${CMAKE_CURRENT_LIST_DIR}/usage"
     DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}"
 )
 

@@ -11,7 +11,7 @@ import tempfile
 import unittest
 
 
-UPDATER = Path(__file__).resolve().parents[1] / "update_portfile_ref.py"
+UPDATER = Path(__file__).resolve().parents[1] / "Tools/update_portfile_ref.py"
 
 
 class UpdatePortfileRefTests(unittest.TestCase):
