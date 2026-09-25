@@ -155,8 +155,12 @@ def main() -> int:
     tree_hash = get_port_tree_hash(repo_root, port_dir)
 
     versions_document = read_json(versions_path)
+    existing_versions = versions_document.get("versions", [])
     filtered_entries: list[dict] = []
-    for entry in versions_document.get("versions", []):
+    matching_entry: dict | None = None
+    matching_entry_index = -1
+    matching_entry_count = 0
+    for index, entry in enumerate(existing_versions):
         entry_version_field = get_version_field_info(entry)
         same_port_version = entry.get("port-version") == port_version_value if manifest_has_port_version else has_default_port_version(entry)
         if (
@@ -165,6 +169,10 @@ def main() -> int:
             and entry_version_field[1] == version_value
             and same_port_version
         ):
+            matching_entry_count += 1
+            if matching_entry is None:
+                matching_entry = entry
+                matching_entry_index = index
             continue
         filtered_entries.append(entry)
 
@@ -177,7 +185,8 @@ def main() -> int:
 
     updated_versions_document = {key: value for key, value in versions_document.items() if key != "versions"}
     updated_versions_document["versions"] = [updated_entry, *filtered_entries]
-    write_json(versions_path, updated_versions_document)
+    if not (matching_entry_count == 1 and matching_entry_index == 0 and matching_entry == updated_entry):
+        write_json(versions_path, updated_versions_document)
 
     baseline_document = read_json(baseline_path)
     default_entries = dict(baseline_document.get("default", {}))
@@ -191,7 +200,8 @@ def main() -> int:
 
     updated_baseline_document = {key: value for key, value in baseline_document.items() if key != "default"}
     updated_baseline_document["default"] = default_entries
-    write_json(baseline_path, updated_baseline_document)
+    if updated_baseline_document != baseline_document:
+        write_json(baseline_path, updated_baseline_document)
 
     if current_ref.lower() == head_sha.lower():
         print(f"[vcpkg registry] REF already up to date: {head_sha}")
