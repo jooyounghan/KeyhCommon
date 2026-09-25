@@ -37,7 +37,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "Write-Host ('[vcpkg REF] Updated REF: ' + $current + ' -> ' + $sha);"
 
 if errorlevel 1 (
-    exit /b 1
+    exit /b %ERRORLEVEL%
 )
 
 exit /b 0
