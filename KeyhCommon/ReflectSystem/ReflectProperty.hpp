@@ -4,11 +4,11 @@
 	ReflectProperty<ObjectType, ValueType>::ReflectProperty(
 		const FlyweightStringA& propertyName
 		, const FlyweightStringA& groupName
-		, ValueType defaultValue
+		, ReflectDefaultChecker<ValueType> defaultChecker
 		, ReflectRefGetter<ObjectType, ValueType> refGetter
 		, ReflectConstGetter<ObjectType, ValueType> constGetter
 	)
-		: IReflectProperty(propertyName, groupName), _defaultValue(keyh::move(defaultValue)), _refGetter(refGetter), _constGetter(constGetter)
+		: IReflectProperty(propertyName, groupName), _defaultChecker(defaultChecker), _refGetter(refGetter), _constGetter(constGetter)
 	{
 		TypeTrait::requireDerivedFrom<ObjectType, IReflectObject>();
 	}
@@ -28,7 +28,7 @@
 	template<typename ObjectType, typename ValueType>
 	bool ReflectProperty<ObjectType, ValueType>::isDefault(const IReflectObject* object) const
 	{
-		return ReflectPropertyPolicy<ValueType>::isEqual(_defaultValue, getValueConstRef(object));
+		return _defaultChecker(getValueConstRef(object));
 	}
 
 	template<typename ObjectType, typename ValueType>

@@ -16,6 +16,9 @@ namespace keyh
 	template<typename ObjectType, typename PropertyType>
 	using ReflectConstGetter = const PropertyType& (*)(const ObjectType&);
 
+	template<typename PropertyType>
+	using ReflectDefaultChecker = bool (*)(const PropertyType&);
+
 #pragma region ReflectObject Trait
 	template <typename T>
 	constexpr bool IsReflectObject_v = IsDerivedFrom_v<T, IReflectObject>;

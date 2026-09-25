@@ -2,6 +2,12 @@
 {
 #pragma region Base
 	template<typename T>
+	bool ReflectPropertyPolicy<T>::isDefault(const T& value)
+	{
+		return isEqual(T{}, value);
+	}
+
+	template<typename T>
 	bool ReflectPropertyPolicy<T>::isEqual(const T& a, const T& b)
 	{
 		return ReflectPropertySerializer<T>::isEqual(a, b);
@@ -33,6 +39,12 @@
 #pragma endregion
 
 #pragma region Vector Policy
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<Vector<ElementType>>::isDefault(const Vector<ElementType>& value)
+	{
+		return value.empty();
+	}
+
 	template<typename ElementType>
 	bool ReflectPropertyPolicy<Vector<ElementType>>::isEqual(const Vector<ElementType>& a, const Vector<ElementType>& b)
 	{
@@ -111,6 +123,12 @@
 #pragma endregion
 
 #pragma region OwnerVector Policy
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<OwnerVector<ElementType>>::isDefault(const OwnerVector<ElementType>& value)
+	{
+		return value.size() == 0;
+	}
+
 	template<typename ElementType>
 	bool ReflectPropertyPolicy<OwnerVector<ElementType>>::isEqual(const OwnerVector<ElementType>& a, const OwnerVector<ElementType>& b)
 	{

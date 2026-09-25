@@ -24,7 +24,7 @@ namespace keyh
 		void addReflectProperty(
 			const FlyweightStringA& propertyName
 			, const FlyweightStringA& groupName
-			, PropertyType defaultValue
+			, ReflectDefaultChecker<PropertyType> defaultChecker
 			, ReflectRefGetter<ObjectType, PropertyType> refGetter
 			, ReflectConstGetter<ObjectType, PropertyType> constGetter
 		);

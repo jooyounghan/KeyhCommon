@@ -9,6 +9,7 @@ namespace keyh
 	template<typename T>
 	struct ReflectPropertyPolicy
 	{
+		static bool isDefault(const T& value);
 		static bool isEqual(const T& a, const T& b);
 		static void serializeToJson(IBuffer* buffer, const T& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, T& value);
@@ -21,6 +22,7 @@ namespace keyh
 	template<typename ElementType>
 	struct ReflectPropertyPolicy<Vector<ElementType>>
 	{
+		static bool isDefault(const Vector<ElementType>& value);
 		static bool isEqual(const Vector<ElementType>& a, const Vector<ElementType>& b);
 		static void serializeToJson(IBuffer* buffer, const Vector<ElementType>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, Vector<ElementType>& value);
@@ -33,6 +35,7 @@ namespace keyh
 	template<typename ElementType>
 	struct ReflectPropertyPolicy<OwnerVector<ElementType>>
 	{
+		static bool isDefault(const OwnerVector<ElementType>& value);
 		static bool isEqual(const OwnerVector<ElementType>& a, const OwnerVector<ElementType>& b);
 		static void serializeToJson(IBuffer* buffer, const OwnerVector<ElementType>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value);

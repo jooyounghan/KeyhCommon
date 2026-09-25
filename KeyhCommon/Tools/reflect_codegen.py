@@ -511,7 +511,10 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
             group        = prop['group']
 
             group_arg   = used_groups[group] if group else 'FlyweightStringA::Empty'
-            default_arg = default_val if default_val is not None else f'{type_name}{{}}'
+            if default_val is None:
+                default_arg = f'[](const {type_name}& value) -> bool {{ return ReflectPropertyPolicy<{type_name}>::isDefault(value); }}'
+            else:
+                default_arg = f'[](const {type_name}& value) -> bool {{ return ReflectPropertyPolicy<{type_name}>::isEqual({default_val}, value); }}'
 
             lines.append(f'\t\tmetaObject.addReflectProperty<{class_name}, {type_name}>(')
             lines.append(f'\t\t\tFlyweightStringA("{prop_name}"),')
