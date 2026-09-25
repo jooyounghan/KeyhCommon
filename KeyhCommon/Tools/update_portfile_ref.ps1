@@ -36,23 +36,6 @@ function Write-Json([string]$path, $value) {
     Write-Utf8NoBom $path ($json + [Environment]::NewLine)
 }
 
-function Get-RepoRelativePath([string]$repoRootPath, [string]$filePath) {
-    $normalizedRootPath = [System.IO.Path]::GetFullPath($repoRootPath).TrimEnd('\', '/')
-    $normalizedFilePath = [System.IO.Path]::GetFullPath($filePath)
-    $comparison = [System.StringComparison]::OrdinalIgnoreCase
-    $rootPrefix = $normalizedRootPath + [System.IO.Path]::DirectorySeparatorChar
-
-    if ($normalizedFilePath.Equals($normalizedRootPath, $comparison)) {
-        return ''
-    }
-
-    if (-not $normalizedFilePath.StartsWith($rootPrefix, $comparison)) {
-        throw ('Path is not inside root: ' + $filePath)
-    }
-
-    return $normalizedFilePath.Substring($rootPrefix.Length).Replace('\', '/')
-}
-
 function Get-PortTreeHash([string]$repoRootPath, [string]$portDirectory) {
     $tempIndex = [System.IO.Path]::GetTempFileName()
     Remove-Item -LiteralPath $tempIndex -Force
@@ -64,30 +47,32 @@ function Get-PortTreeHash([string]$repoRootPath, [string]$portDirectory) {
             throw 'Unable to initialize temporary git index.'
         }
 
-        $files = @(Get-ChildItem -LiteralPath $portDirectory -Recurse -File | Sort-Object FullName)
+        $files = @(Get-ChildItem -LiteralPath $portDirectory -Recurse -File)
         if ($files.Count -eq 0) {
             throw 'No files were found under ports/keyhcommon.'
         }
 
-        foreach ($file in $files) {
-            $blobHash = (& git -C $repoRootPath hash-object -w -- $file.FullName).Trim()
-            if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($blobHash)) {
-                throw ('Unable to hash file: ' + $file.FullName)
-            }
-
-            $relativePath = (Get-RepoRelativePath $portDirectory $file.FullName).Replace('\', '/')
-            & git -C $repoRootPath update-index --add --cacheinfo ('100644,' + $blobHash + ',' + $relativePath) | Out-Null
-            if ($LASTEXITCODE -ne 0) {
-                throw ('Unable to add file to temporary git index: ' + $relativePath)
-            }
+        & git -C $repoRootPath add --all --force -- 'ports/keyhcommon' | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            throw 'Unable to stage ports/keyhcommon in the temporary git index.'
         }
 
-        $treeHash = (& git -C $repoRootPath write-tree).Trim()
-        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($treeHash)) {
-            throw 'Unable to compute git tree hash for ports/keyhcommon.'
+        $rootTreeHash = (& git -C $repoRootPath write-tree).Trim()
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rootTreeHash)) {
+            throw 'Unable to compute git tree hash for the temporary index.'
         }
 
-        return $treeHash
+        $treeEntry = (& git -C $repoRootPath ls-tree $rootTreeHash -- 'ports/keyhcommon').Trim()
+        if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($treeEntry)) {
+            throw 'Unable to locate the ports/keyhcommon tree in the temporary index.'
+        }
+
+        $treeMatch = [regex]::Match($treeEntry, '^[0-9]{6}\s+tree\s+([0-9A-Fa-f]{40})\t')
+        if (-not $treeMatch.Success) {
+            throw 'Unable to parse the ports/keyhcommon tree hash.'
+        }
+
+        return $treeMatch.Groups[1].Value
     }
     finally {
         Remove-Item Env:\GIT_INDEX_FILE -ErrorAction SilentlyContinue
@@ -153,8 +138,7 @@ elseif ($isUtf16Be) {
     $portfileEncoding = [System.Text.Encoding]::BigEndianUnicode
 }
 
-$portfileContent =
-if ($useDirectTextEncoding) {
+$portfileContent = if ($useDirectTextEncoding) {
     [System.IO.File]::ReadAllText($portfilePath, $portfileEncoding)
 }
 else {
