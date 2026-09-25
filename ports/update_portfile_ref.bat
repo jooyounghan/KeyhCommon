@@ -24,7 +24,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF) { $encoding = New-Object System.Text.UTF8Encoding($true) }" ^
   "elseif ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFF -and $bytes[1] -eq 0xFE) { $encoding = [System.Text.Encoding]::Unicode }" ^
   "elseif ($bytes.Length -ge 2 -and $bytes[0] -eq 0xFE -and $bytes[1] -eq 0xFF) { $encoding = [System.Text.Encoding]::BigEndianUnicode }" ^
-  "$content = Get-Content -Path $path -Raw;" ^
+  "$content = [System.IO.File]::ReadAllText($path, $encoding);" ^
   "$regex = '(?m)^(\s*REF\s+"")([0-9a-f]{40})(""\s*)$';" ^
   "$match = [regex]::Match($content, $regex);" ^
   "if (-not $match.Success) { Write-Error '[vcpkg REF] Error: REF line not found in portfile.'; exit 2 };" ^
