@@ -95,10 +95,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
 
     def test_external_project_and_incremental_generation(self):
         self.assert_success(self.run_python())
-        generated = self.header.with_suffix(".reflect_generated.inl")
+        generated = self.header.parent / "generated" / "State.reflect_generated.inl"
         self.assertTrue(generated.is_file())
         self.assertIn("KEYH_REFLECT_ENUM_BEGIN(State)", generated.read_text())
-        self.assertIn('#include "State.reflect_generated.inl"', self.header.read_text())
+        self.assertIn('#include "generated/State.reflect_generated.inl"', self.header.read_text())
         original = generated.read_bytes()
         self.assert_success(self.run_python())
         self.assertEqual(generated.read_bytes(), original)
@@ -108,7 +108,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assert_success(self.run_python(
             "--output-dir", str(output), "--no-patch-headers",
         ))
-        self.assertTrue((output / "State.reflect_generated.inl").is_file())
+        self.assertTrue((output / "generated/State.reflect_generated.inl").is_file())
         self.assertEqual(self.header.read_text(), HEADER)
 
     def test_installed_dependencies_are_not_modified(self):
@@ -121,7 +121,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assert_success(self.run_python())
         for header in dependencies:
             self.assertEqual(header.read_text(), HEADER)
-            self.assertFalse(header.with_suffix(".reflect_generated.inl").exists())
+            self.assertFalse((header.parent / "generated/Dependency.reflect_generated.inl").exists())
 
     def test_invalid_project_fails(self):
         result = self.run_python("--project-dir", str(self.area / "missing"))
@@ -131,14 +131,14 @@ class PackagedReflectCodegenTests(unittest.TestCase):
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_default_output_and_trailing_separator(self):
         self.assert_success(self.run_batch(str(self.project) + "\\"))
-        self.assertTrue(self.header.with_suffix(".reflect_generated.inl").is_file())
-        self.assertFalse((self.project / "State.reflect_generated.inl").exists())
+        self.assertTrue((self.header.parent / "generated/State.reflect_generated.inl").is_file())
+        self.assertFalse((self.project / "generated/State.reflect_generated.inl").exists())
 
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_custom_output(self):
         output = self.area / "generated files ! (test)"
         self.assert_success(self.run_batch(str(self.project) + "\\", str(output) + "\\"))
-        self.assertTrue((output / "State.reflect_generated.inl").is_file())
+        self.assertTrue((output / "generated/State.reflect_generated.inl").is_file())
 
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_python_discovery(self):
