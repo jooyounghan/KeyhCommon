@@ -16,12 +16,21 @@ jobs:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
-      - name: Test registry metadata preparation
+      - name: Test registry metadata and packaged tools
         run: python3 -B -m unittest discover -s KeyhCommon/Tools/tests -v
+
+  test-reflect-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+        with:
+          persist-credentials: false
+      - name: Test packaged reflection generator and batch launcher
+        run: python -B -m unittest discover -s KeyhCommon/Tools/tests -p test_reflect_codegen.py -v
 
   publish:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-    needs: test
+    needs: [test, test-reflect-windows]
     runs-on: ubuntu-latest
     permissions:
       contents: write

@@ -1,20 +1,20 @@
 @echo off
-setlocal EnableDelayedExpansion
+setlocal EnableExtensions DisableDelayedExpansion
 
 :: ============================================================
-::  KeyhCommon Reflect Code Generator – batch wrapper
+::  KeyhCommon Reflect Code Generator - batch wrapper
 ::
 ::  Usage:
 ::    run_reflect_codegen.bat <project_dir> [output_dir]
 ::
 ::  <project_dir>   Path to the Visual Studio project folder to scan.
 ::  [output_dir]    Destination for the generated .inl file.
-::                  Defaults to <project_dir> when omitted.
+::                  Defaults to the directory of each source header.
+::  KEYHCOMMON_PYTHON may specify an absolute Python 3 executable path.
 ::
 ::  Pre-build event example (.vcxproj):
 ::    <PreBuildEvent>
-::      <Command>call "$(SolutionDir)..^Tools\run_reflect_codegen.bat"
-::               "$(ProjectDir)."</Command>
+::      <Command>call "$(KeyhCommonInstalledTripletDir)\tools\keyhcommon\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
 ::    </PreBuildEvent>
 :: ============================================================
 
@@ -28,42 +28,51 @@ if "%PROJECT_DIR%"=="" (
     exit /b 1
 )
 
-if "%OUTPUT_DIR%"=="" (
-    set "OUTPUT_DIR=%PROJECT_DIR%"
+if not exist "%SCRIPT_DIR%reflect_codegen.py" (
+    echo [Reflect] Error: reflect_codegen.py must be installed beside this batch file.
+    exit /b 1
 )
 
 :: -----------------------------------------------------------
 :: Locate a Python 3 interpreter
 :: -----------------------------------------------------------
-set "PYTHON_CMD="
+if defined KEYHCOMMON_PYTHON goto explicit_python
 
-where python >nul 2>&1
-if !ERRORLEVEL! equ 0 (
-    :: Verify it is Python 3 (not Python 2)
-    python -c "import sys; sys.exit(0 if sys.version_info.major>=3 else 1)" >nul 2>&1
-    if !ERRORLEVEL! equ 0 set "PYTHON_CMD=python"
-)
+set "PYTHON_CMD=py -3"
+%PYTHON_CMD% -c "import sys; sys.exit(sys.version_info.major != 3)" >nul 2>&1
+if not errorlevel 1 goto run_codegen
 
-if "!PYTHON_CMD!"=="" (
-    where python3 >nul 2>&1
-    if !ERRORLEVEL! equ 0 set "PYTHON_CMD=python3"
-)
+set "PYTHON_CMD=python"
+%PYTHON_CMD% -c "import sys; sys.exit(sys.version_info.major != 3)" >nul 2>&1
+if not errorlevel 1 goto run_codegen
 
-if "!PYTHON_CMD!"=="" (
-    echo [Reflect] Error: Python 3 not found. Please install Python 3 and ensure it is on PATH.
-    exit /b 1
-)
+set "PYTHON_CMD=python3"
+%PYTHON_CMD% -c "import sys; sys.exit(sys.version_info.major != 3)" >nul 2>&1
+if not errorlevel 1 goto run_codegen
+
+echo [Reflect] Error: Python 3 not found. Install Python 3 or set KEYHCOMMON_PYTHON.
+exit /b 1
+
+:explicit_python
+set PYTHON_CMD="%KEYHCOMMON_PYTHON%"
+%PYTHON_CMD% -c "import sys; sys.exit(sys.version_info.major != 3)" >nul 2>&1
+if not errorlevel 1 goto run_codegen
+echo [Reflect] Error: KEYHCOMMON_PYTHON must name a working Python 3 executable.
+exit /b 1
 
 :: -----------------------------------------------------------
 :: Run the code generator
 :: -----------------------------------------------------------
-!PYTHON_CMD! "%SCRIPT_DIR%reflect_codegen.py" ^
-    --project-dir "%PROJECT_DIR%" ^
-    --output-dir  "%OUTPUT_DIR%"
+:run_codegen
+:: Append a dot so a trailing backslash cannot escape Python's closing quote.
+if "%OUTPUT_DIR%"=="" goto default_output
+%PYTHON_CMD% "%SCRIPT_DIR%reflect_codegen.py" --project-dir "%PROJECT_DIR%\." --output-dir "%OUTPUT_DIR%\."
+goto codegen_result
 
-if !ERRORLEVEL! neq 0 (
-    echo [Reflect] Code generation failed with error code !ERRORLEVEL!
-    exit /b !ERRORLEVEL!
-)
+:default_output
+%PYTHON_CMD% "%SCRIPT_DIR%reflect_codegen.py" --project-dir "%PROJECT_DIR%\."
 
-exit /b 0
+:codegen_result
+set "CODEGEN_EXIT_CODE=%ERRORLEVEL%"
+if not "%CODEGEN_EXIT_CODE%"=="0" echo [Reflect] Code generation failed with error code %CODEGEN_EXIT_CODE%
+exit /b %CODEGEN_EXIT_CODE%

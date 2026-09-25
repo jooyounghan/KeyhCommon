@@ -17,9 +17,11 @@ Usage
 Pre-build event example (Visual Studio .vcxproj)
 -------------------------------------------------
     <PreBuildEvent>
-      <Command>call "$(SolutionDir)..\\Tools\\run_reflect_codegen.bat"
-               "$(ProjectDir)."</Command>
+      <Command>call "$(KeyhCommonInstalledTripletDir)\\tools\\keyhcommon\\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
     </PreBuildEvent>
+
+KeyhCommonInstalledTripletDir is a consumer-defined absolute path to the
+installed vcpkg triplet directory. The tool does not require a source checkout.
 
 Auto-patching source headers
 -----------------------------
@@ -461,8 +463,7 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
     lines.append('//')
     lines.append('// Pre-build event snippet for .vcxproj:')
     lines.append('//   <PreBuildEvent>')
-    lines.append('//     <Command>call "$(SolutionDir)Tools\\run_reflect_codegen.bat"')
-    lines.append('//              "$(ProjectDir)."</Command>')
+    lines.append('//     <Command>call "$(KeyhCommonInstalledTripletDir)\\tools\\keyhcommon\\run_reflect_codegen.bat" "$(ProjectDir)."</Command>')
     lines.append('//   </PreBuildEvent>')
     lines.append('')
 
@@ -722,13 +723,17 @@ def main():
     if global_output_dir:
         os.makedirs(global_output_dir, exist_ok=True)
 
-    # Collect all .h files under the project directory recursively (skip generated files)
-    header_files = sorted(
-        os.path.join(root, fname)
-        for root, _dirs, files in os.walk(project_dir)
-        for fname in files
-        if fname.endswith('.h') and not fname.endswith('.generated.h')
-    )
+    # Do not patch installed dependencies or IDE/version-control metadata.
+    header_files = []
+    for root, dirs, files in os.walk(project_dir):
+        dirs[:] = [name for name in dirs
+                   if name.lower() not in {'.git', '.vs', 'vcpkg_installed'}]
+        header_files.extend(
+            os.path.join(root, fname)
+            for fname in files
+            if fname.endswith('.h') and not fname.endswith('.generated.h')
+        )
+    header_files.sort()
 
     print(f'[Reflect] Starting - scanning {len(header_files)} header(s) in {project_dir}')
 
