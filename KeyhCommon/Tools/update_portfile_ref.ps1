@@ -88,8 +88,27 @@ foreach ($requiredPath in @($portfilePath, $vcpkgJsonPath, $versionsPath, $basel
     }
 }
 
-$headSha = (& git -C $repoRoot rev-parse --verify HEAD).Trim()
-if ($LASTEXITCODE -ne 0 -or $headSha -notmatch '^[0-9A-Fa-f]{40}$') {
+$headSha = ''
+$headExitCode = 1
+$nativeErrorPreference = Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue
+$restoreNativeErrorPreference = $null
+
+if ($null -ne $nativeErrorPreference) {
+    $restoreNativeErrorPreference = $nativeErrorPreference.Value
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
+try {
+    $headSha = (& git -C $repoRoot rev-parse --verify HEAD 2>$null).Trim()
+    $headExitCode = $LASTEXITCODE
+}
+finally {
+    if ($null -ne $restoreNativeErrorPreference) {
+        $PSNativeCommandUseErrorActionPreference = $restoreNativeErrorPreference
+    }
+}
+
+if ($headExitCode -ne 0 -or $headSha -notmatch '^[0-9A-Fa-f]{40}$') {
     Write-Host '[vcpkg registry] Skip: repository HEAD commit is unavailable or invalid.'
     exit 0
 }
