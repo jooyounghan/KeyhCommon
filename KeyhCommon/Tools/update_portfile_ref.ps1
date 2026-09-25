@@ -37,9 +37,20 @@ function Write-Json([string]$path, $value) {
 }
 
 function Get-RepoRelativePath([string]$repoRootPath, [string]$filePath) {
-    $repoUri = New-Object System.Uri(($repoRootPath.TrimEnd('\') + '\'))
-    $fileUri = New-Object System.Uri($filePath)
-    return [System.Uri]::UnescapeDataString($repoUri.MakeRelativeUri($fileUri).ToString())
+    $normalizedRootPath = [System.IO.Path]::GetFullPath($repoRootPath).TrimEnd('\', '/')
+    $normalizedFilePath = [System.IO.Path]::GetFullPath($filePath)
+    $comparison = [System.StringComparison]::OrdinalIgnoreCase
+    $rootPrefix = $normalizedRootPath + [System.IO.Path]::DirectorySeparatorChar
+
+    if ($normalizedFilePath.Equals($normalizedRootPath, $comparison)) {
+        return ''
+    }
+
+    if (-not $normalizedFilePath.StartsWith($rootPrefix, $comparison)) {
+        throw ('Path is not inside root: ' + $filePath)
+    }
+
+    return $normalizedFilePath.Substring($rootPrefix.Length).Replace('\', '/')
 }
 
 function Get-PortTreeHash([string]$repoRootPath, [string]$portDirectory) {
