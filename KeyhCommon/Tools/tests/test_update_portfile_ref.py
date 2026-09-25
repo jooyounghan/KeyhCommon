@@ -286,6 +286,106 @@ class UpdatePortfileRefTests(unittest.TestCase):
         self.run_updater()
         self.assert_registered(2, history=history)
 
+    def test_published_revisions_are_fetchable_and_baselines_remain_pinned(self):
+        consumer = self.area / "consumer-registry"
+        consumer.mkdir()
+        self.init_repository(consumer)
+        previous_registry = self.registry_commit
+        previous_revision = 0
+        for revision in (1, 2):
+            with self.subTest(revision=revision):
+                source = self.change_source()
+                self.run_updater()
+                published = self.commit("Publish registry revision")
+                # Fetch only committed history, as a remote consumer would.
+                self.git("fetch", "--quiet", str(self.repo), "HEAD", repo=consumer)
+                self.assertEqual(self.git("rev-parse", "FETCH_HEAD", repo=consumer), published)
+                baseline = json.loads(self.git(
+                    "show", f"{published}:versions/baseline.json", repo=consumer
+                ))["default"]["keyhcommon"]
+                self.assertEqual(baseline["port-version"], revision)
+                entries = json.loads(self.git(
+                    "show", f"{published}:versions/k-/keyhcommon.json", repo=consumer
+                ))["versions"]
+                tree = entries[0]["git-tree"]
+                self.assertEqual(
+                    self.git("rev-parse", f"{published}:ports/keyhcommon", repo=consumer),
+                    tree,
+                )
+                self.assertIn(f'REF "{source}"', self.git(
+                    "show", f"{tree}:portfile.cmake", repo=consumer
+                ))
+                self.assertEqual(
+                    self.git("show", f"{source}:KeyhCommon/source.h", repo=consumer),
+                    (self.repo / "KeyhCommon/source.h").read_text(encoding="utf-8").strip(),
+                )
+                for entry in entries:
+                    self.git("cat-file", "-e", f'{entry["git-tree"]}:vcpkg.json', repo=consumer)
+                old_baseline = json.loads(self.git(
+                    "show", f"{previous_registry}:versions/baseline.json", repo=consumer
+                ))["default"]["keyhcommon"]
+                self.assertEqual(old_baseline["port-version"], previous_revision)
+                before = self.metadata()
+                self.run_updater()
+                self.assertEqual(self.metadata(), before)
+                previous_registry, previous_revision = published, revision
+
+    def test_repository_without_head_fails_without_writes(self):
+        empty = self.area / "empty"
+        shutil.copytree(self.repo, empty, ignore=shutil.ignore_patterns(".git"))
+        self.init_repository(empty)
+        self.assert_rejected(empty)
+
+    @unittest.skipUnless(shutil.which("vcpkg"), "vcpkg executable is not installed")
+    def test_vcpkg_baseline_update_selects_published_revision(self):
+        consumer = self.area / "consumer"
+        consumer.mkdir()
+        self.write_json(consumer / "vcpkg.json", {
+            "name": "registry-consumer", "version-string": "0",
+            "dependencies": ["keyhcommon"],
+        })
+        configuration = consumer / "vcpkg-configuration.json"
+        registry = {
+            "kind": "git", "repository": self.repo.as_uri(),
+            "reference": self.git("symbolic-ref", "--short", "HEAD"),
+            "baseline": self.registry_commit,
+        }
+        self.write_json(configuration, {
+            "default-registry": registry,
+            "registries": [dict(registry, packages=["keyhcommon"])],
+        })
+        env = dict(self.env, VCPKG_DOWNLOADS=str(self.area / "downloads"))
+        (self.area / "registries").mkdir()
+        env["X_VCPKG_REGISTRIES_CACHE"] = str(self.area / "registries")
+
+        def vcpkg(*args):
+            result = subprocess.run(
+                [shutil.which("vcpkg"), *args], cwd=consumer, env=env,
+                text=True, capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            return result.stdout + result.stderr
+
+        self.change_source()
+        self.run_updater()
+        published = self.commit("Publish registry revision")
+        old_plan = vcpkg("install", "--dry-run", "--triplet=x64-linux")
+        self.assertIn("keyhcommon:x64-linux@0.1.0", old_plan)
+        self.assertNotIn("0.1.0#1", old_plan)
+        vcpkg("x-update-baseline")
+        self.assertEqual(
+            self.read_json(configuration)["registries"][0]["baseline"], published
+        )
+        new_plan = vcpkg("install", "--dry-run", "--triplet=x64-linux")
+        self.assertIn("keyhcommon:x64-linux@0.1.0#1", new_plan)
+
+    def test_commonbase_build_does_not_publish_registry_metadata(self):
+        project = UPDATER.parents[1] / "CommonBase/CommonBase.vcxproj"
+        text = project.read_text(encoding="utf-8-sig")
+        self.assertNotIn("UpdatePortRegistryMetadataCommand", text)
+        self.assertNotIn("update_portfile_ref", text)
+        self.assertFalse(UPDATER.with_suffix(".bat").exists())
+
     def test_explicit_upstream_version_starts_at_revision_zero(self):
         manifest = self.read_json(self.manifest)
         manifest["version-string"] = "0.2.0"
