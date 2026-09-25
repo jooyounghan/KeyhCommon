@@ -24,7 +24,12 @@ Reflection code generation tools are installed alongside the matching library:
 Python 3 must be available on PATH; it is not bundled with the package.
 For MSBuild consumers, replace the old project-local generator in the pre-build
 event with the installed wrapper (after vcpkg has installed the package):
-  call "$(VcpkgInstalledDir)$(VcpkgTriplet)\tools\keyhcommon\run_reflect_codegen.bat" "$(ProjectDir)."
+  call "$(KeyhCommonInstalledTripletDir)\tools\keyhcommon\run_reflect_codegen.bat" "$(ProjectDir)."
+Define KeyhCommonInstalledTripletDir as an absolute path to the installed triplet
+directory, for example C:\path\to\KeyhEngine\vcpkg_installed\x64-windows for a
+manifest install, or C:\path\to\vcpkg\installed\x64-windows for a classic install.
+Use the triplet and installation root actually selected by your build. This is
+a consumer-defined property, not one automatically supplied by vcpkg.
 The first argument is the directory containing the headers to scan. An optional
 second argument selects the output directory; the wrapper defaults to the first.
 
