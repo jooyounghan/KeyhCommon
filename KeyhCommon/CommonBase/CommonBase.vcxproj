@@ -229,7 +229,7 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
     </Manifest>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="$([System.String]::Copy('Debug|Win32;Release|Win32;DevRelease|Win32;Debug|x64;Release|x64;DevRelease|x64;').Contains('$(Configuration)|$(Platform);'))">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32' Or '$(Configuration)|$(Platform)'=='Release|Win32' Or '$(Configuration)|$(Platform)'=='DevRelease|Win32' Or '$(Configuration)|$(Platform)'=='Debug|x64' Or '$(Configuration)|$(Platform)'=='Release|x64' Or '$(Configuration)|$(Platform)'=='DevRelease|x64'">
     <PostBuildEvent>
       <Command>call "$(ProjectDir)..\..\ports\update_portfile_ref.bat"</Command>
     </PostBuildEvent>
