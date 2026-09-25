@@ -13,13 +13,13 @@ if not exist "%PORTFILE_PATH%" (
 
 for /f %%I in ('git -C "%REPO_ROOT%" rev-parse --verify HEAD 2^>nul') do set "HEAD_SHA=%%I"
 if not defined HEAD_SHA (
-    echo [vcpkg REF] Error: failed to resolve repository HEAD commit.
-    exit /b 1
+    echo [vcpkg REF] Skip: repository HEAD commit is unavailable.
+    exit /b 0
 )
 powershell -NoProfile -ExecutionPolicy Bypass -Command "if ('%HEAD_SHA%' -notmatch '^[0-9A-Fa-f]{40}$') { exit 1 }"
 if errorlevel 1 (
-    echo [vcpkg REF] Error: invalid HEAD commit hash.
-    exit /b 1
+    echo [vcpkg REF] Skip: repository HEAD commit hash format is invalid.
+    exit /b 0
 )
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command ^
