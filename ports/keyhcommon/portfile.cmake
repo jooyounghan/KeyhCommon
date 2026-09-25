@@ -75,6 +75,12 @@ foreach(project IN ITEMS CommonBase ReflectSystem AppSystem)
 endforeach()
 
 file(INSTALL
+    "${KEYHCOMMON_PROJECT_ROOT}/Tools/reflect_codegen.py"
+    "${KEYHCOMMON_PROJECT_ROOT}/Tools/run_reflect_codegen.bat"
+    DESTINATION "${CURRENT_PACKAGES_DIR}/tools/${PORT}"
+)
+
+file(INSTALL
     "${KEYHCOMMON_PROJECT_ROOT}/CommonBase/CommonBase.natvis"
     DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}"
 )

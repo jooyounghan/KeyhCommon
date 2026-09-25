@@ -1,5 +1,7 @@
 get_filename_component(_KEYHCOMMON_PREFIX "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
 set(_KEYHCOMMON_INCLUDE_ROOT "${_KEYHCOMMON_PREFIX}/include/keyhcommon")
+set(KeyhCommon_TOOLS_DIR "${_KEYHCOMMON_PREFIX}/tools/keyhcommon")
+set(KeyhCommon_REFLECT_CODEGEN "${KeyhCommon_TOOLS_DIR}/reflect_codegen.py")
 
 if(NOT TARGET KeyhCommon::CommonBase)
     add_library(KeyhCommon::CommonBase STATIC IMPORTED)
