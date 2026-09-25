@@ -12,6 +12,20 @@ function Read-Json([string]$path) {
     return Get-Content -LiteralPath $path -Raw | ConvertFrom-Json
 }
 
+function Get-VersionFieldInfo($value) {
+    foreach ($fieldName in @('version', 'version-semver', 'version-date', 'version-string')) {
+        $property = $value.PSObject.Properties[$fieldName]
+        if ($null -ne $property) {
+            return [pscustomobject]@{
+                Name = $fieldName
+                Value = [string]$property.Value
+            }
+        }
+    }
+
+    return $null
+}
+
 function Write-Utf8NoBom([string]$path, [string]$content) {
     $utf8 = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($path, $content, $utf8)
@@ -154,10 +168,12 @@ if ($currentRef -ine $headSha) {
 }
 
 $manifest = Read-Json $vcpkgJsonPath
-$versionString = $manifest.'version-string'
-if ([string]::IsNullOrWhiteSpace($versionString)) {
-    throw 'version-string is missing from ports/keyhcommon/vcpkg.json.'
+$versionField = Get-VersionFieldInfo $manifest
+if ($null -eq $versionField -or [string]::IsNullOrWhiteSpace($versionField.Value)) {
+    throw 'A supported version field is missing from ports/keyhcommon/vcpkg.json.'
 }
+$versionFieldName = $versionField.Name
+$versionValue = $versionField.Value
 
 $portVersion = 0
 $manifestHasPortVersion = $null -ne $manifest.PSObject.Properties['port-version']
@@ -180,7 +196,8 @@ foreach ($entry in $existingEntries) {
         $entryPortVersion = [int]$entry.'port-version'
     }
 
-    if ($entry.'version-string' -eq $versionString -and $entryPortVersion -eq $portVersion) {
+    $entryVersionField = Get-VersionFieldInfo $entry
+    if ($null -ne $entryVersionField -and $entryVersionField.Name -eq $versionFieldName -and $entryVersionField.Value -eq $versionValue -and $entryPortVersion -eq $portVersion) {
         continue
     }
 
@@ -189,8 +206,8 @@ foreach ($entry in $existingEntries) {
 
 $updatedEntryProperties = [ordered]@{
     'git-tree' = $treeHash
-    'version-string' = $versionString
 }
+$updatedEntryProperties[$versionFieldName] = $versionValue
 if ($manifestHasPortVersion) {
     $updatedEntryProperties['port-version'] = $portVersion
 }
@@ -221,7 +238,7 @@ if ($null -ne $defaultEntries['keyhcommon']) {
     }
 }
 
-$keyhcommonBaselineEntry['baseline'] = $versionString
+$keyhcommonBaselineEntry['baseline'] = $versionValue
 if ($manifestHasPortVersion) {
     $keyhcommonBaselineEntry['port-version'] = $portVersion
 }
@@ -247,7 +264,7 @@ else {
     Write-Host ('[vcpkg registry] Updated REF: ' + $currentRef + ' -> ' + $headSha)
 }
 
-$versionLabel = $versionString
+$versionLabel = $versionValue
 if ($manifestHasPortVersion) {
     $versionLabel += ('#' + $portVersion)
 }
