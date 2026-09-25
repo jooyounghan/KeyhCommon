@@ -2,14 +2,24 @@
 setlocal EnableExtensions
 
 set "SCRIPT_DIR=%~dp0"
-set "POWERSHELL_SCRIPT=%SCRIPT_DIR%update_portfile_ref.ps1"
+set "PYTHON_SCRIPT=%SCRIPT_DIR%update_portfile_ref.py"
 
-if not exist "%POWERSHELL_SCRIPT%" (
-    echo [vcpkg registry] Error: PowerShell script not found: "%POWERSHELL_SCRIPT%"
+if not exist "%PYTHON_SCRIPT%" (
+    echo [vcpkg registry] Error: Python script not found: "%PYTHON_SCRIPT%"
     exit /b 1
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%POWERSHELL_SCRIPT%"
+where py >nul 2>nul
+if not errorlevel 1 (
+    py -3 "%PYTHON_SCRIPT%"
+) else (
+    where python >nul 2>nul
+    if errorlevel 1 (
+        echo [vcpkg registry] Error: Python launcher was not found.
+        exit /b 1
+    )
+    python "%PYTHON_SCRIPT%"
+)
 
 if errorlevel 1 (
     exit /b %ERRORLEVEL%
