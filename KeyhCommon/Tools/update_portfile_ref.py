@@ -20,21 +20,21 @@ def write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
-def detect_text_encoding(data: bytes) -> str:
+def detect_text_encoding(data: bytes) -> tuple[str, bool]:
     if data.startswith(b"\xef\xbb\xbf"):
-        return "utf-8-sig"
+        return "utf-8-sig", True
     if data.startswith(b"\xff\xfe"):
-        return "utf-16-le"
+        return "utf-16-le", True
     if data.startswith(b"\xfe\xff"):
-        return "utf-16-be"
+        return "utf-16-be", True
 
     try:
         if data.decode("utf-8").encode("utf-8") == data:
-            return "utf-8"
+            return "utf-8", True
     except UnicodeDecodeError:
         pass
 
-    return "latin-1"
+    return "latin-1", False
 
 
 def get_version_field_info(value: dict) -> tuple[str, str] | None:
@@ -111,22 +111,37 @@ def main() -> int:
         return 0
 
     portfile_bytes = portfile_path.read_bytes()
-    portfile_encoding = detect_text_encoding(portfile_bytes)
-    portfile_content = portfile_bytes.decode(portfile_encoding)
+    portfile_encoding, use_direct_text_encoding = detect_text_encoding(portfile_bytes)
 
-    ref_regex = re.compile(r'(?m)^(\s*REF\s+")([0-9A-Fa-f]{40})("\s*)$')
-    ref_match = ref_regex.search(portfile_content)
-    if ref_match is None:
-        raise RuntimeError("REF line not found in portfile.")
+    if use_direct_text_encoding:
+        portfile_content = portfile_bytes.decode(portfile_encoding)
+        ref_regex = re.compile(r'(?m)^(\s*REF\s+")([0-9A-Fa-f]{40})("\s*)$')
+        ref_match = ref_regex.search(portfile_content)
+        if ref_match is None:
+            raise RuntimeError("REF line not found in portfile.")
 
-    current_ref = ref_match.group(2)
-    if current_ref.lower() != head_sha.lower():
-        updated_portfile_content = ref_regex.sub(
-            lambda match: f"{match.group(1)}{head_sha}{match.group(3)}",
-            portfile_content,
-            count=1,
-        )
-        portfile_path.write_bytes(updated_portfile_content.encode(portfile_encoding))
+        current_ref = ref_match.group(2)
+        if current_ref.lower() != head_sha.lower():
+            updated_portfile_content = ref_regex.sub(
+                lambda match: f"{match.group(1)}{head_sha}{match.group(3)}",
+                portfile_content,
+                count=1,
+            )
+            portfile_path.write_bytes(updated_portfile_content.encode(portfile_encoding))
+    else:
+        ref_regex = re.compile(rb'(?m)^(\s*REF\s+")([0-9A-Fa-f]{40})("\s*)$')
+        ref_match = ref_regex.search(portfile_bytes)
+        if ref_match is None:
+            raise RuntimeError("REF line not found in portfile.")
+
+        current_ref = ref_match.group(2).decode("ascii")
+        if current_ref.lower() != head_sha.lower():
+            updated_portfile_bytes = ref_regex.sub(
+                lambda match: match.group(1) + head_sha.encode("ascii") + match.group(3),
+                portfile_bytes,
+                count=1,
+            )
+            portfile_path.write_bytes(updated_portfile_bytes)
 
     manifest = read_json(vcpkg_json_path)
     version_field = get_version_field_info(manifest)
