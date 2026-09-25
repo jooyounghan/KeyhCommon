@@ -60,7 +60,21 @@ def run_git(repo_root: Path, *args: str, env: dict[str, str] | None = None, chec
     )
 
 
-def get_port_tree_hash(repo_root: Path, port_dir: Path) -> str:
+def hash_blob(repo_root: Path, content: bytes, path_in_repo: str, env: dict[str, str]) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repo_root), "hash-object", "-w", "--stdin", "--path", path_in_repo],
+        check=True,
+        input=content,
+        capture_output=True,
+        env=env,
+    )
+    blob_hash = result.stdout.decode("utf-8").strip()
+    if not re.fullmatch(r"[0-9A-Fa-f]{40}", blob_hash):
+        raise RuntimeError(f"Unable to hash synthetic file contents for {path_in_repo}.")
+    return blob_hash
+
+
+def get_port_tree_hash(repo_root: Path, port_dir: Path, overrides: dict[str, bytes] | None = None) -> str:
     if not any(path.is_file() for path in port_dir.rglob("*")):
         raise RuntimeError("No files were found under ports/keyhcommon.")
 
@@ -73,7 +87,19 @@ def get_port_tree_hash(repo_root: Path, port_dir: Path) -> str:
 
     try:
         run_git(repo_root, "read-tree", "--empty", env=env)
+        run_git(repo_root, "read-tree", "--empty", env=env)
         run_git(repo_root, "add", "--all", "--force", "--", "ports/keyhcommon", env=env)
+            normalized_relative_path = relative_path.replace("\\", "/")
+            path_in_repo = f"ports/keyhcommon/{normalized_relative_path}"
+            blob_hash = hash_blob(repo_root, content, path_in_repo, env)
+            run_git(
+                repo_root,
+                "update-index",
+                "--cacheinfo",
+                f"100644,{blob_hash},{path_in_repo}",
+                env=env,
+            )
+
         root_tree_hash = run_git(repo_root, "write-tree", env=env).stdout.strip()
         if not re.fullmatch(r"[0-9A-Fa-f]{40}", root_tree_hash):
             raise RuntimeError("Unable to compute git tree hash for the temporary index.")
@@ -112,6 +138,7 @@ def main() -> int:
 
     portfile_bytes = portfile_path.read_bytes()
     portfile_encoding, use_direct_text_encoding = detect_text_encoding(portfile_bytes)
+    updated_portfile_bytes: bytes | None = None
 
     if use_direct_text_encoding:
         portfile_content = portfile_bytes.decode(portfile_encoding)
@@ -127,7 +154,7 @@ def main() -> int:
                 portfile_content,
                 count=1,
             )
-            portfile_path.write_bytes(updated_portfile_content.encode(portfile_encoding))
+            updated_portfile_bytes = updated_portfile_content.encode(portfile_encoding)
     else:
         ref_regex = re.compile(rb'(?m)^(\s*REF\s+")([0-9A-Fa-f]{40})("\s*)$')
         ref_match = ref_regex.search(portfile_bytes)
@@ -141,7 +168,6 @@ def main() -> int:
                 portfile_bytes,
                 count=1,
             )
-            portfile_path.write_bytes(updated_portfile_bytes)
 
     manifest = read_json(vcpkg_json_path)
     version_field = get_version_field_info(manifest)
@@ -152,7 +178,14 @@ def main() -> int:
     manifest_has_port_version = "port-version" in manifest
     port_version_value = manifest.get("port-version")
 
-    tree_hash = get_port_tree_hash(repo_root, port_dir)
+    tree_hash = get_port_tree_hash(
+        repo_root,
+        port_dir,
+        {"portfile.cmake": updated_portfile_bytes} if updated_portfile_bytes is not None else None,
+    )
+
+    if updated_portfile_bytes is not None:
+        portfile_path.write_bytes(updated_portfile_bytes)
 
     versions_document = read_json(versions_path)
     existing_versions = versions_document.get("versions", [])
