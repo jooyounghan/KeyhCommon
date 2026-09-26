@@ -21,13 +21,13 @@ jobs:
         run: python3 -B -m unittest discover -s KeyhCommon/Actions -v
 
   test-reflect-windows:
-    name: Validate reflection generator and batch launcher (Windows)
+    name: Validate split reflection outputs and batch launcher (Windows)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
         with:
           persist-credentials: false
-      - name: Test packaged reflection generator and batch launcher
+      - name: Test packaged generator, generated header/CPP includes, and batch launcher
         run: python -B -m unittest discover -s KeyhCommon/Actions -p test_reflect_codegen.py -v
 
   publish:

@@ -60,6 +60,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.header = self.project / "nested/State.h"
         self.header.parent.mkdir(parents=True)
         self.header.write_text(HEADER, encoding="utf-8")
+        (self.project / "nested/State.cpp").write_text('#include "State.h"\n', encoding="utf-8")
         self.cwd = self.area / "unrelated working directory"
         self.cwd.mkdir()
         self.env = os.environ.copy()
@@ -95,10 +96,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
 
     def test_external_project_and_incremental_generation(self):
         self.assert_success(self.run_python())
-        generated = self.header.with_suffix(".reflect_generated.inl")
+        generated = self.project / "generated/nested/State.reflect_generated.inl"
         self.assertTrue(generated.is_file())
         self.assertIn("KEYH_REFLECT_ENUM_BEGIN(State)", generated.read_text())
-        self.assertIn('#include "State.reflect_generated.inl"', self.header.read_text())
+        self.assertIn('#include "../generated/nested/State.reflect_generated.inl"', self.header.read_text())
         original = generated.read_bytes()
         self.assert_success(self.run_python())
         self.assertEqual(generated.read_bytes(), original)
@@ -108,7 +109,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assert_success(self.run_python(
             "--output-dir", str(output), "--no-patch-headers",
         ))
-        self.assertTrue((output / "State.reflect_generated.inl").is_file())
+        self.assertTrue((output / "nested/State.reflect_generated.inl").is_file())
         self.assertEqual(self.header.read_text(), HEADER)
 
     def test_installed_dependencies_are_not_modified(self):
@@ -121,7 +122,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assert_success(self.run_python())
         for header in dependencies:
             self.assertEqual(header.read_text(), HEADER)
-            self.assertFalse(header.with_suffix(".reflect_generated.inl").exists())
+            self.assertFalse((self.project / "generated" / directory / "include/Dependency.reflect_generated.inl").exists())
 
     def test_invalid_project_fails(self):
         result = self.run_python("--project-dir", str(self.area / "missing"))
@@ -131,14 +132,48 @@ class PackagedReflectCodegenTests(unittest.TestCase):
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_default_output_and_trailing_separator(self):
         self.assert_success(self.run_batch(str(self.project) + "\\"))
-        self.assertTrue(self.header.with_suffix(".reflect_generated.inl").is_file())
-        self.assertFalse((self.project / "State.reflect_generated.inl").exists())
+        self.assertTrue((self.project / "generated/nested/State.reflect_generated.inl").is_file())
+        self.assertFalse((self.project / "nested/State.reflect_generated.inl").exists())
 
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_custom_output(self):
         output = self.area / "generated files ! (test)"
         self.assert_success(self.run_batch(str(self.project) + "\\", str(output) + "\\"))
-        self.assertTrue((output / "State.reflect_generated.inl").is_file())
+        self.assertTrue((output / "nested/State.reflect_generated.inl").is_file())
+
+    def test_reflective_definition_is_generated_and_included_at_cpp_end(self):
+        header = self.project / "nested/Widget.h"
+        header.write_text(
+            'class REFLECTIVE(Widget) {\n'
+            'KEYH_REFLECT_PROPERTY()\n'
+            'int _value;\n'
+            'KEYH_REFLECT_DECLARE_BODY(Widget)\n'
+            '};\n', encoding="utf-8",
+        )
+        cpp = self.project / "nested/Widget.cpp"
+        cpp.write_text('#include "Widget.h"\n', encoding="utf-8")
+        self.assert_success(self.run_python())
+        declaration = self.project / "generated/nested/Widget.reflect_generated.inl"
+        definition = self.project / "generated/nested/Widget.reflect_generated.cpp.inl"
+        self.assertIn('template<> ReflectMetaObject ReflectObject<Widget>::initializeMetaObject();', declaration.read_text())
+        self.assertIn('ReflectMetaObject ReflectObject<Widget>::initializeMetaObject()', definition.read_text())
+        self.assertTrue(header.read_text().rstrip().endswith('#include "../generated/nested/Widget.reflect_generated.inl"'))
+        self.assertTrue(cpp.read_text().rstrip().endswith('#include "../generated/nested/Widget.reflect_generated.cpp.inl"'))
+
+    def test_reflective_header_requires_matching_cpp(self):
+        header = self.project / "nested/Widget.h"
+        header.write_text(
+            'class REFLECTIVE(Widget) {\n'
+            'KEYH_REFLECT_PROPERTY()\n'
+            'int _value;\n'
+            '};\n',
+            encoding="utf-8",
+        )
+        cpp = self.project / "nested/State.cpp"
+        cpp.unlink()
+        result = self.run_python()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("require a matching .cpp file", result.stderr)
 
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_python_discovery(self):
