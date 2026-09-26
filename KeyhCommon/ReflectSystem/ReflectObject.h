@@ -8,8 +8,9 @@
 className : public keyh::ReflectObject<className> \
 
 // Place this macro once inside the body of every REFLECTIVE class so that
-// keyh::ReflectObject<ClassName>::initializeMetaObject() (and the lambdas
-// defined within it) can access the class's protected/private members.
+// keyh::ReflectObject<ClassName>::initializeMetaObject() can access its
+// private reflected members. CodeGen emits the explicit specialization in
+// the generated .inl included by the matching .cpp.
 // It only *declares* the default constructor, so members with forward-declared
 // types (e.g. Ptr<IncompleteType>) do not need to be complete inside the header.
 // The destructor is intentionally not handled by this macro; declare and define
