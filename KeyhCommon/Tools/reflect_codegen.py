@@ -1,17 +1,16 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 KeyhCommon Reflect Code Generator
 ===================================
 Scans project header files for REFLECTIVE classes annotated with
 KEYH_REFLECT_PROPERTY / KEYH_REFLECT_PROPERTY_GROUP macros and KEYH_REFLECT_ENUM
-annotated enums, then generates files in a generated/ directory:
-  - one .inl per header with initializeMetaObject() declarations and enum traits
-  - one .cpp per header with initializeMetaObject() definitions
+annotated enums, then generates one .inl per header. The .inl contains enum
+traits and initializeMetaObject() definitions, included by the matching .cpp.
 
 Usage
 -----
     python reflect_codegen.py --project-dir <dir> [--output-dir <dir>]
-                                       [--verbose] [--no-patch-headers]
+                                       [--verbose] [--no-patch-sources]
 
 Pre-build event example (Visual Studio .vcxproj)
 -------------------------------------------------
@@ -22,18 +21,11 @@ Pre-build event example (Visual Studio .vcxproj)
 KeyhCommonInstalledTripletDir is a consumer-defined absolute path to the
 installed vcpkg triplet directory. The tool does not require a source checkout.
 
-Auto-patching source headers
------------------------------
-By default the generator automatically appends
-    #include "generated/<HeaderBaseName>.reflect_generated.inl"
-to every header that contains a REFLECTIVE class or KEYH_REFLECT_ENUM
-(if not already present).
-Pass --no-patch-headers to disable this behaviour and manage the include
-manually.
-
-For Visual Studio projects, the generator also adds a generated-source glob
-and a pre-compile MSBuild target to the project's .vcxproj, and places current
-generated sources in the generated filter in its .vcxproj.filters file.
+Auto-patching source files
+--------------------------
+By default the generator adds the generated .inl include to the matching .cpp,
+immediately after its PCH include when present. Pass --no-patch-sources to
+manage includes manually.
 """
 
 import re
@@ -440,7 +432,8 @@ def _safe_group_var(group_name):
     return 'sGroupName_' + re.sub(r'[^A-Za-z0-9_]', '_', group_name)
 
 
-def generate_inl_content(all_classes, all_enums, source_filename, output_filename):
+def generate_inl_content(all_classes, all_enums, source_filename, output_filename,
+                         source_include_path=None):
     """
     Produce the full text of the generated .inl file for a single header.
 
@@ -471,6 +464,9 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
     lines.append('//     <Command>call "$(KeyhCommonInstalledTripletDir)\\tools\\keyhcommon\\run_reflect_codegen.bat" "$(ProjectDir)."</Command>')
     lines.append('//   </PreBuildEvent>')
     lines.append('')
+    lines.append('#pragma once')
+    lines.append(f'#include "{source_include_path or ("../" + source_filename)}"')
+    lines.append('')
 
     for enum_name, entries, _ in all_enums:
         if not entries:
@@ -482,17 +478,6 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
         for entry in entries:
             lines.append(f'\t\tKEYH_REFLECT_ENUM_VALUE({enum_name}, {entry})')
         lines.append(f'\tKEYH_REFLECT_ENUM_END({enum_name})')
-        lines.append('}')
-        lines.append('')
-
-    for class_name, properties, _ in all_classes:
-        if not properties:
-            continue
-
-        lines.append('namespace keyh')
-        lines.append('{')
-        lines.append('\ttemplate<>')
-        lines.append(f'\tReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject();')
         lines.append('}')
         lines.append('')
 
@@ -567,15 +552,8 @@ def generate_cpp_content(all_classes, header_include_path):
 # Header auto-patch: manage generated #include directives
 # ---------------------------------------------------------------------------
 
-def patch_header_with_include(filepath, include_line):
-    """
-    Remove stale generated .inl includes from *filepath* and ensure that the
-    current *include_line* (e.g. '#include "reflect_generated.inl"') exists
-    exactly once, preserving an existing matching include when possible.
-
-    Returns True when the file was modified, False when it was already in the
-    expected state (or the file could not be read/written).
-    """
+def patch_cpp_with_include(filepath, include_line):
+    """Put the generated .inl include first, directly after a PCH include."""
     try:
         with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
             content = f.read()
@@ -585,78 +563,20 @@ def patch_header_with_include(filepath, include_line):
 
     newline_match = re.search(r'\r\n|\n|\r', content)
     newline = newline_match.group(0) if newline_match else '\n'
-    generated_include_pattern = re.compile(
-        r'^[ \t]*(#include\s+"[^"\r\n]+\.reflect_generated\.inl")[ \t]*(?:\r\n|\n|\r|$)',
-        re.MULTILINE
-    )
-    lines = content.splitlines(keepends=True)
-    generated_include_indexes = []
-    current_include_indexes = []
-
-    for index, line in enumerate(lines):
-        match = generated_include_pattern.fullmatch(line)
-        if not match:
-            continue
-
-        generated_include_indexes.append(index)
-        if match.group(1) == include_line:
-            current_include_indexes.append(index)
-
-    preserved_include_index = current_include_indexes[0] if current_include_indexes else None
-    replacement_include_index = (
-        generated_include_indexes[0]
-        if preserved_include_index is None and generated_include_indexes
-        else None
-    )
-
-    kept_lines = []
-    include_present = False
-    modified = False
-
-    for index, line in enumerate(lines):
-        match = generated_include_pattern.fullmatch(line)
-        if not match:
-            kept_lines.append(line)
-            continue
-
-        if index == preserved_include_index:
-            include_present = True
-            kept_lines.append(line)
-        elif index == replacement_include_index:
-            line_newline = newline
-            if line.endswith('\r\n'):
-                line_newline = '\r\n'
-            elif line.endswith('\n'):
-                line_newline = '\n'
-            elif line.endswith('\r'):
-                line_newline = '\r'
-
-            include_present = True
-            kept_lines.append(include_line + line_newline)
-            modified = True
-        else:
-            modified = True
-
-    updated_content = ''.join(kept_lines)
-
-    if not include_present:
-        if updated_content and not updated_content.endswith(('\n', '\r')):
-            updated_content += newline
-        updated_content += include_line + newline
-        modified = True
-    elif updated_content != content:
-        modified = True
-
-    if not modified:
+    generated = re.compile(r'^[ \t]*#include\s+"[^"]+\.reflect_generated\.inl"[ \t]*(?:\r\n|\n|\r|$)', re.MULTILINE)
+    lines = generated.sub('', content).splitlines(keepends=True)
+    pch = re.compile(r'^\s*#\s*include\s*["<][^">]*(?:pch|precompiled)[^">]*\.(?:h|hpp)[">]', re.IGNORECASE)
+    insert_at = next((i + 1 for i, line in enumerate(lines) if pch.match(line)), 0)
+    lines.insert(insert_at, include_line + newline)
+    updated = ''.join(lines)
+    if updated == content:
         return False
-
     try:
         with open(filepath, 'w', encoding='utf-8', newline='') as f:
-            f.write(updated_content)
+            f.write(updated)
     except OSError as exc:
         print(f'[Reflect] Warning: could not write {filepath} during patching: {exc}', file=sys.stderr)
         return False
-
     return True
 
 
@@ -708,99 +628,6 @@ def remove_generated_inl(filepath):
     return True
 
 
-def patch_project_for_generated_sources(project_dir, generated_sources):
-    """Make generated reflection .cpp files discoverable and visible in VS."""
-    project_files = [name for name in os.listdir(project_dir) if name.endswith('.vcxproj')]
-    if len(project_files) != 1:
-        return False
-
-    project_path = os.path.join(project_dir, project_files[0])
-    filters_path = project_path + '.filters'
-    try:
-        with open(project_path, 'r', encoding='utf-8', newline='') as f:
-            project_text = f.read()
-    except OSError as exc:
-        print(f'[Reflect] Warning: could not read {project_path}: {exc}', file=sys.stderr)
-        return False
-
-    marker = 'KeyhCommonCompileGeneratedReflection'
-    if marker not in project_text:
-        newline_match = re.search(r'\r\n|\n|\r', project_text)
-        newline = newline_match.group(0) if newline_match else '\n'
-        target = newline.join([
-            '  <ItemGroup>',
-            '    <ClCompile Include="**\\generated\\*.reflect_generated.cpp">',
-            '      <PrecompiledHeader>NotUsing</PrecompiledHeader>',
-            '    </ClCompile>',
-            '  </ItemGroup>',
-            '  <Target Name="KeyhCommonCompileGeneratedReflection" BeforeTargets="ClCompile">',
-            '    <ItemGroup>',
-            '      <ClCompile Include="$(MSBuildProjectDirectory)\\**\\generated\\*.reflect_generated.cpp" Exclude="@(ClCompile)">',
-            '        <PrecompiledHeader>NotUsing</PrecompiledHeader>',
-            '      </ClCompile>',
-            '    </ItemGroup>',
-            '  </Target>',
-            '</Project>',
-        ])
-        project_text = re.sub(r'</Project\s*>', target, project_text, count=1)
-        try:
-            with open(project_path, 'w', encoding='utf-8', newline='') as f:
-                f.write(project_text)
-        except OSError as exc:
-            print(f'[Reflect] Warning: could not update {project_path}: {exc}', file=sys.stderr)
-            return False
-
-    if not os.path.isfile(filters_path):
-        return True
-
-    try:
-        with open(filters_path, 'r', encoding='utf-8', newline='') as f:
-            filters_text = f.read()
-    except OSError as exc:
-        print(f'[Reflect] Warning: could not read {filters_path}: {exc}', file=sys.stderr)
-        return False
-
-    newline_match = re.search(r'\r\n|\n|\r', filters_text)
-    newline = newline_match.group(0) if newline_match else '\n'
-    folder_name = 'generated'
-    escaped_folder = html.escape(folder_name, quote=True)
-    if not re.search(r'<Filter\s+Include="generated"\s*>', filters_text):
-        unique_id = uuid.uuid5(uuid.NAMESPACE_URL, os.path.abspath(project_path) + ':generated')
-        filter_entry = newline.join([
-            f'    <Filter Include="{escaped_folder}">',
-            f'      <UniqueIdentifier>{{{unique_id}}}</UniqueIdentifier>',
-            '    </Filter>',
-        ])
-        filters_text = re.sub(r'(<ItemGroup[^>]*>)', r'\1' + newline + filter_entry, filters_text, count=1)
-
-    # Refresh only generator-owned ClCompile filter entries.
-    generated_entry = re.compile(
-        r'^[ \t]*<ClCompile Include="[^"]*\.reflect_generated\.cpp"\s*>.*?^[ \t]*</ClCompile>[ \t]*(?:\r\n|\n|\r)?',
-        re.MULTILINE | re.DOTALL,
-    )
-    filters_text = generated_entry.sub('', filters_text)
-    entries = []
-    for source_path in sorted(generated_sources):
-        relative_path = os.path.relpath(source_path, project_dir).replace(os.sep, '\\')
-        escaped_path = html.escape(relative_path, quote=True)
-        entries.extend([
-            f'    <ClCompile Include="{escaped_path}">',
-            f'      <Filter>{escaped_folder}</Filter>',
-            '    </ClCompile>',
-        ])
-    if entries:
-        entry_text = newline.join(entries)
-        filters_text = re.sub(r'(</ItemGroup>)', entry_text + newline + r'\1', filters_text, count=1)
-
-    try:
-        with open(filters_path, 'w', encoding='utf-8', newline='') as f:
-            f.write(filters_text)
-    except OSError as exc:
-        print(f'[Reflect] Warning: could not update {filters_path}: {exc}', file=sys.stderr)
-        return False
-    return True
-
-
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
@@ -815,6 +642,19 @@ def _cpp_name_for_header(header_basename):
     """Return the per-header generated source filename."""
     stem = os.path.splitext(header_basename)[0]
     return f'{stem}.reflect_generated.cpp'
+
+
+def find_matching_cpp(header_path):
+    """Find the same-directory .cpp paired with a reflection header."""
+    stem = os.path.splitext(os.path.basename(header_path))[0].lower()
+    try:
+        for name in os.listdir(os.path.dirname(header_path)):
+            candidate_stem, extension = os.path.splitext(name)
+            if extension.lower() == '.cpp' and candidate_stem.lower() == stem:
+                return os.path.join(os.path.dirname(header_path), name)
+    except OSError:
+        pass
+    return None
 
 
 def _output_dir_for_header(header_path, global_output_dir):
@@ -837,8 +677,8 @@ def main():
         help='Root output directory (default: each header directory); generated files go in generated/.'
     )
     parser.add_argument(
-        '--no-patch-headers', action='store_true',
-        help='Do not automatically append the #include directive to REFLECTIVE headers.'
+        '--no-patch-sources', '--no-patch-headers', dest='no_patch_sources', action='store_true',
+        help='Do not automatically add the generated .inl include to matching source files.'
     )
     parser.add_argument(
         '--verbose', action='store_true',
@@ -921,6 +761,11 @@ def main():
     removed_files = 0
 
     for header_path in header_files:
+        old_output = os.path.join(_output_dir_for_header(header_path, global_output_dir),
+                                  _inl_name_for_header(os.path.basename(header_path)))
+        old_include = '#include "' + os.path.relpath(old_output, os.path.dirname(header_path)).replace(os.sep, '/') + '"'
+        if remove_header_include(header_path, old_include):
+            removed_includes += 1
         if header_path in source_header_set:
             continue
 
@@ -930,10 +775,20 @@ def main():
         include_path = os.path.relpath(output_path, os.path.dirname(header_path)).replace(os.sep, '/')
         include_directive = f'#include "{include_path}"'
 
-        if not args.no_patch_headers and remove_header_include(header_path, include_directive):
-            removed_includes += 1
-            if args.verbose:
-                print(f'[Reflect]   Patched {os.path.basename(header_path)} – removed {include_directive}')
+        matching_cpp = find_matching_cpp(header_path)
+        if not args.no_patch_sources and matching_cpp:
+            remove_reflect_generated_include = re.compile(
+                r'^[ \t]*#include\s+"[^"]+\.reflect_generated\.inl"[ \t]*(?:\r\n|\n|\r|$)', re.MULTILINE)
+            try:
+                with open(matching_cpp, 'r', encoding='utf-8', newline='') as f:
+                    old_source = f.read()
+                new_source, count = remove_reflect_generated_include.subn('', old_source)
+                if count:
+                    with open(matching_cpp, 'w', encoding='utf-8', newline='') as f:
+                        f.write(new_source)
+                    removed_includes += count
+            except OSError:
+                pass
 
         # Do not remove an output name that is still generated for another header.
         if output_path not in active_output_paths and remove_generated_inl(output_path):
@@ -948,7 +803,6 @@ def main():
                 print(f'[Reflect]   Removed stale {os.path.basename(cpp_path)}')
 
     if not source_headers:
-        patch_project_for_generated_sources(project_dir, [])
         print(
             '[Reflect] Done - no REFLECTIVE classes or KEYH_REFLECT_ENUM enums found. '
             f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
@@ -976,10 +830,8 @@ def main():
 
         # Per-header up-to-date check against this header + script timestamp.
         is_up_to_date = False
-        if os.path.isfile(output_path) and (not class_list or os.path.isfile(cpp_path)):
+        if os.path.isfile(output_path):
             output_mtime = os.path.getmtime(output_path)
-            if class_list:
-                output_mtime = min(output_mtime, os.path.getmtime(cpp_path))
             try:
                 header_mtime = os.path.getmtime(header_path)
             except FileNotFoundError:
@@ -989,22 +841,26 @@ def main():
         if is_up_to_date:
             if args.verbose:
                 print(f'[Reflect]   Up-to-date: {output_name}')
-            if not args.no_patch_headers:
-                include_path = os.path.relpath(output_path, os.path.dirname(header_path)).replace(os.sep, '/')
-                include_directive = f'#include "{include_path}"'
-                patch_header_with_include(header_path, include_directive)
+            if not args.no_patch_sources:
+                matching_cpp = find_matching_cpp(header_path)
+                if matching_cpp:
+                    include_path = os.path.relpath(output_path, os.path.dirname(matching_cpp)).replace(os.sep, '/')
+                    patch_cpp_with_include(matching_cpp, f'#include "{include_path}"')
             continue
 
-        content = generate_inl_content(class_list, enum_list, header_basename, output_name)
+        header_include_path = os.path.relpath(header_path, output_dir).replace(os.sep, '/')
+        content = generate_inl_content(
+            class_list, enum_list, header_basename, output_name, header_include_path,
+        )
+        if class_list:
+            generated_definitions = generate_cpp_content(class_list, header_include_path)
+            definition_start = generated_definitions.find('namespace keyh')
+            if definition_start >= 0:
+                content += '\n' + generated_definitions[definition_start:]
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(content)
 
-        if class_list:
-            with open(cpp_path, 'w', encoding='utf-8') as f:
-                header_include_path = os.path.relpath(header_path, output_dir).replace(os.sep, '/')
-                f.write(generate_cpp_content(class_list, header_include_path))
-            generated_files.append(cpp_name)
-        elif os.path.isfile(cpp_path):
+        if os.path.isfile(cpp_path):
             remove_generated_inl(cpp_path)
 
         generated_files.append(output_name)
@@ -1020,23 +876,12 @@ def main():
                 f'{len(enum_list)} enum(s), {sum(len(entries) for _, entries, _ in enum_list)} value(s))'
             )
 
-        if not args.no_patch_headers:
-            include_path = os.path.relpath(output_path, os.path.dirname(header_path)).replace(os.sep, '/')
-            include_directive = f'#include "{include_path}"'
-            if patch_header_with_include(header_path, include_directive) and args.verbose:
-                print(f'[Reflect]   Patched {header_basename} – appended {include_directive}')
-
-    generated_sources = []
-    for root, dirs, files in os.walk(project_dir):
-        dirs[:] = [name for name in dirs if name.lower() not in {'.git', '.vs', 'vcpkg_installed'}]
-        generated_sources.extend(
-            os.path.join(root, name)
-            for name in files
-            if name.endswith('.reflect_generated.cpp')
-            and os.path.basename(root).lower() == 'generated'
-        )
-    if patch_project_for_generated_sources(project_dir, generated_sources) and args.verbose:
-        print('[Reflect]   Updated Visual Studio project for generated reflection sources')
+        if not args.no_patch_sources:
+            matching_cpp = find_matching_cpp(header_path)
+            if matching_cpp:
+                include_path = os.path.relpath(output_path, os.path.dirname(matching_cpp)).replace(os.sep, '/')
+                if patch_cpp_with_include(matching_cpp, f'#include "{include_path}"') and args.verbose:
+                    print(f'[Reflect]   Patched {os.path.basename(matching_cpp)} with generated include')
 
     cleanup_summary = f'Removed {removed_files} stale file(s) and {removed_includes} include(s).'
     if generated_files:
