@@ -60,6 +60,8 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.header = self.project / "nested/State.h"
         self.header.parent.mkdir(parents=True)
         self.header.write_text(HEADER, encoding="utf-8")
+        self.source_file = self.header.with_suffix(".cpp")
+        self.source_file.write_text('#include "ConsumerPch.h"\n#include "State.h"\n', encoding="utf-8")
         self.cwd = self.area / "unrelated working directory"
         self.cwd.mkdir()
         self.env = os.environ.copy()
@@ -98,7 +100,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         generated = self.header.parent / "generated" / "State.reflect_generated.inl"
         self.assertTrue(generated.is_file())
         self.assertIn("KEYH_REFLECT_ENUM_BEGIN(State)", generated.read_text())
-        self.assertIn('#include "generated/State.reflect_generated.inl"', self.header.read_text())
+        self.assertEqual(self.header.read_text(), HEADER)
+        source_lines = self.source_file.read_text().splitlines()
+        self.assertEqual(source_lines[0], '#include "ConsumerPch.h"')
+        self.assertEqual(source_lines[1], '#include "generated/State.reflect_generated.inl"')
         original = generated.read_bytes()
         self.assert_success(self.run_python())
         self.assertEqual(generated.read_bytes(), original)
@@ -110,6 +115,7 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         ))
         self.assertTrue((output / "generated/State.reflect_generated.inl").is_file())
         self.assertEqual(self.header.read_text(), HEADER)
+        self.assertNotIn("reflect_generated.inl", self.source_file.read_text())
 
     def test_installed_dependencies_are_not_modified(self):
         dependencies = []
