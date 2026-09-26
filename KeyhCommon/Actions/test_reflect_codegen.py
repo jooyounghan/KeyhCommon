@@ -103,7 +103,9 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assertEqual(self.header.read_text(), HEADER)
         source_lines = self.source_file.read_text().splitlines()
         self.assertEqual(source_lines[0], '#include "ConsumerPch.h"')
-        self.assertEqual(source_lines[1], '#include "generated/State.reflect_generated.inl"')
+        self.assertEqual(source_lines[1], '#include "State.h"')
+        self.assertEqual(source_lines[2], '#include "generated/State.reflect_generated.inl"')
+        self.assertNotIn('#include "../State.h"', generated.read_text())
         original = generated.read_bytes()
         self.assert_success(self.run_python())
         self.assertEqual(generated.read_bytes(), original)
@@ -115,7 +117,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         ))
         self.assertTrue((output / "generated/State.reflect_generated.inl").is_file())
         self.assertEqual(self.header.read_text(), HEADER)
-        self.assertNotIn("reflect_generated.inl", self.source_file.read_text())
+        self.assertEqual(
+            self.source_file.read_text(),
+            '#include "ConsumerPch.h"\n#include "State.h"\n',
+        )
 
     def test_installed_dependencies_are_not_modified(self):
         dependencies = []
