@@ -8,9 +8,8 @@ namespace keyh
 	{
 		T* newBuffer = new T[size];
 		memcpy(static_cast<void*>(newBuffer), static_cast<void*>(_buffer), _capacity * sizeof(T));
-		_capacity = size;
-
 		resetImpl();
+		_capacity = size;
 		_buffer = newBuffer;
 		_buffer[_offset] = T();
 	}	
@@ -41,6 +40,7 @@ namespace keyh
 			delete[] _buffer;
 			_buffer = nullptr;
 		}
+		_capacity = 0;
 	}
 
 	template class DynamicBuffer<char>;

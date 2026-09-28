@@ -28,6 +28,10 @@ namespace keyh
 
     public:
 		bool load(const char* filePath);
+		bool load(const wchar_t* filePath);
         void unload();
+
+	private:
+		bool mapOpenedFile();
     };
 }
