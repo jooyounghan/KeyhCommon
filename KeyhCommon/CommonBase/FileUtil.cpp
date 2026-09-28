@@ -66,6 +66,111 @@ namespace keyh
 #endif
 	}
 
+	static bool isPathSeparator(char ch)
+	{
+#if defined(KEYH_PLATFORM_WINDOWS)
+		return ch == '/' || ch == '\\';
+#else
+		return ch == '/';
+#endif
+	}
+
+	size_t getPathRootLength(const char* path, size_t length)
+	{
+		if (length == 0)
+		{
+			return 0;
+		}
+
+#if defined(KEYH_PLATFORM_WINDOWS)
+
+		if (length >= 3 &&
+			path[1] == ':' &&
+			isPathSeparator(path[2]))
+		{
+			return 3;
+		}
+
+		if (length >= 2 &&
+			isPathSeparator(path[0]) &&
+			isPathSeparator(path[1]))
+		{
+			size_t index = 2;
+
+			while (index < length && !isPathSeparator(path[index]))
+			{
+				++index;
+			}
+
+			if (index < length)
+			{
+				++index;
+			}
+
+			while (index < length && !isPathSeparator(path[index]))
+			{
+				++index;
+			}
+
+			if (index < length)
+			{
+				++index;
+			}
+
+			return index;
+		}
+
+#endif
+
+		return isPathSeparator(path[0]) ? 1 : 0;
+	}
+
+	bool FileUtil::createDirectories(const char* dirPath)
+	{
+		if (dirPath == nullptr || *dirPath == '\0')
+		{
+			return false;
+		}
+
+		const size_t length = strlen(dirPath);
+		if (length >= kMaxPathLength)
+		{
+			return false;
+		}
+
+		StaticBufferA<kMaxPathLength> pathBuffer;
+		char* path = pathBuffer.getBuffer();
+
+		memcpy(path, dirPath, length + 1);
+
+		const size_t rootLength = getPathRootLength(path, length);
+
+		for (size_t i = rootLength; i < length; ++i)
+		{
+			if (!isPathSeparator(path[i]))
+			{
+				continue;
+			}
+
+			if (i > rootLength && isPathSeparator(path[i - 1]))
+			{
+				continue;
+			}
+
+			const char separator = path[i];
+			path[i] = '\0';
+
+			if (!createDirectory(path))
+			{
+				return false;
+			}
+
+			path[i] = separator;
+		}
+
+		return createDirectory(path);
+	}
+
 	template<typename Callback>
 	void enumerateEntries(const char* dirPath, const char* searchPattern, Callback&& callback)
 	{
