@@ -10,6 +10,66 @@ namespace keyh
 // ReflectSerializer shared helpers
 // =========================================================================
 
+void ReflectSerializer::serializeObjectToBinary(IBuffer* buffer, const IReflectObject* reflectObject)
+{
+    KEYH_ASSERT(buffer != nullptr && reflectObject != nullptr, "Binary serialization requires a buffer and a reflect object.");
+    if (buffer == nullptr || reflectObject == nullptr)
+        return;
+    const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
+    const uint64 count = properties.size();
+    buffer->writeBytes(&count, sizeof(count));
+    for (const IReflectProperty* property : properties)
+    {
+        KEYH_ASSERT(property != nullptr, "Register a non-null property before binary serialization.");
+        property->serializeToBinary(buffer, reflectObject);
+    }
+}
+
+size_t ReflectSerializer::deserializeObjectFromBinary(const void* data, size_t size, IReflectObject* reflectObject)
+{
+    if (reflectObject == nullptr)
+        return kInvalidSizeT;
+    uint64 count = 0;
+    if (data == nullptr || size < sizeof(count))
+        return kInvalidSizeT;
+    memcpy(&count, data, sizeof(count));
+    const OwnerVector<IReflectProperty>& properties = reflectObject->getReflectProperties();
+    if (count != properties.size())
+        return kInvalidSizeT;
+    size_t offset = sizeof(count);
+    for (const IReflectProperty* property : properties)
+    {
+        if (property == nullptr)
+            return kInvalidSizeT;
+        const size_t consumed = property->deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, reflectObject);
+        if (consumed == kInvalidSizeT || consumed > size - offset)
+            return kInvalidSizeT;
+        offset += consumed;
+    }
+    return offset;
+}
+
+bool ReflectSerializer::serializeToBinary(const StringViewA& filePath, const IReflectObject* reflectObject)
+{
+    if (reflectObject == nullptr)
+        return false;
+    FileWriter writer;
+    if (!writer.open(filePath.c_str()))
+        return false;
+    serializeObjectToBinary(&writer, reflectObject);
+    return writer.flush();
+}
+
+bool ReflectSerializer::deserializeFromBinary(const StringViewA& filePath, IReflectObject* reflectObject)
+{
+    if (reflectObject == nullptr)
+        return false;
+    File file;
+    if (!file.load(filePath.c_str()))
+        return false;
+    return deserializeObjectFromBinary(file.getStringBuffer(), file.getFileSize(), reflectObject) == file.getFileSize();
+}
+
 void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectObject* reflectObject, size_t depth, bool pretty)
 {
     buffer->writeBytes(&ReflectionUtil::kObjectBegin, 1);
@@ -411,77 +471,154 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 
 #pragma endregion
 
-// =========================================================================
-// ReflectPropertySerializer explicit specialisations — serializeToBinary
-// =========================================================================
-#pragma region serializeToBinary
-    // TODO: Implement binary serialization for each type in a future step.
+// Native scalar payloads. The returned value is the number of consumed bytes.
+#define DEFINE_BINARY_SCALAR(Type) \
+    template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value) \
+    { buffer->writeBytes(&value, sizeof(value)); } \
+    template<> size_t ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value) \
+    { \
+        if (data == nullptr || size < sizeof(value)) return kInvalidSizeT; \
+        memcpy(&value, data, sizeof(value)); \
+        return sizeof(value); \
+    }
 
-#define DEFINE_SERIALIZE_TO_BINARY(Type)                                                                        \
-    template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value) {}
+    DEFINE_BINARY_SCALAR(int8)
+    DEFINE_BINARY_SCALAR(int16)
+    DEFINE_BINARY_SCALAR(int32)
+    DEFINE_BINARY_SCALAR(int64)
+    DEFINE_BINARY_SCALAR(uint8)
+    DEFINE_BINARY_SCALAR(uint16)
+    DEFINE_BINARY_SCALAR(uint32)
+    DEFINE_BINARY_SCALAR(uint64)
+    DEFINE_BINARY_SCALAR(float)
+    DEFINE_BINARY_SCALAR(double)
+#undef DEFINE_BINARY_SCALAR
 
-    DEFINE_SERIALIZE_TO_BINARY(int8)
-    DEFINE_SERIALIZE_TO_BINARY(int16)
-    DEFINE_SERIALIZE_TO_BINARY(int32)
-    DEFINE_SERIALIZE_TO_BINARY(int64)
-    DEFINE_SERIALIZE_TO_BINARY(uint8)
-    DEFINE_SERIALIZE_TO_BINARY(uint16)
-    DEFINE_SERIALIZE_TO_BINARY(uint32)
-    DEFINE_SERIALIZE_TO_BINARY(uint64)
-    DEFINE_SERIALIZE_TO_BINARY(float)
-    DEFINE_SERIALIZE_TO_BINARY(double)
-    DEFINE_SERIALIZE_TO_BINARY(float2)
-    DEFINE_SERIALIZE_TO_BINARY(float3)
-    DEFINE_SERIALIZE_TO_BINARY(float4)
-    DEFINE_SERIALIZE_TO_BINARY(int2)
-    DEFINE_SERIALIZE_TO_BINARY(int3)
-    DEFINE_SERIALIZE_TO_BINARY(int4)
-    DEFINE_SERIALIZE_TO_BINARY(uint2)
-    DEFINE_SERIALIZE_TO_BINARY(uint3)
-    DEFINE_SERIALIZE_TO_BINARY(uint4)
-    DEFINE_SERIALIZE_TO_BINARY(bool)
-    DEFINE_SERIALIZE_TO_BINARY(StaticStringA)
-    DEFINE_SERIALIZE_TO_BINARY(FlyweightStringA)
-    DEFINE_SERIALIZE_TO_BINARY(DynamicBuffer<byte>)
+    template<>
+    void ReflectPropertySerializer<bool>::serializeToBinary(IBuffer* buffer, const bool& value)
+    {
+        const uint8 raw = value ? 1 : 0;
+        buffer->writeBytes(&raw, sizeof(raw));
+    }
 
-#undef DEFINE_SERIALIZE_TO_BINARY
+    template<>
+    size_t ReflectPropertySerializer<bool>::deserializeFromBinary(const void* data, size_t size, bool& value)
+    {
+        if (data == nullptr || size < sizeof(uint8))
+            return kInvalidSizeT;
+        const uint8 raw = *static_cast<const uint8*>(data);
+        if (raw > 1)
+            return kInvalidSizeT;
+        value = raw != 0;
+        return sizeof(raw);
+    }
 
-#pragma endregion
+#define DEFINE_BINARY_VECTOR(Type, ElementType, Count) \
+    template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value) \
+    { \
+        for (size_t i = 0; i < Count; ++i) \
+        { \
+            const ElementType component = value[i]; \
+            buffer->writeBytes(&component, sizeof(component)); \
+        } \
+    } \
+    template<> size_t ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value) \
+    { \
+        if (data == nullptr || size < Count * sizeof(ElementType)) return kInvalidSizeT; \
+        for (size_t i = 0; i < Count; ++i) \
+        { \
+            ElementType component{}; \
+            memcpy(&component, static_cast<const byte*>(data) + i * sizeof(component), sizeof(component)); \
+            value[i] = component; \
+        } \
+        return Count * sizeof(ElementType); \
+    }
+    DEFINE_BINARY_VECTOR(float2, float, 2)
+    DEFINE_BINARY_VECTOR(float3, float, 3)
+    DEFINE_BINARY_VECTOR(float4, float, 4)
+    DEFINE_BINARY_VECTOR(int2, int32, 2)
+    DEFINE_BINARY_VECTOR(int3, int32, 3)
+    DEFINE_BINARY_VECTOR(int4, int32, 4)
+    DEFINE_BINARY_VECTOR(uint2, uint32, 2)
+    DEFINE_BINARY_VECTOR(uint3, uint32, 3)
+    DEFINE_BINARY_VECTOR(uint4, uint32, 4)
+#undef DEFINE_BINARY_VECTOR
 
-// =========================================================================
-// ReflectPropertySerializer explicit specialisations — deserializeFromBinary
-// =========================================================================
-#pragma region deserializeFromBinary
-    // TODO: Implement binary deserialization for each type in a future step.
+#define DEFINE_BINARY_STRING(Type) \
+    template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value) \
+    { \
+        const uint64 length = value.size(); \
+        buffer->writeBytes(&length, sizeof(length)); \
+        if (length != 0) buffer->writeBytes(value.c_str(), value.size()); \
+    } \
+    template<> size_t ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value) \
+    { \
+        uint64 length = 0; \
+        if (data == nullptr || size < sizeof(length)) return kInvalidSizeT; \
+        memcpy(&length, data, sizeof(length)); \
+        if (length > size - sizeof(length)) return kInvalidSizeT; \
+        value = Type(StaticStringA(static_cast<const char*>(data) + sizeof(length), static_cast<size_t>(length))); \
+        return sizeof(length) + static_cast<size_t>(length); \
+    }
+    DEFINE_BINARY_STRING(StaticStringA)
+#undef DEFINE_BINARY_STRING
 
-#define DEFINE_DESERIALIZE_FROM_BINARY(Type)                                                                                        \
-    template<> void ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value) {}
+    template<>
+    void ReflectPropertySerializer<FlyweightStringA>::serializeToBinary(IBuffer* buffer, const FlyweightStringA& value)
+    {
+        // Preserve the default sentinel separately from an interned empty string.
+        if (value == FlyweightStringA::Empty)
+        {
+            const uint64 sentinel = UINT64_MAX;
+            buffer->writeBytes(&sentinel, sizeof(sentinel));
+            return;
+        }
+        ReflectPropertyPolicy<StaticStringA>::serializeToBinary(buffer, StaticStringA(value.c_str(), value.length()));
+    }
 
-    DEFINE_DESERIALIZE_FROM_BINARY(int8)
-    DEFINE_DESERIALIZE_FROM_BINARY(int16)
-    DEFINE_DESERIALIZE_FROM_BINARY(int32)
-    DEFINE_DESERIALIZE_FROM_BINARY(int64)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint8)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint16)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint32)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint64)
-    DEFINE_DESERIALIZE_FROM_BINARY(float)
-    DEFINE_DESERIALIZE_FROM_BINARY(double)
-    DEFINE_DESERIALIZE_FROM_BINARY(float2)
-    DEFINE_DESERIALIZE_FROM_BINARY(float3)
-    DEFINE_DESERIALIZE_FROM_BINARY(float4)
-    DEFINE_DESERIALIZE_FROM_BINARY(int2)
-    DEFINE_DESERIALIZE_FROM_BINARY(int3)
-    DEFINE_DESERIALIZE_FROM_BINARY(int4)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint2)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint3)
-    DEFINE_DESERIALIZE_FROM_BINARY(uint4)
-    DEFINE_DESERIALIZE_FROM_BINARY(bool)
-    DEFINE_DESERIALIZE_FROM_BINARY(StaticStringA)
-    DEFINE_DESERIALIZE_FROM_BINARY(FlyweightStringA)
-	DEFINE_DESERIALIZE_FROM_BINARY(DynamicBuffer<byte>)
-#undef DEFINE_DESERIALIZE_FROM_BINARY
+    template<>
+    size_t ReflectPropertySerializer<FlyweightStringA>::deserializeFromBinary(const void* data, size_t size, FlyweightStringA& value)
+    {
+        uint64 length = 0;
+        if (data == nullptr || size < sizeof(length))
+            return kInvalidSizeT;
+        memcpy(&length, data, sizeof(length));
+        if (length == UINT64_MAX)
+        {
+            value = FlyweightStringA::Empty;
+            return sizeof(length);
+        }
+        StaticStringA text;
+        const size_t consumed = ReflectPropertyPolicy<StaticStringA>::deserializeFromBinary(data, size, text);
+        if (consumed == kInvalidSizeT)
+            return kInvalidSizeT;
+        value = FlyweightStringA(text);
+        return consumed;
+    }
 
-#pragma endregion
+    template<>
+    void ReflectPropertySerializer<DynamicBuffer<byte>>::serializeToBinary(IBuffer* buffer, const DynamicBuffer<byte>& value)
+    {
+        const uint64 length = value.size();
+        buffer->writeBytes(&length, sizeof(length));
+        if (length != 0)
+            buffer->writeBytes(value.getBuffer(), value.size());
+    }
 
+    template<>
+    size_t ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromBinary(const void* data, size_t size, DynamicBuffer<byte>& value)
+    {
+        uint64 length = 0;
+        if (data == nullptr || size < sizeof(length))
+            return kInvalidSizeT;
+        memcpy(&length, data, sizeof(length));
+        if (length > size - sizeof(length) || length >= kInvalidSizeT)
+            return kInvalidSizeT;
+        // IBufferBase writes a terminator after its logical payload.
+        value.resetRaw();
+        value.allocate(static_cast<size_t>(length) + 1);
+        if (length != 0)
+            value.writeBytes(static_cast<const byte*>(data) + sizeof(length), static_cast<size_t>(length));
+        return sizeof(length) + static_cast<size_t>(length);
+    }
 }

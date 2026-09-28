@@ -56,9 +56,9 @@
 	}
 
 	template<typename ObjectType, typename ValueType>
-	void ReflectProperty<ObjectType, ValueType>::deserializeFromBinary(const void* data, size_t size, IReflectObject* object) const
+	size_t ReflectProperty<ObjectType, ValueType>::deserializeFromBinary(const void* data, size_t size, IReflectObject* object) const
 	{
-		ReflectPropertyPolicy<ValueType>::deserializeFromBinary(data, size, getValueRef(object));
+		return ReflectPropertyPolicy<ValueType>::deserializeFromBinary(data, size, getValueRef(object));
 	}
 
 }

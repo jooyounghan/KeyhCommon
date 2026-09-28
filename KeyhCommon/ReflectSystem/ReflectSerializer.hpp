@@ -28,7 +28,7 @@
     }
 
     template<typename T, bool IsReflectObject>
-    void ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
+    size_t ReflectPropertySerializer<T, IsReflectObject>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
         STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
     }
@@ -105,23 +105,30 @@
             buffer->writeBytes(&rawValue, sizeof(rawValue));
             return;
         }
+        else
+        {
+            STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+        }
     }
 
     template<typename T>
-    void ReflectPropertySerializer<T, false>::deserializeFromBinary(const void* data, size_t size, T& value)
+    size_t ReflectPropertySerializer<T, false>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
         if constexpr (IsEnum_v<T>)
         {
             using RawType = typename std::underlying_type<T>::type;
-            if (size < sizeof(RawType))
+            if (data == nullptr || size < sizeof(RawType))
             {
-                KEYH_ASSERT_ARGS(false, "Insufficient enum binary payload. required=%zu, actual=%zu", sizeof(RawType), size);
-                return;
+                return kInvalidSizeT;
             }
             RawType rawValue = 0;
             memcpy(&rawValue, data, sizeof(RawType));
             value = static_cast<T>(rawValue);
-            return;
+            return sizeof(RawType);
+        }
+        else
+        {
+            STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
         }
     }
 
@@ -131,7 +138,7 @@
     template<> void ReflectPropertySerializer<Type>::serializeToJson(IBuffer* buffer, const Type& value, size_t depth, bool pretty);                   \
     template<> void ReflectPropertySerializer<Type>::deserializeFromJson(const JsonValue& json, Type& value);             \
     template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value);                 \
-    template<> void ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
+    template<> size_t ReflectPropertySerializer<Type>::deserializeFromBinary(const void* data, size_t size, Type& value);
 
     DECLARE_REFLECT_PROPERTY_SERIALIZER(int8)
     DECLARE_REFLECT_PROPERTY_SERIALIZER(int16)
@@ -192,11 +199,13 @@
     template<typename T>
     void ReflectPropertySerializer<T, true>::serializeToBinary(IBuffer* buffer, const T& value)
     {
+        ReflectSerializer::serializeObjectToBinary(buffer, &value);
     }
 
     template<typename T>
-    void ReflectPropertySerializer<T, true>::deserializeFromBinary(const void* data, size_t size, T& value)
+    size_t ReflectPropertySerializer<T, true>::deserializeFromBinary(const void* data, size_t size, T& value)
     {
+        return ReflectSerializer::deserializeObjectFromBinary(data, size, &value);
     }
 
 }

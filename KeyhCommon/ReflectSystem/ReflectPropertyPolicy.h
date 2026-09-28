@@ -14,7 +14,7 @@ namespace keyh
 		static void serializeToJson(IBuffer* buffer, const T& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, T& value);
 		static void serializeToBinary(IBuffer* buffer, const T& value);
-		static void deserializeFromBinary(const void* data, size_t size, T& value);
+		static size_t deserializeFromBinary(const void* data, size_t size, T& value);
 	};
 #pragma endregion
 
@@ -27,7 +27,7 @@ namespace keyh
 		static void serializeToJson(IBuffer* buffer, const Vector<ElementType>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, Vector<ElementType>& value);
 		static void serializeToBinary(IBuffer* buffer, const Vector<ElementType>& value);
-		static void deserializeFromBinary(const void* data, size_t size, Vector<ElementType>& value);
+		static size_t deserializeFromBinary(const void* data, size_t size, Vector<ElementType>& value);
 	};
 #pragma endregion
 
@@ -40,7 +40,7 @@ namespace keyh
 		static void serializeToJson(IBuffer* buffer, const OwnerVector<ElementType>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value);
 		static void serializeToBinary(IBuffer* buffer, const OwnerVector<ElementType>& value);
-		static void deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value);
+		static size_t deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value);
 	};
 #pragma endregion
 
@@ -53,7 +53,7 @@ namespace keyh
 		static void serializeToJson(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value, size_t depth = 0, bool pretty = false);
 		static void deserializeFromJson(const JsonValue& json, HashMap<KeyType, ValueType, Hasher>& value);
 		static void serializeToBinary(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value);
-		static void deserializeFromBinary(const void* data, size_t size, HashMap<KeyType, ValueType, Hasher>& value);
+		static size_t deserializeFromBinary(const void* data, size_t size, HashMap<KeyType, ValueType, Hasher>& value);
 	};
 #pragma endregion
 }

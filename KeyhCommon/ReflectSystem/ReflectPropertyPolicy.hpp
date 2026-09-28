@@ -33,7 +33,7 @@ namespace keyh
 	}
 
 	template<typename T>
-	void ReflectPropertyPolicy<T>::deserializeFromBinary(const void* data, size_t size, T& value)
+	size_t ReflectPropertyPolicy<T>::deserializeFromBinary(const void* data, size_t size, T& value)
 	{
 		return ReflectPropertySerializer<T>::deserializeFromBinary(data, size, value);
 	}
@@ -116,11 +116,35 @@ namespace keyh
 	
 	template<typename ElementType>
 	void ReflectPropertyPolicy<Vector<ElementType>>::serializeToBinary(IBuffer * buffer, const Vector<ElementType>&value)
-	{}
+	{
+		const uint64 count = value.size();
+		buffer->writeBytes(&count, sizeof(count));
+		for (const ElementType& element : value)
+		{
+			ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, element);
+		}
+	}
 	template<typename ElementType>
 	
-	void ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromBinary(const void* data, size_t size, Vector<ElementType>&value)
-	{}
+	size_t ReflectPropertyPolicy<Vector<ElementType>>::deserializeFromBinary(const void* data, size_t size, Vector<ElementType>&value)
+	{
+		uint64 count = 0;
+		if (data == nullptr || size < sizeof(count))
+			return kInvalidSizeT;
+		memcpy(&count, data, sizeof(count));
+		size_t offset = sizeof(count);
+		Vector<ElementType> result;
+		for (uint64 i = 0; i < count; ++i)
+		{
+			ElementType& element = result.push_back(ElementType{});
+			const size_t consumed = ReflectPropertyPolicy<ElementType>::deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, element);
+			if (consumed == kInvalidSizeT || consumed > size - offset)
+				return kInvalidSizeT;
+			offset += consumed;
+		}
+		value = keyh::move(result);
+		return offset;
+	}
 #pragma endregion
 
 #pragma region OwnerVector Policy
@@ -228,18 +252,48 @@ namespace keyh
 	template<typename ElementType>
 	void ReflectPropertyPolicy<OwnerVector<ElementType>>::serializeToBinary(IBuffer* buffer, const OwnerVector<ElementType>& value)
 	{
-		(void)buffer;
-		(void)value;
-		KEYH_ASSERT(false, "OwnerVector binary serialization is not implemented.");
+		const uint64 count = value.size();
+		buffer->writeBytes(&count, sizeof(count));
+		for (const ElementType* element : value)
+		{
+			const uint8 present = element != nullptr ? 1 : 0;
+			buffer->writeBytes(&present, sizeof(present));
+			if (element != nullptr)
+			{
+				ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
+			}
+		}
 	}
 
 	template<typename ElementType>
-	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value)
+	size_t ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromBinary(const void* data, size_t size, OwnerVector<ElementType>& value)
 	{
-		(void)data;
-		(void)size;
-		(void)value;
-		KEYH_ASSERT(false, "OwnerVector binary deserialization is not implemented.");
+		uint64 count = 0;
+		if (data == nullptr || size < sizeof(count))
+			return kInvalidSizeT;
+		memcpy(&count, data, sizeof(count));
+		size_t offset = sizeof(count);
+		OwnerVector<ElementType> result;
+		for (uint64 i = 0; i < count; ++i)
+		{
+			if (offset >= size)
+				return kInvalidSizeT;
+			const uint8 present = static_cast<const byte*>(data)[offset++];
+			if (present > 1)
+				return kInvalidSizeT;
+			if (present == 0)
+			{
+				result.push_back(Ptr<ElementType>(nullptr));
+				continue;
+			}
+			ElementType* element = result.template emplace_back<ElementType>();
+			const size_t consumed = ReflectPropertyPolicy<ElementType>::deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, *element);
+			if (consumed == kInvalidSizeT || consumed > size - offset)
+				return kInvalidSizeT;
+			offset += consumed;
+		}
+		value = keyh::move(result);
+		return offset;
 	}
 #pragma endregion
 
@@ -256,9 +310,9 @@ namespace keyh
 		if (a.size() != b.size())
 			return false;
 
-		for (const auto& bucket : a)
+		for (const typename HashMap<KeyType, ValueType, Hasher>::Bucket& bucket : a)
 		{
-			auto findResult = b.find(bucket.key());
+			typename HashMap<KeyType, ValueType, Hasher>::ConstFindResult findResult = b.find(bucket.key());
 			if (!findResult.isFound())
 				return false;
 
@@ -278,7 +332,7 @@ namespace keyh
 			buffer->writeBytes(&newline, 1);
 		}
 		bool isFirst = true;
-		for (const auto& bucket : value)
+		for (const typename HashMap<KeyType, ValueType, Hasher>::Bucket& bucket : value)
 		{
 			if (!isFirst)
 			{
@@ -396,10 +450,43 @@ namespace keyh
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
 	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::serializeToBinary(IBuffer* buffer, const HashMap<KeyType, ValueType, Hasher>& value)
-	{}
+	{
+		const uint64 count = value.size();
+		buffer->writeBytes(&count, sizeof(count));
+		for (const typename HashMap<KeyType, ValueType, Hasher>::Bucket& bucket : value)
+		{
+			ReflectPropertyPolicy<KeyType>::serializeToBinary(buffer, bucket.key());
+			ReflectPropertyPolicy<ValueType>::serializeToBinary(buffer, bucket.value());
+		}
+	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
-	void ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromBinary(const void* data, size_t size, HashMap<KeyType, ValueType, Hasher>& value)
-	{}
+	size_t ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::deserializeFromBinary(const void* data, size_t size, HashMap<KeyType, ValueType, Hasher>& value)
+	{
+		uint64 count = 0;
+		if (data == nullptr || size < sizeof(count))
+			return kInvalidSizeT;
+		memcpy(&count, data, sizeof(count));
+		size_t offset = sizeof(count);
+		HashMap<KeyType, ValueType, Hasher> result;
+		for (uint64 i = 0; i < count; ++i)
+		{
+			KeyType key{};
+			ValueType element{};
+			const size_t keyConsumed = ReflectPropertyPolicy<KeyType>::deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, key);
+			if (keyConsumed == kInvalidSizeT || keyConsumed > size - offset)
+				return kInvalidSizeT;
+			offset += keyConsumed;
+			const size_t valueConsumed = ReflectPropertyPolicy<ValueType>::deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, element);
+			if (valueConsumed == kInvalidSizeT || valueConsumed > size - offset)
+				return kInvalidSizeT;
+			offset += valueConsumed;
+			if (result.find(key).isFound())
+				return kInvalidSizeT;
+			result.insert(keyh::move(key), keyh::move(element));
+		}
+		value = keyh::move(result);
+		return offset;
+	}
 #pragma endregion
 }
