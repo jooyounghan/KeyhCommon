@@ -23,10 +23,8 @@ namespace keyh
 	public:
 		static bool isFileExist(const char* filePath);
 		static bool isDirectoryExist(const char* dirPath);
-		static bool createDirectories(const char* dirPath);
-
-	private:
 		static bool createDirectory(const char* dirPath);
+		static bool createDirectories(const char* dirPath);
 
 	public:
 		static Vector<StaticStringA> getDirectoryList(const char* dirPath);
