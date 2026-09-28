@@ -432,12 +432,12 @@ namespace keyh
 			for (JsonKey jsonKey = entryObj.getFirstKey(); jsonKey.isValid(); jsonKey = entryObj.getNextKey(jsonKey))
 			{
 				StringViewA keyName = jsonKey.getKeyName();
-				if (keyName == "k")
+				if (keyName == "Key")
 				{
 					ReflectPropertyPolicy<KeyType>::deserializeFromJson(jsonKey.getValue(), k);
 					hasKey = true;
 				}
-				else if (keyName == "v")
+				else if (keyName == "Value")
 				{
 					ReflectPropertyPolicy<ValueType>::deserializeFromJson(jsonKey.getValue(), v);
 					hasValue = true;
