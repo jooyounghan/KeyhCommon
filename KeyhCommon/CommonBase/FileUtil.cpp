@@ -263,9 +263,9 @@ namespace keyh
 		return entries;
 	}
 
-	Vector<StaticStringA> FileUtil::getFileList(const char* dirPath, const char* extension)
+	Vector<FileEntry> FileUtil::getFileList(const char* dirPath, const char* extension)
 	{
-		Vector<StaticStringA> entries;
+		Vector<FileEntry> entries;
 
 		char patternBuffer[32];
 		const char* pattern = "*";
@@ -281,7 +281,7 @@ namespace keyh
 			pattern = patternBuffer;
 		}
 
-		enumerateEntries(dirPath, pattern, [&entries, targetExt](const char* name, EntryType type)
+		enumerateEntries(dirPath, pattern, [&entries, dirPath, targetExt](const char* name, EntryType type)
 			{
 				if (type != EntryType::File)
 				{
@@ -297,7 +297,20 @@ namespace keyh
 					}
 				}
 #endif
-				entries.emplace_back(name);
+				const size_t nameLength = strlen(name);
+				const char* dot = StrUtil::findNext(name, name + nameLength, '.');
+				const char* extensionBegin = (dot != nullptr) ? dot + 1 : name + nameLength;
+
+				StaticBufferA<kMaxPathLength> fullPath;
+				fullPath.write(dirPath, strlen(dirPath));
+				fullPath.write("\\", 1);
+				fullPath.write(name, nameLength);
+
+				FileEntry fileEntry;
+				fileEntry._fileStem = StaticStringA(name, static_cast<size_t>(extensionBegin - name - (dot != nullptr ? 1 : 0)));
+				fileEntry._fileExtension = StaticStringA(extensionBegin, static_cast<size_t>(name + nameLength - extensionBegin));
+				fileEntry._fileFullPath = StaticStringA(fullPath.getBuffer(), fullPath.size());
+				entries.push_back(keyh::move(fileEntry));
 			});
 
 		return entries;
@@ -312,26 +325,19 @@ namespace keyh
 
 	static void updateFileNameMap(const utf8* path, const utf8* extension, FileNameMap& fileNameMap, bool isBinary)
 	{
-		Vector<StaticStringA> files = FileUtil::getFileList(path, extension);
-		for (const StaticStringA& file : files)
+		Vector<FileEntry> files = FileUtil::getFileList(path, extension);
+		for (const FileEntry& file : files)
 		{
-			StaticBufferA<kMaxPathLength> fullPath;
-			fullPath.write(path, strlen(path));
-			fullPath.write("\\", 1);
-			fullPath.write(file.c_str(), file.size());
-
-			StaticStringA fileStem = FileUtil::getFileStem(file);
-
-			FileNameMap::InsertResult insertResult = fileNameMap.insert(fileStem, FilePathEntry(), false);
+			FileNameMap::InsertResult insertResult = fileNameMap.insert(file._fileStem, FilePathEntry(), false);
 			FilePathEntry& filePathEntry = insertResult.value();
 
 			if (isBinary)
 			{
-				filePathEntry._binaryFilePath = StaticStringA(fullPath.getBuffer(), fullPath.size());
+				filePathEntry._binaryFilePath = file._fileFullPath;
 			}
 			else
 			{
-				filePathEntry._filePath = StaticStringA(fullPath.getBuffer(), fullPath.size());
+				filePathEntry._filePath = file._fileFullPath;
 			}
 		}
 	}

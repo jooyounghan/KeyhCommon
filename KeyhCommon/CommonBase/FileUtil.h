@@ -30,7 +30,7 @@ namespace keyh
 
 	public:
 		static Vector<StaticStringA> getDirectoryList(const char* dirPath);
-		static Vector<StaticStringA> getFileList(const char* dirPath, const char* extension = nullptr);
+		static Vector<FileEntry> getFileList(const char* dirPath, const char* extension = nullptr);
 
 		static Vector<FileEntry> collectRebuildFileEntry(const char* rawPath, const char* rawExtension, const char* binaryPath, const char* binaryExtension, bool forceCollect);
 
