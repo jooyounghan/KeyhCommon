@@ -15,6 +15,17 @@ namespace keyh
 		}
 
 		_commonResourcePath = commandLineManager.getCommandLineArgument("CommonResourcePath");
+		if (_commonResourcePath.empty())
+		{
+			KEYH_ASSERT_DEV(false, "CommonResourcePath command line argument is not provided. Please provide a valid path.");
+			return;
+		}
+
 		_projectResourcePath = commandLineManager.getCommandLineArgument("ProjectResourcePath");
+		if (_projectResourcePath.empty())
+		{
+			KEYH_ASSERT_DEV(false, "ProjectResourcePath command line argument is not provided. Please provide a valid path.");
+			return;
+		}
 	}
 }
