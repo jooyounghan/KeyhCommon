@@ -30,6 +30,8 @@ namespace keyh
 	public:
 		static void intToStr(bool isNegative, uint64 value, IBuffer* buffer);
 		static void floatToStr(double value, IBuffer* buffer, size_t precision = 3);
+		static void uint32ToHexStr(uint32 value, IBuffer* buffer);
+		static void sizeToHexStr(size_t value, IBuffer* buffer);
 #pragma endregion
 
 #pragma region String Search and Skips

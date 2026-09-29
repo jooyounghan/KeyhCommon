@@ -1,4 +1,4 @@
-#include "CommonBasePch.h"
+﻿#include "CommonBasePch.h"
 #include "IBuffer.h"
 #include "StrUtil.h"
 #include "MathUtil.h"
@@ -214,6 +214,36 @@ namespace keyh
 		constexpr char floatingPoint = '.';
 		buffer->writeBytes(&floatingPoint, 1);
 		digitToStr(false, fracAsInteger, buffer);
+	}
+
+	static void uintToHexStr(uint64 value, size_t digitCount, IBuffer* buffer)
+	{
+		KEYH_ASSERT(buffer != nullptr, "Hex conversion requires a buffer.");
+		KEYH_ASSERT(digitCount > 0, "Hex conversion requires a positive digit count.");
+		if (buffer == nullptr || digitCount == 0)
+			return;
+
+		constexpr char kHexDigits[] = "0123456789ABCDEF";
+		bool hasStarted = false;
+		for (int32 shift = static_cast<int32>((digitCount - 1) * 4); shift >= 0; shift -= 4)
+		{
+			const uint32 digit = static_cast<uint32>((value >> shift) & 0xF);
+			if (digit != 0 || hasStarted || shift == 0)
+			{
+				buffer->writeBytes(&kHexDigits[digit], 1);
+				hasStarted = true;
+			}
+		}
+	}
+
+	void StrUtil::uint32ToHexStr(uint32 value, IBuffer* buffer)
+	{
+		uintToHexStr(value, sizeof(uint32) * 2, buffer);
+	}
+
+	void StrUtil::sizeToHexStr(size_t value, IBuffer* buffer)
+	{
+		uintToHexStr(static_cast<uint64>(value), sizeof(size_t) * 2, buffer);
 	}
 
 	const char* StrUtil::findNext(const char* start, const char* end, const char target)

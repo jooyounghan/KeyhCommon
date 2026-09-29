@@ -1,7 +1,12 @@
 ﻿#pragma once
 #include "IBuffer.h"
+#include "StrUtil.h"
 namespace keyh
 {
+	template<typename T, size_t Size> class StaticBuffer;
+	template<size_t Size> using StaticBufferA = StaticBuffer<char, Size>;
+	template<size_t Size> using StaticBufferW = StaticBuffer<wchar_t, Size>;
+
 	constexpr size_t kMaxPathLength = 260;
 	constexpr size_t kBuffer128Bytes = 128;
 	constexpr size_t kBuffer256Bytes = 256;
@@ -16,9 +21,26 @@ namespace keyh
 		using Base::_offset;
 		friend class Base;
 
+	private:
+		static void writeAscii(StaticBuffer* buffer, const char* value);
+		template<typename ValueType>
+		static void writeFormatValue(StaticBuffer* buffer, T specifier, ValueType value);
+		template<typename ValueType>
+		static void writeSignedFormatValue(StaticBuffer* buffer, T specifier, ValueType value);
+		template<typename ValueType>
+		static void writeUnsignedFormatValue(StaticBuffer* buffer, T specifier, ValueType value);
+		template<typename ValueType>
+		static void writeFloatFormatValue(StaticBuffer* buffer, T specifier, ValueType value);
+		static void formatImpl(StaticBuffer* buffer, const T* formatString);
+		template<typename ValueType, typename... Args>
+		static void formatImpl(StaticBuffer* buffer, const T* formatString, ValueType value, Args... args);
+
 	public:
 		StaticBuffer() = default;
 		~StaticBuffer() override = default;
+
+		template<typename... Args>
+		void format(const T* formatString, Args... args);
 
 	protected:
 		uint8 _buffer[Size] = { 0 };
@@ -30,10 +52,7 @@ namespace keyh
 		inline const T*		getBufferImpl() const { return reinterpret_cast<const T*>(_buffer); }
 	};
 
-	template<size_t Size>
-	using StaticBufferA = StaticBuffer<char, Size>;
-
-	template<size_t Size>
-	using StaticBufferW = StaticBuffer<wchar_t, Size>;
 }
+
+#include "StaticBuffer.hpp"
 

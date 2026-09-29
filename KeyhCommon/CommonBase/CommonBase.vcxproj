@@ -286,6 +286,7 @@
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.h" />
     <ClInclude Include="StaticBuffer.h" />
+    <ClInclude Include="StaticBuffer.hpp" />
     <ClInclude Include="StaticString.h" />
     <ClInclude Include="SplitterString.h" />
     <ClInclude Include="StringView.h" />
