@@ -38,8 +38,8 @@ namespace keyh
     public:
         virtual void        writeBytes(const void* input, size_t size) override;
         virtual void        resetRaw() override;
-        virtual size_t      getSizeBytes() const override;
-        virtual size_t      getCapacityBytes() const override;
+        virtual size_t      size() const override;
+        virtual size_t      capacity() const override;
         virtual void*       getRawBuffer() override;
         virtual const void* getRawBuffer() const override;
         virtual size_t      getAvailableSizeBytes() const override;

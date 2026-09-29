@@ -75,7 +75,7 @@ namespace keyh
         if (_hasError)
             return false;
 
-        const size_t pending = _writeBuffer.getSizeBytes();
+        const size_t pending = _writeBuffer.size();
         if (pending == 0)
             return true;
 
@@ -127,7 +127,7 @@ namespace keyh
 
         // If the incoming chunk is larger than or equal to the full buffer
         // capacity, flush the pending buffer and write directly to the file.
-        if (size >= getCapacityBytes())
+        if (size >= capacity())
         {
             flush();
             if (!writeRaw(input, size))
@@ -147,12 +147,12 @@ namespace keyh
         _writeBuffer.reset();
     }
 
-    size_t FileWriter::getSizeBytes() const
+    size_t FileWriter::size() const
     {
-        return _writeBuffer.getSizeBytes();
+        return _writeBuffer.size();
     }
 
-    size_t FileWriter::getCapacityBytes() const
+    size_t FileWriter::capacity() const
     {
         return kBuffer4KBytes;
     }
