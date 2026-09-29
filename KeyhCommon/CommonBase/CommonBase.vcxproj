@@ -243,6 +243,8 @@
     <ClInclude Include="CommonCore.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="Delegate.hpp" />
+    <ClInclude Include="MulticastDelegate.h" />
+    <ClInclude Include="MulticastDelegate.hpp" />
     <ClInclude Include="Deque.h" />
     <ClInclude Include="Deque.hpp" />
     <ClInclude Include="DynamicBuffer.h" />

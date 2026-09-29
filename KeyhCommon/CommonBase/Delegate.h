@@ -10,12 +10,22 @@ namespace keyh
 #define DECLARE_DELEGATE(DelegateName, ReturnType, ...)     \
     using DelegateName = Delegate<ReturnType(__VA_ARGS__)>;
 
+#define DECLARE_DELEGATE_MEMBER(DelegateType, MemberName, SetterName) \
+private: \
+    DelegateType MemberName; \
+public: \
+    template <typename... BindArgs> \
+    void SetterName(BindArgs&&... bindArgs) \
+    { \
+        MemberName.bind(keyh::forward<BindArgs>(bindArgs)...); \
+    }
+
     template <typename ReturnType, typename... Args>
     class Delegate<ReturnType(Args...)>
     {
     public:
         Delegate() = default;
-        ~Delegate() = default;
+        ~Delegate() { reset(); }
 
     public:
         REMOVE_COPY(Delegate);

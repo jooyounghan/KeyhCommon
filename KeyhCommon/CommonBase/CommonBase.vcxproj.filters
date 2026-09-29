@@ -120,6 +120,12 @@
     <ClInclude Include="Delegate.hpp">
       <Filter>헤더 파일\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="MulticastDelegate.h">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="MulticastDelegate.hpp">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
     <ClInclude Include="AssertUtil.h">
       <Filter>헤더 파일\Util</Filter>
     </ClInclude>

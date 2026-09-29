@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <new>
 #include "MemoryUtil.h"
 #include "AssertUtil.h"
 

@@ -7,8 +7,10 @@ namespace keyh
     DELEGATE_CLASS::Delegate(DELEGATE_CLASS&& other) noexcept
         : _instancePtr(other._instancePtr)
         , _stubFunc(other._stubFunc)
+        , _destructFunc(other._destructFunc)
     {
         memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
+        other._destructFunc = nullptr;
         other.reset();
     }
 
@@ -17,10 +19,13 @@ namespace keyh
     {
         if (this != &other)
         {
+            reset();
             _instancePtr = other._instancePtr;
             memcpy(_methodStorage, other._methodStorage, sizeof(_methodStorage));
             _stubFunc = other._stubFunc;
+            _destructFunc = other._destructFunc;
 
+            other._destructFunc = nullptr;
             other.reset();
         }
         return *this;
