@@ -50,9 +50,13 @@ namespace keyh
 		ReflectObject(const FlyweightStringA& objectName);
 		virtual ~ReflectObject() override = default;
 
-	public:
+	protected:
+		friend ObjectType;
+		template<typename OtherObjectType>
+		friend class ReflectObject;
 		static ReflectMetaObject initializeMetaObject();
 
+	public:
 		virtual const ReflectMetaObject& getMetaObject() const override;
 	};
 }
