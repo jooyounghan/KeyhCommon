@@ -26,6 +26,7 @@ namespace keyh
 		const ValueType& getValueConstRef(const IReflectObject* object) const;
 
 	public:
+		virtual Ptr<IReflectProperty> clone() const override;
 		virtual bool isDefault(const IReflectObject* object) const override;
 		virtual bool isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const override;
 

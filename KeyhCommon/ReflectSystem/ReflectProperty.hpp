@@ -14,6 +14,12 @@
 	}
 
 	template<typename ObjectType, typename ValueType>
+	Ptr<IReflectProperty> ReflectProperty<ObjectType, ValueType>::clone() const
+	{
+		return makePtr<IReflectProperty, ReflectProperty<ObjectType, ValueType>>(_propertyName, _groupName, _defaultChecker, _refGetter, _constGetter);
+	}
+
+	template<typename ObjectType, typename ValueType>
 	ValueType& ReflectProperty<ObjectType, ValueType>::getValueRef(IReflectObject* object) const
 	{
 		return _refGetter(*static_cast<ObjectType*>(object));

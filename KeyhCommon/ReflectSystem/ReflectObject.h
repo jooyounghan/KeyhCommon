@@ -7,6 +7,21 @@
 #define REFLECTIVE(className) \
 className : public keyh::ReflectObject<className> \
 
+// Single reflected inheritance; use the matching derived body macros below.
+#define REFLECTIVE_DERIVED(className, baseName) className : public baseName
+
+#define KEYH_REFLECT_DECLARE_DERIVED_BODY(className) \
+    friend class keyh::ReflectObject<className>; \
+    public: \
+        className(); \
+        const keyh::ReflectMetaObject& getMetaObject() const override;
+
+#define KEYH_REFLECT_DEFINE_DERIVED_BODY(className, baseName) \
+    className::className() { _objectName = #className; } \
+    const keyh::ReflectMetaObject& className::getMetaObject() const \
+    { static keyh::ReflectMetaObject metaObject = keyh::ReflectObject<className>::initializeMetaObject(); return metaObject; } \
+    namespace { const bool sKeyhReflectRegistered_##className = keyh::ReflectTypeRegistry<baseName>::template registerType<className>(#className); }
+
 // Place this macro once inside the body of every REFLECTIVE class so that
 // keyh::ReflectObject<ClassName>::initializeMetaObject() (and the lambdas
 // defined within it) can access the class's protected/private members.
@@ -35,11 +50,11 @@ namespace keyh
 		ReflectObject(const FlyweightStringA& objectName);
 		virtual ~ReflectObject() override = default;
 
-	protected:
+	public:
 		static ReflectMetaObject initializeMetaObject();
 
-	public:
 		virtual const ReflectMetaObject& getMetaObject() const override;
 	};
 }
 #include "ReflectObject.hpp"
+#include "ReflectTypeRegistry.h"

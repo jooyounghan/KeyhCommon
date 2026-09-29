@@ -16,6 +16,7 @@ namespace keyh
 		HashMap<FlyweightStringA, IReflectProperty*>	_propertyMap;
 
 	public:
+		ReflectMetaObject clone() const;
 		const IReflectProperty* findProperty(const FlyweightStringA& propertyName) const;
 		inline const OwnerVector<IReflectProperty>& getReflectProperties() const { return _properties; }
 

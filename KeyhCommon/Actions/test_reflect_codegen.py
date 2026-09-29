@@ -175,6 +175,29 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("require a matching .cpp file", result.stderr)
 
+    def test_inherited_and_fieldless_metadata(self):
+        header = self.project / "nested/Hierarchy.h"
+        header.write_text(
+            'class REFLECTIVE(Base) {\n'
+            'KEYH_REFLECT_PROPERTY()\nint baseValue;\n};\n'
+            'class REFLECTIVE_DERIVED(Child, Base) {\n'
+            'KEYH_REFLECT_PROPERTY()\nint childValue;\n};\n'
+            'class REFLECTIVE_DERIVED(Leaf, Child) {\n};\n'
+            'class REFLECTIVE(Empty) {\n};\n', encoding="utf-8",
+        )
+        (header.with_suffix('.cpp')).write_text('#include "Hierarchy.h"\n', encoding="utf-8")
+        self.assert_success(self.run_python())
+        output = self.project / "generated/nested"
+        declarations = (output / "Hierarchy.reflect_generated.inl").read_text()
+        definitions = (output / "Hierarchy.reflect_generated.cpp.inl").read_text()
+        for name in ('Base', 'Child', 'Leaf', 'Empty'):
+            self.assertIn(f'ReflectObject<{name}>::initializeMetaObject();', declarations)
+            self.assertIn(f'ReflectObject<{name}>::initializeMetaObject()', definitions)
+        self.assertIn('ReflectMetaObject metaObject = ReflectObject<Base>::initializeMetaObject().clone();', definitions)
+        self.assertIn('ReflectMetaObject metaObject = ReflectObject<Child>::initializeMetaObject().clone();', definitions)
+        self.assert_success(self.run_python())
+        self.assertEqual(definitions, (output / "Hierarchy.reflect_generated.cpp.inl").read_text())
+
     @unittest.skipUnless(os.name == "nt", "Requires Windows cmd.exe")
     def test_batch_python_discovery(self):
         self.env.pop("KEYHCOMMON_PYTHON")

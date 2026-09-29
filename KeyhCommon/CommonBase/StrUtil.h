@@ -40,6 +40,10 @@ namespace keyh
 		inline static bool isWhitespace(wchar_t c) { return c == L' ' || c == L'\t' || c == L'\n' || c == L'\r'; }
 
 		inline static bool isDigit(char c) { return '0' <= c && c <= '9'; }
+		inline static bool isValidIdentifierCharacter(char c)
+		{
+			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || isDigit(c) || c == '_';
+		}
 #pragma endregion
 	};
 }

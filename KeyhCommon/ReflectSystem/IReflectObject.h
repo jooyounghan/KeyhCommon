@@ -15,10 +15,8 @@ namespace keyh
 	protected:
 		FlyweightStringA _objectName;
 
-	protected:
-		virtual const ReflectMetaObject& getMetaObject() const = 0;
-	
 	public:
+		virtual const ReflectMetaObject& getMetaObject() const = 0;
 		const IReflectProperty* findProperty(const FlyweightStringA& propertyName) const;
 		const OwnerVector<IReflectProperty>& getReflectProperties() const;
 
