@@ -215,6 +215,19 @@ namespace keyh
 				buffer->writeBytes(&ReflectionUtil::kQuote, 1);
 				continue;
 			}
+			if constexpr (IsReflectObject_v<ElementType>)
+			{
+				const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
+				if (!typeName.empty())
+				{
+					buffer->writeBytes("{\"$type\":\"", 10);
+					buffer->writeBytes(typeName.c_str(), typeName.size());
+					buffer->writeBytes("\",\"$value\":", 11);
+					ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth + 1, pretty);
+					buffer->writeBytes("}", 1);
+					continue;
+				}
+			}
 			ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth + 1, pretty);
 		}
 
@@ -233,20 +246,65 @@ namespace keyh
 	template<typename ElementType>
 	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value)
 	{
-		value.clear();
-
+		KEYH_ASSERT(json.isValid() && json.getValueType() == JsonUtil::TapeType::ArrayStart,
+			"OwnerVector JSON value must be an array.");
+		if (!json.isValid() || json.getValueType() != JsonUtil::TapeType::ArrayStart)
+			return;
+		OwnerVector<ElementType> result;
 		JsonArray jsonArray = json.getArrayValue();
 		for (JsonValue jsonValue = jsonArray.getFirstValue(); jsonValue.isValid(); jsonValue = jsonArray.getNextValue(jsonValue))
 		{
 			if (jsonValue.getValueType() == JsonUtil::TapeType::String && jsonValue.getStringValue() == "null")
 			{
-				value.push_back(Ptr<ElementType>(nullptr));
+				result.push_back(Ptr<ElementType>(nullptr));
 				continue;
 			}
 
-			ElementType* element = value.template emplace_back<ElementType>();
-			ReflectPropertyPolicy<ElementType>::deserializeFromJson(jsonValue, *element);
+			if constexpr (IsReflectObject_v<ElementType>)
+			{
+				if (jsonValue.getValueType() != JsonUtil::TapeType::ObjectStart)
+					return;
+				const JsonObject object = jsonValue.getObjectValue();
+				JsonValue payload = jsonValue;
+				StringViewA typeName;
+				bool hasType = false;
+				bool hasValue = false;
+				size_t keyCount = 0;
+				for (JsonKey key = object.getFirstKey(); key.isValid(); key = object.getNextKey(key))
+				{
+					++keyCount;
+					if (key.getKeyName() == "$type")
+					{
+						if (hasType || key.getValue().getValueType() != JsonUtil::TapeType::String)
+							return;
+						hasType = true;
+						typeName = key.getValue().getStringValue();
+					}
+					else if (key.getKeyName() == "$value")
+					{
+						if (hasValue || key.getValue().getValueType() != JsonUtil::TapeType::ObjectStart)
+							return;
+						hasValue = true;
+						payload = key.getValue();
+					}
+				}
+				if ((hasType || hasValue) && (!hasType || !hasValue || keyCount != 2))
+					return;
+				Ptr<ElementType> owned = hasType ? ReflectTypeRegistry<ElementType>::create(typeName)
+					: ReflectTypeRegistry<ElementType>::createLegacy();
+				ElementType* element = owned.get();
+				if (element == nullptr)
+					return;
+				result.push_back(keyh::move(owned));
+				ReflectPropertyPolicy<ElementType>::deserializeFromJson(payload, *element);
+			}
+			else
+			{
+				ElementType* element = result.template emplace_back<ElementType>();
+				ReflectPropertyPolicy<ElementType>::deserializeFromJson(jsonValue, *element);
+			}
 		}
+		value = keyh::move(result);
 	}
 
 	template<typename ElementType>
@@ -256,6 +314,23 @@ namespace keyh
 		buffer->writeBytes(&count, sizeof(count));
 		for (const ElementType* element : value)
 		{
+			if constexpr (IsReflectObject_v<ElementType>)
+			{
+				if (element != nullptr)
+				{
+					const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
+					if (!typeName.empty())
+					{
+						const uint8 typed = 2;
+						const uint64 nameSize = typeName.size();
+						buffer->writeBytes(&typed, sizeof(typed));
+						buffer->writeBytes(&nameSize, sizeof(nameSize));
+						buffer->writeBytes(typeName.c_str(), typeName.size());
+						ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
+						continue;
+					}
+				}
+			}
 			const uint8 present = element != nullptr ? 1 : 0;
 			buffer->writeBytes(&present, sizeof(present));
 			if (element != nullptr)
@@ -279,14 +354,43 @@ namespace keyh
 			if (offset >= size)
 				return kInvalidSizeT;
 			const uint8 present = static_cast<const byte*>(data)[offset++];
-			if (present > 1)
+			if (present > 2)
 				return kInvalidSizeT;
 			if (present == 0)
 			{
 				result.push_back(Ptr<ElementType>(nullptr));
 				continue;
 			}
-			ElementType* element = result.template emplace_back<ElementType>();
+			ElementType* element = nullptr;
+			if constexpr (IsReflectObject_v<ElementType>)
+			{
+				Ptr<ElementType> owned;
+				if (present == 2)
+				{
+					uint64 nameSize = 0;
+					if (size - offset < sizeof(nameSize))
+						return kInvalidSizeT;
+					memcpy(&nameSize, static_cast<const byte*>(data) + offset, sizeof(nameSize));
+					offset += sizeof(nameSize);
+					if (nameSize == 0 || nameSize > size - offset)
+						return kInvalidSizeT;
+					const StringViewA typeName(static_cast<const char*>(data) + offset, static_cast<size_t>(nameSize));
+					owned = ReflectTypeRegistry<ElementType>::create(typeName);
+					offset += static_cast<size_t>(nameSize);
+				}
+				else
+					owned = ReflectTypeRegistry<ElementType>::createLegacy();
+				element = owned.get();
+				if (element == nullptr)
+					return kInvalidSizeT;
+				result.push_back(keyh::move(owned));
+			}
+			else
+			{
+				if (present != 1)
+					return kInvalidSizeT;
+				element = result.template emplace_back<ElementType>();
+			}
 			const size_t consumed = ReflectPropertyPolicy<ElementType>::deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, *element);
 			if (consumed == kInvalidSizeT || consumed > size - offset)
 				return kInvalidSizeT;
@@ -308,18 +412,17 @@ namespace keyh
 	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
 	{
 		if (a.size() != b.size())
-			return false;
+					return;
 
 		for (const typename HashMap<KeyType, ValueType, Hasher>::Bucket& bucket : a)
 		{
 			typename HashMap<KeyType, ValueType, Hasher>::ConstFindResult findResult = b.find(bucket.key());
 			if (!findResult.isFound())
-				return false;
+					return;
 
 			if (!ReflectPropertyPolicy<ValueType>::isEqual(bucket.value(), *findResult.value()))
 				return false;
 		}
-		return true;
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>

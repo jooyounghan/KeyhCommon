@@ -383,8 +383,7 @@ def _parse_class_body(lines, start_line):
 
 def find_reflective_classes(filepath):
     """
-    Scan one header file and return a list of (ClassName, [properties]) tuples
-    for every class/struct decorated with REFLECTIVE(ClassName).
+    Return (class_name, properties, base_name) for reflected classes.
     """
     with open(filepath, 'r', encoding='utf-8', errors='replace', newline='') as f:
         content = f.read()
@@ -397,9 +396,12 @@ def find_reflective_classes(filepath):
         stripped = _strip_line_comment(lines[i]).strip()
 
         # Match:  class REFLECTIVE(ClassName)  or  struct REFLECTIVE(ClassName)
-        m = re.match(r'(?:class|struct)\s+REFLECTIVE\s*\(\s*(\w+)\s*\)', stripped)
+        m = re.match(r'(?:class|struct)\s+(REFLECTIVE(?:_DERIVED)?)\s*\(\s*(\w+)\s*(?:,\s*([\w:]+)\s*)?\)', stripped)
         if m:
-            class_name = m.group(1)
+            class_name = m.group(2)
+            base_name = m.group(3)
+            if (m.group(1) == 'REFLECTIVE_DERIVED') != bool(base_name):
+                raise ValueError('REFLECTIVE_DERIVED requires a base class')
 
             # Locate the opening brace (may be further down)
             j = i
@@ -410,7 +412,7 @@ def find_reflective_classes(filepath):
 
             if j < len(lines):
                 props = _parse_class_body(lines, j + 1)
-                classes.append((class_name, props))
+                classes.append((class_name, props, base_name))
 
         i += 1
 
@@ -432,7 +434,7 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
 
     Parameters
     ----------
-    all_classes   : list of (class_name, properties, source_filepath)
+    all_classes   : list of (class_name, properties, source_filepath, base_name)
                     All entries must belong to one header.
     all_enums     : list of (enum_name, entries, source_filepath)
                     All entries must belong to one header.
@@ -462,23 +464,22 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
         lines.append('')
 
     if mode == 'header':
-        for class_name, properties, _ in all_classes:
-            if properties:
-                lines.extend(['namespace keyh', '{',
-                              f'\ttemplate<> ReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject();',
-                              '}', ''])
+        for class_name, properties, _, base_name in all_classes:
+            lines.extend(['namespace keyh', '{',
+                          f'\ttemplate<> ReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject();',
+                          '}', ''])
         return '\n'.join(lines)
 
-    for class_name, properties, _ in all_classes:
-        if not properties:
-            continue
-
+    for class_name, properties, _, base_name in all_classes:
         lines.append('namespace keyh')
         lines.append('{')
         lines.append('\ttemplate<>')
         lines.append(f'\tReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject()')
         lines.append('\t{')
-        lines.append('\t\tReflectMetaObject metaObject;')
+        if base_name:
+            lines.append(f'\t\tReflectMetaObject metaObject = ReflectObject<{base_name}>::initializeMetaObject().clone();')
+        else:
+            lines.append('\t\tReflectMetaObject metaObject;')
         lines.append('')
 
         # Declare a static FlyweightStringA for each unique group used by this class
@@ -743,16 +744,15 @@ def main():
             print(f'[Reflect] Warning: could not parse {filepath}: {exc}', file=sys.stderr)
             continue
 
-        for class_name, properties in classes:
-            if properties:
-                classes_by_header.setdefault(filepath, []).append(
-                    (class_name, properties, filepath)
+        for class_name, properties, base_name in classes:
+            classes_by_header.setdefault(filepath, []).append(
+                (class_name, properties, filepath, base_name)
+            )
+            if args.verbose:
+                print(
+                    f'[Reflect]   {os.path.basename(filepath)}: '
+                    f'{class_name} - {len(properties)} property(ies)'
                 )
-                if args.verbose:
-                    print(
-                        f'[Reflect]   {os.path.basename(filepath)}: '
-                        f'{class_name} - {len(properties)} property(ies)'
-                    )
 
         for enum_name, entries in enums:
             if entries:

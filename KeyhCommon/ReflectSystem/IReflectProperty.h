@@ -47,6 +47,7 @@ namespace keyh
 		inline const FlyweightStringA& getGroupName() const { return _groupName; }
 
 	public:
+		virtual Ptr<IReflectProperty> clone() const = 0;
 		virtual bool isDefault(const IReflectObject* object) const = 0;
 		virtual bool isEqual(const IReflectObject* objectA, const IReflectObject* objectB) const = 0;
 
