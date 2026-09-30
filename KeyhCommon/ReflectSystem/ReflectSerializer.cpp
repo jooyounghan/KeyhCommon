@@ -50,23 +50,23 @@ size_t ReflectSerializer::deserializeObjectFromBinary(const void* data, size_t s
     return offset;
 }
 
-bool ReflectSerializer::serializeToBinary(const StringViewA& filePath, const IReflectObject* reflectObject)
+bool ReflectSerializer::serializeToBinary(const char* filePath, const IReflectObject* reflectObject)
 {
     if (reflectObject == nullptr)
         return false;
     FileWriter writer;
-    if (!writer.open(filePath.c_str()))
+    if (!writer.open(filePath))
         return false;
     serializeObjectToBinary(&writer, reflectObject);
     return writer.flush();
 }
 
-bool ReflectSerializer::deserializeFromBinary(const StringViewA& filePath, IReflectObject* reflectObject)
+bool ReflectSerializer::deserializeFromBinary(const char* filePath, IReflectObject* reflectObject)
 {
     if (reflectObject == nullptr)
         return false;
     File file;
-    if (!file.load(filePath.c_str()))
+    if (!file.load(filePath))
         return false;
     return deserializeObjectFromBinary(file.getStringBuffer(), file.getFileSize(), reflectObject) == file.getFileSize();
 }
@@ -150,7 +150,7 @@ void ReflectSerializer::deserializeObjectFromJson(const JsonObject& jsonObject, 
 // ReflectSerializer file-level API
 // =========================================================================
 
-bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IReflectObject* reflectObject, bool pretty)
+bool ReflectSerializer::serializeToJson(const char* filePath, const IReflectObject* reflectObject, bool pretty)
 {
     if (reflectObject == nullptr)
     {
@@ -159,24 +159,24 @@ bool ReflectSerializer::serializeToJson(const StringViewA& filePath, const IRefl
     }
 
     FileWriter writer;
-    if (!writer.open(filePath.c_str()))
+    if (!writer.open(filePath))
     {
-        KEYH_ASSERT_ARGS(false, "Failed to open file for writing: %s", filePath.c_str());
+        KEYH_ASSERT_ARGS(false, "Failed to open file for writing: %s", filePath);
         return false;
     }
     serializeObjectToBuffer(&writer, reflectObject, 0, pretty);
     return writer.flush();
 }
 
-void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflectObject* reflectObject)
+void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject* reflectObject)
 {
     JsonDocument jsonDocument;
-    jsonDocument.loadFromFile(filePath.c_str());
+    jsonDocument.loadFromFile(filePath);
     JsonObject rootObject = jsonDocument.getRootObject();
 
     if (rootObject.isValid() == false)
     {
-        KEYH_ASSERT_ARGS(false, "Failed to load JSON document from file: %s", filePath.c_str());
+        KEYH_ASSERT_ARGS(false, "Failed to load JSON document from file: %s", filePath);
         return;
     }
 

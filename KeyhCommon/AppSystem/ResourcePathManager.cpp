@@ -32,7 +32,7 @@ namespace keyh
 			return;
 		}
 
-		ReflectSerializer::deserializeFromJson(StringViewA(configurationPath.c_str(), configurationPath.size()), &_rootNode);
+		ReflectSerializer::deserializeFromJson(configurationPath.c_str(), &_rootNode);
 
 		_orderedResourcePaths.clear();
 		appendPathsInReverseTopologicalOrder(_rootNode);
