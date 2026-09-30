@@ -173,6 +173,9 @@
     <ProjectReference Include="..\CommonBase\CommonBase.vcxproj">
       <Project>{295ebb3a-8079-45ba-a2f1-2115d709d868}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\ReflectSystem\ReflectSystem.vcxproj">
+      <Project>{761c4598-1bad-4437-9e24-e8673f0c9802}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="AppSystem.props" />
