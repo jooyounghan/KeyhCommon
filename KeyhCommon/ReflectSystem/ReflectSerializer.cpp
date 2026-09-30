@@ -523,8 +523,8 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     template<>
     void ReflectPropertySerializer<FlyweightStringW>::deserializeFromJson(const JsonValue& json, FlyweightStringW& value)
     {
-        StaticStringW wideString;
-        ReflectPropertySerializer<StaticStringW>::deserializeFromJson(json, wideString);
+        const StringViewA stringView = json.getStringValue();
+        const StaticStringW wideString = StaticStringW::toWideString(StaticStringA(stringView.data(), stringView.length()));
         value = FlyweightStringW(wideString);
     }
 
