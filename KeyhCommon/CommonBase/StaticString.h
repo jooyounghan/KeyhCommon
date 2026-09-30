@@ -17,6 +17,7 @@ namespace keyh
 	public:
 		StaticString();
 		~StaticString();
+		static StaticString<wchar_t> toWideString(const StaticString<char>& value);
 
 	public:
 		StaticString(const T* str);

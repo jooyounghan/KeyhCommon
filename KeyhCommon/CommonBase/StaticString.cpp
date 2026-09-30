@@ -1,6 +1,7 @@
 ﻿#include "CommonBasePch.h"
 #include "StaticString.h"
 #include "MemoryUtil.h"
+#include <windows.h>
 
 namespace keyh
 {
@@ -183,6 +184,27 @@ namespace keyh
 		}
 		_size = 0;
 		_capacityInfo = 0;
+	}
+
+	template<typename T>
+	StaticString<wchar_t> StaticString<T>::toWideString(const StaticString<char>& value)
+	{
+		if (value.empty())
+			return StaticStringW();
+		if (value.length() > static_cast<size_t>(MAXLONG))
+			return StaticStringW();
+
+		const int wideLength = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.c_str(), static_cast<int>(value.length()), nullptr, 0);
+		if (wideLength <= 0)
+			return StaticStringW();
+
+		DynamicBufferW wideBuffer;
+		wideBuffer.allocate(static_cast<size_t>(wideLength) + 1);
+		const int convertedLength = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.c_str(), static_cast<int>(value.length()), wideBuffer.getBuffer(), wideLength);
+		if (convertedLength != wideLength)
+			return StaticStringW();
+
+		return StaticStringW(wideBuffer.getBuffer(), static_cast<size_t>(wideLength));
 	}
 
 	template class StaticString<char>;

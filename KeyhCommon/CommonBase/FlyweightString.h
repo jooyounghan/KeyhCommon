@@ -40,6 +40,7 @@ namespace keyh
 	public:
 		FlyweightString() = default;
 		~FlyweightString() = default;
+		static FlyweightString<wchar_t> toWideString(const FlyweightString<char>& value);
 
 	public:
 		FlyweightString(const T* str);

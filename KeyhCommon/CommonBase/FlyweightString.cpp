@@ -53,6 +53,16 @@ namespace keyh
 	}
 
 	template<typename T, typename Hasher>
+	FlyweightString<wchar_t> FlyweightString<T, Hasher>::toWideString(const FlyweightString<char>& value)
+	{
+		if (value == FlyweightString<char>::Empty)
+			return FlyweightString<wchar_t>::Empty;
+
+		const StaticStringW wideString = StaticStringW::toWideString(StaticStringA(value.c_str(), value.length()));
+		return FlyweightString<wchar_t>(wideString);
+	}
+
+	template<typename T, typename Hasher>
 	bool FlyweightString<T, Hasher>::operator==(const FlyweightString& other) const
 	{
 		return _hash == other._hash;

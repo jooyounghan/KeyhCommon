@@ -2,6 +2,7 @@
 #include "ReflectSerializer.h"
 #include "JsonDocument.h"
 #include "FileWriter.h"
+#include <windows.h>
 
 namespace keyh
 {
@@ -208,7 +209,9 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     DEFINE_IS_EQUAL(uint4)
     DEFINE_IS_EQUAL(bool)
     DEFINE_IS_EQUAL(StaticStringA)
+    DEFINE_IS_EQUAL(StaticStringW)
     DEFINE_IS_EQUAL(FlyweightStringA)
+    DEFINE_IS_EQUAL(FlyweightStringW)
 
 	template<> bool ReflectPropertySerializer<DynamicBuffer<byte>>::isEqual(const DynamicBuffer<byte>& a, const DynamicBuffer<byte>& b)
 	{
@@ -343,12 +346,52 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     }
 
     template<>
+    void ReflectPropertySerializer<StaticStringW>::serializeToJson(IBuffer* buffer, const StaticStringW& value, size_t depth, bool pretty)
+    {
+        (void)depth;
+        (void)pretty;
+        const int utf8Length = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), static_cast<int>(value.length()), nullptr, 0, nullptr, nullptr);
+        if (utf8Length <= 0)
+        {
+            buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+            buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+            return;
+        }
+        DynamicBufferA utf8Buffer;
+        utf8Buffer.allocate(static_cast<size_t>(utf8Length));
+        WideCharToMultiByte(CP_UTF8, 0, value.c_str(), static_cast<int>(value.length()), utf8Buffer.getBuffer(), utf8Length, nullptr, nullptr);
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+        buffer->writeBytes(utf8Buffer.getBuffer(), static_cast<size_t>(utf8Length));
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+    }
+
+    template<>
     void ReflectPropertySerializer<FlyweightStringA>::serializeToJson(IBuffer* buffer, const FlyweightStringA& value, size_t depth, bool pretty)
     {
         (void)depth;
         (void)pretty;
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
         buffer->writeBytes(value.c_str(), value.size());
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+    }
+
+    template<>
+    void ReflectPropertySerializer<FlyweightStringW>::serializeToJson(IBuffer* buffer, const FlyweightStringW& value, size_t depth, bool pretty)
+    {
+        (void)depth;
+        (void)pretty;
+        const int utf8Length = WideCharToMultiByte(CP_UTF8, 0, value.c_str(), static_cast<int>(value.length()), nullptr, 0, nullptr, nullptr);
+        if (utf8Length <= 0)
+        {
+            buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+            buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+            return;
+        }
+        DynamicBufferA utf8Buffer;
+        utf8Buffer.allocate(static_cast<size_t>(utf8Length));
+        WideCharToMultiByte(CP_UTF8, 0, value.c_str(), static_cast<int>(value.length()), utf8Buffer.getBuffer(), utf8Length, nullptr, nullptr);
+        buffer->writeBytes(&ReflectionUtil::kQuote, 1);
+        buffer->writeBytes(utf8Buffer.getBuffer(), static_cast<size_t>(utf8Length));
         buffer->writeBytes(&ReflectionUtil::kQuote, 1);
     }
 
@@ -455,10 +498,34 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
     }
 
     template<>
+    void ReflectPropertySerializer<StaticStringW>::deserializeFromJson(const JsonValue& json, StaticStringW& value)
+    {
+        const StringViewA stringView = json.getStringValue();
+        const int wideLength = MultiByteToWideChar(CP_UTF8, 0, stringView.data(), static_cast<int>(stringView.length()), nullptr, 0);
+        if (wideLength <= 0)
+        {
+            value.clear();
+            return;
+        }
+        DynamicBufferW wideBuffer;
+        wideBuffer.allocate(static_cast<size_t>(wideLength));
+        MultiByteToWideChar(CP_UTF8, 0, stringView.data(), static_cast<int>(stringView.length()), wideBuffer.getBuffer(), wideLength);
+        value = StaticStringW(wideBuffer.getBuffer(), static_cast<size_t>(wideLength));
+    }
+
+    template<>
     void ReflectPropertySerializer<FlyweightStringA>::deserializeFromJson(const JsonValue& json, FlyweightStringA& value)
     {
         StringViewA stringView = json.getStringValue();
         value = FlyweightStringA(stringView);
+    }
+
+    template<>
+    void ReflectPropertySerializer<FlyweightStringW>::deserializeFromJson(const JsonValue& json, FlyweightStringW& value)
+    {
+        StaticStringW wideString;
+        ReflectPropertySerializer<StaticStringW>::deserializeFromJson(json, wideString);
+        value = FlyweightStringW(wideString);
     }
 
     template<>
@@ -564,6 +631,33 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
 #undef DEFINE_BINARY_STRING
 
     template<>
+    void ReflectPropertySerializer<StaticStringW>::serializeToBinary(IBuffer* buffer, const StaticStringW& value)
+    {
+        const uint64 length = value.length();
+        buffer->writeBytes(&length, sizeof(length));
+        if (length != 0)
+            buffer->writeBytes(value.c_str(), value.size());
+    }
+
+    template<>
+    size_t ReflectPropertySerializer<StaticStringW>::deserializeFromBinary(const void* data, size_t size, StaticStringW& value)
+    {
+        uint64 length = 0;
+        if (data == nullptr || size < sizeof(length))
+            return kInvalidSizeT;
+        memcpy(&length, data, sizeof(length));
+        if (length > (size - sizeof(length)) / sizeof(wchar_t) || length >= kInvalidSizeT)
+            return kInvalidSizeT;
+        const size_t byteLength = static_cast<size_t>(length) * sizeof(wchar_t);
+        DynamicBufferW wideBuffer;
+        wideBuffer.allocate(static_cast<size_t>(length) + 1);
+        if (byteLength != 0)
+            memcpy(wideBuffer.getBuffer(), static_cast<const byte*>(data) + sizeof(length), byteLength);
+        value = StaticStringW(wideBuffer.getBuffer(), static_cast<size_t>(length));
+        return sizeof(length) + byteLength;
+    }
+
+    template<>
     void ReflectPropertySerializer<FlyweightStringA>::serializeToBinary(IBuffer* buffer, const FlyweightStringA& value)
     {
         // Preserve the default sentinel separately from an interned empty string.
@@ -593,6 +687,38 @@ void ReflectSerializer::deserializeFromJson(const StringViewA& filePath, IReflec
         if (consumed == kInvalidSizeT)
             return kInvalidSizeT;
         value = FlyweightStringA(text);
+        return consumed;
+    }
+
+    template<>
+    void ReflectPropertySerializer<FlyweightStringW>::serializeToBinary(IBuffer* buffer, const FlyweightStringW& value)
+    {
+        if (value == FlyweightStringW::Empty)
+        {
+            const uint64 sentinel = UINT64_MAX;
+            buffer->writeBytes(&sentinel, sizeof(sentinel));
+            return;
+        }
+        ReflectPropertyPolicy<StaticStringW>::serializeToBinary(buffer, StaticStringW(value.c_str(), value.length()));
+    }
+
+    template<>
+    size_t ReflectPropertySerializer<FlyweightStringW>::deserializeFromBinary(const void* data, size_t size, FlyweightStringW& value)
+    {
+        uint64 length = 0;
+        if (data == nullptr || size < sizeof(length))
+            return kInvalidSizeT;
+        memcpy(&length, data, sizeof(length));
+        if (length == UINT64_MAX)
+        {
+            value = FlyweightStringW::Empty;
+            return sizeof(length);
+        }
+        StaticStringW text;
+        const size_t consumed = ReflectPropertyPolicy<StaticStringW>::deserializeFromBinary(data, size, text);
+        if (consumed == kInvalidSizeT)
+            return kInvalidSizeT;
+        value = FlyweightStringW(text);
         return consumed;
     }
 
