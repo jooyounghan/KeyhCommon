@@ -412,17 +412,18 @@ namespace keyh
 	bool ReflectPropertyPolicy<HashMap<KeyType, ValueType, Hasher>>::isEqual(const HashMap<KeyType, ValueType, Hasher>& a, const HashMap<KeyType, ValueType, Hasher>& b)
 	{
 		if (a.size() != b.size())
-					return;
+			return false;
 
 		for (const typename HashMap<KeyType, ValueType, Hasher>::Bucket& bucket : a)
 		{
 			typename HashMap<KeyType, ValueType, Hasher>::ConstFindResult findResult = b.find(bucket.key());
-			if (!findResult.isFound())
-					return;
+			if (findResult.isFound() == false)
+				return false;
 
-			if (!ReflectPropertyPolicy<ValueType>::isEqual(bucket.value(), *findResult.value()))
+			if (ReflectPropertyPolicy<ValueType>::isEqual(bucket.value(), *findResult.value()) == false)
 				return false;
 		}
+		return true;
 	}
 	
 	template<typename KeyType, typename ValueType, typename Hasher>
