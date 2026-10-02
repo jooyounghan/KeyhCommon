@@ -45,6 +45,7 @@ namespace keyh
 	public:
 		// hashCache is optional and, when non-null, must point to a valid precomputed hash value for key.
 		InsertResult	insert(const Key& key, const Value& value, bool replace = false, size_t* hashCache = nullptr);
+		InsertResult	insert(const Key& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
 		InsertResult	insert(Key&& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
 		FindResult		find(const Key& key, size_t* hashCache = nullptr);
 		ConstFindResult	find(const Key& key, size_t* hashCache = nullptr) const;

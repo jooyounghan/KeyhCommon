@@ -41,6 +41,12 @@ namespace keyh
 	}
 
 	HASHMAP_TEMPLATE_TYPE
+	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(const Key& key, Value&& value, bool replace, size_t* hashCache)
+	{
+		return insertImpl(replace, hashCache, key, keyh::move(value));
+	}
+
+	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::InsertResult HASHMAP_CLASS::insert(Key&& key, Value&& value, bool replace, size_t* hashCache)
 	{
 		return insertImpl(replace, hashCache, keyh::move(key), keyh::move(value));

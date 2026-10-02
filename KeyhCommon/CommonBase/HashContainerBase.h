@@ -234,6 +234,14 @@ namespace keyh
 			_psl = psl;
 		}
 
+		void constructBucket(int32 psl, const Key& keyValue, Value&& valueData)
+		{
+			destroy();
+			new (&_keyStorage) Key(keyValue);
+			new (&_valueStorage) Value(keyh::move(valueData));
+			_psl = psl;
+		}
+
 		void constructBucket(int32 psl, Key&& keyValue, Value&& valueData)
 		{
 			destroy();
