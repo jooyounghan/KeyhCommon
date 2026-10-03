@@ -48,5 +48,5 @@ namespace keyh
 	};
 }
 
-#include "ResourcePathManager.reflect_generated.inl"
+#include "generated/ResourcePathManager.reflect_generated.inl"
 

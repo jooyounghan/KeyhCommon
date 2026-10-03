@@ -67,4 +67,4 @@ namespace keyh
 	}
 }
 
-#include "ResourcePathManager.reflect_generated.cpp.inl"
+#include "generated/ResourcePathManager.reflect_generated.cpp.inl"
