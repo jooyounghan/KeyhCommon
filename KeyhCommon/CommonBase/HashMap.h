@@ -20,6 +20,7 @@ namespace keyh
 
 	public:
 		using Base::clear;
+
 		using Bucket = HashBucket<Key, Value>;
 		using InsertResult = HashInsertResult<Value>;
 		using FindResult = HashFindResult<Value>;
@@ -47,7 +48,7 @@ namespace keyh
 		InsertResult	insert(const Key& key, const Value& value, bool replace = false, size_t* hashCache = nullptr);
 		InsertResult	insert(const Key& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
 		InsertResult	insert(Key&& key, Value&& value, bool replace = false, size_t* hashCache = nullptr);
-		FindResult		find(const Key& key, size_t* hashCache = nullptr);
+		FindResult	find(const Key& key, size_t* hashCache = nullptr);
 		ConstFindResult	find(const Key& key, size_t* hashCache = nullptr) const;
 		bool			remove(const Key& key, size_t* hashCache = nullptr);
 

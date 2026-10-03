@@ -25,11 +25,11 @@ namespace keyh
 		{
 			clear();
 			_buckets = other._buckets;
-			_size = other._size;
-			_capacity = other._capacity;
+			Base::_size = other._size;
+			Base::_capacity = other._capacity;
 			other._buckets = nullptr;
-			other._capacity = 0;
-			other._size = 0;
+			other.Base::_capacity = 0;
+			other.Base::_size = 0;
 		}
 		return *this;
 	}

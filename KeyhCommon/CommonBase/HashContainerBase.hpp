@@ -1,19 +1,20 @@
 ﻿namespace keyh
 {
 	template<typename Derived>
-	template<typename Key, typename ...Args>
+	template<typename Key, typename... Args>
 	auto HashContainerBase<Derived>::insertImpl(bool replace, size_t* hashCache, Key&& key, Args&&... args)
 	{
 		rehashIfNeeded();
 
 		Derived* self = static_cast<Derived*>(this);
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
-		size_t hash = hashCache ? *hashCache : self->_hasher(key);
-		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
+		const size_t hash = hashCache ? *hashCache : self->_hasher(key);
+		const size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		typename Derived::Bucket* bucket = &self->_buckets[index];
 		size_t currentIndex = index;
 		int32 searchPsl = 0;
+		// Check for an existing key before forwarding insertion arguments that may be moved.
 		do
 		{
 			if (bucket->isEmpty() || bucket->getPsl() < searchPsl)
@@ -77,8 +78,8 @@
 		rehashIfNeeded();
 
 		Derived* self = static_cast<Derived*>(this);
-		size_t hash = self->_hasher(otherBucket.key());
-		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
+		const size_t hash = self->_hasher(otherBucket.key());
+		const size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		typename Derived::Bucket* bucket = &self->_buckets[index];
 		size_t currentIndex = index;
@@ -133,7 +134,6 @@
 		return self->makeInsertResult(bucket, status);
 	}
 
-
 	template<typename Derived>
 	template<typename Key>
 	auto HashContainerBase<Derived>::findImpl(const Key& key, size_t* hashCache)
@@ -158,8 +158,8 @@
 			return self->makeFindResult(nullptr, false);
 
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
-		size_t hash = hashCache ? *hashCache : self->_hasher(key);
-		size_t index = CircularBufferUtil::getIndex(hash, 0, self->_capacity);
+		const size_t hash = hashCache ? *hashCache : self->_hasher(key);
+		const size_t index = CircularBufferUtil::getIndex(hash, 0, self->_capacity);
 
 		using BucketPtr = decltype(&self->_buckets[index]);
 		BucketPtr bucket = &self->_buckets[index];
@@ -194,8 +194,8 @@
 			return false;
 
 		// hashCache must be nullptr or point to a valid precomputed hash value for key.
-		size_t hash = hashCache ? *hashCache : self->_hasher(key);
-		size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
+		const size_t hash = hashCache ? *hashCache : self->_hasher(key);
+		const size_t index = CircularBufferUtil::getIndex(hash, 0, _capacity);
 
 		Bucket* bucket = &self->_buckets[index];
 		size_t currentIndex = index;
@@ -256,7 +256,7 @@
 		_size = 0;
 		for (size_t i = 0; i < oldCapacity; ++i)
 		{
-			auto& bucket = oldBuckets[i];
+			Bucket& bucket = oldBuckets[i];
 			if (bucket.isEmpty())
 				continue;
 
@@ -283,7 +283,7 @@
 		Derived* self = static_cast<Derived*>(this);
 		for (size_t i = 0; i < _capacity; ++i)
 		{
-			auto& bucket = self->_buckets[i];
+			Bucket& bucket = self->_buckets[i];
 			if (!bucket.isEmpty())
 			{
 				bucket.~Bucket();

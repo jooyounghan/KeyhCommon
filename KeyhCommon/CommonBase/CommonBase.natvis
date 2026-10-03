@@ -82,25 +82,35 @@
 	</Type>
 
 	<Type Name="keyh::StaticString&lt;char&gt;">
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) == 0">{{ size=0, text="" }}</DisplayString>
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) != 0">{{ size={_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_ssoBuffer,s} }}</DisplayString>
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) == 0">{{ size={_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_heap,s} }}</DisplayString>
+		<DisplayString Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">{{ SSO, size={_size}, capacity=16, text={_ssoBuffer,s} }}</DisplayString>
+		<DisplayString Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">{{ heap, size={_size}, capacity={_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_heap,s} }}</DisplayString>
 		<Expand>
-			<Item Name="[size]">_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
-			<Item Name="[is_sso]">(_stringInfo &amp; 0x8000000000000000ui64) != 0</Item>
-			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,s</Item>
-			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,s</Item>
+			<Item Name="[mode]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">"SSO"</Item>
+			<Item Name="[mode]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">"heap"</Item>
+			<Item Name="[size]">_size</Item>
+			<Item Name="[capacity]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">16</Item>
+			<Item Name="[capacity]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
+			<Item Name="[capacityInfo: raw]">_capacityInfo</Item>
+			<Item Name="[capacityInfo: heap flag]">(_capacityInfo &amp; 0x8000000000000000ui64) != 0</Item>
+			<Item Name="[capacityInfo: capacity bits]">_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
+			<Item Name="[text]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">_ssoBuffer,s</Item>
+			<Item Name="[text]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">_heap,s</Item>
 		</Expand>
 	</Type>
 	<Type Name="keyh::StaticString&lt;wchar_t&gt;">
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) == 0">{{ size=0, text="" }}</DisplayString>
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) != 0">{{ size={_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_ssoBuffer,su} }}</DisplayString>
-		<DisplayString Condition="(_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64) != 0 &amp;&amp; (_stringInfo &amp; 0x8000000000000000ui64) == 0">{{ size={_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_heap,su} }}</DisplayString>
+		<DisplayString Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">{{ SSO, size={_size}, capacity=16, text={_ssoBuffer,su} }}</DisplayString>
+		<DisplayString Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">{{ heap, size={_size}, capacity={_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64}, text={_heap,su} }}</DisplayString>
 		<Expand>
-			<Item Name="[size]">_stringInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
-			<Item Name="[is_sso]">(_stringInfo &amp; 0x8000000000000000ui64) != 0</Item>
-			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) != 0">_ssoBuffer,su</Item>
-			<Item Name="[text]" Condition="(_stringInfo &amp; 0x8000000000000000ui64) == 0">_heap,su</Item>
+			<Item Name="[mode]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">"SSO"</Item>
+			<Item Name="[mode]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">"heap"</Item>
+			<Item Name="[size]">_size</Item>
+			<Item Name="[capacity]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">16</Item>
+			<Item Name="[capacity]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
+			<Item Name="[capacityInfo: raw]">_capacityInfo</Item>
+			<Item Name="[capacityInfo: heap flag]">(_capacityInfo &amp; 0x8000000000000000ui64) != 0</Item>
+			<Item Name="[capacityInfo: capacity bits]">_capacityInfo &amp; 0x7FFFFFFFFFFFFFFFui64</Item>
+			<Item Name="[text]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) == 0">_ssoBuffer,su</Item>
+			<Item Name="[text]" Condition="(_capacityInfo &amp; 0x8000000000000000ui64) != 0">_heap,su</Item>
 		</Expand>
 	</Type>
 
