@@ -20,6 +20,7 @@ foreach(project IN ITEMS CommonBase ReflectSystem AppSystem)
     vcpkg_build_msbuild(
         PROJECT_PATH "${KEYHCOMMON_PROJECT_ROOT}/${project}/${project}.vcxproj"
         PLATFORM "${KEYHCOMMON_PLATFORM}"
+        OPTIONS /p:KeyhCommonSkipReflectCodegen=true
     )
 endforeach()
 
