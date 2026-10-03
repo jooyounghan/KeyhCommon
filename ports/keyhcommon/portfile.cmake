@@ -3,7 +3,7 @@ vcpkg_check_linkage(ONLY_STATIC_LIBRARY)
 vcpkg_from_git(
     OUT_SOURCE_PATH SOURCE_PATH
     URL "https://github.com/jooyounghan/KeyhCommon.git"
-    REF "090b8f0afc307ef73f25e88482804037b19bf23e"
+    REF "ebbc031ca80cef5f71e9add89f5dc5d5e0f5b4dc"
 )
 
 set(KEYHCOMMON_PROJECT_ROOT "${SOURCE_PATH}/KeyhCommon")
