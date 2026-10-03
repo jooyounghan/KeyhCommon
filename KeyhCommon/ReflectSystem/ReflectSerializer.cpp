@@ -22,7 +22,12 @@ void ReflectSerializer::serializeObjectToBinary(IBuffer* buffer, const IReflectO
     for (const IReflectProperty* property : properties)
     {
         KEYH_ASSERT(property != nullptr, "Register a non-null property before binary serialization.");
-        property->serializeToBinary(buffer, reflectObject);
+        if (property == nullptr)
+            continue;
+        const byte isDefault = property->isDefault(reflectObject) ? 1 : 0;
+        buffer->writeBytes(&isDefault, sizeof(isDefault));
+        if (isDefault == 0)
+            property->serializeToBinary(buffer, reflectObject);
     }
 }
 
@@ -42,6 +47,14 @@ size_t ReflectSerializer::deserializeObjectFromBinary(const void* data, size_t s
     {
         if (property == nullptr)
             return kInvalidSizeT;
+        if (offset >= size)
+            return kInvalidSizeT;
+        const byte isDefault = static_cast<const byte*>(data)[offset];
+        ++offset;
+        if (isDefault > 1)
+            return kInvalidSizeT;
+        if (isDefault != 0)
+            continue;
         const size_t consumed = property->deserializeFromBinary(static_cast<const byte*>(data) + offset, size - offset, reflectObject);
         if (consumed == kInvalidSizeT || consumed > size - offset)
             return kInvalidSizeT;
@@ -81,7 +94,8 @@ void ReflectSerializer::serializeObjectToBuffer(IBuffer* buffer, const IReflectO
     {
         if (property == nullptr)
             continue;
-
+        if (property->isDefault(reflectObject))
+            continue;
         if (pretty)
         {
             if (isFirst)
