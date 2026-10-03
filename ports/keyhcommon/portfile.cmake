@@ -69,10 +69,27 @@ foreach(project IN ITEMS CommonBase ReflectSystem AppSystem)
         "${KEYHCOMMON_PROJECT_ROOT}/${project}/*.hpp"
         "${KEYHCOMMON_PROJECT_ROOT}/${project}/*.inl"
     )
+    list(FILTER project_headers EXCLUDE REGEX "\\.reflect_generated(\\.cpp)?\\.inl$")
     file(INSTALL
         ${project_headers}
         DESTINATION "${CURRENT_PACKAGES_DIR}/include/keyhcommon/${project_folder_name}"
     )
+
+    file(GLOB_RECURSE project_reflect_headers
+        LIST_DIRECTORIES false
+        "${KEYHCOMMON_PROJECT_ROOT}/${project}/generated/*.reflect_generated.inl"
+    )
+    foreach(reflect_header IN LISTS project_reflect_headers)
+        file(RELATIVE_PATH reflect_header_relative_path
+            "${KEYHCOMMON_PROJECT_ROOT}/${project}/generated"
+            "${reflect_header}"
+        )
+        get_filename_component(reflect_header_relative_directory "${reflect_header_relative_path}" DIRECTORY)
+        file(INSTALL
+            "${reflect_header}"
+            DESTINATION "${CURRENT_PACKAGES_DIR}/include/keyhcommon/${project_folder_name}/generated/${reflect_header_relative_directory}"
+        )
+    endforeach()
 endforeach()
 
 file(INSTALL
