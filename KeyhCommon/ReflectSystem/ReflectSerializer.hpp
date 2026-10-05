@@ -164,7 +164,7 @@
     DECLARE_REFLECT_PROPERTY_SERIALIZER(StaticStringW)
     DECLARE_REFLECT_PROPERTY_SERIALIZER(FlyweightStringA)
     DECLARE_REFLECT_PROPERTY_SERIALIZER(FlyweightStringW)
-    DECLARE_REFLECT_PROPERTY_SERIALIZER(DynamicBuffer<byte>)
+    DECLARE_REFLECT_PROPERTY_SERIALIZER(DynamicDataBuffer<byte>)
 #undef DECLARE_REFLECT_PROPERTY_SERIALIZER
 
     // -----------------------------------------------------------------------

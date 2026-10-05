@@ -2,14 +2,15 @@
 #include "IBuffer.h"
 namespace keyh
 {
-	template<typename T>
-	class DynamicBuffer : public IBufferBase<T, DynamicBuffer<T>>
+	template<typename T, bool isString = false>
+	class DynamicBuffer : public IBufferBase<T, DynamicBuffer<T, isString>>
 	{
-		using Base = IBufferBase<T, DynamicBuffer<T>>;
+		using Base = IBufferBase<T, DynamicBuffer<T, isString>>;
 		using Base::_offset;
 		friend class Base;
 
 	public:
+		static constexpr bool kIsString = isString;
 		DynamicBuffer() = default;
 		~DynamicBuffer() override = default;
 
@@ -27,11 +28,14 @@ namespace keyh
 	protected:
 		void resetImpl();
 		inline size_t	getCapacityImpl() const { return _capacity; }
+		inline size_t	getWritableCapacityImpl() const { return (_capacity - (_capacity != 0 && isString ? 1 : 0)) * sizeof(T); }
 		inline T*		getBufferImpl() { return _buffer; }
 		inline const T* getBufferImpl() const { return _buffer; }
 	};
 
-	using DynamicBufferA = DynamicBuffer<char>;
-	using DynamicBufferW = DynamicBuffer<wchar_t>;
+	template<typename T> using DynamicDataBuffer = DynamicBuffer<T, false>;
+	template<typename T> using DynamicStringBuffer = DynamicBuffer<T, true>;
+	using DynamicBufferA = DynamicStringBuffer<char>;
+	using DynamicBufferW = DynamicStringBuffer<wchar_t>;
 }
 

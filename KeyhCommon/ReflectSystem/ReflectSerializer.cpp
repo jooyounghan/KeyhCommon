@@ -546,8 +546,10 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     void ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromJson(const JsonValue& json, DynamicBuffer<byte>& value)
     {
         StringViewA stringView = json.getStringValue();
+		value.resetRaw();
 		value.allocate(stringView.size());
-        memcpy(value.getBuffer(), stringView.data(), stringView.size());
+		if (stringView.size() != 0)
+			value.writeBytes(stringView.data(), stringView.size());
     }
 
 #pragma endregion
@@ -739,7 +741,9 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     template<>
     void ReflectPropertySerializer<DynamicBuffer<byte>>::serializeToBinary(IBuffer* buffer, const DynamicBuffer<byte>& value)
     {
+		const uint64 capacity = value.capacity();
         const uint64 length = value.size();
+		buffer->writeBytes(&capacity, sizeof(capacity));
         buffer->writeBytes(&length, sizeof(length));
         if (length != 0)
             buffer->writeBytes(value.getBuffer(), value.size());
@@ -748,17 +752,18 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     template<>
     size_t ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromBinary(const void* data, size_t size, DynamicBuffer<byte>& value)
     {
+		uint64 capacity = 0;
         uint64 length = 0;
-        if (data == nullptr || size < sizeof(length))
+		if (data == nullptr || size < sizeof(capacity) + sizeof(length))
             return kInvalidSizeT;
-        memcpy(&length, data, sizeof(length));
-        if (length > size - sizeof(length) || length >= kInvalidSizeT)
+		memcpy(&capacity, data, sizeof(capacity));
+		memcpy(&length, static_cast<const byte*>(data) + sizeof(capacity), sizeof(length));
+		if (capacity >= kInvalidSizeT || length > capacity || length > size - sizeof(capacity) - sizeof(length))
             return kInvalidSizeT;
-        // IBufferBase writes a terminator after its logical payload.
         value.resetRaw();
-        value.allocate(static_cast<size_t>(length) + 1);
+		value.allocate(static_cast<size_t>(capacity));
         if (length != 0)
-            value.writeBytes(static_cast<const byte*>(data) + sizeof(length), static_cast<size_t>(length));
-        return sizeof(length) + static_cast<size_t>(length);
+			value.writeBytes(static_cast<const byte*>(data) + sizeof(capacity) + sizeof(length), static_cast<size_t>(length));
+		return sizeof(capacity) + sizeof(length) + static_cast<size_t>(length);
     }
 }

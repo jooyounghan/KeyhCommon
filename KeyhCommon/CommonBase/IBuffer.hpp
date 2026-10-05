@@ -9,17 +9,24 @@ namespace keyh
 			return;
 		}
 
-		KEYH_ASSERT_DEV(size % sizeof(T) == 0, "Size must be a multiple of element size");
+		if (size % sizeof(T) != 0)
+		{
+			KEYH_ASSERT(false, "Write size must be a multiple of the buffer element size.");
+			return;
+		}
+		if (size == 0)
+			return;
 		T* buffer = getBuffer();
 		memcpy(static_cast<void*>(buffer + _offset), input, size);
 		_offset += (size / sizeof(T));
-		buffer[_offset] = T();
+		if constexpr (Derived::kIsString)
+			buffer[_offset] = T();
 	}
 
 	template<typename T, typename Derived>
 	void IBufferBase<T, Derived>::writeOne(T input)
 	{
-		if (getAvailableSize() == 0)
+		if (getAvailableSize() < sizeof(T))
 		{
 			KEYH_ASSERT(false, "Not enough space in buffer to write data");
 			return;
@@ -28,7 +35,8 @@ namespace keyh
 		T* buffer = getBuffer();
 		buffer[_offset] = input;
 		_offset++;
-		buffer[_offset] = T();
+		if constexpr (Derived::kIsString)
+			buffer[_offset] = T();
 	}
 
 	template<typename T, typename Derived>
@@ -41,7 +49,7 @@ namespace keyh
 	template<typename T, typename Derived>
 	size_t IBufferBase<T, Derived>::getAvailableSize() const
 	{
-		const size_t capacity = getDerived()->getCapacityImpl();
-		return capacity > size() ? capacity - size() : 0;
+		const size_t writableCapacity = getDerived()->getWritableCapacityImpl();
+		return writableCapacity > size() ? writableCapacity - size() : 0;
 	}
 }

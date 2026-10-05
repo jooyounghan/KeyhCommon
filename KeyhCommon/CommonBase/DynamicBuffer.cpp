@@ -3,19 +3,21 @@
 
 namespace keyh
 {
-	template<typename T>
-	void DynamicBuffer<T>::allocateInner(size_t size)
+	template<typename T, bool isString>
+	void DynamicBuffer<T, isString>::allocateInner(size_t size)
 	{
 		T* newBuffer = new T[size];
-		memcpy(static_cast<void*>(newBuffer), static_cast<void*>(_buffer), _capacity * sizeof(T));
+		if (_offset != 0)
+			memcpy(static_cast<void*>(newBuffer), static_cast<void*>(_buffer), _offset * sizeof(T));
 		resetImpl();
 		_capacity = size;
 		_buffer = newBuffer;
-		_buffer[_offset] = T();
+		if constexpr (isString)
+			_buffer[_offset] = T();
 	}	
 
-	template<typename T>
-	void DynamicBuffer<T>::allocate(size_t capacity)
+	template<typename T, bool isString>
+	void DynamicBuffer<T, isString>::allocate(size_t capacity)
 	{
 		if (capacity <= _capacity)
 			return;
@@ -23,17 +25,18 @@ namespace keyh
 		allocateInner(capacity);
 	}
 
-	template<typename T>
-	void DynamicBuffer<T>::shrinkToFit()
+	template<typename T, bool isString>
+	void DynamicBuffer<T, isString>::shrinkToFit()
 	{
-		if (_offset == _capacity)
+		const size_t requiredCapacity = _offset + (isString ? 1 : 0);
+		if (requiredCapacity == _capacity)
 			return;
 
-		allocateInner(_offset + 1);
+		allocateInner(requiredCapacity);
 	}
 
-	template<typename T>
-	void DynamicBuffer<T>::resetImpl()
+	template<typename T, bool isString>
+	void DynamicBuffer<T, isString>::resetImpl()
 	{
 		if (_buffer)
 		{
@@ -43,7 +46,10 @@ namespace keyh
 		_capacity = 0;
 	}
 
-	template class DynamicBuffer<char>;
-	template class DynamicBuffer<wchar_t>;
-	template class DynamicBuffer<byte>;
+	template class DynamicBuffer<char, false>;
+	template class DynamicBuffer<char, true>;
+	template class DynamicBuffer<wchar_t, false>;
+	template class DynamicBuffer<wchar_t, true>;
+	template class DynamicBuffer<byte, false>;
+	template class DynamicBuffer<byte, true>;
 }
