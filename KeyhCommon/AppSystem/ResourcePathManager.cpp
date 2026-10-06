@@ -25,14 +25,17 @@ namespace keyh
 			_projectPaths[index] = commandLineManager.getCommandLineArgument(StaticStringA(argumentName.getBuffer(), argumentName.size()));
 		}
 
-		const StaticStringA configurationPath = commandLineManager.getCommandLineArgument("ResourcePathConfig");
-		if (configurationPath.empty())
+		const StaticStringA& mainResourcePath = commandLineManager.getCommandLineArgument("MainResourcePath");
+		if (mainResourcePath.empty())
 		{
-			KEYH_ASSERT_DEV(false, "ResourcePathConfig command line argument is not provided. Please provide the project path graph configuration file.");
+			KEYH_ASSERT_DEV(false, "MainResourcePath command line argument is not provided. Please provide the main resource path.");
 			return;
 		}
+		
+		StaticBufferA<kMaxPathLength> configurationPath;
+		configurationPath.format("%s\\ResourcePathConfiguration.json", mainResourcePath.c_str());
 
-		ReflectSerializer::deserializeFromJson(configurationPath.c_str(), &_rootNode);
+		ReflectSerializer::deserializeFromJson(configurationPath.getBuffer(), &_rootNode);
 
 		_orderedResourcePaths.clear();
 		appendPathsInReverseTopologicalOrder(_rootNode);
