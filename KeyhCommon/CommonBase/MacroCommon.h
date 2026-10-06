@@ -5,11 +5,11 @@
 #endif
 
 #if defined(KEYH_DEV)
-#define REFLECT_PRIVATE public:
-#define REFLECT_PROTECTED public:
+#define REFLECT_PRIVATE public
+#define REFLECT_PROTECTED public
 #else
-#define REFLECT_PRIVATE private:
-#define REFLECT_PROTECTED protected:
+#define REFLECT_PRIVATE private
+#define REFLECT_PROTECTED protected
 #endif
 
 #if defined(_WIN32) || defined(_WIN64) || defined(_XBOX)
