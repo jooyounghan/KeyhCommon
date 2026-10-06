@@ -86,7 +86,9 @@
                         return;
                 }
 
-                KEYH_ASSERT_ARGS(false, "Invalid enum string while deserializing JSON.");
+                const StringViewA enumString = json.getStringValue();
+                KEYH_ASSERT_ARGS(false, "Invalid enum string while deserializing JSON: '%.*s'.",
+                    static_cast<int>(enumString.length()), enumString.data() != nullptr ? enumString.data() : "");
                 return;
             }
 
@@ -192,7 +194,10 @@
         JsonObject jsonObject = json.getObjectValue();
         if (jsonObject.isValid() == false)
         {
-            KEYH_ASSERT(false, "JSON value is not an object.");
+            const StringViewA rawJson = json.getRawJsonValue();
+            KEYH_ASSERT_ARGS(false, "JSON value is not an object (type %u, raw string value '%.*s').",
+                static_cast<unsigned int>(json.getValueType()), static_cast<int>(rawJson.length()),
+                rawJson.data() != nullptr ? rawJson.data() : "");
             return;
         }
         ReflectSerializer::deserializeObjectFromJson(jsonObject, &value);

@@ -246,8 +246,11 @@ namespace keyh
 	template<typename ElementType>
 	void ReflectPropertyPolicy<OwnerVector<ElementType>>::deserializeFromJson(const JsonValue& json, OwnerVector<ElementType>& value)
 	{
-		KEYH_ASSERT(json.isValid() && json.getValueType() == JsonUtil::TapeType::ArrayStart,
-			"OwnerVector JSON value must be an array.");
+		const StringViewA rawJson = json.getRawJsonValue();
+		KEYH_ASSERT_ARGS(json.isValid() && json.getValueType() == JsonUtil::TapeType::ArrayStart,
+			"OwnerVector JSON value must be an array (type %u, value '%.*s').",
+			static_cast<unsigned int>(json.isValid() ? json.getValueType() : JsonUtil::TapeType::ObjectEnd),
+			static_cast<int>(rawJson.length()), rawJson.data() != nullptr ? rawJson.data() : "");
 		if (!json.isValid() || json.getValueType() != JsonUtil::TapeType::ArrayStart)
 			return;
 		OwnerVector<ElementType> result;

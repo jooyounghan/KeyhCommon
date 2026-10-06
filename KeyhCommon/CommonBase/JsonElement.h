@@ -45,6 +45,7 @@ using JsonElement::_index
 
 	public:
 		JsonUtil::TapeType getValueType() const;
+		StringViewA getRawJsonValue() const;
 
 	public:
 		StringViewA getStringValue() const;

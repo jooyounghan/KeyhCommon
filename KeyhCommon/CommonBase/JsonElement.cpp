@@ -47,6 +47,19 @@ namespace keyh
 		return element.getType();
 	}
 
+	StringViewA JsonValue::getRawJsonValue() const
+	{
+		if (isValid() == false)
+			return StringViewA();
+
+		const TapeElement& element = getTapeElement();
+		if (element.getType() != TapeType::String)
+			return StringViewA();
+
+		const char* valueStart = _context->_jsonString + element.getPayloadAsStringOffset() - 1;
+		return StringViewA(valueStart, element.getPayloadAsStringLength() + 2);
+	}
+
 	StringViewA JsonValue::getStringValue() const
 	{
 		const TapeElement& element = getTapeElement();
