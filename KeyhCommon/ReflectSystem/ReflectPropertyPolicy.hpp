@@ -39,6 +39,177 @@ namespace keyh
 	}
 #pragma endregion
 
+#pragma region Ptr Policy
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<Ptr<ElementType>>::isDefault(const Ptr<ElementType>& value)
+	{
+		return value.get() == nullptr;
+	}
+
+	template<typename ElementType>
+	bool ReflectPropertyPolicy<Ptr<ElementType>>::isEqual(const Ptr<ElementType>& a, const Ptr<ElementType>& b)
+	{
+		if (a.get() == nullptr || b.get() == nullptr)
+			return a.get() == b.get();
+		return ReflectPropertyPolicy<ElementType>::isEqual(*a.get(), *b.get());
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Ptr<ElementType>>::serializeToJson(IBuffer* buffer, const Ptr<ElementType>& value, size_t depth, bool pretty)
+	{
+		const ElementType* element = value.get();
+		if (element == nullptr)
+		{
+			buffer->writeBytes("\"null\"", 6);
+			return;
+		}
+		if constexpr (IsReflectObject_v<ElementType>)
+		{
+			const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
+			if (!typeName.empty())
+			{
+				buffer->writeBytes("{\"$type\":\"", 10);
+				buffer->writeBytes(typeName.c_str(), typeName.size());
+				buffer->writeBytes("\",\"$value\":", 11);
+				ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth + 1, pretty);
+				buffer->writeBytes("}", 1);
+				return;
+			}
+		}
+		ReflectPropertyPolicy<ElementType>::serializeToJson(buffer, *element, depth, pretty);
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Ptr<ElementType>>::deserializeFromJson(const JsonValue& json, Ptr<ElementType>& value)
+	{
+		if (!json.isValid())
+			return;
+		if (json.getValueType() == JsonUtil::TapeType::String && json.getStringValue() == "null")
+		{
+			value = nullptr;
+			return;
+		}
+		Ptr<ElementType> result;
+		JsonValue payload = json;
+		if constexpr (IsReflectObject_v<ElementType>)
+		{
+			if (json.getValueType() != JsonUtil::TapeType::ObjectStart)
+				return;
+			const JsonObject object = json.getObjectValue();
+			StringViewA typeName;
+			bool hasType = false;
+			bool hasValue = false;
+			size_t keyCount = 0;
+			for (JsonKey key = object.getFirstKey(); key.isValid(); key = object.getNextKey(key))
+			{
+				++keyCount;
+				if (key.getKeyName() == "$type")
+				{
+					if (hasType || key.getValue().getValueType() != JsonUtil::TapeType::String)
+						return;
+					hasType = true;
+					typeName = key.getValue().getStringValue();
+				}
+				else if (key.getKeyName() == "$value")
+				{
+					if (hasValue || key.getValue().getValueType() != JsonUtil::TapeType::ObjectStart)
+						return;
+					hasValue = true;
+					payload = key.getValue();
+				}
+			}
+			if ((hasType || hasValue) && (!hasType || !hasValue || keyCount != 2))
+				return;
+			result = hasType ? ReflectTypeRegistry<ElementType>::create(typeName)
+				: ReflectTypeRegistry<ElementType>::createLegacy();
+		}
+		else
+		{
+			result = makePtr<ElementType>();
+		}
+		if (result.get() == nullptr)
+			return;
+		ReflectPropertyPolicy<ElementType>::deserializeFromJson(payload, *result.get());
+		value = keyh::move(result);
+	}
+
+	template<typename ElementType>
+	void ReflectPropertyPolicy<Ptr<ElementType>>::serializeToBinary(IBuffer* buffer, const Ptr<ElementType>& value)
+	{
+		const ElementType* element = value.get();
+		if constexpr (IsReflectObject_v<ElementType>)
+		{
+			if (element != nullptr)
+			{
+				const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
+				if (!typeName.empty())
+				{
+					const uint8 typed = 2;
+					const uint64 nameSize = typeName.size();
+					buffer->writeBytes(&typed, sizeof(typed));
+					buffer->writeBytes(&nameSize, sizeof(nameSize));
+					buffer->writeBytes(typeName.c_str(), typeName.size());
+					ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
+					return;
+				}
+			}
+		}
+		const uint8 present = element != nullptr ? 1 : 0;
+		buffer->writeBytes(&present, sizeof(present));
+		if (element != nullptr)
+			ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
+	}
+
+	template<typename ElementType>
+	size_t ReflectPropertyPolicy<Ptr<ElementType>>::deserializeFromBinary(const void* data, size_t size, Ptr<ElementType>& value)
+	{
+		if (data == nullptr || size == 0)
+			return kInvalidSizeT;
+		const uint8 present = *static_cast<const uint8*>(data);
+		if (present > 2)
+			return kInvalidSizeT;
+		if (present == 0)
+		{
+			value = nullptr;
+			return sizeof(present);
+		}
+		size_t offset = sizeof(present);
+		Ptr<ElementType> result;
+		if constexpr (IsReflectObject_v<ElementType>)
+		{
+			if (present == 2)
+			{
+				uint64 nameSize = 0;
+				if (size - offset < sizeof(nameSize))
+					return kInvalidSizeT;
+				memcpy(&nameSize, static_cast<const byte*>(data) + offset, sizeof(nameSize));
+				offset += sizeof(nameSize);
+				if (nameSize == 0 || nameSize > size - offset)
+					return kInvalidSizeT;
+				const StringViewA typeName(static_cast<const char*>(data) + offset, static_cast<size_t>(nameSize));
+				result = ReflectTypeRegistry<ElementType>::create(typeName);
+				offset += static_cast<size_t>(nameSize);
+			}
+			else
+				result = ReflectTypeRegistry<ElementType>::createLegacy();
+		}
+		else
+		{
+			if (present != 1)
+				return kInvalidSizeT;
+			result = makePtr<ElementType>();
+		}
+		if (result.get() == nullptr)
+			return kInvalidSizeT;
+		const size_t consumed = ReflectPropertyPolicy<ElementType>::deserializeFromBinary(
+			static_cast<const byte*>(data) + offset, size - offset, *result.get());
+		if (consumed == kInvalidSizeT || consumed > size - offset)
+			return kInvalidSizeT;
+		value = keyh::move(result);
+		return offset + consumed;
+	}
+#pragma endregion
+
 #pragma region Vector Policy
 	template<typename ElementType>
 	bool ReflectPropertyPolicy<Vector<ElementType>>::isDefault(const Vector<ElementType>& value)

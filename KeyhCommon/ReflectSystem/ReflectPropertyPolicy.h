@@ -19,6 +19,19 @@ namespace keyh
 	};
 #pragma endregion
 
+#pragma region Ptr Policy
+	template<typename ElementType>
+	struct ReflectPropertyPolicy<Ptr<ElementType>>
+	{
+		static bool isDefault(const Ptr<ElementType>& value);
+		static bool isEqual(const Ptr<ElementType>& a, const Ptr<ElementType>& b);
+		static void serializeToJson(IBuffer* buffer, const Ptr<ElementType>& value, size_t depth = 0, bool pretty = false);
+		static void deserializeFromJson(const JsonValue& json, Ptr<ElementType>& value);
+		static void serializeToBinary(IBuffer* buffer, const Ptr<ElementType>& value);
+		static size_t deserializeFromBinary(const void* data, size_t size, Ptr<ElementType>& value);
+	};
+#pragma endregion
+
 #pragma region Vector Policy
 	template<typename ElementType>
 	struct ReflectPropertyPolicy<Vector<ElementType>>
