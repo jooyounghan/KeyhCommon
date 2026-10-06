@@ -79,14 +79,14 @@ namespace keyh
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::FindResult HASHMAP_CLASS::makeFindResult(Bucket* bucket, bool found)
 	{
-		return FindResult(bucket ? &bucket->value() : nullptr, found);
+		return FindResult(bucket ? MemoryUtil::addressOf(bucket->value()) : nullptr, found);
 	}
 
 	HASHMAP_TEMPLATE_TYPE
 	HASHMAP_CLASS::ConstFindResult HASHMAP_CLASS::makeFindResult(const Bucket* bucket, bool found) const
 	{
 		using ConstValue = HashConstFindValue_t<Value>;
-		return ConstFindResult(bucket ? const_cast<ConstValue*>(&bucket->value()) : nullptr, found);
+		return ConstFindResult(bucket ? const_cast<ConstValue*>(MemoryUtil::addressOf(bucket->value())) : nullptr, found);
 	}
 }
 
