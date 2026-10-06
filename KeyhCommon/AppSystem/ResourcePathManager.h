@@ -11,7 +11,7 @@ namespace keyh
 	class REFLECTIVE(ProjectNode)
 	{
 		KEYH_REFLECT_DECLARE_BODY(ProjectNode)
-	private:
+		REFLECT_PRIVATE
 		KEYH_REFLECT_PROPERTY(PropertyName = "ProjectPath")
 		EProjectPath _projectPath = EProjectPath::Common;
 

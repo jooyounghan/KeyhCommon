@@ -4,6 +4,14 @@
 #define KEYH_NATVIS
 #endif
 
+#if defined(KEYH_DEV)
+#define REFLECT_PRIVATE public:
+#define REFLECT_PROTECTED public:
+#else
+#define REFLECT_PRIVATE private:
+#define REFLECT_PROTECTED protected:
+#endif
+
 #if defined(_WIN32) || defined(_WIN64) || defined(_XBOX)
 #define KEYH_PLATFORM_WINDOWS
 #endif
