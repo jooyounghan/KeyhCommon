@@ -112,6 +112,26 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assertTrue((output / "nested/State.reflect_generated.inl").is_file())
         self.assertEqual(self.header.read_text(), HEADER)
 
+    def test_flag_enum_with_shift_expressions(self):
+        self.header.write_bytes(
+            b"KEYH_REFLECT_ENUM\r\n"
+            b"enum class ColorWriteMask : unsigned char\r\n"
+            b"{\r\n"
+            b"    None = 0,\r\n"
+            b"    Red = 1 << 0,\r\n"
+            b"    Green = 1 << 1,\r\n"
+            b"    Blue = 1 << 2,\r\n"
+            b"    Alpha = 1 << 3,\r\n"
+            b"    All = Red | Green | Blue | Alpha,\r\n"
+            b"    Max = All\r\n"
+            b"};\r\n"
+        )
+        self.assert_success(self.run_python())
+        generated = self.project / "generated/nested/State.reflect_generated.inl"
+        content = generated.read_text()
+        for value in ("None", "Red", "Green", "Blue", "Alpha", "All", "Max"):
+            self.assertIn(f"KEYH_REFLECT_ENUM_VALUE(ColorWriteMask, {value})", content)
+
     def test_installed_dependencies_are_not_modified(self):
         dependencies = []
         for directory in ("vcpkg_installed", ".git", ".vs"):

@@ -179,15 +179,15 @@ def _strip_block_comments(text):
 
 
 def _split_top_level_commas(text):
-    """Split a string by top-level commas (ignoring nested (), {}, [], <>)."""
+    """Split by top-level commas, ignoring nested (), {}, and []."""
     parts = []
     current = []
     depth = 0
 
     for ch in text:
-        if ch in '([{<':
+        if ch in '([{':
             depth += 1
-        elif ch in ')]}>':
+        elif ch in ')]}':
             depth = max(0, depth - 1)
         elif ch == ',' and depth == 0:
             part = ''.join(current).strip()
