@@ -36,6 +36,13 @@ namespace keyh
 	template<typename T>
 	size_t FNV1aHash<T>::operator()(const T& value) const noexcept
 	{
-		STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+		if constexpr (IsEnumImpl<T>::value)
+		{
+			return FNV1aHash<int64>()(static_cast<int64>(value));
+		}
+		else
+		{
+			STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
+		}
 	}
 }

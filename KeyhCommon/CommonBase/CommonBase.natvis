@@ -42,7 +42,7 @@
 
 	<Type Name="keyh::StringView&lt;char&gt;">
 		<DisplayString Condition="_data != nullptr">{_data,sb}</DisplayString>
-		<DisplayString Condition="_data == nullptr">{}</DisplayString>
+		<DisplayString Condition="_data == nullptr">{{}}</DisplayString>
 		<Expand>
 			<Item Name="[length]">_length</Item>
 			<Item Name="[text]">_data,sb,_length</Item>
@@ -50,7 +50,7 @@
 	</Type>
 	<Type Name="keyh::StringView&lt;wchar_t&gt;">
 		<DisplayString Condition="_data != nullptr">{_data,su}</DisplayString>
-		<DisplayString Condition="_data == nullptr">{}</DisplayString>
+		<DisplayString Condition="_data == nullptr">{{}}</DisplayString>
 		<Expand>
 			<Item Name="[length]">_length</Item>
 			<Item Name="[text]">_data,su,_length</Item>
