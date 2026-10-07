@@ -33,7 +33,7 @@ namespace keyh
 		}
 		
 		StaticBufferA<kMaxPathLength> configurationPath;
-		configurationPath.format("%s\\ResourcePathConfiguration.json", mainResourcePath.c_str());
+		configurationPath.format("%s\\ResourcePathConfig.json", mainResourcePath.c_str());
 
 		ReflectSerializer::deserializeFromJson(configurationPath.getBuffer(), &_rootNode);
 
