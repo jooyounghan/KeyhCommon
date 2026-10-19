@@ -1,4 +1,4 @@
-﻿#include "CommonBasePch.h"
+#include "CommonBasePch.h"
 #include "StaticString.h"
 #include "MemoryUtil.h"
 #include <windows.h>
@@ -207,6 +207,27 @@ namespace keyh
 		return StaticStringW(wideBuffer.getBuffer(), static_cast<size_t>(wideLength));
 	}
 
+	template<typename T>
+	StaticString<char> StaticString<T>::toNarrowString(const StaticString<wchar_t>& value)
+	{
+		if (value.empty())
+			return StaticStringA();
+		if (value.length() > static_cast<size_t>(MAXLONG))
+			return StaticStringA();
+
+		const int narrowLength = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.c_str(), static_cast<int>(value.length()), nullptr, 0, nullptr, nullptr);
+		if (narrowLength <= 0)
+			return StaticStringA();
+
+		DynamicBufferA narrowBuffer;
+		narrowBuffer.allocate(static_cast<size_t>(narrowLength) + 1);
+		const int convertedLength = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value.c_str(), static_cast<int>(value.length()), narrowBuffer.getBuffer(), narrowLength, nullptr, nullptr);
+		if (convertedLength != narrowLength)
+			return StaticStringA();
+
+		return StaticStringA(narrowBuffer.getBuffer(), static_cast<size_t>(narrowLength));
+	}
+
 	template class StaticString<char>;
 	template class StaticString<wchar_t>;
 }
@@ -227,3 +248,4 @@ namespace keyh
 	}
 }
 #pragma endregion
+

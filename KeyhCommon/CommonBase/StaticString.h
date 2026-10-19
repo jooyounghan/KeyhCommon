@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "StrUtil.h"
 
 namespace keyh
@@ -18,6 +18,7 @@ namespace keyh
 		StaticString();
 		~StaticString();
 		static StaticString<wchar_t> toWideString(const StaticString<char>& value);
+		static StaticString<char> toNarrowString(const StaticString<wchar_t>& value);
 
 	public:
 		StaticString(const T* str);
@@ -76,3 +77,5 @@ namespace keyh
 	DECLARE_TEMPLATED_FNV1A_HASH_SPECIALIZATION(StaticString, wchar_t);
 }
 #pragma endregion
+
+
