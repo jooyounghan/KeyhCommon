@@ -679,6 +679,21 @@ def _inl_name_for_header(header_basename):
     return f'{stem}.reflect_generated.inl'
 
 
+def write_if_changed(filepath, content):
+    """Write generated content only when it differs from the existing file."""
+    encoded_content = content.encode('utf-8')
+    try:
+        with open(filepath, 'rb') as f:
+            if f.read() == encoded_content:
+                return False
+    except FileNotFoundError:
+        pass
+
+    with open(filepath, 'wb') as f:
+        f.write(encoded_content)
+    return True
+
+
 def _relative_include(source_path, generated_path):
     return os.path.relpath(generated_path, os.path.dirname(source_path)).replace('\\', '/')
 
@@ -775,8 +790,10 @@ def main():
         header_out = os.path.join(out_dir, _inl_name_for_header(basename))
         class_list = classes_by_header.get(header_path, [])
         enum_list = enums_by_header.get(header_path, [])
-        with open(header_out, 'w', encoding='utf-8') as f:
-            f.write(generate_inl_content(class_list, enum_list, basename, os.path.basename(header_out), 'header'))
+        write_if_changed(
+            header_out,
+            generate_inl_content(class_list, enum_list, basename, os.path.basename(header_out), 'header'),
+        )
         generated_files.append(header_out)
         if not args.no_patch_headers:
             patch_header_with_include(header_path, f'#include "{_relative_include(header_path, header_out)}"')
@@ -787,8 +804,10 @@ def main():
             print(f'[Reflect] Error: reflected classes in {header_path} require a matching .cpp file ({cpp_path}).', file=sys.stderr)
             sys.exit(1)
         if class_list:
-            with open(cpp_out, 'w', encoding='utf-8') as f:
-                f.write(generate_inl_content(class_list, [], basename, os.path.basename(cpp_out), 'cpp'))
+            write_if_changed(
+                cpp_out,
+                generate_inl_content(class_list, [], basename, os.path.basename(cpp_out), 'cpp'),
+            )
             generated_files.append(cpp_out)
             if not args.no_patch_headers:
                 patch_header_with_include(cpp_path, f'#include "{_relative_include(cpp_path, cpp_out)}"')

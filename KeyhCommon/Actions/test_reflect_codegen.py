@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 
@@ -101,8 +102,11 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         self.assertIn("KEYH_REFLECT_ENUM_BEGIN(State)", generated.read_text())
         self.assertIn('#include "../generated/nested/State.reflect_generated.inl"', self.header.read_text())
         original = generated.read_bytes()
+        original_mtime = generated.stat().st_mtime_ns
+        time.sleep(0.02)
         self.assert_success(self.run_python())
         self.assertEqual(generated.read_bytes(), original)
+        self.assertEqual(generated.stat().st_mtime_ns, original_mtime)
 
     def test_custom_output_without_header_patching(self):
         output = self.area / "generated files"
