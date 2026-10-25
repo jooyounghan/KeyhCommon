@@ -40,6 +40,10 @@ namespace keyh
 		{
 			return FNV1aHash<int64>()(static_cast<int64>(value));
 		}
+		else if constexpr (__is_pointer(T))
+		{
+			return FNV1aHasher::hash(value);
+		}
 		else
 		{
 			STATIC_ASSERT_FUNCTION_NOT_SUPPORTED();
