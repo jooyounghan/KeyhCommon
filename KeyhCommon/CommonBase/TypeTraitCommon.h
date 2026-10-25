@@ -212,6 +212,23 @@ namespace keyh
 	constexpr bool IsEnum_v = IsEnumImpl<T>::value;
 #pragma endregion
 
+#pragma region IsPointer
+	template <typename T>
+	struct IsPointerImpl
+	{
+		static constexpr bool value = false;
+	};
+
+	template <typename T>
+	struct IsPointerImpl<T*>
+	{
+		static constexpr bool value = true;
+	};
+
+	template <typename T>
+	constexpr bool IsPointer_v = IsPointerImpl<RemoveConstant_t<RemoveReference_t<T>>>::value;
+#pragma endregion
+
 #pragma region IsArray
 	template <typename T>
 	struct IsArrayImpl

@@ -40,7 +40,7 @@ namespace keyh
 		{
 			return FNV1aHash<int64>()(static_cast<int64>(value));
 		}
-		else if constexpr (__is_pointer(T))
+		else if constexpr (IsPointerImpl<T>::value)
 		{
 			return FNV1aHasher::hash(value);
 		}
