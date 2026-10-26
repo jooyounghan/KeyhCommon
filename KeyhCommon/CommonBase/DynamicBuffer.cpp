@@ -17,12 +17,12 @@ namespace keyh
 	}	
 
 	template<typename T, bool isString>
-	void DynamicBuffer<T, isString>::allocate(size_t capacity)
+	void DynamicBuffer<T, isString>::allocate(size_t count)
 	{
-		if (capacity <= _capacity)
+		if (count <= _capacity)
 			return;
 		
-		allocateInner(capacity);
+		allocateInner(count);
 	}
 
 	template<typename T, bool isString>

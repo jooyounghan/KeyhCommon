@@ -136,15 +136,10 @@ namespace keyh
         }
 
         // If the incoming chunk does not fit in the remaining space, flush first.
-        if (size > _writeBuffer.getAvailableSizeBytes())
+        if (size > _writeBuffer.getAvailableSize())
             flush();
 
         _writeBuffer.writeBytes(input, size);
-    }
-
-    void FileWriter::resetRaw()
-    {
-        _writeBuffer.reset();
     }
 
     size_t FileWriter::size() const
@@ -169,9 +164,9 @@ namespace keyh
         return nullptr;
     }
 
-    size_t FileWriter::getAvailableSizeBytes() const
+    size_t FileWriter::getAvailableSize() const
     {
-        return _writeBuffer.getAvailableSizeBytes();
+        return _writeBuffer.getAvailableSize();
     }
 }
 

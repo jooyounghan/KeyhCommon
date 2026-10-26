@@ -44,12 +44,12 @@ namespace keyh
 		void format(const T* formatString, Args... args);
 
 	protected:
-		uint8 _buffer[Size] = { 0 };
+		T _buffer[Size] = {};
 
 	protected:
 		inline void			resetImpl() { _buffer[0] = T(); }
 		constexpr size_t	getCapacityImpl() const { return Size; }
-		constexpr size_t	getWritableCapacityImpl() const { return Size >= sizeof(T) ? Size - sizeof(T) : 0; }
+		constexpr size_t	getWritableCapacityImpl() const { return Size > 0 ? Size - 1 : 0; }
 		inline T*			getBufferImpl() { return reinterpret_cast<T*>(_buffer); }
 		inline const T*		getBufferImpl() const { return reinterpret_cast<const T*>(_buffer); }
 	};

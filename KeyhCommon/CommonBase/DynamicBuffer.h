@@ -22,13 +22,13 @@ namespace keyh
 		void allocateInner(size_t size);
 
 	public:
-		void allocate(size_t size);
+		void allocate(size_t count);
 		void shrinkToFit();
 
 	protected:
 		void resetImpl();
 		inline size_t	getCapacityImpl() const { return _capacity; }
-		inline size_t	getWritableCapacityImpl() const { return (_capacity - (_capacity != 0 && isString ? 1 : 0)) * sizeof(T); }
+		inline size_t	getWritableCapacityImpl() const { return _capacity - (_capacity != 0 && isString ? 1 : 0); }
 		inline T*		getBufferImpl() { return _buffer; }
 		inline const T* getBufferImpl() const { return _buffer; }
 	};

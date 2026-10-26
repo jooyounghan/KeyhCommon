@@ -546,7 +546,7 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     void ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromJson(const JsonValue& json, DynamicBuffer<byte>& value)
     {
         StringViewA stringView = json.getStringValue();
-		value.resetRaw();
+		value.reset();
 		value.allocate(stringView.size());
 		if (stringView.size() != 0)
 			value.writeBytes(stringView.data(), stringView.size());
@@ -741,29 +741,29 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     template<>
     void ReflectPropertySerializer<DynamicBuffer<byte>>::serializeToBinary(IBuffer* buffer, const DynamicBuffer<byte>& value)
     {
-		const uint64 capacity = value.capacity();
-        const uint64 length = value.size();
-		buffer->writeBytes(&capacity, sizeof(capacity));
-        buffer->writeBytes(&length, sizeof(length));
-        if (length != 0)
-            buffer->writeBytes(value.getBuffer(), value.size());
+		const uint64 capacityCount = value.capacity();
+        const uint64 sizeCount = value.size();
+		buffer->writeBytes(&capacityCount, sizeof(capacityCount));
+        buffer->writeBytes(&sizeCount, sizeof(sizeCount));
+		if (sizeCount != 0)
+			buffer->writeBytes(value.getBuffer(), static_cast<size_t>(sizeCount));
     }
 
     template<>
     size_t ReflectPropertySerializer<DynamicBuffer<byte>>::deserializeFromBinary(const void* data, size_t size, DynamicBuffer<byte>& value)
     {
-		uint64 capacity = 0;
-        uint64 length = 0;
-		if (data == nullptr || size < sizeof(capacity) + sizeof(length))
+		uint64 capacityCount = 0;
+        uint64 sizeCount = 0;
+		if (data == nullptr || size < sizeof(capacityCount) + sizeof(sizeCount))
             return kInvalidSizeT;
-		memcpy(&capacity, data, sizeof(capacity));
-		memcpy(&length, static_cast<const byte*>(data) + sizeof(capacity), sizeof(length));
-		if (capacity >= kInvalidSizeT || length > capacity || length > size - sizeof(capacity) - sizeof(length))
+		memcpy(&capacityCount, data, sizeof(capacityCount));
+		memcpy(&sizeCount, static_cast<const byte*>(data) + sizeof(capacityCount), sizeof(sizeCount));
+		if (capacityCount >= kInvalidSizeT || sizeCount > capacityCount || sizeCount > size - sizeof(capacityCount) - sizeof(sizeCount))
             return kInvalidSizeT;
-        value.resetRaw();
-		value.allocate(static_cast<size_t>(capacity));
-        if (length != 0)
-			value.writeBytes(static_cast<const byte*>(data) + sizeof(capacity) + sizeof(length), static_cast<size_t>(length));
-		return sizeof(capacity) + sizeof(length) + static_cast<size_t>(length);
+        value.reset();
+		value.allocate(static_cast<size_t>(capacityCount));
+		if (sizeCount != 0)
+			value.writeBytes(static_cast<const byte*>(data) + sizeof(capacityCount) + sizeof(sizeCount), static_cast<size_t>(sizeCount));
+		return sizeof(capacityCount) + sizeof(sizeCount) + static_cast<size_t>(sizeCount);
     }
 }

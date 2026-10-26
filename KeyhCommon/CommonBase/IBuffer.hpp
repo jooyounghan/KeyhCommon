@@ -1,24 +1,37 @@
 namespace keyh
 {
 	template<typename T, typename Derived>
-	void IBufferBase<T, Derived>::write(const void* input, size_t size)
+	void IBufferBase<T, Derived>::write(const void* input, size_t count)
 	{
-		if (getAvailableSize() < size)
+		if (getAvailableSize() < count)
 		{
 			KEYH_ASSERT(false, "Not enough space in buffer to write data");
 			return;
 		}
 
-		if (size % sizeof(T) != 0)
-		{
-			KEYH_ASSERT(false, "Write size must be a multiple of the buffer element size.");
-			return;
-		}
-		if (size == 0)
+		if (count == 0)
 			return;
 		T* buffer = getBuffer();
-		memcpy(static_cast<void*>(buffer + _offset), input, size);
-		_offset += (size / sizeof(T));
+		memcpy(static_cast<void*>(buffer + _offset), input, count * sizeof(T));
+		_offset += count;
+		if constexpr (Derived::kIsString)
+			buffer[_offset] = T();
+	}
+
+	template<typename T, typename Derived>
+	void IBufferBase<T, Derived>::writeBytes(const void* input, size_t size)
+	{
+		if (size == 0)
+			return;
+		const size_t elementCount = size / sizeof(T) + (size % sizeof(T) != 0 ? 1 : 0);
+		if (getAvailableSize() < elementCount)
+		{
+			KEYH_ASSERT(false, "Not enough space in buffer to write the requested bytes.");
+			return;
+		}
+		T* buffer = getBuffer();
+		memcpy(static_cast<void*>(reinterpret_cast<char*>(buffer) + _offset * sizeof(T)), input, size);
+		_offset += elementCount;
 		if constexpr (Derived::kIsString)
 			buffer[_offset] = T();
 	}
@@ -26,7 +39,7 @@ namespace keyh
 	template<typename T, typename Derived>
 	void IBufferBase<T, Derived>::writeOne(T input)
 	{
-		if (getAvailableSize() < sizeof(T))
+		if (getAvailableSize() < 1)
 		{
 			KEYH_ASSERT(false, "Not enough space in buffer to write data");
 			return;
