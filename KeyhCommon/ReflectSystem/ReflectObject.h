@@ -32,6 +32,7 @@ className : public keyh::ReflectObject<className> \
 // Usage:  class REFLECTIVE(MyClass) { KEYH_REFLECT_DECLARE_BODY(MyClass) ... };
 #define KEYH_REFLECT_DECLARE_BODY(className) \
     friend class keyh::ReflectObject<className>;	\
+	friend class keyh::RuntimeBuilder;	\
 	public:	\
 		className();	\
 
