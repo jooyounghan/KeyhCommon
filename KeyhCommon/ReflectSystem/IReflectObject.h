@@ -17,6 +17,9 @@ namespace keyh
 
 	public:
 		virtual const ReflectMetaObject& getMetaObject() const = 0;
+		virtual void postDeserialize() {};
+
+	public:
 		const IReflectProperty* findProperty(const FlyweightStringA& propertyName) const;
 		const OwnerVector<IReflectProperty>& getReflectProperties() const;
 
