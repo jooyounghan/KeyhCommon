@@ -165,6 +165,8 @@
     <ClInclude Include="ReflectProperty.h" />
     <ClInclude Include="ReflectProperty.hpp" />
     <ClInclude Include="ReflectSerializer.h" />
+    <ClInclude Include="RuntimeBuilder.h" />
+    <ClInclude Include="RuntimeBuilder.hpp" />
     <ClInclude Include="ReflectSerializer.hpp" />
     <ClInclude Include="ReflectTypeRegistry.h" />
     <ClInclude Include="ReflectTypeRegistry.hpp" />
