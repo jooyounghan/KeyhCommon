@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "StrUtil.h"
 
 namespace keyh
@@ -18,7 +18,9 @@ namespace keyh
 		StaticString();
 		~StaticString();
 		static StaticString<wchar_t> toWideString(const StaticString<char>& value);
+		static StaticString<wchar_t> toWideString(const char* value, size_t length);
 		static StaticString<char> toNarrowString(const StaticString<wchar_t>& value);
+		static StaticString<char> toNarrowString(const wchar_t* value, size_t length);
 
 	public:
 		StaticString(const T* str);
