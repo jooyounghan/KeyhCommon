@@ -2,6 +2,14 @@
 #include "IReflectObject.h"
 #include "ReflectMetaObject.h"
 
+namespace keyh
+{
+	template<typename T>
+	class ReflectObject;
+
+	struct RuntimeBuilder;
+}
+
 // Expands to "ClassName : public keyh::ReflectObject<ClassName>".
 // Usage:  class REFLECTIVE(MyClass) { ... };
 #define REFLECTIVE(className) \
