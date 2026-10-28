@@ -237,7 +237,7 @@ namespace keyh
 		if (value == nullptr)
 		{
 			KEYH_ASSERT_DEV("false", "input string must not be null");
-			return StaticString<wchar_t>::Empty;
+			return StaticString<char>::Empty;
 		}
 
 		const int narrowLength = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value, static_cast<int>(length), nullptr, 0, nullptr, nullptr);
