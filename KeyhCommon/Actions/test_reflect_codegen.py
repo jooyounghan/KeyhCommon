@@ -36,6 +36,8 @@ class PackagedReflectCodegenTests(unittest.TestCase):
                 (root / config).mkdir(parents=True)
                 (root / config / f"{project}.lib").write_bytes(b"")
             (root / f"{project}.h").write_text("// Fixture header\n")
+            shutil.copyfile(REPO / "KeyhCommon" / project / f"{project}.props",
+                            root / f"{project}.props")
         (self.source / "KeyhCommon/CommonBase/CommonBase.natvis").write_text("")
         self.package = self.area / "installed triplet ! (test)"
         fixture = self.area / "install.cmake"
@@ -55,6 +57,10 @@ class PackagedReflectCodegenTests(unittest.TestCase):
             ["cmake", "-P", str(fixture)], capture_output=True, text=True,
         )
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        for project in ("CommonBase", "ReflectSystem", "AppSystem"):
+            installed_props = (self.package / "include/keyhcommon" /
+                               project.lower() / f"{project}.props")
+            self.assertTrue(installed_props.is_file())
         shutil.rmtree(self.source)
         self.tools = self.package / "tools/keyhcommon"
         self.project = self.area / "consumer project ! (test)"
