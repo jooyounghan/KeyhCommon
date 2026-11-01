@@ -156,11 +156,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineManager.h" />
+    <ClInclude Include="ResourceID.h" />
     <ClInclude Include="ResourcePathManager.h" />
     <ClInclude Include="AppSystemPch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandLineManager.cpp" />
+    <ClCompile Include="ResourceID.cpp" />
     <ClCompile Include="ResourcePathManager.cpp" />
     <ClCompile Include="AppSystemPch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
