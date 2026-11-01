@@ -75,6 +75,11 @@ foreach(project IN ITEMS CommonBase ReflectSystem AppSystem)
         DESTINATION "${CURRENT_PACKAGES_DIR}/include/keyhcommon/${project_folder_name}"
     )
 
+    file(INSTALL
+        "${KEYHCOMMON_PROJECT_ROOT}/${project}/${project}.props"
+        DESTINATION "${CURRENT_PACKAGES_DIR}/include/keyhcommon/${project_folder_name}"
+    )
+
     file(GLOB_RECURSE project_reflect_headers
         LIST_DIRECTORIES false
         "${KEYHCOMMON_PROJECT_ROOT}/${project}/generated/*.reflect_generated.inl"

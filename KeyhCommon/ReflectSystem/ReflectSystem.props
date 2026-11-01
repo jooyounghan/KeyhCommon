@@ -3,6 +3,8 @@
   <Import Project="..\CommonBase\CommonBase.props" Condition="'$(_CommonBasePropsImported)' != 'true'" />
   <PropertyGroup>
     <_ReflectSystemPropsImported>true</_ReflectSystemPropsImported>
+    <KeyhCommonReflectCodegen Condition="'$(KeyhCommonReflectCodegen)' == '' and Exists('$(MSBuildThisFileDirectory)..\Tools\run_reflect_codegen.bat')">$(MSBuildThisFileDirectory)..\Tools\run_reflect_codegen.bat</KeyhCommonReflectCodegen>
+    <KeyhCommonReflectCodegen Condition="'$(KeyhCommonReflectCodegen)' == ''">$(MSBuildThisFileDirectory)..\..\..\tools\keyhcommon\run_reflect_codegen.bat</KeyhCommonReflectCodegen>
     <PublicIncludeDirectories>$(MSBuildThisFileDirectory);$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -12,7 +14,7 @@
       <ForcedIncludeFiles>%(ForcedIncludeFiles);ReflectSystemPch.h;ReflectionUtil.h;IReflectProperty.h;IReflectObject.h;ReflectMetaObject.h;ReflectObject.h;ReflectProperty.h;ReflectPropertyPolicy.h;ReflectSerializer.h;RuntimeBuilder.h;MacroCommon.h</ForcedIncludeFiles>
     </ClCompile>
     <PreBuildEvent Condition="'$(KeyhCommonSkipReflectCodegen)' != 'true'">
-      <Command>call "$(MSBuildThisFileDirectory)..\Tools\run_reflect_codegen.bat" "$(ProjectDir)."</Command>
+      <Command>call "$(KeyhCommonReflectCodegen)" "$(ProjectDir)."</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
 </Project>

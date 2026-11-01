@@ -54,6 +54,13 @@ target_link_libraries(sample-app PRIVATE KeyhCommon::KeyhCommon)
 
 You can also link `KeyhCommon::CommonBase`, `KeyhCommon::ReflectSystem`, or `KeyhCommon::AppSystem` individually.
 
+For MSBuild projects, the package installs `CommonBase.props`,
+`ReflectSystem.props`, and `AppSystem.props` beside their respective headers
+under `include/keyhcommon/`. Import the installed `AppSystem.props` to apply
+all three projects' include directories, preprocessor definitions, and forced
+includes. A consumer that already generates reflection code should set
+`KeyhCommonSkipReflectCodegen=true` before importing it.
+
 ## 4. Publish an update
 
 Publication is handled by `.github/workflows/publish-vcpkg.yml`, **not by a
