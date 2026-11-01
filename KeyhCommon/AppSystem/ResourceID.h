@@ -6,6 +6,9 @@ namespace keyh
     struct ResourceID
     {
     public:
+		ResourceID(size_t value = kInvalidID);
+
+    public:
         static constexpr size_t kInvalidID = kInvalidSizeT;
 
         inline constexpr bool isValid() const { return _value != kInvalidID; }
