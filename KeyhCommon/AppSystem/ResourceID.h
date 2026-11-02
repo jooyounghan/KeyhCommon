@@ -11,8 +11,12 @@ namespace keyh
     public:
         static constexpr size_t kInvalidID = kInvalidSizeT;
 
-        inline constexpr bool isValid() const { return _value != kInvalidID; }
-        inline constexpr explicit operator size_t() const { return _value; }
+    public:
+        inline bool isValid() const { return _value != kInvalidID; }
+
+    public:
+        inline explicit operator size_t() const { return _value; }
+        inline bool operator==(const ResourceID<Tag>& other) const { return _value == other._value; }
 
     private:
         size_t _value = kInvalidID;
