@@ -6,7 +6,8 @@ namespace keyh
     struct ResourceID
     {
     public:
-		ResourceID(size_t value = kInvalidID);
+		ResourceID(size_t value = kInvalidID)
+            : _value(value) {}
 
     public:
         static constexpr size_t kInvalidID = kInvalidSizeT;
