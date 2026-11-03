@@ -144,9 +144,9 @@ namespace keyh
 				const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
 				if (!typeName.empty())
 				{
-					const uint8 typed = 2;
+					const ReflectObjectMarker marker = ReflectObjectMarker::ObjectWithRegisteredType;
 					const uint64 nameSize = typeName.size();
-					buffer->writeBytes(&typed, sizeof(typed));
+					buffer->writeBytes(&marker, sizeof(marker));
 					buffer->writeBytes(&nameSize, sizeof(nameSize));
 					buffer->writeBytes(typeName.c_str(), typeName.size());
 					ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
@@ -154,8 +154,8 @@ namespace keyh
 				}
 			}
 		}
-		const uint8 present = element != nullptr ? 1 : 0;
-		buffer->writeBytes(&present, sizeof(present));
+		const ReflectObjectMarker marker = element != nullptr ? ReflectObjectMarker::Object : ReflectObjectMarker::Null;
+		buffer->writeBytes(&marker, sizeof(marker));
 		if (element != nullptr)
 			ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
 	}
@@ -165,19 +165,21 @@ namespace keyh
 	{
 		if (data == nullptr || size == 0)
 			return kInvalidSizeT;
-		const uint8 present = *static_cast<const uint8*>(data);
-		if (present > 2)
+		const ReflectObjectMarker marker = static_cast<ReflectObjectMarker>(*static_cast<const uint8*>(data));
+		if (marker != ReflectObjectMarker::Null
+			&& marker != ReflectObjectMarker::Object
+			&& marker != ReflectObjectMarker::ObjectWithRegisteredType)
 			return kInvalidSizeT;
-		if (present == 0)
+		if (marker == ReflectObjectMarker::Null)
 		{
 			value = nullptr;
-			return sizeof(present);
+			return sizeof(uint8);
 		}
-		size_t offset = sizeof(present);
+		size_t offset = sizeof(uint8);
 		Ptr<ElementType> result;
 		if constexpr (IsReflectObject_v<ElementType>)
 		{
-			if (present == 2)
+			if (marker == ReflectObjectMarker::ObjectWithRegisteredType)
 			{
 				uint64 nameSize = 0;
 				if (size - offset < sizeof(nameSize))
@@ -195,7 +197,7 @@ namespace keyh
 		}
 		else
 		{
-			if (present != 1)
+			if (marker != ReflectObjectMarker::Object)
 				return kInvalidSizeT;
 			result = makePtr<ElementType>();
 		}
@@ -495,9 +497,9 @@ namespace keyh
 					const StringViewA typeName = ReflectTypeRegistry<ElementType>::findName(*element);
 					if (!typeName.empty())
 					{
-						const uint8 typed = 2;
+						const ReflectObjectMarker marker = ReflectObjectMarker::ObjectWithRegisteredType;
 						const uint64 nameSize = typeName.size();
-						buffer->writeBytes(&typed, sizeof(typed));
+						buffer->writeBytes(&marker, sizeof(marker));
 						buffer->writeBytes(&nameSize, sizeof(nameSize));
 						buffer->writeBytes(typeName.c_str(), typeName.size());
 						ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
@@ -505,8 +507,8 @@ namespace keyh
 					}
 				}
 			}
-			const uint8 present = element != nullptr ? 1 : 0;
-			buffer->writeBytes(&present, sizeof(present));
+			const ReflectObjectMarker marker = element != nullptr ? ReflectObjectMarker::Object : ReflectObjectMarker::Null;
+			buffer->writeBytes(&marker, sizeof(marker));
 			if (element != nullptr)
 			{
 				ReflectPropertyPolicy<ElementType>::serializeToBinary(buffer, *element);
@@ -527,10 +529,12 @@ namespace keyh
 		{
 			if (offset >= size)
 				return kInvalidSizeT;
-			const uint8 present = static_cast<const byte*>(data)[offset++];
-			if (present > 2)
+			const ReflectObjectMarker marker = static_cast<ReflectObjectMarker>(static_cast<const byte*>(data)[offset++]);
+			if (marker != ReflectObjectMarker::Null
+				&& marker != ReflectObjectMarker::Object
+				&& marker != ReflectObjectMarker::ObjectWithRegisteredType)
 				return kInvalidSizeT;
-			if (present == 0)
+			if (marker == ReflectObjectMarker::Null)
 			{
 				result.push_back(Ptr<ElementType>(nullptr));
 				continue;
@@ -539,7 +543,7 @@ namespace keyh
 			if constexpr (IsReflectObject_v<ElementType>)
 			{
 				Ptr<ElementType> owned;
-				if (present == 2)
+				if (marker == ReflectObjectMarker::ObjectWithRegisteredType)
 				{
 					uint64 nameSize = 0;
 					if (size - offset < sizeof(nameSize))
@@ -561,7 +565,7 @@ namespace keyh
 			}
 			else
 			{
-				if (present != 1)
+				if (marker != ReflectObjectMarker::Object)
 					return kInvalidSizeT;
 				element = result.template emplace_back<ElementType>();
 			}

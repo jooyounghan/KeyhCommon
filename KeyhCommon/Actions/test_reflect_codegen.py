@@ -223,6 +223,8 @@ class PackagedReflectCodegenTests(unittest.TestCase):
         for name in ('Base', 'Child', 'Leaf', 'Empty'):
             self.assertIn(f'ReflectObject<{name}>::initializeMetaObject();', declarations)
             self.assertIn(f'ReflectObject<{name}>::initializeMetaObject()', definitions)
+        self.assertIn('ReflectParentType<Child> { using Type = Base; };', declarations)
+        self.assertIn('ReflectParentType<Leaf> { using Type = Child; };', declarations)
         self.assertIn('ReflectMetaObject metaObject = ReflectObject<Base>::initializeMetaObject().clone();', definitions)
         self.assertIn('ReflectMetaObject metaObject = ReflectObject<Child>::initializeMetaObject().clone();', definitions)
         self.assert_success(self.run_python())

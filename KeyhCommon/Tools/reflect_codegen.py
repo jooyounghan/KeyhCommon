@@ -466,8 +466,10 @@ def generate_inl_content(all_classes, all_enums, source_filename, output_filenam
     if mode == 'header':
         for class_name, properties, _, base_name in all_classes:
             lines.extend(['namespace keyh', '{',
-                          f'\ttemplate<> ReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject();',
-                          '}', ''])
+                          f'\ttemplate<> ReflectMetaObject ReflectObject<{class_name}>::initializeMetaObject();'])
+            if base_name:
+                lines.append(f'\ttemplate<> struct ReflectParentType<{class_name}> {{ using Type = {base_name}; }};')
+            lines.extend(['}', ''])
         return '\n'.join(lines)
 
     for class_name, properties, _, base_name in all_classes:

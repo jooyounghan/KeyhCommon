@@ -1,6 +1,13 @@
 ﻿#pragma once
 namespace keyh
 {
+	enum class ReflectObjectMarker : uint8
+	{
+		Null = 0,
+		Object = 1,
+		ObjectWithRegisteredType = 2
+	};
+
 	class IReflectObject;
 
 	// Plain function-pointer types used for reflection property accessors.

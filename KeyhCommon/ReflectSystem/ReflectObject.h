@@ -28,7 +28,7 @@ className : public keyh::ReflectObject<className> \
     className::className() { _objectName = #className; } \
     const keyh::ReflectMetaObject& className::getMetaObject() const \
     { static keyh::ReflectMetaObject metaObject = keyh::ReflectObject<className>::initializeMetaObject(); return metaObject; } \
-    namespace { const bool sKeyhReflectRegistered_##className = keyh::ReflectTypeRegistry<baseName>::template registerType<className>(#className); }
+    namespace { const bool sKeyhReflectRegistered_##className = keyh::ReflectAncestorRegistrar<className, baseName>::registerType(#className); }
 
 // Place this macro once inside the body of every REFLECTIVE class so that
 // keyh::ReflectObject<ClassName>::initializeMetaObject() (and the lambdas
