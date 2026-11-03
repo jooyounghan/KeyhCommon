@@ -81,6 +81,12 @@ namespace keyh
 		using type = const Value*;
 	};
 
+	template<typename ReturnType, typename... Args>
+	struct HashConstFindValue<ReturnType (*)(Args...)>
+	{
+		using type = ReturnType (*)(Args...);
+	};
+
 	template<typename Value>
 	using HashConstFindValue_t = typename HashConstFindValue<Value>::type;
 
