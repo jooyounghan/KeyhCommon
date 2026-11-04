@@ -1,8 +1,6 @@
-﻿#pragma once
+#pragma once
 
-#include <cassert>
-#include <cstdlib>
-
+#include "AssertUtil.h"
 #include "CommonCore.h"
 
 //#define KEYH_SCALAR_VECTOR_USE_SIMD
@@ -18,69 +16,57 @@
 
 namespace keyh
 {
-    [[noreturn]] inline void scalarVectorIndexOutOfBounds() noexcept
-    {
-        assert(false && "scalar vector index out of bounds");
-        std::abort();
-
-#if defined(_MSC_VER)
-        __assume(0);
-#elif defined(__GNUC__) || defined(__clang__)
-        __builtin_unreachable();
-#endif
-    }
-
     struct float2
     {
         union
         {
-            struct { float x; float y; };
-            float e[2];
+            struct { float _x; float _y; };
+            float _value[2];
         };
 
-        constexpr float2() noexcept : x(0.0f), y(0.0f) {}
+        constexpr float2() noexcept : _x(0.0f), _y(0.0f) {}
         constexpr explicit float2(float value) noexcept
-            : x(value)
-            , y(value)
+            : _x(value)
+            , _y(value)
         {
         }
 
         constexpr float2(float xValue, float yValue) noexcept
-            : x(xValue)
-            , y(yValue)
+            : _x(xValue)
+            , _y(yValue)
         {
         }
 
         float& operator[](size_t index) noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
         float2 operator+(const float2& other) const noexcept
         {
-            return float2(x + other.x, y + other.y);
+            return float2(_x + other._x, _y + other._y);
         }
 
         float2 operator-(const float2& other) const noexcept
         {
-            return float2(x - other.x, y - other.y);
+            return float2(_x - other._x, _y - other._y);
         }
 
         float2 operator*(const float2& other) const noexcept
         {
-            return float2(x * other.x, y * other.y);
+            return float2(_x * other._x, _y * other._y);
         }
 
         float2 operator/(const float2& other) const noexcept
         {
-            return float2(x / other.x, y / other.y);
+            return float2(_x / other._x, _y / other._y);
         }
 
         float2 operator+(float scalar) const noexcept
@@ -153,12 +139,12 @@ namespace keyh
 
         float2 operator-() const noexcept
         {
-            return float2(-x, -y);
+            return float2(-_x, -_y);
         }
 
         bool operator==(const float2& other) const noexcept
         {
-            return x == other.x && y == other.y;
+            return _x == other._x && _y == other._y;
         }
 
         bool operator!=(const float2& other) const noexcept
@@ -191,55 +177,55 @@ namespace keyh
     {
         union
         {
-            struct { float x; float y; float z; };
-            float e[3];
+            struct { float _x; float _y; float _z; };
+            float _value[3];
         };
 
-        constexpr float3() noexcept : x(0.0f), y(0.0f), z(0.0f) {}
+        constexpr float3() noexcept : _x(0.0f), _y(0.0f), _z(0.0f) {}
         constexpr explicit float3(float value) noexcept
-            : x(value)
-            , y(value)
-            , z(value)
+            : _x(value)
+            , _y(value)
+            , _z(value)
         {
         }
 
         constexpr float3(float xValue, float yValue, float zValue) noexcept
-            : x(xValue)
-            , y(yValue)
-            , z(zValue)
+            : _x(xValue)
+            , _y(yValue)
+            , _z(zValue)
         {
         }
 
         float& operator[](size_t index) noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
         float3 operator+(const float3& other) const noexcept
         {
-            return float3(x + other.x, y + other.y, z + other.z);
+            return float3(_x + other._x, _y + other._y, _z + other._z);
         }
 
         float3 operator-(const float3& other) const noexcept
         {
-            return float3(x - other.x, y - other.y, z - other.z);
+            return float3(_x - other._x, _y - other._y, _z - other._z);
         }
 
         float3 operator*(const float3& other) const noexcept
         {
-            return float3(x * other.x, y * other.y, z * other.z);
+            return float3(_x * other._x, _y * other._y, _z * other._z);
         }
 
         float3 operator/(const float3& other) const noexcept
         {
-            return float3(x / other.x, y / other.y, z / other.z);
+            return float3(_x / other._x, _y / other._y, _z / other._z);
         }
 
         float3 operator+(float scalar) const noexcept
@@ -312,25 +298,25 @@ namespace keyh
 
         float3 operator-() const noexcept
         {
-            return float3(-x, -y, -z);
+            return float3(-_x, -_y, -_z);
         }
 
         float dot(const float3& other) const noexcept
         {
-            return x * other.x + y * other.y + z * other.z;
+            return _x * other._x + _y * other._y + _z * other._z;
         }
 
         float3 cross(const float3& other) const noexcept
         {
             return float3(
-                y * other.z - z * other.y,
-                z * other.x - x * other.z,
-                x * other.y - y * other.x);
+                _y * other._z - _z * other._y,
+                _z * other._x - _x * other._z,
+                _x * other._y - _y * other._x);
         }
 
         bool operator==(const float3& other) const noexcept
         {
-            return x == other.x && y == other.y && z == other.z;
+            return _x == other._x && _y == other._y && _z == other._z;
         }
 
         bool operator!=(const float3& other) const noexcept
@@ -363,55 +349,55 @@ namespace keyh
     {
         union
         {
-            struct { float x; float y; float z; float w; };
-            float e[4];
+            struct { float _x; float _y; float _z; float _w; };
+            float _value[4];
         };
 
-        constexpr float4() noexcept : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
+        constexpr float4() noexcept : _x(0.0f), _y(0.0f), _z(0.0f), _w(0.0f) {}
         constexpr explicit float4(float value) noexcept
-            : x(value)
-            , y(value)
-            , z(value)
-            , w(value)
+            : _x(value)
+            , _y(value)
+            , _z(value)
+            , _w(value)
         {
         }
 
         constexpr float4(float xValue, float yValue, float zValue, float wValue) noexcept
-            : x(xValue)
-            , y(yValue)
-            , z(zValue)
-            , w(wValue)
+            : _x(xValue)
+            , _y(yValue)
+            , _z(zValue)
+            , _w(wValue)
         {
         }
 
         constexpr float4(const float3& xyzValue, float wValue) noexcept
-            : x(xyzValue.x)
-            , y(xyzValue.y)
-            , z(xyzValue.z)
-            , w(wValue)
+            : _x(xyzValue._x)
+            , _y(xyzValue._y)
+            , _z(xyzValue._z)
+            , _w(wValue)
         {
         }
 
         float& operator[](size_t index) noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
         const float& operator[](size_t index) const noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
         float4 operator+(const float4& other) const noexcept
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
             float4 result;
-            _mm_store_ps(&result.x, _mm_add_ps(_mm_load_ps(&x), _mm_load_ps(&other.x)));
+            _mm_store_ps(&result._x, _mm_add_ps(_mm_load_ps(&_x), _mm_load_ps(&other._x)));
             return result;
 #else
-            return float4(x + other.x, y + other.y, z + other.z, w + other.w);
+            return float4(_x + other._x, _y + other._y, _z + other._z, _w + other._w);
 #endif
         }
 
@@ -419,10 +405,10 @@ namespace keyh
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
             float4 result;
-            _mm_store_ps(&result.x, _mm_sub_ps(_mm_load_ps(&x), _mm_load_ps(&other.x)));
+            _mm_store_ps(&result._x, _mm_sub_ps(_mm_load_ps(&_x), _mm_load_ps(&other._x)));
             return result;
 #else
-            return float4(x - other.x, y - other.y, z - other.z, w - other.w);
+            return float4(_x - other._x, _y - other._y, _z - other._z, _w - other._w);
 #endif
         }
 
@@ -430,10 +416,10 @@ namespace keyh
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
             float4 result;
-            _mm_store_ps(&result.x, _mm_mul_ps(_mm_load_ps(&x), _mm_load_ps(&other.x)));
+            _mm_store_ps(&result._x, _mm_mul_ps(_mm_load_ps(&_x), _mm_load_ps(&other._x)));
             return result;
 #else
-            return float4(x * other.x, y * other.y, z * other.z, w * other.w);
+            return float4(_x * other._x, _y * other._y, _z * other._z, _w * other._w);
 #endif
         }
 
@@ -441,10 +427,10 @@ namespace keyh
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
             float4 result;
-            _mm_store_ps(&result.x, _mm_div_ps(_mm_load_ps(&x), _mm_load_ps(&other.x)));
+            _mm_store_ps(&result._x, _mm_div_ps(_mm_load_ps(&_x), _mm_load_ps(&other._x)));
             return result;
 #else
-            return float4(x / other.x, y / other.y, z / other.z, w / other.w);
+            return float4(_x / other._x, _y / other._y, _z / other._z, _w / other._w);
 #endif
         }
 
@@ -519,19 +505,19 @@ namespace keyh
         float4 operator-() const noexcept
         {
 #if KEYH_SCALAR_VECTOR_SIMD_ENABLED
-            const __m128 result = _mm_xor_ps(_mm_setr_ps(x, y, z, w), _mm_set1_ps(-0.0f));
+            const __m128 result = _mm_xor_ps(_mm_setr_ps(_x, _y, _z, _w), _mm_set1_ps(-0.0f));
 
             float values[4];
             _mm_storeu_ps(values, result);
             return float4(values[0], values[1], values[2], values[3]);
 #else
-            return float4(-x, -y, -z, -w);
+            return float4(-_x, -_y, -_z, -_w);
 #endif
         }
 
         bool operator==(const float4& other) const noexcept
         {
-            return x == other.x && y == other.y && z == other.z && w == other.w;
+            return _x == other._x && _y == other._y && _z == other._z && _w == other._w;
         }
 
         bool operator!=(const float4& other) const noexcept
@@ -564,27 +550,27 @@ namespace keyh
     {
         union
         {
-            struct { int32 x; int32 y; };
-            int32 e[2];
+            struct { int32 _x; int32 _y; };
+            int32 _value[2];
         };
 
-        constexpr int2() noexcept : x(0), y(0) {}
-        constexpr explicit int2(int32 value) noexcept : x(value), y(value) {}
-        constexpr int2(int32 xValue, int32 yValue) noexcept : x(xValue), y(yValue) {}
+        constexpr int2() noexcept : _x(0), _y(0) {}
+        constexpr explicit int2(int32 value) noexcept : _x(value), _y(value) {}
+        constexpr int2(int32 xValue, int32 yValue) noexcept : _x(xValue), _y(yValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
-        bool operator==(const int2& other) const noexcept { return x == other.x && y == other.y; }
+        bool operator==(const int2& other) const noexcept { return _x == other._x && _y == other._y; }
         bool operator!=(const int2& other) const noexcept { return !(*this == other); }
     };
 
@@ -592,27 +578,27 @@ namespace keyh
     {
         union
         {
-            struct { int32 x; int32 y; int32 z; };
-            int32 e[3];
+            struct { int32 _x; int32 _y; int32 _z; };
+            int32 _value[3];
         };
 
-        constexpr int3() noexcept : x(0), y(0), z(0) {}
-        constexpr explicit int3(int32 value) noexcept : x(value), y(value), z(value) {}
-        constexpr int3(int32 xValue, int32 yValue, int32 zValue) noexcept : x(xValue), y(yValue), z(zValue) {}
+        constexpr int3() noexcept : _x(0), _y(0), _z(0) {}
+        constexpr explicit int3(int32 value) noexcept : _x(value), _y(value), _z(value) {}
+        constexpr int3(int32 xValue, int32 yValue, int32 zValue) noexcept : _x(xValue), _y(yValue), _z(zValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
-        bool operator==(const int3& other) const noexcept { return x == other.x && y == other.y && z == other.z; }
+        bool operator==(const int3& other) const noexcept { return _x == other._x && _y == other._y && _z == other._z; }
         bool operator!=(const int3& other) const noexcept { return !(*this == other); }
     };
 
@@ -620,27 +606,27 @@ namespace keyh
     {
         union
         {
-            struct { int32 x; int32 y; int32 z; int32 w; };
-            int32 e[4];
+            struct { int32 _x; int32 _y; int32 _z; int32 _w; };
+            int32 _value[4];
         };
 
-        constexpr int4() noexcept : x(0), y(0), z(0), w(0) {}
-        constexpr explicit int4(int32 value) noexcept : x(value), y(value), z(value), w(value) {}
-        constexpr int4(int32 xValue, int32 yValue, int32 zValue, int32 wValue) noexcept : x(xValue), y(yValue), z(zValue), w(wValue) {}
+        constexpr int4() noexcept : _x(0), _y(0), _z(0), _w(0) {}
+        constexpr explicit int4(int32 value) noexcept : _x(value), _y(value), _z(value), _w(value) {}
+        constexpr int4(int32 xValue, int32 yValue, int32 zValue, int32 wValue) noexcept : _x(xValue), _y(yValue), _z(zValue), _w(wValue) {}
 
         int32& operator[](size_t index) noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
         const int32& operator[](size_t index) const noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
-        bool operator==(const int4& other) const noexcept { return x == other.x && y == other.y && z == other.z && w == other.w; }
+        bool operator==(const int4& other) const noexcept { return _x == other._x && _y == other._y && _z == other._z && _w == other._w; }
         bool operator!=(const int4& other) const noexcept { return !(*this == other); }
     };
 
@@ -648,27 +634,27 @@ namespace keyh
     {
         union
         {
-            struct { uint32 x; uint32 y; };
-            uint32 e[2];
+            struct { uint32 _x; uint32 _y; };
+            uint32 _value[2];
         };
 
-        constexpr uint2() noexcept : x(0), y(0) {}
-        constexpr explicit uint2(uint32 value) noexcept : x(value), y(value) {}
-        constexpr uint2(uint32 xValue, uint32 yValue) noexcept : x(xValue), y(yValue) {}
+        constexpr uint2() noexcept : _x(0), _y(0) {}
+        constexpr explicit uint2(uint32 value) noexcept : _x(value), _y(value) {}
+        constexpr uint2(uint32 xValue, uint32 yValue) noexcept : _x(xValue), _y(yValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            if (index >= 2) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 2, "Scalar vector index must be less than 2.");
+            return _value[index];
         }
 
-        bool operator==(const uint2& other) const noexcept { return x == other.x && y == other.y; }
+        bool operator==(const uint2& other) const noexcept { return _x == other._x && _y == other._y; }
         bool operator!=(const uint2& other) const noexcept { return !(*this == other); }
     };
 
@@ -676,27 +662,27 @@ namespace keyh
     {
         union
         {
-            struct { uint32 x; uint32 y; uint32 z; };
-            uint32 e[3];
+            struct { uint32 _x; uint32 _y; uint32 _z; };
+            uint32 _value[3];
         };
 
-        constexpr uint3() noexcept : x(0), y(0), z(0) {}
-        constexpr explicit uint3(uint32 value) noexcept : x(value), y(value), z(value) {}
-        constexpr uint3(uint32 xValue, uint32 yValue, uint32 zValue) noexcept : x(xValue), y(yValue), z(zValue) {}
+        constexpr uint3() noexcept : _x(0), _y(0), _z(0) {}
+        constexpr explicit uint3(uint32 value) noexcept : _x(value), _y(value), _z(value) {}
+        constexpr uint3(uint32 xValue, uint32 yValue, uint32 zValue) noexcept : _x(xValue), _y(yValue), _z(zValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            if (index >= 3) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
+            return _value[index];
         }
 
-        bool operator==(const uint3& other) const noexcept { return x == other.x && y == other.y && z == other.z; }
+        bool operator==(const uint3& other) const noexcept { return _x == other._x && _y == other._y && _z == other._z; }
         bool operator!=(const uint3& other) const noexcept { return !(*this == other); }
     };
 
@@ -704,27 +690,27 @@ namespace keyh
     {
         union
         {
-            struct { uint32 x; uint32 y; uint32 z; uint32 w; };
-            uint32 e[4];
+            struct { uint32 _x; uint32 _y; uint32 _z; uint32 _w; };
+            uint32 _value[4];
         };
 
-        constexpr uint4() noexcept : x(0), y(0), z(0), w(0) {}
-        constexpr explicit uint4(uint32 value) noexcept : x(value), y(value), z(value), w(value) {}
-        constexpr uint4(uint32 xValue, uint32 yValue, uint32 zValue, uint32 wValue) noexcept : x(xValue), y(yValue), z(zValue), w(wValue) {}
+        constexpr uint4() noexcept : _x(0), _y(0), _z(0), _w(0) {}
+        constexpr explicit uint4(uint32 value) noexcept : _x(value), _y(value), _z(value), _w(value) {}
+        constexpr uint4(uint32 xValue, uint32 yValue, uint32 zValue, uint32 wValue) noexcept : _x(xValue), _y(yValue), _z(zValue), _w(wValue) {}
 
         uint32& operator[](size_t index) noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
         const uint32& operator[](size_t index) const noexcept
         {
-            if (index >= 4) scalarVectorIndexOutOfBounds();
-            return e[index];
+            KEYH_ASSERT_DEV(index < 4, "Scalar vector index must be less than 4.");
+            return _value[index];
         }
 
-        bool operator==(const uint4& other) const noexcept { return x == other.x && y == other.y && z == other.z && w == other.w; }
+        bool operator==(const uint4& other) const noexcept { return _x == other._x && _y == other._y && _z == other._z && _w == other._w; }
         bool operator!=(const uint4& other) const noexcept { return !(*this == other); }
     };
 
