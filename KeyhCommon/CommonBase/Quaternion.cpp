@@ -1,5 +1,6 @@
 ﻿#include "CommonBasePch.h"
 #include "Quaternion.h"
+#include "MathUtil.h"
 
 namespace keyh
 {

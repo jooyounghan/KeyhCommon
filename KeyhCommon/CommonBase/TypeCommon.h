@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <cfloat>
 #include <cstddef>
 
 namespace keyh
@@ -18,4 +19,6 @@ namespace keyh
 	constexpr uint32 kInvalidUint32 = static_cast<uint32>(-1);
 	constexpr uint64 kInvalidUint64 = static_cast<uint64>(-1);
 	constexpr size_t kInvalidSizeT = static_cast<size_t>(-1);
+	constexpr float kFloatMinValue = -FLT_MAX;
+	constexpr float kFloatMaxValue = FLT_MAX;
 }

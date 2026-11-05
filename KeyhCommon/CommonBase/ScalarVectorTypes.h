@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "AssertUtil.h"
 #include "CommonCore.h"
@@ -196,6 +196,11 @@ namespace keyh
         {
         }
 
+        static const float3 Zero;
+        static const float3 One;
+        static const float3 Min;
+        static const float3 Max;
+
         float& operator[](size_t index) noexcept
         {
             KEYH_ASSERT_DEV(index < 3, "Scalar vector index must be less than 3.");
@@ -382,6 +387,11 @@ namespace keyh
             , _w(wValue)
         {
         }
+
+        static const float4 Zero;
+        static const float4 One;
+        static const float4 Min;
+        static const float4 Max;
 
         float lengthSquared() const noexcept;
         float length() const noexcept;
@@ -733,4 +743,14 @@ namespace keyh
     {
         return left.cross(right);
     }
+
+    inline constexpr float3 float3::Zero{ 0.0f };
+    inline constexpr float3 float3::One{ 1.0f };
+    inline constexpr float3 float3::Min{ kFloatMinValue };
+    inline constexpr float3 float3::Max{ kFloatMaxValue };
+
+    inline constexpr float4 float4::Zero{ 0.0f };
+    inline constexpr float4 float4::One{ 1.0f };
+    inline constexpr float4 float4::Min{ kFloatMinValue };
+    inline constexpr float4 float4::Max{ kFloatMaxValue };
 }

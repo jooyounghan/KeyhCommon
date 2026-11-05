@@ -1,6 +1,4 @@
 ﻿#pragma once
-
-#include "MathUtil.h"
 #include "ScalarVectorTypes.h"
 
 namespace keyh

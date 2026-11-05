@@ -230,6 +230,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="ArenaAllocator.h" />
     <ClInclude Include="ArenaAllocator.hpp" />
     <ClInclude Include="AssertUtil.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="WeakPtr.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="ArenaAllocator.cpp" />
     <ClCompile Include="AssertUtil.cpp" />
     <ClCompile Include="CircularBufferUtil.cpp" />

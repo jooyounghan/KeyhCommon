@@ -1,9 +1,10 @@
 ﻿#pragma once
-
-#include "Quaternion.h"
+#include "ScalarVectorTypes.h"
 
 namespace keyh
 {
+    struct Quaternion;
+
     struct Matrix
     {
         union
