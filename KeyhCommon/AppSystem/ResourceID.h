@@ -2,9 +2,17 @@
 
 namespace keyh
 {
+#define RESOURCE_TAG(TagName) \
+    struct TagName : ResourceTag
+
+    struct ResourceTag
+    {
+    };
+
     template<typename Tag>
     struct ResourceID
     {
+        static_assert(IsDerivedFrom_v<Tag, ResourceTag> && !IsSame_v<Tag, ResourceTag>, "ResourceID<Tag> requires Tag to derive from ResourceTag.");
     public:
 		ResourceID(size_t value = kInvalidID)
             : _value(value) {}
