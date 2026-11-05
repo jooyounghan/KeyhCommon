@@ -5,6 +5,7 @@
 #include <cstring>
 #include <cstddef>
 #include <stdio.h>
+#include <math.h>
 #pragma endregion
 
 #pragma region String

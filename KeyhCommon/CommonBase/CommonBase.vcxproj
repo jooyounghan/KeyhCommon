@@ -271,9 +271,11 @@
     <ClInclude Include="MathUtil.hpp" />
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
+    <ClInclude Include="Matrix.h" />
     <ClInclude Include="CommonBasePch.h" />
     <ClInclude Include="Ptr.h" />
     <ClInclude Include="Ptr.hpp" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Queue.hpp" />
     <ClInclude Include="RefPtr.h" />
@@ -326,6 +328,7 @@
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="MemoryUtil.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="CommonBasePch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -335,6 +338,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='DevRelease|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Ptr.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="RefPtr.cpp" />
     <ClCompile Include="ScalarVectorTypes.cpp" />

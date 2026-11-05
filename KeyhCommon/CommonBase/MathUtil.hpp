@@ -1,4 +1,4 @@
-namespace keyh
+﻿namespace keyh
 {
     template<typename T, typename Pred>
     constexpr T MathUtil::max(T left, TypeIdentity_t<T> right, Pred pred) noexcept
@@ -34,6 +34,37 @@ namespace keyh
     constexpr T MathUtil::saturate(T input) noexcept
     {
         return MathUtil::clamp(input, static_cast<T>(0), static_cast<T>(1));
+    }
+
+    template<typename T>
+    constexpr bool MathUtil::isEqual(T left, TypeIdentity_t<T> right, T epsilon) noexcept
+    {
+        const T difference = left - right;
+        return difference >= -epsilon && difference <= epsilon;
+    }
+
+    template<typename T>
+    constexpr bool MathUtil::isLess(T left, TypeIdentity_t<T> right, T epsilon) noexcept
+    {
+        return left < right - epsilon;
+    }
+
+    template<typename T>
+    constexpr bool MathUtil::isLessEqual(T left, TypeIdentity_t<T> right, T epsilon) noexcept
+    {
+        return left <= right + epsilon;
+    }
+
+    template<typename T>
+    constexpr bool MathUtil::isGreater(T left, TypeIdentity_t<T> right, T epsilon) noexcept
+    {
+        return left > right + epsilon;
+    }
+
+    template<typename T>
+    constexpr bool MathUtil::isGreaterEqual(T left, TypeIdentity_t<T> right, T epsilon) noexcept
+    {
+        return left >= right - epsilon;
     }
 
     template<typename T>

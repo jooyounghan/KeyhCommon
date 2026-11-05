@@ -306,6 +306,11 @@ namespace keyh
             return _x * other._x + _y * other._y + _z * other._z;
         }
 
+        float lengthSquared() const noexcept;
+        float length() const noexcept;
+        float3 sin() const noexcept;
+        float3 cos() const noexcept;
+
         float3 cross(const float3& other) const noexcept
         {
             return float3(
@@ -377,6 +382,11 @@ namespace keyh
             , _w(wValue)
         {
         }
+
+        float lengthSquared() const noexcept;
+        float length() const noexcept;
+        float4 sin() const noexcept;
+        float4 cos() const noexcept;
 
         float& operator[](size_t index) noexcept
         {

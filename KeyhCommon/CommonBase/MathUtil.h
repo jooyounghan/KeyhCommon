@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CommonCore.h"
 
 namespace keyh
@@ -23,6 +23,21 @@ namespace keyh
 
         template<typename T>
         static constexpr T saturate(T input) noexcept;
+
+        template<typename T>
+        static constexpr bool isEqual(T left, TypeIdentity_t<T> right, T epsilon = static_cast<T>(1.0e-6)) noexcept;
+
+        template<typename T>
+        static constexpr bool isLess(T left, TypeIdentity_t<T> right, T epsilon = static_cast<T>(1.0e-6)) noexcept;
+
+        template<typename T>
+        static constexpr bool isLessEqual(T left, TypeIdentity_t<T> right, T epsilon = static_cast<T>(1.0e-6)) noexcept;
+
+        template<typename T>
+        static constexpr bool isGreater(T left, TypeIdentity_t<T> right, T epsilon = static_cast<T>(1.0e-6)) noexcept;
+
+        template<typename T>
+        static constexpr bool isGreaterEqual(T left, TypeIdentity_t<T> right, T epsilon = static_cast<T>(1.0e-6)) noexcept;
 #pragma endregion
 
 #pragma region Prime Number

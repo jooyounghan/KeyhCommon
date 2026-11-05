@@ -156,6 +156,12 @@
     <ClInclude Include="ScalarVectorTypes.h">
       <Filter>헤더 파일\Type</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>헤더 파일\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>헤더 파일\Type</Filter>
+    </ClInclude>
     <ClInclude Include="Vector.hpp">
       <Filter>헤더 파일\Container</Filter>
     </ClInclude>
@@ -337,6 +343,12 @@
       <Filter>소스 파일\Container</Filter>
     </ClCompile>
     <ClCompile Include="ScalarVectorTypes.cpp">
+      <Filter>소스 파일\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>소스 파일\Type</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
       <Filter>소스 파일\Type</Filter>
     </ClCompile>
     <ClCompile Include="StaticArray.cpp">
