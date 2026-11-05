@@ -14,13 +14,15 @@ namespace keyh
 
     public:
         inline bool isValid() const { return _value != kInvalidID; }
+		inline const Tag& getTagData() const { return _data; }
 
     public:
         inline explicit operator size_t() const { return _value; }
         inline bool operator==(const ResourceID<Tag>& other) const { return _value == other._value; }
 
     private:
-        size_t _value = kInvalidID;
+        size_t  _value = kInvalidID;
+        Tag     _data;
     };
 }
 
