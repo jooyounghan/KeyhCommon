@@ -16,7 +16,10 @@ namespace keyh
 		bool intersects(const AABB& other) const noexcept;
 
 		AABB& operator+=(const float3& point) noexcept;
+		AABB& operator+=(const AABB& other) noexcept;
+
 		AABB operator+(const float3& point) const noexcept;
+		AABB operator+(const AABB& other) const noexcept;
 	};
 }
 
