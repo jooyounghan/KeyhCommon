@@ -1,4 +1,5 @@
-﻿namespace keyh
+﻿#include "MathUtil.h"
+namespace keyh
 {
     template<typename T, typename Pred>
     constexpr T MathUtil::max(T left, TypeIdentity_t<T> right, Pred pred) noexcept
@@ -90,5 +91,17 @@
             }
         }
         return n + 1;
+    }
+
+    template<typename T>
+    constexpr T keyh::MathUtil::degreesToRadians(T degrees) noexcept
+    {
+		return degrees * static_cast<T>(KEYH_PI / 180.0);
+    }
+
+    template<typename T>
+    constexpr T MathUtil::radiansToDegrees(T radians) noexcept
+    {
+		return radians * static_cast<T>(180.0 / KEYH_PI);
     }
 }

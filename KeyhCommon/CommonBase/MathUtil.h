@@ -3,6 +3,8 @@
 
 namespace keyh
 {
+#define KEYH_PI 3.14159265358979323846
+
 	struct MathUtil
 	{
 #pragma region Operations
@@ -46,6 +48,14 @@ namespace keyh
 
         template<typename T>
         static constexpr T nextPrime(T n);
+#pragma endregion
+
+#pragma region Angle
+		template <typename T>
+		static constexpr T degreesToRadians(T degrees) noexcept;
+        
+		template <typename T>
+		static constexpr T radiansToDegrees(T radians) noexcept;
 #pragma endregion
 	};
 }
