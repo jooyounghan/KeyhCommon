@@ -235,6 +235,8 @@
     <ClInclude Include="ArenaAllocator.hpp" />
     <ClInclude Include="AssertUtil.h" />
     <ClInclude Include="AssertUtil.hpp" />
+    <ClInclude Include="ConditionalVariable.h" />
+    <ClInclude Include="ConditionalVariable.hpp" />
     <ClInclude Include="File.h" />
     <ClInclude Include="FileWriter.h" />
     <ClInclude Include="FileUtil.h" />
@@ -272,6 +274,7 @@
     <ClInclude Include="MathUtil.hpp" />
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
+    <ClInclude Include="Mutex.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="CommonBasePch.h" />
     <ClInclude Include="Ptr.h" />
@@ -309,6 +312,7 @@
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="ArenaAllocator.cpp" />
     <ClCompile Include="AssertUtil.cpp" />
+    <ClCompile Include="ConditionalVariable.cpp" />
     <ClCompile Include="CircularBufferUtil.cpp" />
     <ClCompile Include="Delegate.cpp" />
     <ClCompile Include="Deque.cpp" />
@@ -330,6 +334,7 @@
     <ClCompile Include="MacroCommon.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="MemoryUtil.cpp" />
+    <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="CommonBasePch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

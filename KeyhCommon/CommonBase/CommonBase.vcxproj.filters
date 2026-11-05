@@ -288,6 +288,15 @@
     <ClInclude Include="File.h">
       <Filter>헤더 파일\File</Filter>
     </ClInclude>
+    <ClInclude Include="Mutex.h">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="ConditionalVariable.h">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="ConditionalVariable.hpp">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
     <ClInclude Include="StringView.h">
       <Filter>헤더 파일\View</Filter>
     </ClInclude>
@@ -425,6 +434,12 @@
     </ClCompile>
     <ClCompile Include="File.cpp">
       <Filter>소스 파일\File</Filter>
+    </ClCompile>
+    <ClCompile Include="Mutex.cpp">
+      <Filter>소스 파일\Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="ConditionalVariable.cpp">
+      <Filter>소스 파일\Wrapper</Filter>
     </ClCompile>
     <ClCompile Include="JsonUtil.cpp">
       <Filter>소스 파일\Json</Filter>
