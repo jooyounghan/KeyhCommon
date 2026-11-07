@@ -132,7 +132,7 @@ namespace keyh
 	{
 		// File-level API
 		static bool serializeToJson(const char* filePath, const IReflectObject* reflectObject, bool pretty = true);
-		static void deserializeFromJson(const char* filePath, IReflectObject* reflectObject);
+		static bool deserializeFromJson(const char* filePath, IReflectObject* reflectObject);
 		static bool serializeToBinary(const char* filePath, const IReflectObject* reflectObject);
 		static bool deserializeFromBinary(const char* filePath, IReflectObject* reflectObject);
 

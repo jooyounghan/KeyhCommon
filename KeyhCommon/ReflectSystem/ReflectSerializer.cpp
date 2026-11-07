@@ -182,7 +182,7 @@ bool ReflectSerializer::serializeToJson(const char* filePath, const IReflectObje
     return writer.flush();
 }
 
-void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject* reflectObject)
+bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject* reflectObject)
 {
     JsonDocument jsonDocument;
     jsonDocument.loadFromFile(filePath);
@@ -191,10 +191,11 @@ void ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     if (rootObject.isValid() == false)
     {
         KEYH_ASSERT_ARGS(false, "Failed to load JSON document from file: %s", filePath);
-        return;
+        return false;
     }
 
     deserializeObjectFromJson(rootObject, reflectObject);
+    return true;
 }
 
 // =========================================================================
