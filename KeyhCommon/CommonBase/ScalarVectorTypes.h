@@ -21,6 +21,8 @@ namespace keyh
 
     struct half
     {
+        static const half Zero;
+
         uint16 _bits;
 
         static half fromFloat(float value) noexcept;
@@ -35,6 +37,8 @@ namespace keyh
 
     struct half2
     {
+        static const half2 Zero;
+
         union
         {
             struct { half _x; half _y; };
@@ -42,6 +46,7 @@ namespace keyh
         };
 
         half2() noexcept : _x(half::fromFloat(0.0f)), _y(half::fromFloat(0.0f)) {}
+        constexpr explicit half2(half value) noexcept : _x(value), _y(value) {}
         explicit half2(float value) noexcept : half2(value, value) {}
         half2(float xValue, float yValue) noexcept
             : _x(half::fromFloat(xValue)), _y(half::fromFloat(yValue)) {}
@@ -67,6 +72,8 @@ namespace keyh
 
     struct half4
     {
+        static const half4 Zero;
+
         union
         {
             struct { half _x; half _y; half _z; half _w; };
@@ -75,6 +82,7 @@ namespace keyh
 
         half4() noexcept : _x(half::fromFloat(0.0f)), _y(half::fromFloat(0.0f)),
             _z(half::fromFloat(0.0f)), _w(half::fromFloat(0.0f)) {}
+        constexpr explicit half4(half value) noexcept : _x(value), _y(value), _z(value), _w(value) {}
         explicit half4(float value) noexcept : half4(value, value, value, value) {}
         half4(float xValue, float yValue, float zValue, float wValue) noexcept
             : _x(half::fromFloat(xValue)), _y(half::fromFloat(yValue)),
@@ -833,6 +841,10 @@ namespace keyh
     {
         return left.cross(right);
     }
+
+	inline constexpr half half::Zero{ 0 };
+	inline constexpr half2 half2::Zero{ half::Zero };
+	inline constexpr half4 half4::Zero{ half::Zero };
 
     inline constexpr float3 float3::Zero{ 0.0f };
     inline constexpr float3 float3::One{ 1.0f };
