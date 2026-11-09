@@ -219,6 +219,7 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_IS_EQUAL(float2)
     DEFINE_IS_EQUAL(float3)
     DEFINE_IS_EQUAL(float4)
+    DEFINE_IS_EQUAL(Matrix)
     DEFINE_IS_EQUAL(int2)
     DEFINE_IS_EQUAL(int3)
     DEFINE_IS_EQUAL(int4)
@@ -348,6 +349,21 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_SERIALIZE_VECTOR_TO_JSON(uint4, uint32, 4)
 
 #undef DEFINE_SERIALIZE_VECTOR_TO_JSON
+
+    template<>
+    void ReflectPropertySerializer<Matrix>::serializeToJson(IBuffer* buffer, const Matrix& value, size_t depth, bool pretty)
+    {
+        (void)depth;
+        (void)pretty;
+        buffer->writeBytes(&ReflectionUtil::kArrayBegin, 1);
+        for (size_t index = 0; index < 16; ++index)
+        {
+            if (index > 0)
+                buffer->writeBytes(&ReflectionUtil::kDelimiter, 1);
+            StrUtil::floatToStr(static_cast<double>(value.data()[index]), buffer);
+        }
+        buffer->writeBytes(&ReflectionUtil::kArrayEnd, 1);
+    }
 
     template<>
     void ReflectPropertySerializer<bool>::serializeToJson(IBuffer* buffer, const bool& value, size_t depth, bool pretty)
@@ -523,6 +539,38 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
 #undef DEFINE_DESERIALIZE_VECTOR_FROM_JSON
 
     template<>
+    void ReflectPropertySerializer<Matrix>::deserializeFromJson(const JsonValue& json, Matrix& value)
+    {
+        if (json.getValueType() != JsonUtil::TapeType::ArrayStart)
+        {
+            KEYH_ASSERT_ARGS(false, "Matrix JSON value must be an array of 16 numbers.");
+            return;
+        }
+
+        JsonArray jsonArray = json.getArrayValue();
+        Matrix result;
+        size_t index = 0;
+        for (JsonValue element = jsonArray.getFirstValue(); element.isValid(); element = jsonArray.getNextValue(element))
+        {
+            if (index >= 16 || (element.getValueType() != JsonUtil::TapeType::Float && element.getValueType() != JsonUtil::TapeType::Integer))
+            {
+                KEYH_ASSERT_ARGS(false, "Matrix JSON array must contain exactly 16 numbers.");
+                return;
+            }
+            result.data()[index] = element.getValueType() == JsonUtil::TapeType::Integer
+                ? static_cast<float>(element.getIntValue())
+                : element.getFloatValue();
+            ++index;
+        }
+        if (index != 16)
+        {
+            KEYH_ASSERT_ARGS(false, "Matrix JSON array must contain exactly 16 numbers.");
+            return;
+        }
+        value = result;
+    }
+
+    template<>
     void ReflectPropertySerializer<bool>::deserializeFromJson(const JsonValue& json, bool& value)
     {
         value = json.getBoolValue();
@@ -653,6 +701,25 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_BINARY_VECTOR(uint3, uint32, 3)
     DEFINE_BINARY_VECTOR(uint4, uint32, 4)
 #undef DEFINE_BINARY_VECTOR
+
+    template<>
+    void ReflectPropertySerializer<Matrix>::serializeToBinary(IBuffer* buffer, const Matrix& value)
+    {
+        for (size_t index = 0; index < 16; ++index)
+            buffer->writeBytes(&value.data()[index], sizeof(float));
+    }
+
+    template<>
+    size_t ReflectPropertySerializer<Matrix>::deserializeFromBinary(const void* data, size_t size, Matrix& value)
+    {
+        if (data == nullptr || size < 16 * sizeof(float))
+            return kInvalidSizeT;
+        Matrix result;
+        for (size_t index = 0; index < 16; ++index)
+            memcpy(&result.data()[index], static_cast<const byte*>(data) + index * sizeof(float), sizeof(float));
+        value = result;
+        return 16 * sizeof(float);
+    }
 
 #define DEFINE_BINARY_STRING(Type) \
     template<> void ReflectPropertySerializer<Type>::serializeToBinary(IBuffer* buffer, const Type& value) \

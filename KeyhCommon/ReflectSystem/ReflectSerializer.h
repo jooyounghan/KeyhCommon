@@ -1,12 +1,11 @@
 ﻿#pragma once
-#include <cstring>
-#include <type_traits>
 #include "JsonElement.h"
 #include "ReflectionUtil.h"
 #include "IReflectProperty.h"
 #include "IReflectObject.h"
 #include "ReflectMetaObject.h"
 #include "ScalarVectorTypes.h"
+#include "Matrix.h"
 
 namespace keyh
 {
