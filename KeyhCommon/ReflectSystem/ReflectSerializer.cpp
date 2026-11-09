@@ -213,6 +213,9 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_IS_EQUAL(uint64)
     DEFINE_IS_EQUAL(float)
     DEFINE_IS_EQUAL(double)
+    DEFINE_IS_EQUAL(half)
+    DEFINE_IS_EQUAL(half2)
+    DEFINE_IS_EQUAL(half4)
     DEFINE_IS_EQUAL(float2)
     DEFINE_IS_EQUAL(float3)
     DEFINE_IS_EQUAL(float4)
@@ -277,6 +280,13 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_SERIALIZE_TO_JSON_FLOAT(float)
     DEFINE_SERIALIZE_TO_JSON_FLOAT(double)
 
+    template<> void ReflectPropertySerializer<half>::serializeToJson(IBuffer* buffer, const half& value, size_t depth, bool pretty)
+    {
+        (void)depth;
+        (void)pretty;
+        StrUtil::floatToStr(static_cast<double>(half::toFloat(value)), buffer);
+    }
+
 #undef DEFINE_SERIALIZE_TO_JSON_SIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_UNSIGNED_INT
 #undef DEFINE_SERIALIZE_TO_JSON_FLOAT
@@ -328,6 +338,8 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_SERIALIZE_VECTOR_TO_JSON(float2, float, 2)
     DEFINE_SERIALIZE_VECTOR_TO_JSON(float3, float, 3)
     DEFINE_SERIALIZE_VECTOR_TO_JSON(float4, float, 4)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(half2, float, 2)
+    DEFINE_SERIALIZE_VECTOR_TO_JSON(half4, float, 4)
     DEFINE_SERIALIZE_VECTOR_TO_JSON(int2, int32, 2)
     DEFINE_SERIALIZE_VECTOR_TO_JSON(int3, int32, 3)
     DEFINE_SERIALIZE_VECTOR_TO_JSON(int4, int32, 4)
@@ -451,6 +463,11 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_DESERIALIZE_FROM_JSON_FLOAT(float)
     DEFINE_DESERIALIZE_FROM_JSON_FLOAT(double)
 
+    template<> void ReflectPropertySerializer<half>::deserializeFromJson(const JsonValue& json, half& value)
+    {
+        value = half::fromFloat(static_cast<float>(json.getFloatValue()));
+    }
+
 #undef DEFINE_DESERIALIZE_FROM_JSON_INT
 #undef DEFINE_DESERIALIZE_FROM_JSON_FLOAT
 
@@ -462,6 +479,10 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
             if constexpr (IsSame_v<ElementType, float>)
             {
                 return static_cast<ElementType>(jsonValue.getFloatValue());
+            }
+            else if constexpr (IsSame_v<ElementType, half>)
+            {
+                return half::fromFloat(static_cast<float>(jsonValue.getFloatValue()));
             }
             else
             {
@@ -490,6 +511,8 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float2, float, 2)
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float3, float, 3)
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(float4, float, 4)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(half2, half, 2)
+    DEFINE_DESERIALIZE_VECTOR_FROM_JSON(half4, half, 4)
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int2, int32, 2)
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int3, int32, 3)
     DEFINE_DESERIALIZE_VECTOR_FROM_JSON(int4, int32, 4)
@@ -576,6 +599,7 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_BINARY_SCALAR(uint64)
     DEFINE_BINARY_SCALAR(float)
     DEFINE_BINARY_SCALAR(double)
+    DEFINE_BINARY_SCALAR(half)
 #undef DEFINE_BINARY_SCALAR
 
     template<>
@@ -620,6 +644,8 @@ bool ReflectSerializer::deserializeFromJson(const char* filePath, IReflectObject
     DEFINE_BINARY_VECTOR(float2, float, 2)
     DEFINE_BINARY_VECTOR(float3, float, 3)
     DEFINE_BINARY_VECTOR(float4, float, 4)
+    DEFINE_BINARY_VECTOR(half2, half, 2)
+    DEFINE_BINARY_VECTOR(half4, half, 4)
     DEFINE_BINARY_VECTOR(int2, int32, 2)
     DEFINE_BINARY_VECTOR(int3, int32, 3)
     DEFINE_BINARY_VECTOR(int4, int32, 4)

@@ -16,6 +16,96 @@
 
 namespace keyh
 {
+    struct float2;
+    struct float4;
+
+    struct half
+    {
+        uint16 _bits;
+
+        static half fromFloat(float value) noexcept;
+        static float toFloat(half value) noexcept;
+
+        float asFloat() const noexcept { return toFloat(*this); }
+        explicit operator float() const noexcept { return asFloat(); }
+
+        bool operator==(const half& other) const noexcept { return asFloat() == other.asFloat(); }
+        bool operator!=(const half& other) const noexcept { return !(*this == other); }
+    };
+
+    struct half2
+    {
+        union
+        {
+            struct { half _x; half _y; };
+            half _value[2];
+        };
+
+        half2() noexcept : _x(half::fromFloat(0.0f)), _y(half::fromFloat(0.0f)) {}
+        explicit half2(float value) noexcept : half2(value, value) {}
+        half2(float xValue, float yValue) noexcept
+            : _x(half::fromFloat(xValue)), _y(half::fromFloat(yValue)) {}
+        explicit half2(const float2& value) noexcept;
+
+        float2 toFloat2() const noexcept;
+
+        half& operator[](size_t index) noexcept
+        {
+            KEYH_ASSERT(index < 2, "half2 index must be less than 2.");
+            return _value[index];
+        }
+
+        const half& operator[](size_t index) const noexcept
+        {
+            KEYH_ASSERT(index < 2, "half2 index must be less than 2.");
+            return _value[index];
+        }
+
+        bool operator==(const half2& other) const noexcept { return _x == other._x && _y == other._y; }
+        bool operator!=(const half2& other) const noexcept { return !(*this == other); }
+    };
+
+    struct half4
+    {
+        union
+        {
+            struct { half _x; half _y; half _z; half _w; };
+            half _value[4];
+        };
+
+        half4() noexcept : _x(half::fromFloat(0.0f)), _y(half::fromFloat(0.0f)),
+            _z(half::fromFloat(0.0f)), _w(half::fromFloat(0.0f)) {}
+        explicit half4(float value) noexcept : half4(value, value, value, value) {}
+        half4(float xValue, float yValue, float zValue, float wValue) noexcept
+            : _x(half::fromFloat(xValue)), _y(half::fromFloat(yValue)),
+            _z(half::fromFloat(zValue)), _w(half::fromFloat(wValue)) {}
+        explicit half4(const float4& value) noexcept;
+
+        float4 toFloat4() const noexcept;
+
+        half& operator[](size_t index) noexcept
+        {
+            KEYH_ASSERT(index < 4, "half4 index must be less than 4.");
+            return _value[index];
+        }
+
+        const half& operator[](size_t index) const noexcept
+        {
+            KEYH_ASSERT(index < 4, "half4 index must be less than 4.");
+            return _value[index];
+        }
+
+        bool operator==(const half4& other) const noexcept
+        {
+            return _x == other._x && _y == other._y && _z == other._z && _w == other._w;
+        }
+        bool operator!=(const half4& other) const noexcept { return !(*this == other); }
+    };
+
+    static_assert(sizeof(half) == 2, "half must occupy 16 bits.");
+    static_assert(sizeof(half2) == 4, "half2 must occupy 32 bits.");
+    static_assert(sizeof(half4) == 8, "half4 must occupy 64 bits.");
+
     struct float2
     {
         union
