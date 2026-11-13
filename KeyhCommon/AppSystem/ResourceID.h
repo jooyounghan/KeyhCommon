@@ -42,7 +42,7 @@ namespace keyh
     {
         size_t operator()(const ResourceID<Tag>& value) const noexcept
         {
-			return FNV1aHasher::hash(reinterpret_cast<const char*>(&value), sizeof(ResourceID<Tag>));
+            return static_cast<size_t>(value);
         }
     };
 }
