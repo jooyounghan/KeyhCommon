@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 
+	<Type Name="keyh::half">
+		<DisplayString Condition="(_bits &amp; 0x7c00) == 0x7c00 &amp;&amp; (_bits &amp; 0x03ff) != 0">NaN</DisplayString>
+		<DisplayString Condition="(_bits &amp; 0x7fff) == 0x7c00 &amp;&amp; (_bits &amp; 0x8000) != 0">-inf</DisplayString>
+		<DisplayString Condition="(_bits &amp; 0x7fff) == 0x7c00">+inf</DisplayString>
+		<DisplayString Condition="(_bits &amp; 0x7c00) == 0">{((_bits &amp; 0x8000) ? -1.0f : 1.0f) * (_bits &amp; 0x03ff) / 16777216.0f}</DisplayString>
+		<DisplayString>{((_bits &amp; 0x8000) ? -1.0f : 1.0f) * ((_bits &amp; 0x03ff) + 1024) * (1u &lt;&lt; ((_bits &gt;&gt; 10) &amp; 0x1f)) / 33554432.0f}</DisplayString>
+		<Expand>
+			<Item Name="[bits]">_bits,x</Item>
+		</Expand>
+	</Type>
+
 	<Type Name="keyh::Vector&lt;*&gt;">
 		<DisplayString>{{ size={_size} }}</DisplayString>
 		<Expand>
