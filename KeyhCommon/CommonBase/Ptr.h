@@ -52,8 +52,8 @@ namespace keyh
 
 
 	public:
-		inline bool operator==(Nullptr_t) { return _ptr == nullptr; }
-		inline bool operator!=(Nullptr_t) { return _ptr != nullptr; }
+		inline bool operator==(Nullptr_t) const { return _ptr == nullptr; }
+		inline bool operator!=(Nullptr_t) const { return _ptr != nullptr; }
 
 	public:
 		inline T* get() const { return _ptr; }
