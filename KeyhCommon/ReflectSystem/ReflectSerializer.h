@@ -129,6 +129,9 @@ namespace keyh
 	// -----------------------------------------------------------------------
 	struct ReflectSerializer
 	{
+		template<typename T, bool IsReflectObject>
+		friend struct ReflectPropertySerializer;
+
 		// File-level API
 		static bool serializeToJson(const char* filePath, const IReflectObject* reflectObject, bool pretty = true);
 		static bool deserializeFromJson(const char* filePath, IReflectObject* reflectObject);
@@ -137,9 +140,11 @@ namespace keyh
 
 		// All properties, including defaults, are stored in metadata order.
 		// Failed object reads may leave earlier properties updated.
+	private:
 		static void serializeObjectToBinary(IBuffer* buffer, const IReflectObject* reflectObject);
 		static size_t deserializeObjectFromBinary(const void* data, size_t size, IReflectObject* reflectObject);
 
+	private:
 		// Shared helpers (used internally and by ReflectPropertySerializer<T,true>)
 		static void serializeObjectToBuffer(IBuffer* buffer, const IReflectObject* reflectObject, size_t depth = 0, bool pretty = false);
 		static void deserializeObjectFromJson(const JsonObject& jsonObject, IReflectObject* reflectObject);
