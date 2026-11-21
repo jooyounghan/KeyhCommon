@@ -1,4 +1,12 @@
-#pragma once
+﻿#pragma once
+
+#define DEFAULT_COPY(ClassName) \
+	ClassName(const ClassName&) = default; \
+	ClassName& operator=(const ClassName&) = default;
+
+#define DEFAULT_MOVE(ClassName) \
+	ClassName(ClassName&&) = default; \
+	ClassName& operator=(ClassName&&) = default;
 
 #define REMOVE_COPY(ClassName) \
 	ClassName(const ClassName&) = delete; \
