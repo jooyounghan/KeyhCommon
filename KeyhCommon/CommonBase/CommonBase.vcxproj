@@ -275,6 +275,7 @@
     <ClInclude Include="MemoryUtil.h" />
     <ClInclude Include="MemoryUtil.hpp" />
     <ClInclude Include="Mutex.h" />
+    <ClInclude Include="LockGuard.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="CommonBasePch.h" />
     <ClInclude Include="Ptr.h" />

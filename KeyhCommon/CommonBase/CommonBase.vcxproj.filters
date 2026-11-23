@@ -291,6 +291,9 @@
     <ClInclude Include="Mutex.h">
       <Filter>헤더 파일\Wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="LockGuard.h">
+      <Filter>헤더 파일\Wrapper</Filter>
+    </ClInclude>
     <ClInclude Include="ConditionalVariable.h">
       <Filter>헤더 파일\Wrapper</Filter>
     </ClInclude>
