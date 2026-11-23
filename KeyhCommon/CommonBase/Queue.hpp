@@ -19,8 +19,26 @@ namespace keyh
 	}
 
 	template<typename T>
+	void Queue<T>::resize(size_t newSize)
+	{
+		_deque.resize(newSize);
+	}
+
+	template<typename T>
+	void Queue<T>::reserve(size_t newCapacity)
+	{
+		_deque.reserve(newCapacity);
+	}
+
+	template<typename T>
 	void Queue<T>::clear()
 	{
 		_deque.clear();
+	}
+
+	template<typename T>
+	void Queue<T>::swap(Queue& other) noexcept
+	{
+		_deque.swap(other._deque);
 	}
 }

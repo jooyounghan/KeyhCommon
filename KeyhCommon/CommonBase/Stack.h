@@ -13,7 +13,10 @@ namespace keyh
 		void push(const T& value);
 		void push(T&& value);
 		void pop();
+		void resize(size_t newSize);
+		void reserve(size_t newCapacity);
 		void clear();
+		void swap(Stack& other) noexcept;
 
 	public:
 		inline T& top() { return _deque.back(); }

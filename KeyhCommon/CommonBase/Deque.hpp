@@ -299,6 +299,9 @@ namespace keyh
 				static_cast<T*>(_data)[CircularBufferUtil::getIndex(_top, i, _capacity)].~T();
 			}
 		}
+
+		_bottom = _capacity == 0 ? 0 : CircularBufferUtil::getIndex(_top, newSize, _capacity);
+		_isEmpty = (newSize == 0);
 	}
 
 	template<typename T>
